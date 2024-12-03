@@ -7,7 +7,7 @@ output_dir: ./doc
 project_github: https://github.com/cmacmackin/futility
 project_website: https://github.com
 summary: Some Fortran program which I wrote.
-author: John Doe
+author: pbs
 author_description: I program stuff in Fortran.
 github: https://github.com/cmacmackin
 email: john.doe@example.com
@@ -30,6 +30,7 @@ max_frontpage_items: 4
 exclude: src/excluded_file.f90
 exclude_dir: src/excluded_directory
 page_dir: pages
+externalize : True
 ---
 
 Hi, my name is ${USER}.
