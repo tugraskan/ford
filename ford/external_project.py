@@ -209,22 +209,30 @@ def get_module_metadata(module):
         )
 
     for dtype in module.pub_types:
-        components = []
-        for comp in dtype.components:
-            components.append(
+        if isinstance(dtype, FortranType):
+            components = []
+            for comp in dtype.components:
+                components.append(
+                    {
+                        "name": comp.name,
+                        "type": comp.vartype,
+                        "initial_value": comp.initial,
+                        "description": comp.description,
+                    }
+                )
+            metadata["derived_types"].append(
                 {
-                    "name": comp.name,
-                    "type": comp.vartype,
-                    "initial_value": comp.initial,
-                    "description": comp.description,
+                    "name": dtype.name,
+                    "components": components,
                 }
             )
-        metadata["derived_types"].append(
-            {
-                "name": dtype.name,
-                "components": components,
-            }
-        )
+        else:
+            metadata["derived_types"].append(
+                {
+                    "name": dtype,
+                    "components": [],
+                }
+            )
 
     return metadata
 
