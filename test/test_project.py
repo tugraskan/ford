@@ -1466,3 +1466,30 @@ def test_get_module_metadata_with_string_dtype(copy_fortran_file):
     assert derived_types[0]["components"][0]["type"] == "integer"
     assert derived_types[0]["components"][1]["name"] == "component2"
     assert derived_types[0]["components"][1]["type"] == "real"
+
+
+def test_get_module_metadata_with_string_var(copy_fortran_file):
+    data = """\
+    module test_module
+      character(len=10) :: var1
+      real :: var2
+    end module test_module
+    """
+
+    settings = copy_fortran_file(data)
+    project = create_project(settings)
+
+    metadata = project.module_metadata
+
+    assert len(metadata) == 1
+    assert metadata[0]["name"] == "test_module"
+
+    variables = metadata[0]["variables"]
+    assert len(variables) == 2
+    assert variables[0]["name"] == "var1"
+    assert variables[0]["type"] == "character(len=10)"
+    assert variables[1]["name"] == "var2"
+    assert variables[1]["type"] == "real"
+
+    derived_types = metadata[0]["derived_types"]
+    assert len(derived_types) == 0

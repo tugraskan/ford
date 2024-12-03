@@ -199,14 +199,24 @@ def get_module_metadata(module):
     }
 
     for var in module.pub_vars:
-        metadata["variables"].append(
-            {
-                "name": var.name,
-                "type": var.vartype,
-                "initial_value": var.initial,
-                "description": var.description,
-            }
-        )
+        if isinstance(var, FortranBase):
+            metadata["variables"].append(
+                {
+                    "name": var.name,
+                    "type": var.vartype,
+                    "initial_value": var.initial,
+                    "description": var.description,
+                }
+            )
+        else:
+            metadata["variables"].append(
+                {
+                    "name": var,
+                    "type": "unknown",
+                    "initial_value": None,
+                    "description": None,
+                }
+            )
 
     for dtype in module.pub_types:
         if isinstance(dtype, FortranType):
