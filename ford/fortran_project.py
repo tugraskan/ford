@@ -30,7 +30,7 @@ from pathlib import Path
 from fnmatch import fnmatch
 
 from ford.console import warn
-from ford.external_project import load_external_modules
+from ford.external_project import load_external_modules, get_module_metadata
 from ford.utils import ProgressBar
 from ford.sourceform import (
     _find_in_list,
@@ -382,6 +382,9 @@ class Project:
         self.absint_lines = sum_lines(self.absinterfaces)
         self.prog_lines = sum_lines(self.programs)
         self.block_lines = sum_lines(self.blockdata)
+
+        # Store module metadata
+        self.module_metadata = [get_module_metadata(module) for module in self.modules]
 
     def markdown(self, md):
         """

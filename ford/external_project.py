@@ -186,3 +186,59 @@ def load_external_modules(project):
         # convert modules defined in the JSON database to module objects
         for extModule in extModules:
             dict2obj(project, extModule, url, remote=remote)
+
+
+def get_module_metadata(module):
+    """
+    Extracts metadata for a given module, including public variables and derived types.
+    """
+    metadata = {
+        "name": module.name,
+        "variables": [],
+        "derived_types": [],
+    }
+
+    for var in module.pub_vars:
+        metadata["variables"].append(
+            {
+                "name": var.name,
+                "type": var.vartype,
+                "initial_value": var.initial,
+                "description": var.description,
+            }
+        )
+
+    for dtype in module.pub_types:
+        components = []
+        for comp in dtype.components:
+            components.append(
+                {
+                    "name": comp.name,
+                    "type": comp.vartype,
+                    "initial_value": comp.initial,
+                    "description": comp.description,
+                }
+            )
+        metadata["derived_types"].append(
+            {
+                "name": dtype.name,
+                "components": components,
+            }
+        )
+
+    return metadata
+
+
+def dump_modules(project, path="."):
+    """Dump modules to JSON file"""
+
+    modules = [obj2dict(module) for module in project.modules]
+    metadata = [get_module_metadata(module) for module in project.modules]
+    data = {
+        METADATA_NAME: {
+            "version": __version__,
+        },
+        "modules": modules,
+        "metadata": metadata,
+    }
+    (pathlib.Path(path) / "modules.json").write_text(json.dumps(data))
