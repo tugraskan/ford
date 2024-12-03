@@ -1,15 +1,32 @@
 import json
 from ford.fortran_project import Project
+from ford.settings import ProjectSettings
 from ford.external_project import get_module_metadata
+from pathlib import Path
+
 
 def main():
-    project = Project()
+    # Specify the source directory for the Fortran files
+    source_dir = r'C:\Users\taci.ugraskan\source\repos\swatnet\Globals\SRC_Output\fordtesting'
+
+    # Create ProjectSettings with the source directory
+    project_settings = ProjectSettings(src_dir=[Path(source_dir)])
+
+    # Create the project instance
+    project = Project(project_settings)
+
+    # Correlate the project data (parses and processes the Fortran files)
     project.correlate()
 
+    # Extract metadata for each module in the project
     metadata = [get_module_metadata(module) for module in project.modules]
 
-    with open("derived_types_metadata.json", "w") as json_file:
+    # Write the metadata to a JSON file
+    output_file = "derived_types_metadata.json"
+    with open(output_file, "w") as json_file:
         json.dump(metadata, json_file, indent=4)
+
+    print(f"Metadata has been written to {output_file}")
 
 if __name__ == "__main__":
     main()

@@ -190,59 +190,57 @@ def load_external_modules(project):
 
 def get_module_metadata(module):
     """
-    Extracts metadata for a given module, including public variables and derived types.
+    Get metadata for a given Fortran module.
+
+    Parameters:
+    module (FortranModule): The module to get metadata for.
+
+    Returns:
+    dict: A dictionary containing metadata for the module.
     """
     metadata = {
-        "name": module.name,
-        "variables": [],
-        "derived_types": [],
+        "all_vars": [],
+        "all_types": [],
     }
 
-    for var in module.pub_vars:
-        if isinstance(var, FortranBase):
-            metadata["variables"].append(
-                {
-                    "name": var.name,
-                    "type": var.vartype,
-                    "initial_value": var.initial,
-                    "description": var.description,
-                }
-            )
-        else:
-            metadata["variables"].append(
-                {
-                    "name": var,
-                    "type": "unknown",
-                    "initial_value": None,
-                    "description": None,
-                }
-            )
+    # Extract variables that are not of type FortranType
+    if hasattr(module, "all_vars"):
+        for var_name, var in module.all_vars.items():
+            # Use a regular expression to extract the type if it's a derived type
+            derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", var.full_type)
+            derived_type = derived_type_match.group(1) if derived_type_match else var.full_type
 
-    for dtype in module.pub_types:
-        if isinstance(dtype, FortranType):
-            components = []
-            for comp in dtype.components:
-                components.append(
-                    {
-                        "name": comp.name,
-                        "type": comp.vartype,
-                        "initial_value": comp.initial,
-                        "description": comp.description,
-                    }
-                )
-            metadata["derived_types"].append(
-                {
-                    "name": dtype.name,
-                    "components": components,
-                }
-            )
-        else:
-            metadata["derived_types"].append(
-                {
-                    "name": dtype,
-                    "components": [],
-                }
-            )
+            # Append metadata
+            metadata["all_vars"].append({
+                "ident": var.name,
+                "type": derived_type,  # Use the extracted derived type or the original type
+                "initial": var.initial,
+                "doc": var.doc_list,
+            })
+
+    # Extract metadata for derived types
+    if hasattr(module, "all_types"):
+        for type_name, dtype in module.all_types.items():
+            vars_metadata = []
+
+            # Iterate through variables in the derived type
+            for variable in dtype.variables:
+                # Use a regular expression to extract the type if it's a derived type
+                derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", variable.full_type)
+                derived_type = derived_type_match.group(1) if derived_type_match else variable.full_type
+                vars_metadata.append({
+                    "ident": variable.name,
+                    "type": derived_type,
+                    "initial": getattr(variable, "initial", None),  # Handle missing attributes safely
+                    "doc": getattr(variable, "doc_list", []),  # Default to an empty list
+                })
+
+            # Append the metadata for the derived type
+            metadata["all_types"].append({
+                "name": dtype.name,
+                "variables": vars_metadata,  # Include the list of variables metadata
+                "doc": getattr(dtype, "doc_list", []),  # Optional documentation for the derived type
+            })
 
     return metadata
 
