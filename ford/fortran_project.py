@@ -240,6 +240,56 @@ class Project:
 
         self.files.append(new_file)
 
+
+    def _module_types(self):
+         """
+
+         """
+         metadata = {
+             "all_vars": [],
+             "all_types": []
+         }
+
+         # Extract variables that are not of type FortranType
+         if hasattr(module, "all_vars"):
+             for var_name, var in module.all_vars.items():
+                 # Use a regular expression to extract the type if it's a derived type
+                 derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", var.full_type)
+                 derived_type = derived_type_match.group(1) if derived_type_match else var.full_type
+
+                 # Append metadata
+                 metadata["all_vars"].append({
+                     "ident": var.name,
+                     "type": derived_type,  # Use the extracted derived type or the original type
+                     "initial": var.initial,
+                     "doc": var.doc_list,
+                 })
+
+         # Extract metadata for derived types
+         if hasattr(module, "all_types"):
+             for type_name, dtype in module.all_types.items():
+                 vars_metadata = []
+
+                 # Iterate through variables in the derived type
+                 for variable in dtype.variables:
+                     # Use a regular expression to extract the type if it's a derived type
+                     derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", variable.full_type)
+                     derived_type = derived_type_match.group(1) if derived_type_match else variable.full_type
+                     vars_metadata.append({
+                         "ident": variable.name,
+                         "type": derived_type,
+                         "initial": getattr(variable, "initial", None),  # Handle missing attributes safely
+                         "doc": getattr(variable, "doc_list", []),  # Default to an empty list
+                     })
+
+                 # Append the metadata for the derived type
+                 metadata["all_types"].append({
+                     "name": dtype.name,
+                     "variables": vars_metadata,  # Include the list of variables metadata
+                     "doc": getattr(dtype, "doc_list", []),  # Optional documentation for the derived type
+                 })
+
+
     @property
     def allfiles(self):
         """Instead of duplicating files, it is much more efficient to create the itterator on the fly"""
@@ -386,6 +436,7 @@ class Project:
         # Store module metadata
         self.module_metadata = [get_module_metadata(module) for module in self.modules]
 
+
     def markdown(self, md):
         """
         Process the documentation with Markdown to produce HTML.
@@ -480,8 +531,22 @@ def find_used_modules(
         for candidate in chain(modules, external_modules):
             if dependency_name == candidate.name.lower():
                 dependency[0] = candidate
-                break
 
+                # Check if dependency variables are used in the entity's subroutines
+                if hasattr(candidate, "variables") and hasattr(entity, "raw_lines"):
+                    #module_vars = {var.name for var in candidate.variables}
+
+                    used_vars = [
+                        var for var in candidate.variables
+                            if any(var in line for line in entity.raw_lines)
+                    ]
+                    # Log or store results
+                    if used_vars:
+                        print(
+                            f"Subroutine '{entity.name}' uses variables from module '{candidate.name}': {used_vars}"
+                        )
+
+                break
     # Find the ancestor of this submodule (if entity is one)
     if hasattr(entity, "parent_submodule") and entity.parent_submodule:
         parent_submodule_name = entity.parent_submodule.lower()

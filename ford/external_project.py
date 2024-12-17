@@ -10,6 +10,8 @@ from urllib.parse import urljoin
 from ford.sourceform import (
     FortranBase,
     FortranType,
+    FortranVariable,
+    FortranSubroutine,
     ExternalModule,
     ExternalFunction,
     ExternalSubroutine,
@@ -148,11 +150,13 @@ def dump_modules(project, path="."):
     """Dump modules to JSON file"""
 
     modules = [obj2dict(module) for module in project.modules]
+    metadata = [get_module_metadata(module) for module in project.modules]
     data = {
         METADATA_NAME: {
             "version": __version__,
         },
         "modules": modules,
+        "metadata": metadata,
     }
     (pathlib.Path(path) / "modules.json").write_text(json.dumps(data))
 
@@ -201,6 +205,7 @@ def get_module_metadata(module):
     metadata = {
         "all_vars": [],
         "all_types": [],
+        "subroutine_usage": [],  # Add a new key for subroutine usage
     }
 
     # Extract variables that are not of type FortranType
@@ -242,19 +247,25 @@ def get_module_metadata(module):
                 "doc": getattr(dtype, "doc_list", []),  # Optional documentation for the derived type
             })
 
+        # Populate the subroutines list for each module
+    #for subroutine in project.subroutines:
+        #if subroutine.uses == 'x':
+           # continue
+
+    # Identify derived types and specific variables used in subroutines
+    for subroutine in module.subroutines:
+        subroutine_usage = {
+            "subroutine_name": subroutine.name,
+            "used_derived_types": [],
+            "used_variables": [],
+        }
+
+        for call in subroutine.calls:
+            if isinstance(call, FortranType):
+                subroutine_usage["used_derived_types"].append(call.name)
+            elif isinstance(call, FortranVariable):
+                subroutine_usage["used_variables"].append(call.name)
+
+        metadata["subroutine_usage"].append(subroutine_usage)
+
     return metadata
-
-
-def dump_modules(project, path="."):
-    """Dump modules to JSON file"""
-
-    modules = [obj2dict(module) for module in project.modules]
-    metadata = [get_module_metadata(module) for module in project.modules]
-    data = {
-        METADATA_NAME: {
-            "version": __version__,
-        },
-        "modules": modules,
-        "metadata": metadata,
-    }
-    (pathlib.Path(path) / "modules.json").write_text(json.dumps(data))

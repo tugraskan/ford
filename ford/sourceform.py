@@ -725,6 +725,21 @@ class FortranContainer(FortranBase):
         r"namelist\s*/(?P<name>\w+)/\s*(?P<vars>(?:\w+,?\s*)+)", re.IGNORECASE
     )
 
+    ASSIGNMENT_RE = re.compile(
+        r"^\s*(?P<lhs>(?:\w+%)*\w+)\s*=\s*(?P<rhs>.+)$",
+        re.IGNORECASE | re.VERBOSE,
+    )
+
+    IO_VAR_STATEMENT_RE = re.compile(
+        r"""^\s*
+            (?P<io_stmt>inquire|open|write)            # Fortran I/O statement
+            \s*\(                                      # Opening parenthesis
+            (?P<arguments>.*?)\)                       # Arguments inside parentheses
+            \s*$
+        """,
+        re.IGNORECASE | re.VERBOSE,
+    )
+
     def __init__(
         self, source, first_line, parent=None, inherited_permission="public", strings=[]
     ):
@@ -735,6 +750,15 @@ class FortranContainer(FortranBase):
             FortranBase.__init__(
                 self, source, first_line, parent, inherited_permission, strings
             )
+
+        # Initialize the new attribute to store variable assignments
+        self.u_var_initialize = []
+        self.u_var_to_var = []
+        self.u_var_complex = []
+        self.u_complex_to_var = []
+        self.u_ = []
+        self.u_io_variables = []
+
         incontains = False
         if type(self) is FortranSubmodule:
             self.permission = "private"
@@ -1074,6 +1098,17 @@ class FortranContainer(FortranBase):
                 # to disambiguate them from function calls
                 continue
 
+            # Match I/O statements like inquire, open, close
+            elif io_match := self.IO_VAR_STATEMENT_RE.match(line):
+                arguments = io_match.group("arguments").strip()
+
+                for arg in arguments.split(","):
+                    arg = arg.strip()
+                    if "=" in arg:  # Handle keyword arguments like "file=value"
+                        lhs, rhs = arg.split("=", 1)
+                        lhs, rhs = lhs.strip(), rhs.strip()
+                        self.categorize_lhs_rhs(lhs, rhs, f"{lhs} = {rhs}")
+
             elif (call_match := self.CALL_RE.search(line)) or (
                 subcall_match := self.SUBCALL_RE.search(line)
             ):
@@ -1086,6 +1121,14 @@ class FortranContainer(FortranBase):
                     continue
 
                 self._add_procedure_calls(line, associations)
+
+            elif match := self.ASSIGNMENT_RE.match(line):
+                lhs = match.group("lhs").lower()  # Left-hand side
+                rhs = match.group("rhs").strip()  # Right-hand side
+                self.categorize_lhs_rhs(lhs, rhs, f"{lhs} = {rhs}")
+
+            else:
+                self.u_.append(line)
 
         if not isinstance(self, FortranSourceFile):
             raise Exception("File ended while still nested.")
@@ -1130,11 +1173,87 @@ class FortranContainer(FortranBase):
                 call_chain[0:1] = associations[call_chain[0]]
 
             if call_chain[-1] in INTRINSICS or call_chain[-1] in (
-                call[-1] for call in self.calls
+                    call[-1] for call in self.calls
             ):
                 continue
 
             self.calls.append(call_chain)
+
+    def categorize_lhs_rhs(self, lhs: str, rhs: str, full_line: str) -> None:
+        """
+        Categorize variables or expressions on both sides of an assignment or I/O argument.
+
+        Parameters
+        ----------
+        lhs : str
+            The left-hand side (LHS) variable or expression.
+        rhs : str
+            The right-hand side (RHS) expression.
+        full_line : str
+            The full line of code being analyzed.
+        """
+        # Process LHS
+        base_lhs, *lhs_members = lhs.split("%")
+        base_lhs = base_lhs.lower()
+
+        if base_lhs in (var.name.lower() for var in self.variables):
+            if not hasattr(self, "u_var_lhs"):
+                self.u_var_lhs = []
+            self.u_var_lhs.append(full_line)
+
+        # Process RHS
+        if re.match(r"^\d+(\.\d+)?$", rhs):  # RHS is a number
+            if not hasattr(self, "u_var_initialize"):
+                self.u_var_initialize = []
+            self.u_var_initialize.append(full_line)
+
+        elif rhs in (var.name.lower() for var in self.variables):  # RHS is a simple variable
+            if not hasattr(self, "u_var_to_var"):
+                self.u_var_to_var = []
+            self.u_var_to_var.append(full_line)
+
+        else:  # Complex RHS or member access
+            if not hasattr(self, "u_var_complex"):
+                self.u_var_complex = []
+            self.u_var_complex.append(full_line)
+
+            # Break out member access lines
+            if not hasattr(self, "u_complex_to_var"):
+                self.u_complex_to_var = []
+            self.u_complex_to_var.extend(self.extract_member_access_parts([full_line]))
+
+
+    def extract_member_access_parts(self, lines: list) -> list:
+        """
+        Extract and return unique member access parts (segments with '%') from the given lines.
+
+        Parameters
+        ----------
+        lines : list
+            List of assignment lines to process.
+
+        Returns
+        -------
+        list
+            A list of unique extracted member access segments.
+        """
+        member_access_parts = set()  # Use a set to track unique entries
+
+        for line in lines:
+            # Split the line into LHS and RHS around '='
+            if "=" in line:
+                lhs, rhs = line.split("=", 1)
+                lhs, rhs = lhs.strip(), rhs.strip()
+
+                # Find and extract '%'-based segments in LHS and RHS
+                lhs_matches = re.findall(r"\b\w+(?:%\w+)+\b", lhs)
+                rhs_matches = re.findall(r"\b\w+(?:%\w+)+\b", rhs)
+
+                # Add matches to the set (avoiding duplicates)
+                member_access_parts.update(lhs_matches)
+                member_access_parts.update(rhs_matches)
+
+        return list(member_access_parts)  # Convert set back to list
 
     def _cleanup(self):
         raise NotImplementedError()
@@ -1856,13 +1975,39 @@ class FortranProcedure(FortranCodeUnit):
 class FortranSubroutine(FortranProcedure):
     """
     An object representing a Fortran subroutine and holding all of said
-    subroutine's contents.
+    subroutine's contents, including its raw lines for analysis.
     """
 
     proctype = "Subroutine"
 
+    def __init__(self, source, match, parent, permission):
+        super().__init__(source, match, parent, permission)
+        self.raw_lines = []  # To store the raw lines of the subroutine
+
     def _initialize(self, line: re.Match) -> None:
+        # Initialize subroutine attributes
         self._procedure_initialize(**line.groupdict())
+
+    def search_variables(self, variables):
+        """
+        Search for specific variables in the subroutine's raw lines.
+
+        Parameters
+        ----------
+        variables : list
+            List of variable names to search for.
+
+        Returns
+        -------
+        list
+            A list of tuples (variable, line_number) for each match.
+        """
+        matches = []
+        for line_number, line in enumerate(self.raw_lines, start=1):
+            for var in variables:
+                if var in line:
+                    matches.append((var, line_number))
+        return matches
 
 
 class FortranFunction(FortranProcedure):
