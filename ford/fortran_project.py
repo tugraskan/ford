@@ -227,6 +227,7 @@ class Project:
             self.procedures.append(subroutine)
             namelist_check(subroutine)
             self.extract_non_fortran_and_non_integers(subroutine)
+            self.build_type_dictionary(subroutine)
 
         for program in new_file.programs:
             program.visible = True
@@ -247,19 +248,35 @@ class Project:
         Parameters
         ----------
         subroutine : object
-            An object containing `other_results`, `fortran_keywords`, `symbols`, `variables`,
-            and `member_access_results`.
+            An object containing `other_results`, `variables`, and `member_access_results`.
 
         Updates
         -------
         subroutine.member_access_results : list
             Appends filtered items that pass the criteria.
+
+        Returns
+        -------
+        set
+            A filtered set of items that are neither Fortran keywords, integers, symbols, nor self-defined variables.
         """
-        # Convert `other_results` to a set for efficient processing
-        items = {item.strip().strip("'\"") for item in subroutine.other_results}
 
         # Extract the names of subroutine variables
         subroutine_variable_names = {var.name for var in subroutine.variables}
+
+        # Combine all Fortran keywords dynamically using set union
+        all_fortran_keywords = (
+                subroutine.fortran_control |
+                subroutine.fortran_operators |
+                subroutine.fortran_intrinsics |
+                subroutine.fortran_reserved |
+                subroutine.fortran_custom |
+                subroutine.symbols |
+                subroutine_variable_names
+        )
+
+        # Convert `other_results` to a set for efficient processing
+        items = {item.strip().strip("'\"") for item in subroutine.other_results}
 
         # Initialize a filtered set for deduplication
         filtered_items = set()
@@ -268,10 +285,8 @@ class Project:
             # Skip empty strings, Fortran keywords, integers, symbols, and subroutine variables
             if (
                     item
-                    and item not in subroutine.fortran_keywords
-                    and item not in subroutine.symbols
-                    and item not in subroutine_variable_names
-                    and not item.isdigit()
+                    and item not in all_fortran_keywords
+                    and not subroutine.NUMBER_RE.match(item)
             ):
                 # Add to filtered set if not already in member_access_results
                 if item not in subroutine.member_access_results:
@@ -279,6 +294,41 @@ class Project:
                     filtered_items.add(item)
 
         return filtered_items
+
+    def build_type_dictionary(self, subroutine):
+        """
+        Builds a nested type dictionary from a list of variable paths.
+
+        Parameters
+        ----------
+        subroutine : object
+            An object containing `member_access_results` and `type_results`.
+
+        Updates
+        -------
+        subroutine.type_results : list
+            Appends the final nested dictionary representing the types and their attributes.
+
+        Returns
+        -------
+        dict
+            A nested dictionary representing the types and their attributes.
+        """
+        type_dict = {}
+
+        for var in subroutine.member_access_results:
+            parts = var.split('%')  # Split by '%'
+            current = type_dict
+
+            for part in parts:
+                if part not in current:
+                    current[part] = {}  # Add a nested dictionary if not already present
+                current = current[part]  # Move into the nested dictionary
+
+        # Update subroutine.type_results with the final dictionary
+        subroutine.type_results.append(type_dict)
+
+        return type_dict
 
     def _module_types(self):
          """
