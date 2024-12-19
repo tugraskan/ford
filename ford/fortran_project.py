@@ -204,7 +204,6 @@ class Project:
             incl_src=settings.incl_src,
             encoding=self.encoding,
         )
-
         def namelist_check(entity):
             self.namelists.extend(getattr(entity, "namelists", []))
 
@@ -227,6 +226,7 @@ class Project:
             subroutine.visible = True
             self.procedures.append(subroutine)
             namelist_check(subroutine)
+            self.extract_non_fortran_and_non_integers(subroutine)
 
         for program in new_file.programs:
             program.visible = True
@@ -240,6 +240,45 @@ class Project:
 
         self.files.append(new_file)
 
+    def extract_non_fortran_and_non_integers(self, subroutine):
+        """
+        Extracts items that are neither Fortran keywords, integers, symbols, nor self-defined variables.
+
+        Parameters
+        ----------
+        subroutine : object
+            An object containing `other_results`, `fortran_keywords`, `symbols`, `variables`,
+            and `member_access_results`.
+
+        Updates
+        -------
+        subroutine.member_access_results : list
+            Appends filtered items that pass the criteria.
+        """
+        # Convert `other_results` to a set for efficient processing
+        items = {item.strip().strip("'\"") for item in subroutine.other_results}
+
+        # Extract the names of subroutine variables
+        subroutine_variable_names = {var.name for var in subroutine.variables}
+
+        # Initialize a filtered set for deduplication
+        filtered_items = set()
+
+        for item in items:
+            # Skip empty strings, Fortran keywords, integers, symbols, and subroutine variables
+            if (
+                    item
+                    and item not in subroutine.fortran_keywords
+                    and item not in subroutine.symbols
+                    and item not in subroutine_variable_names
+                    and not item.isdigit()
+            ):
+                # Add to filtered set if not already in member_access_results
+                if item not in subroutine.member_access_results:
+                    subroutine.member_access_results.append(item)
+                    filtered_items.add(item)
+
+        return filtered_items
 
     def _module_types(self):
          """
