@@ -621,19 +621,31 @@ def find_used_modules(
             if dependency_name == candidate.name.lower():
                 dependency[0] = candidate
 
-                # Check if dependency variables are used in the entity's subroutines
-                if hasattr(candidate, "variables") and hasattr(entity, "raw_lines"):
-                    #module_vars = {var.name for var in candidate.variables}
+                """
+                matches = []
+                for result in entity.type_results:  # Iterate over each list item
+                    if isinstance(result, dict):  # Process only if it's a dictionary
+                        for key, value in result.items():
+                            # Check if the key matches any candidate variable name
+                            if any(var.name == key for var in candidate.variables):
+                                matches.append(key)
 
-                    used_vars = [
-                        var for var in candidate.variables
-                            if any(var in line for line in entity.raw_lines)
-                    ]
-                    # Log or store results
-                    if used_vars:
-                        print(
-                            f"Subroutine '{entity.name}' uses variables from module '{candidate.name}': {used_vars}"
-                        )
+                            # If the value is a nested dictionary, search deeper
+                            if isinstance(value, dict):
+                                matches.extend(search_type_results_in_candidate(value, candidate.variables))
+
+                print(matches)
+
+
+                # Check if dependency variables are used in the entity's subroutines
+                #if hasattr(candidate, "variables"):
+                    #module_vars = {var.name for var in candidate.variables}
+                    #for var in candidate.variables:
+                        #if var.name in entity.type_results:
+                            #print(f"Found variable {var.name} in {entity.name}")
+
+
+                """
 
                 break
     # Find the ancestor of this submodule (if entity is one)
