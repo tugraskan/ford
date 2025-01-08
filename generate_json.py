@@ -20,7 +20,7 @@ def main():
     project.correlate()
 
     # Extract metadata for each module in the project
-    metadata = [get_module_metadata(module) for module in project.modules]
+    metadata = [_module_types(module) for module in project.modules]
 
     # Write the metadata to a JSON file
     output_file = "derived_types_metadata.json"

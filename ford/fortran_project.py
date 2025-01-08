@@ -211,6 +211,7 @@ class Project:
             self.modules.append(module)
             for routine in module.routines:
                 namelist_check(routine)
+            #self.build_mtype_dictionary(module) # is this really necessary?
 
         for submod in new_file.submodules:
             self.submodules.append(submod)
@@ -227,7 +228,7 @@ class Project:
             self.procedures.append(subroutine)
             namelist_check(subroutine)
             self.extract_non_fortran_and_non_integers(subroutine)
-            self.build_type_dictionary(subroutine)
+            self.build_stype_dictionary(subroutine)
 
         for program in new_file.programs:
             program.visible = True
@@ -295,7 +296,7 @@ class Project:
 
         return filtered_items
 
-    def build_type_dictionary(self, subroutine):
+    def build_stype_dictionary(self, subroutine):
         """
         Builds a nested type dictionary from a list of variable paths.
 
@@ -321,63 +322,110 @@ class Project:
             current = type_dict
 
             for part in parts:
-                if part not in current:
-                    current[part] = {}  # Add a nested dictionary if not already present
-                current = current[part]  # Move into the nested dictionary
+                current = current.setdefault(part, {})  # Use setdefault to create missing parts
 
         # Update subroutine.type_results with the final dictionary
-        subroutine.type_results.append(type_dict)
+        subroutine.type_results = type_dict
+
+    def build_mtype_dictionary (self, module):
+        """
+        Extracts metadata for variables and derived types in the module and returns it as a nested dictionary.
+        """
+
+        # Initialize the metadata dictionary
+        type_dict = {}
+
+        # Process variables in the module:
+        for var in module.variables():
+            # Extract the derived type if it's a derived type
+            derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", var.full_type)
+            derived_type = derived_type_match.group(1) if derived_type_match else var.full_type
+
+            # Create nested structure for the variable type if not present
+            if derived_type not in type_dict:
+                type_dict[derived_type] = {}
+
+            type_dict[derived_type][var_name] = {
+                "initial": var.initial,
+                "doc": var.doc_list,
+            }
+
+
+        # Process derived types
+        for type_name, dtype in module.all_types.items():
+            # Create an entry for the derived type if not already present
+            if type_name not in metadata:
+                type_dict[type_name] = {}
+
+            # Iterate through variables within the derived type
+            for variable in dtype.variables:
+                derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", variable.full_type)
+                derived_type = derived_type_match.group(1) if derived_type_match else variable.full_type
+
+                # Ensure the nested dictionary structure
+                if derived_type not in type_dict:
+                    type_dict[derived_type] = {}
+
+                type_dict[derived_type][variable.name] = {
+                    "initial": getattr(variable, "initial", None),
+                    "doc": getattr(variable, "doc_list", []),
+                }
+
 
         return type_dict
 
-    def _module_types(self):
-         """
+    def xcross_walk_type_dicts(self, procedures):
+        """Compare two nested dictionaries representing types and variables."""
+        # Iterate over the keys in type_results (assuming it's a dictionary-like structure)
+        for key, value in procedures.type_results.items():
+            print(f"Checking for key: {key},  {value}")
 
-         """
-         metadata = {
-             "all_vars": [],
-             "all_types": []
-         }
+            # Loop through all the modules in procedures.uses
+            for module in procedures.uses:
+                # Create a list of variable names from module.variables
+                mvars = [mvar for mvar in module.variables]  # Keep the whole mvar object
 
-         # Extract variables that are not of type FortranType
-         if hasattr(module, "all_vars"):
-             for var_name, var in module.all_vars.items():
-                 # Use a regular expression to extract the type if it's a derived type
-                 derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", var.full_type)
-                 derived_type = derived_type_match.group(1) if derived_type_match else var.full_type
+                # Check if the key exists in the list of variable names
+                for mvar in mvars:
+                    if key == mvar.name:
+                        print(f"Found variable {key} in module {module.name}")
 
-                 # Append metadata
-                 metadata["all_vars"].append({
-                     "ident": var.name,
-                     "type": derived_type,  # Use the extracted derived type or the original type
-                     "initial": var.initial,
-                     "doc": var.doc_list,
-                 })
+                    # Now, check if the key has a nested dictionary
+                    if isinstance(value, dict):
+                        print(f"Found nested dictionary for key: {key}")
 
-         # Extract metadata for derived types
-         if hasattr(module, "all_types"):
-             for type_name, dtype in module.all_types.items():
-                 vars_metadata = []
+                        # Check if the dictionary is not empty
+                        if value:  # Only iterate if the dictionary has content
+                            for k, v in value.items():
+                                print(f"Checking for nested key: {k}, value: {v}")
+                        else:
+                            print(f"The nested dictionary for key: {key} is empty.")
 
-                 # Iterate through variables in the derived type
-                 for variable in dtype.variables:
-                     # Use a regular expression to extract the type if it's a derived type
-                     derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", variable.full_type)
-                     derived_type = derived_type_match.group(1) if derived_type_match else variable.full_type
-                     vars_metadata.append({
-                         "ident": variable.name,
-                         "type": derived_type,
-                         "initial": getattr(variable, "initial", None),  # Handle missing attributes safely
-                         "doc": getattr(variable, "doc_list", []),  # Default to an empty list
-                     })
+    def cross_walk_type_dicts(self, procedures):
+        """Compare two nested dictionaries representing types and variables."""
+        for item in procedures.type_results:
+            for key, value in item.items():  # Iterate over each key-value pair in the dictionary
+                print(f"Checking for key: {key}, value: {value}")
 
-                 # Append the metadata for the derived type
-                 metadata["all_types"].append({
-                     "name": dtype.name,
-                     "variables": vars_metadata,  # Include the list of variables metadata
-                     "doc": getattr(dtype, "doc_list", []),  # Optional documentation for the derived type
-                 })
+                # Loop through all the modules in procedures.uses
+                for module in procedures.uses:
+                    # Create a set of variable names for fast lookup
+                    module_vars_set = {mvar.name for mvar in module.variables}
 
+                    # Check if the key exists in module's variable names
+                    if key in module_vars_set:
+                        print(f"Found variable {key} in module {module.name}")
+
+                    # Now check if the value from type_results is a nested dictionary
+                    if isinstance(value, dict):
+                        print(f"Found nested dictionary for key: {key}")
+
+                        # Check if the dictionary is not empty
+                        if value:  # Only iterate if the dictionary has content
+                            for k, v in value.items():
+                                print(f"Checking for nested key: {k}, value: {v}")
+                        else:
+                            print(f"The nested dictionary for key: {key} is empty.")
 
     @property
     def allfiles(self):
@@ -523,7 +571,8 @@ class Project:
         self.block_lines = sum_lines(self.blockdata)
 
         # Store module metadata
-        self.module_metadata = [get_module_metadata(module) for module in self.modules]
+        #self.module_metadata = [get_module_metadata(module) for module in self.modules] # do this in xwalk  instead or is a json still ultimately needed?
+        self.xwalk_type_dicts = [self.cross_walk_type_dicts(procedures) for procedures in self.procedures]
 
 
     def markdown(self, md):

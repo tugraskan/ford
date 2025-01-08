@@ -771,15 +771,15 @@ class FortranContainer(FortranBase):
 
         self.member_access_results = []  # For `%`-based member access
         self.other_results = []  # For non-member-access items
-        self.type_results = []  # For type definitions
+        self.type_results = {} # For type definitions
 
 
         # Define a set of symbols to exclude
-        self.symbols = {"*", "<", ">", "=", ":", ".", ",","/","-","+"}
+        self.symbols = {"*", "<", ">", "=", ":", ".", ",","/","-","+", '**'}
         # Fortran Control Structures
         self.fortran_control = {
             "if", "then", "do", "select", "case", "end", "cycle", "stop", "continue", "goto", "else",
-            "implicit", "call", "return", "exit", "enddo"
+            "implicit", "call", "return", "exit", "enddo", "endif", 'while', 'elseif'
         }
 
         # Fortran Operators
@@ -790,19 +790,19 @@ class FortranContainer(FortranBase):
         # Fortran Intrinsic Functions
         self.fortran_intrinsics = {
             "abs", "acos", "asin", "atan", "exp", "log", "log10", "mod", "sin", "cos",
-            "tan", "sqrt", "min", "max"
+            "tan", "sqrt", "min", "max", "amin1", "amax1", "Sqrt", "alog", "alog10"
         }
 
         # Fortran Reserved Words
         self.fortran_reserved = {
             "allocate", "deallocate", "open", "close", "inquire", "backspace", "file",
             "exist", "source", "iostat", "kind", "len", "size", "allocated", "associated",
-            "null", "none", "true", "false"
+            "null", "none", "true", "false", "read", "write", "print", "format", "unit", "rewind"
         }
 
         # Custom Keywords
         self.fortran_custom = {
-            "-Theta", "Theta", "Max", "Min", "Exp"
+            "-Theta", "Theta", "Max", "Min", "Exp", "float", "int"
         }
 
 
@@ -1149,6 +1149,11 @@ class FortranContainer(FortranBase):
 
             else :
                 self._member_access(line)
+
+        if match := self.MODULE_RE.match(line):
+            if hasattr(self, "modules"):
+                print('check')
+                #_module_types(module)
 
         if not isinstance(self, FortranSourceFile):
             raise Exception("File ended while still nested.")
