@@ -772,6 +772,7 @@ class FortranContainer(FortranBase):
         self.member_access_results = []  # For `%`-based member access
         self.other_results = []  # For non-member-access items
         self.type_results = {} # For type definitions
+        self.json = [] # For procedures
 
 
         # Define a set of symbols to exclude

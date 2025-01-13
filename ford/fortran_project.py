@@ -23,6 +23,7 @@
 #
 
 import os
+import json
 import toposort
 from itertools import chain, product
 from typing import List, Optional, Union, Dict, Set
@@ -229,6 +230,7 @@ class Project:
             namelist_check(subroutine)
             self.extract_non_fortran_and_non_integers(subroutine)
             self.build_stype_dictionary(subroutine)
+            self.build_stype_set(subroutine)
 
         for program in new_file.programs:
             program.visible = True
@@ -295,6 +297,38 @@ class Project:
                     filtered_items.add(item)
 
         return filtered_items
+
+    def build_stype_set(self, subroutine):
+        """
+        Builds a set of key-value pairs representing the types and their attributes from a list of variable paths.
+
+        Parameters
+        ----------
+        subroutine : object
+            An object containing `member_access_results` and `type_results`.
+
+        Updates
+        -------
+        subroutine.type_results : set
+            Updates the type_results attribute to hold a set of key-value pairs representing the types and their attributes.
+
+        Returns
+        -------
+        set
+            A set of key-value pairs representing the types and their attributes.
+        """
+        type_set = set()
+
+        for var in subroutine.member_access_results:
+            parts = var.split('%')  # Split by '%'
+            # Create a tuple of the split parts
+            path_tuple = tuple(parts)
+            type_set.add(path_tuple)  # Add the tuple to the set
+
+        # Update subroutine.type_results with the final set
+        subroutine.type_results2 = type_set
+
+        return type_set
 
     def build_stype_dictionary(self, subroutine):
         """
@@ -374,7 +408,168 @@ class Project:
 
         return type_dict
 
+    import json
+
+    def recursive_check(key, value, module, mvar, json_data):
+        """Recursive function to check for nested keys and values and add them to the JSON structure."""
+        # If the value is a dictionary, process it recursively
+        if isinstance(value, dict):
+            nested_data = {}
+            if value:  # Only iterate if the dictionary has content
+                for k, v in value.items():
+                    # Add this nested key-value to the nested_data
+                    nested_data[k] = {}
+                    # Recursively call the function for the nested key-value pair
+                    recursive_check(k, v, module, mvar, nested_data[k])
+            else:
+                nested_data["description"] = mvar.doc_list
+                nested_data["type"] = mvar.vartype
+
+            json_data[key] = nested_data  # Store the processed nested data for the key
+
+        else:
+            # If it's not a dictionary, process the value (i.e., leaf node)
+            json_data[key] = {
+                "description": mvar.doc_list,
+                "type": mvar.vartype,
+                "value": value
+            }
+
+    def cross_walk_type_dicts(self, procedures):
+        """Compare two nested dictionaries representing types and variables and generate JSON for each procedure."""
+
+        # Iterate over the keys in type_results (assuming it's a dictionary-like structure)
+        for key, value in procedures.type_results.items():
+            procedure_json = {
+                "procedure_name": key,
+                "modules_used": [],
+                "missing_variables": []
+            }
+
+            # Flag to check if the key was found in any module
+            key_found = False
+
+            # Loop through all the modules in procedures.uses
+            for module in procedures.uses:
+                module_json = {}
+
+                # Create a dictionary mapping variable names to their corresponding mvar objects
+                module_vars_dict = {mvar.name: mvar for mvar in module.variables}  # Dictionary of mvar.name -> mvar
+                module_vars_set = set(module_vars_dict.keys())
+
+                # Check if the key exists in the set of variable names
+                if key in module_vars_set:
+                    key_found = True
+                    mvar = module_vars_dict[key]
+                    module_json = {
+                        "module_name": module.name,
+                        "variables": {}
+                    }
+
+                    # Add the mvar data for the key in the module
+                    module_json["variables"][key] = {
+                        "description": mvar.doc_list,
+                        "type": mvar.vartype
+                    }
+
+                    # Now, check if the value is a dictionary (nested structure)
+                    self.recursive_check(key, value, module, mvar, module_json["variables"][key])
+
+                # Add the module JSON to the procedure's module list
+                procedure_json["modules_used"].append(module_json)
+
+            # If the key was not found in any module, add it to the missing_variables list
+            if not key_found:
+                procedure_json["missing_variables"].append({
+                    "variable": key,
+                    "status": "Not Found"
+                })
+
+            # Add the procedure JSON to the overall list (in self.procedures_json)
+            procedures.json.append(procedure_json)
+
+        print("Procedures JSON data generated.")
+
+
+    def recursive_check(self, key, value, module, mvar, json_data):
+        """Recursive function to check for nested keys and values and add them to the JSON structure."""
+        # If the value is a dictionary, process it recursively
+        if isinstance(value, dict):
+            nested_data = {}
+            if value:  # Only iterate if the dictionary has content
+                for k, v in value.items():
+                    # Add this nested key-value to the nested_data
+                    nested_data[k] = {}
+                    # Recursively call the function for the nested key-value pair
+                    self.recursive_check(k, v, module, mvar, nested_data[k])
+            else:
+                nested_data["description"] = mvar.doc_list
+                nested_data["type"] = mvar.vartype
+
+            json_data[key] = nested_data  # Store the processed nested data for the key
+
+        else:
+            # If it's not a dictionary, process the value (i.e., leaf node)
+            json_data[key] = {
+                "description": mvar.doc_list,
+                "type": mvar.vartype,
+                "value": value
+            }
     def xcross_walk_type_dicts(self, procedures):
+        """Compare two nested dictionaries representing types and variables."""
+        # Iterate over the keys in type_results (assuming it's a dictionary-like structure)
+        for key, value in procedures.type_results.items():
+            print(f"Checking for key: {key},  {value}")
+
+            # Loop through all the modules in procedures.uses
+            for module in procedures.uses:
+                # Create a dictionary mapping variable names to their corresponding mvar objects
+                module_vars_dict = {mvar.name: mvar for mvar in module.variables}  # Dictionary of mvar.name -> mvar
+
+                # Create a set for fast membership testing (O(1) lookup)
+                module_vars_set = set(module_vars_dict.keys())
+
+                # Check if the key exists in the set of variable names
+                if key in module_vars_set:
+                    # Retrieve the mvar object using the dictionary
+                    mvar = module_vars_dict[key]
+
+                    # Access metadata from the mvar object
+                    print(f"Found variable {key} in module {module.name}")
+                    print(f"Description: {mvar.doc_list}, Type: {mvar.vartype}")
+
+                    # Now, check if the key has a nested dictionary (only for relevant values)
+                    if isinstance(value, dict):
+                        print(f"Found nested dictionary for key: {key}")
+
+                        # Check if the dictionary is not empty
+                        if value:  # Only iterate if the dictionary has content
+                            for k, v in value.items():
+                                print(f"Checking for nested key: {k}, value: {v}")
+
+                                # Check if the nested key exists in the mvar.proto (proto-type's variables)
+                                if isinstance(mvar.proto, list):
+                                    # Iterate over the FortranType objects in mvar.proto
+                                    for proto in mvar.proto:
+                                        # Create a dictionary mapping variable names to their corresponding proto variables
+                                        proto_vars_dict = {proto_var.name: proto_var for proto_var in proto}
+                                        proto_vars_set = set(proto_vars_dict.keys())
+
+                                        if k in proto_vars_set:
+                                            proto_var = proto_vars_dict[k]
+                                            print(f"Found variable {k} in proto module {proto.name}")
+                                            print(f"Description: {proto_var.doc_list}, Type: {proto_var.vartype}")
+                                        else:
+                                            print(f"Variable {k} not found in proto variables.")
+                                else:
+                                    print(
+                                        f"Expected mvar.proto to be a list of FortranType objects, but found: {type(mvar.proto)}")
+
+                            else:
+                                print(f"The nested dictionary for key: {key} is empty.")
+                                print(f"Description: {mvar.doc_list}, Type: {mvar.vartype}")
+
+    def xxcross_walk_type_dicts(self, procedures):
         """Compare two nested dictionaries representing types and variables."""
         # Iterate over the keys in type_results (assuming it's a dictionary-like structure)
         for key, value in procedures.type_results.items():
@@ -401,10 +596,12 @@ class Project:
                         else:
                             print(f"The nested dictionary for key: {key} is empty.")
 
-    def cross_walk_type_dicts(self, procedures):
+    def xxxcross_walk_type_dicts(self, procedures):
         """Compare two nested dictionaries representing types and variables."""
-        for item in procedures.type_results:
-            for key, value in item.items():  # Iterate over each key-value pair in the dictionary
+        # Iterate over each key-value pair in procedures.type_results
+        for key, value in procedures.type_results.items():
+            # Ensure that we're dealing with a dictionary value
+            if isinstance(value, dict):
                 print(f"Checking for key: {key}, value: {value}")
 
                 # Loop through all the modules in procedures.uses
@@ -422,10 +619,13 @@ class Project:
 
                         # Check if the dictionary is not empty
                         if value:  # Only iterate if the dictionary has content
-                            for k, v in value.items():
-                                print(f"Checking for nested key: {k}, value: {v}")
+                            for nested_key, nested_value in value.items():
+                                print(f"Checking for nested key: {nested_key}, value: {nested_value}")
                         else:
                             print(f"The nested dictionary for key: {key} is empty.")
+                            print (f"Module variables: {module_vars_set}")
+            else:
+                print(f"Warning: Expected a dictionary for key {key}, but found a {type(value)} instead.")
 
     @property
     def allfiles(self):
