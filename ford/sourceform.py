@@ -772,7 +772,7 @@ class FortranContainer(FortranBase):
         self.member_access_results = []  # For `%`-based member access
         self.other_results = []  # For non-member-access items
         self.type_results = {} # For type definitions
-        self.json = [] # For procedures
+        self.var_ug = {} # For procedures
 
 
         # Define a set of symbols to exclude
@@ -1151,10 +1151,7 @@ class FortranContainer(FortranBase):
             else :
                 self._member_access(line)
 
-        if match := self.MODULE_RE.match(line):
-            if hasattr(self, "modules"):
-                print('check')
-                #_module_types(module)
+
 
         if not isinstance(self, FortranSourceFile):
             raise Exception("File ended while still nested.")
@@ -2715,6 +2712,7 @@ class FortranBlockData(FortranContainer):
             self.all_vars[var.name.lower()] = var
         self.all_absinterfaces = {}
         self.all_procs = {}
+        self.all_vars_ug = {}
 
         # Add procedures and types from USED modules to our lists
         for mod, extra in self.uses:
@@ -2726,6 +2724,7 @@ class FortranBlockData(FortranContainer):
             self.all_types.update(types)
             self.all_vars.update(variables)
         self.uses = [m[0] for m in self.uses]
+        self.all_vars_ug2 = {}
 
         typelist = {}
         for dtype in self.types:

@@ -19,11 +19,13 @@ def main():
     # Correlate the project data (parses and processes the Fortran files)
     project.correlate()
 
+    project.cross_walk_type_dicts()
+
     # Extract metadata for each module in the project
-    metadata = [_module_types(module) for module in project.modules]
 
     # Write the metadata to a JSON file
     output_file = "derived_types_metadata.json"
+
     with open(output_file, "w") as json_file:
         json.dump(metadata, json_file, indent=4)
 
