@@ -26,8 +26,7 @@ def main():
     # Write the metadata to a JSON file
     output_file = "derived_types_metadata.json"
 
-    with open(output_file, "w") as json_file:
-        json.dump(metadata, json_file, indent=4)
+
 
     print(f"Metadata has been written to {output_file}")
 

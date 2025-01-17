@@ -330,14 +330,17 @@ class Project:
 
         return type_set
 
+
+
     def build_stype_dictionary(self, subroutine):
         """
-        Builds a nested type dictionary from a list of variable paths.
+        Builds a nested dictionary representing types and their attributes from a list of variable paths,
+        without creating empty dictionaries.
 
         Parameters
         ----------
         subroutine : object
-            An object containing `member_access_results` and `type_results`.
+            An object containing `member_access_results` (a list of variable paths) and `type_results` (a list to be updated).
 
         Updates
         -------
@@ -351,15 +354,24 @@ class Project:
         """
         type_dict = {}
 
+        # Check if member_access_results is a valid list
+        if not isinstance(subroutine.member_access_results, list):
+            raise TypeError("Expected 'member_access_results' to be a list.")
+
         for var in subroutine.member_access_results:
-            parts = var.split('%')  # Split by '%'
+            parts = var.split('%')  # Split by '%' to get nested type parts
             current = type_dict
 
             for part in parts:
-                current = current.setdefault(part, {})  # Use setdefault to create missing parts
+                # Skip empty parts to avoid creating unnecessary empty dictionaries
+                if part:
+                    current = current.setdefault(part, {})
 
-        # Update subroutine.type_results with the final dictionary
+        # Update the subroutine with the final type dictionary
         subroutine.type_results = type_dict
+
+        return type_dict  # Optional, if you want to return the dictionary
+
 
     def build_mtype_dictionary (self, module):
         """
@@ -420,36 +432,37 @@ class Project:
 
                 for key, value in procedure.type_results.items():
                     if key in procedure.all_vars:
+                        print (f"$$$$ {key} Found in all_vars")
                         mvar = procedure.all_vars[key]
                         procedure.var_ug[mvar.name] = mvar
 
                         # Recursively check for nested structures (if needed)
-                        if value and isinstance(value, dict) and bool(value):
+                        if value:
                             self.recursive_check(key, value, procedure.var_ug)
                         else:
-                            procedure.var_ug[key].proto = None
+                            print (f"$$$$ {key} No nested structure")
+                            self.recursive_check(key, value, procedure.var_ug)
                     else:
-                        print(f"{key} Not Found in all_vars")
+                        print(f" $$$$ {key} Not Found in all_vars")
                         # add missing variables to the procedure_json DICT
-                        procedure.var_ug[key] = None
+                        #procedure.var_ug[key] = None
 
             else:
                 print(f"Skipping procedure {procedure.name} because it has a module.")
 
     def recursive_check(self, key, value, var_ug):
         """Recursive function to check for nested keys and values and add them to the JSON structure."""
+        print("dafuq")
+        print(f"Checking if {key} is in 1proto variables...")
+        print(f"Checking if {value} is in 1proto variables...")
         new_v = []
-
-
-
         # Handle the case when json is a dictionary
         if isinstance(var_ug, dict) and key in var_ug:
             for nested_key, nested_values in value.items():
                 print(f"Checking if {nested_key} is in proto variables...")
                 # Assuming proto is a list with the first element being the correct object
-                proto_vars_dict = {pvar.name: pvar for pvar in var_ug[key].proto[0].variables}
+                proto_vars_dict = {pvar.name: pvar for pvar in var_ug[key].proto[0].variables if hasattr(pvar, 'name')}
                 pvar = var_ug[key]  # Assuming pvar is json[key]
-
                 self.recursive_check2(nested_key, nested_values, pvar, proto_vars_dict, new_v)
             var_ug[key].proto[0].variables = new_v
 
@@ -457,7 +470,7 @@ class Project:
         else:
             for nested_key, nested_values in value.items():
                 print(f"Checking if {nested_key} is in proto variables...")
-                proto_vars_dict = {pvar.name: pvar for pvar in var_ug.proto[0].variables}
+                proto_vars_dict = {pvar.name: pvar for pvar in var_ug.proto[0].variables if hasattr(pvar, 'name')}
                 pvar = var_ug  # Assuming pvar is json
                 self.recursive_check2(nested_key, nested_values, pvar, proto_vars_dict, new_v)
             var_ug.proto[0].variables = new_v
