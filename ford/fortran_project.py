@@ -438,31 +438,31 @@ class Project:
 
                         # Recursively check for nested structures (if needed)
                         if value:
-                            self.recursive_check(key, value, procedure.var_ug)
+                            self.recursive_check(key, value, procedure.var_ug, mvar)
                         else:
                             print (f"$$$$ {key} No nested structure")
-                            self.recursive_check(key, value, procedure.var_ug)
+                            #self.recursive_check(key, value, procedure.var_ug, mvar)
                     else:
                         print(f" $$$$ {key} Not Found in all_vars")
                         # add missing variables to the procedure_json DICT
-                        #procedure.var_ug[key] = None
+                        procedure.var_ug[key] = None
 
             else:
                 print(f"Skipping procedure {procedure.name} because it has a module.")
 
-    def recursive_check(self, key, value, var_ug):
+    def recursive_check(self, key, value, var_ug, mvar):
         """Recursive function to check for nested keys and values and add them to the JSON structure."""
         print("dafuq")
         print(f"Checking if {key} is in 1proto variables...")
         print(f"Checking if {value} is in 1proto variables...")
         new_v = []
         # Handle the case when json is a dictionary
-        if isinstance(var_ug, dict) and key in var_ug:
+        if isinstance(var_ug, dict):
             for nested_key, nested_values in value.items():
                 print(f"Checking if {nested_key} is in proto variables...")
                 # Assuming proto is a list with the first element being the correct object
-                proto_vars_dict = {pvar.name: pvar for pvar in var_ug[key].proto[0].variables if hasattr(pvar, 'name')}
-                pvar = var_ug[key]  # Assuming pvar is json[key]
+                proto_vars_dict = {pvar.name: pvar for pvar in mvar.proto[0].variables if hasattr(pvar, 'name')}
+                pvar = mvar
                 self.recursive_check2(nested_key, nested_values, pvar, proto_vars_dict, new_v)
             var_ug[key].proto[0].variables = new_v
 
@@ -470,9 +470,9 @@ class Project:
         else:
             for nested_key, nested_values in value.items():
                 print(f"Checking if {nested_key} is in proto variables...")
-                proto_vars_dict = {pvar.name: pvar for pvar in var_ug.proto[0].variables if hasattr(pvar, 'name')}
-                pvar = var_ug  # Assuming pvar is json
-                self.recursive_check2(nested_key, nested_values, pvar, proto_vars_dict, new_v)
+                proto_vars_dict = {pvar.name: pvar for pvar in mvar[0].variables if hasattr(pvar, 'name')}
+                pvar = mvar  # Assuming pvar is json
+                self.recursive_check2(nested_key, nested_values, pvar, proto_vars_dict, new_v,)
             var_ug.proto[0].variables = new_v
 
     def recursive_check2(self, k, v, var, vars_dict, new_v):
@@ -484,7 +484,7 @@ class Project:
 
             if v and isinstance(v, dict) and bool(v):
                 print(f"Recursing into {k} with value {v}")
-                self.recursive_check(k, v, var)  # Recurse into the nested values
+                self.recursive_check(k, v, vars_dict, var)  # Recurse into the nested values
             else:
                 print(f"{k} is a leaf node")
                 var.proto = None
