@@ -373,54 +373,50 @@ class Project:
         return type_dict  # Optional, if you want to return the dictionary
 
 
-    def build_mtype_dictionary (self, module):
-        """
-        Extracts metadata for variables and derived types in the module and returns it as a nested dictionary.
-        """
+    def buildjson (self):
 
-        # Initialize the metadata dictionary
-        type_dict = {}
+        grouped_by_type = {}
+        none_type_vars = []
 
-        # Process variables in the module:
-        for var in module.variables():
-            # Extract the derived type if it's a derived type
-            derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", var.full_type)
-            derived_type = derived_type_match.group(1) if derived_type_match else var.full_type
+        # Loop through all procedures
+        for procedure in self.procedures:
+            # If the procedure does not have a module (assuming `procedure.module` is a Boolean or exists)
+            if not getattr(procedure, 'module', False):
+                print('writing' + procedure.name)
+                for var_obj in procedure.var_ug.items():
+                    if var_obj is None:
+                        none_type_vars.append(var_name)
+                    else:
+                        # Extract the type from the FortranVariable object
+                        type_name = var_obj[1].filename
 
-            # Create nested structure for the variable type if not present
-            if derived_type not in type_dict:
-                type_dict[derived_type] = {}
+                        # Check if the type is already in the dictionary, if not, initialize an empty list
+                        if type_name not in grouped_by_type:
+                            grouped_by_type[type_name] = []
 
-            type_dict[derived_type][var_name] = {
-                "initial": var.initial,
-                "doc": var.doc_list,
+                        # Add the variable to the appropriate list
+                        grouped_by_type[type_name].append({
+                            'variable_name': var_obj[1].name,
+                            'type': var_obj[1].vartype,
+                            'doc_list': var_obj[1].doc_list
+                        })
+
+                        # check if
+
+
+            # Return grouped variables and NoneType variables
+            result = {
+                'grouped_by_type': grouped_by_type,
+                'none_type_vars': none_type_vars,
+                #'check': procedure.var_ug
             }
+            fn =  procedure.name + "_variables_metadata.json"
+            with open(fn, "w") as json_file:
+                json.dump(result, json_file, indent=4)
+            print (f"Metadata has been written to {fn}")
 
 
-        # Process derived types
-        for type_name, dtype in module.all_types.items():
-            # Create an entry for the derived type if not already present
-            if type_name not in metadata:
-                type_dict[type_name] = {}
 
-            # Iterate through variables within the derived type
-            for variable in dtype.variables:
-                derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", variable.full_type)
-                derived_type = derived_type_match.group(1) if derived_type_match else variable.full_type
-
-                # Ensure the nested dictionary structure
-                if derived_type not in type_dict:
-                    type_dict[derived_type] = {}
-
-                type_dict[derived_type][variable.name] = {
-                    "initial": getattr(variable, "initial", None),
-                    "doc": getattr(variable, "doc_list", []),
-                }
-
-
-        return type_dict
-
-    import json
 
 
     def cross_walk_type_dicts(self):

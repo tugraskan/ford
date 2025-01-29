@@ -24,7 +24,7 @@ def main():
     # Extract metadata for each module in the project
 
     # Write the metadata to a JSON file
-    output_file = "derived_types_metadata.json"
+    project.buildjson()
 
 
 
