@@ -372,8 +372,7 @@ class Project:
 
         return type_dict  # Optional, if you want to return the dictionary
 
-
-    def buildjson (self):
+    def buildjson(self):
 
         grouped_by_type = {}
         none_type_vars = []
@@ -381,50 +380,57 @@ class Project:
         # Loop through all procedures
         for procedure in self.procedures:
             # If the procedure does not have a module (assuming `procedure.module` is a Boolean or exists)
-            if not getattr(procedure, 'module', False):
-                print('writing' + procedure.name)
+            if procedure.parobj == 'sourcefile':
+
                 for var_obj in procedure.var_ug.items():
-                    if var_obj is None:
-                        none_type_vars.append(var_name)
+                    if var_obj[1] is None:
+                        none_type_vars.append(var_obj[0])  # Append the variable name, assuming var_obj[0] is the name
+
+                    # Check if 'filename' attribute exists
+                    if hasattr(var_obj[1], 'filename'):
+                        type_name = var_obj[1].filename  # Extract the filename attribute
                     else:
-                        # Extract the type from the FortranVariable object
-                        type_name = var_obj[1].filename
+                        type_name = None  # Default value if 'filename' doesn't exist
 
-                        # Check if the type is already in the dictionary, if not, initialize an empty list
-                        if type_name not in grouped_by_type:
-                            grouped_by_type[type_name] = []
+                    # Check if the type is already in the dictionary, if not, initialize an empty list
+                    if type_name not in grouped_by_type:
+                        grouped_by_type[type_name] = []
 
-                        # Add the variable to the appropriate list
-                        grouped_by_type[type_name].append({
-                            'variable_name': var_obj[1].name,
-                            'type': var_obj[1].vartype,
-                            'doc_list': var_obj[1].doc_list
-                        })
+                    # Add the variable to the appropriate list
+                    grouped_by_type[type_name].append({
+                        'variable_name': var_obj[1].name,
+                        'type': var_obj[1].vartype,
+                        'doc_list': var_obj[1].doc_list
+                    })
 
-                        # check if
+        # After processing all procedures, write the result to a file
+        result = {
+            'grouped_by_type': grouped_by_type,
+            'none_type_vars': none_type_vars,
+        }
 
-
-            # Return grouped variables and NoneType variables
-            result = {
-                'grouped_by_type': grouped_by_type,
-                'none_type_vars': none_type_vars,
-                #'check': procedure.var_ug
-            }
-            fn =  procedure.name + "_variables_metadata.json"
-            with open(fn, "w") as json_file:
-                json.dump(result, json_file, indent=4)
-            print (f"Metadata has been written to {fn}")
+        fn = "variables_metadata.json"  # You can change this to dynamically generate the filename if needed
+        with open(fn, "w") as json_file:
+            json.dump(result, json_file, indent=4)
+        print(f"Metadata has been written to {fn}")
 
 
-
+    def get_procedures(self):
+        procedures = []
+        for procedure in self.procedures:
+            # If the procedure does not have a module (assuming `procedure.module` is a Boolean or exists)
+            print('!!!! ' + procedure.name)
+            if procedure.parobj == 'sourcefile' :
+                procedures.append(procedure)
+        return procedures
 
 
     def cross_walk_type_dicts(self):
         """Main function to crosswalk type_results and all_vars to generate JSON output."""
         for procedure in self.procedures:
             # If the procedure does not have a module (assuming `procedure.module` is a Boolean or exists)
-            if not getattr(procedure, 'module', False):
-                print('*****' + procedure.name)
+            print('!!!! ' + procedure.name)
+            if procedure.parobj == 'sourcefile' :
 
                 for key, value in procedure.type_results.items():
                     if key in procedure.all_vars:
@@ -434,59 +440,283 @@ class Project:
 
                         # Recursively check for nested structures (if needed)
                         if value:
+                            print (f"$$$$ {key} nested structure")
                             self.recursive_check(key, value, procedure.var_ug, mvar)
                         else:
                             print (f"$$$$ {key} No nested structure")
-                            #self.recursive_check(key, value, procedure.var_ug, mvar)
+                            if procedure.var_ug[key].proto is not None:  # Check if .proto is not None
+                                procedure.var_ug[key].proto[0].variables = None  # Set variables to None if proto exists
                     else:
                         print(f" $$$$ {key} Not Found in all_vars")
                         # add missing variables to the procedure_json DICT
                         procedure.var_ug[key] = None
-
             else:
                 print(f"Skipping procedure {procedure.name} because it has a module.")
+            print("wowza")
+
 
     def recursive_check(self, key, value, var_ug, mvar):
         """Recursive function to check for nested keys and values and add them to the JSON structure."""
+
+
         print("dafuq")
-        print(f"Checking if {key} is in 1proto variables...")
-        print(f"Checking if {value} is in 1proto variables...")
+        print(f"Checking if {key} is in proto variables...")
+        print(f"Checking if {value} is in proto variables...")
         new_v = []
         # Handle the case when json is a dictionary
         if isinstance(var_ug, dict):
             for nested_key, nested_values in value.items():
-                print(f"Checking if {nested_key} is in proto variables...")
-                # Assuming proto is a list with the first element being the correct object
-                proto_vars_dict = {pvar.name: pvar for pvar in mvar.proto[0].variables if hasattr(pvar, 'name')}
-                pvar = mvar
-                self.recursive_check2(nested_key, nested_values, pvar, proto_vars_dict, new_v)
-            var_ug[key].proto[0].variables = new_v
+                print(f"NESTED DICT Checking if {nested_key} is in proto variables...")
+                # Initialize proto_vars_dict by checking for variables with a 'name' attribute
+                proto_vars_dict = {}
+                # check if pvar is none
+                if mvar.proto[0].variables is None:
+                    print(f"fail")
+                else:
+                    for pvar in mvar.proto[0].variables:
+                        print(f"debug")
+                        if hasattr(pvar, 'name'):
+                            proto_vars_dict[pvar.name] = pvar
+                        else:
+                            print (f"fail check")
 
-        # Handle the case when json is not a dictionary (assuming it's a class or object with a proto attribute)
+                    # Start processing the key and check if it exists in the proto_vars_dict
+                    if nested_key in proto_vars_dict:
+                        print(f"$$$$ {nested_key} Found in pvar")
+
+                        # Retrieve the pvar corresponding to the nested_key
+                        pvar = proto_vars_dict[nested_key]
+                        new_v.append(pvar)
+
+                        # Check if there are nested values and recursively process
+                        if nested_values:
+                            print(f"$$$$ {nested_key} has nested structure, checking recursively")
+                            self.recursive_check2(nested_key, nested_values, proto_vars_dict, pvar)
+                        else:
+                            # If no nested values, set the proto attribute of pvar to None
+                            print(f"$$$$ {nested_key} has no nested values, setting pvar.proto to None")
+                            pvar.proto = None
+                    else:
+                        # If nested_key is not found in proto_vars_dict
+                        print(f"$$$$ {nested_key} Not Found in pvar")
+                        proto_vars_dict[nested_key] = None
+
+                # Update var_ug[key].proto[0].variables with new_v (processed values)
+                var_ug[key].proto[0].variables = new_v
+
+
+            #the case when json is not a dictionary (assuming it's a class or object with a proto attribute)
         else:
             for nested_key, nested_values in value.items():
-                print(f"Checking if {nested_key} is in proto variables...")
-                proto_vars_dict = {pvar.name: pvar for pvar in mvar[0].variables if hasattr(pvar, 'name')}
-                pvar = mvar  # Assuming pvar is json
-                self.recursive_check2(nested_key, nested_values, pvar, proto_vars_dict, new_v,)
-            var_ug.proto[0].variables = new_v
+                print(f"##NESTED TYPEChecking if {nested_key} is in proto variables...")
+                # Initialize proto_vars_dict by iterating over variables and filtering those with a 'name' attribute
+                proto_vars_dict = {}
+                for pvar in mvar[0].variables:
+                    if hasattr(pvar, 'name'):
+                        proto_vars_dict[pvar.name] = pvar
+                        # Debug output to see what variables are being added
+                        print(f"Added {pvar.name} to proto_vars_dict with value: {pvar}")
 
-    def recursive_check2(self, k, v, var, vars_dict, new_v):
-        """Helper function to handle nested keys and process them."""
-        if k in vars_dict:
-            print(f"Keeping {k}")
-            var = vars_dict[k]
-            new_v.append(var)
+                # Check if nested_key exists in proto_vars_dict
+                if nested_key in proto_vars_dict:
+                    print(f"$$$$ {nested_key} Found in proto_vars_dict")
 
-            if v and isinstance(v, dict) and bool(v):
-                print(f"Recursing into {k} with value {v}")
-                self.recursive_check(k, v, vars_dict, var)  # Recurse into the nested values
-            else:
-                print(f"{k} is a leaf node")
-                var.proto = None
+                    # Retrieve pvar associated with the nested_key
+                    pvar = proto_vars_dict[nested_key]
+                    new_v.append(pvar)
+                    print(f"Added {nested_key} to new_v")
+
+                    # Check for nested values and recursively call the method if they exist
+                    if nested_values:
+                        print(f"$$$$ {nested_key} has nested structure, recursively checking")
+                        self.recursive_check(nested_key, nested_values, proto_vars_dict, pvar)
+                    else:
+                        # If no nested values, set pvar.proto to None
+                        print(f"$$$$ {nested_key} has no nested values, setting pvar.proto to None")
+                        pvar.proto = None
+                else:
+                    # If nested_key is not found in proto_vars_dict
+                    print(f"$$$$ {nested_key} Not Found in proto_vars_dict")
+                    proto_vars_dict[nested_key] = None
+
+                # Update var_ug[key].proto[0].variables with the new_v list
+                var_ug[key].proto[0].variables = new_v
+                print(f"Updated var_ug[{key}].proto[0].variables with new_v")
+
+    def recursive_check2(self, key, value, var_ug, mvar):
+        """Recursive function to check for nested keys and values and add them to the JSON structure."""
+
+
+        print("dafuq")
+        print(f"Checking if {key} is in proto variables...")
+        print(f"Checking if {value} is in proto variables...")
+        new_v = []
+        # Handle the case when json is a dictionary
+        if isinstance(var_ug, dict):
+            for nested_key, nested_values in value.items():
+                print(f"NESTED DICT Checking if {nested_key} is in proto variables...")
+                # Initialize proto_vars_dict by checking for variables with a 'name' attribute
+                proto_vars_dict = {}
+                # check if pvar is none
+                if mvar.proto[0].variables is None:
+                    print(f"fail")
+                else:
+                    for pvar in mvar.proto[0].variables:
+                        print(f"debug")
+                        if hasattr(pvar, 'name'):
+                            proto_vars_dict[pvar.name] = pvar
+                        else:
+                            print (f"fail check")
+
+                    # Start processing the key and check if it exists in the proto_vars_dict
+                    if nested_key in proto_vars_dict:
+                        print(f"$$$$ {nested_key} Found in pvar")
+
+                        # Retrieve the pvar corresponding to the nested_key
+                        pvar = proto_vars_dict[nested_key]
+                        new_v.append(pvar)
+
+                        # Check if there are nested values and recursively process
+                        if nested_values:
+                            print(f"$$$$ {nested_key} has nested structure, checking recursively")
+                            self.recursive_check(nested_key, nested_values, proto_vars_dict, pvar)
+                        else:
+                            # If no nested values, set the proto attribute of pvar to None
+                            print(f"$$$$ {nested_key} has no nested values, setting pvar.proto to None")
+                            pvar.proto = None
+                    else:
+                        # If nested_key is not found in proto_vars_dict
+                        print(f"$$$$ {nested_key} Not Found in pvar")
+                        proto_vars_dict[nested_key] = None
+
+                # Update var_ug[key].proto[0].variables with new_v (processed values)
+                var_ug[key].proto[0].variables = new_v
+
+
+            #the case when json is not a dictionary (assuming it's a class or object with a proto attribute)
         else:
-            print(f"{k} Not Found in proto_vars")
-            new_v.append(k)
+            for nested_key, nested_values in value.items():
+                print(f"##NESTED TYPEChecking if {nested_key} is in proto variables...")
+                # Initialize proto_vars_dict by iterating over variables and filtering those with a 'name' attribute
+                proto_vars_dict = {}
+                for pvar in mvar[0].variables:
+                    if hasattr(pvar, 'name'):
+                        proto_vars_dict[pvar.name] = pvar
+                        # Debug output to see what variables are being added
+                        print(f"Added {pvar.name} to proto_vars_dict with value: {pvar}")
+
+                # Check if nested_key exists in proto_vars_dict
+                if nested_key in proto_vars_dict:
+                    print(f"$$$$ {nested_key} Found in proto_vars_dict")
+
+                    # Retrieve pvar associated with the nested_key
+                    pvar = proto_vars_dict[nested_key]
+                    new_v.append(pvar)
+                    print(f"Added {nested_key} to new_v")
+
+                    # Check for nested values and recursively call the method if they exist
+                    if nested_values:
+                        print(f"$$$$ {nested_key} r check 3has nested structure, recursively checking")
+                        self.recursive_check3(nested_key, nested_values, proto_vars_dict, pvar)
+                    else:
+                        # If no nested values, set pvar.proto to None
+                        print(f"$$$$ {nested_key} has no nested values, setting pvar.proto to None")
+                        pvar.proto = None
+                else:
+                    # If nested_key is not found in proto_vars_dict
+                    print(f"$$$$ {nested_key} Not Found in proto_vars_dict")
+                    proto_vars_dict[nested_key] = None
+
+                # Update var_ug[key].proto[0].variables with the new_v list
+                var_ug[key].proto[0].variables = new_v
+                print(f"Updated var_ug[{key}].proto[0].variables with new_v")
+    def recursive_check3(self, key, value, var_ug, mvar):
+        """Recursive function to check for nested keys and values and add them to the JSON structure."""
+
+
+        print("dafuq")
+        print(f"Checking if {key} is in proto variables...")
+        print(f"Checking if {value} is in proto variables...")
+        new_v = []
+        # Handle the case when json is a dictionary
+        if isinstance(var_ug, dict):
+            for nested_key, nested_values in value.items():
+                print(f"NESTED DICT Checking if {nested_key} is in proto variables...")
+                # Initialize proto_vars_dict by checking for variables with a 'name' attribute
+                proto_vars_dict = {}
+                # check if pvar is none
+                if mvar.proto[0].variables is None:
+                    print(f"fail")
+                else:
+                    for pvar in mvar.proto[0].variables:
+                        print(f"debug")
+                        if hasattr(pvar, 'name'):
+                            proto_vars_dict[pvar.name] = pvar
+                        else:
+                            print (f"fail check")
+
+                    # Start processing the key and check if it exists in the proto_vars_dict
+                    if nested_key in proto_vars_dict:
+                        print(f"$$$$ {nested_key} Found in pvar")
+
+                        # Retrieve the pvar corresponding to the nested_key
+                        pvar = proto_vars_dict[nested_key]
+                        new_v.append(pvar)
+
+                        # Check if there are nested values and recursively process
+                        if nested_values:
+                            print(f"$$$$ rcheck to deep")
+                            self.recursive_check(nested_key, nested_values, proto_vars_dict, pvar)
+                        else:
+                            # If no nested values, set the proto attribute of pvar to None
+                            print(f"$$$$ {nested_key} has no nested values, setting pvar.proto to None")
+                            pvar.proto = None
+                    else:
+                        # If nested_key is not found in proto_vars_dict
+                        print(f"$$$$ {nested_key} Not Found in pvar")
+                        proto_vars_dict[nested_key] = None
+
+                # Update var_ug[key].proto[0].variables with new_v (processed values)
+                var_ug[key].proto[0].variables = new_v
+
+
+            #the case when json is not a dictionary (assuming it's a class or object with a proto attribute)
+        else:
+            for nested_key, nested_values in value.items():
+                print(f"##NESTED TYPEChecking if {nested_key} is in proto variables...")
+                # Initialize proto_vars_dict by iterating over variables and filtering those with a 'name' attribute
+                proto_vars_dict = {}
+                for pvar in mvar[0].variables:
+                    if hasattr(pvar, 'name'):
+                        proto_vars_dict[pvar.name] = pvar
+                        # Debug output to see what variables are being added
+                        print(f"Added {pvar.name} to proto_vars_dict with value: {pvar}")
+
+                # Check if nested_key exists in proto_vars_dict
+                if nested_key in proto_vars_dict:
+                    print(f"$$$$ {nested_key} Found in proto_vars_dict")
+
+                    # Retrieve pvar associated with the nested_key
+                    pvar = proto_vars_dict[nested_key]
+                    new_v.append(pvar)
+                    print(f"Added {nested_key} to new_v")
+
+                    # Check for nested values and recursively call the method if they exist
+                    if nested_values:
+                        print(f"$$$$ {nested_key} has nested structure, recursively checking")
+                        self.recursive_check(nested_key, nested_values, proto_vars_dict, pvar)
+                    else:
+                        # If no nested values, set pvar.proto to None
+                        print(f"$$$$ {nested_key} has no nested values, setting pvar.proto to None")
+                        pvar.proto = None
+                else:
+                    # If nested_key is not found in proto_vars_dict
+                    print(f"$$$$ {nested_key} Not Found in proto_vars_dict")
+                    proto_vars_dict[nested_key] = None
+
+                # Update var_ug[key].proto[0].variables with the new_v list
+                var_ug[key].proto[0].variables = new_v
+                print(f"Updated var_ug[{key}].proto[0].variables with new_v")
 
     @property
     def allfiles(self):

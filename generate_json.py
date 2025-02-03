@@ -16,7 +16,7 @@ def main():
     # Create the project instance
     project = Project(project_settings)
 
-    # Correlate the project data (parses and processes the Fortran files)
+    # Correlate the project data (parses and processes the Fortran files)!
     project.correlate()
 
     project.cross_walk_type_dicts()
@@ -28,7 +28,7 @@ def main():
 
 
 
-    print(f"Metadata has been written to {output_file}")
+    #print(f"Metadata has been written to {output_file}")
 
 if __name__ == "__main__":
     main()
