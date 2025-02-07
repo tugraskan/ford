@@ -19,12 +19,14 @@ def main():
     # Correlate the project data (parses and processes the Fortran files)!
     project.correlate()
 
-    project.cross_walk_type_dicts()
+    procedures = project.get_procedures()
+
+    project.cross_walk_type_dicts(procedures)
 
     # Extract metadata for each module in the project
 
     # Write the metadata to a JSON file
-    project.buildjson()
+    project.buildjson(procedures)
 
 
 
