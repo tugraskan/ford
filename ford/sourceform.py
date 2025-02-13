@@ -773,6 +773,7 @@ class FortranContainer(FortranBase):
         self.other_results = []  # For non-member-access items
         self.type_results = {} # For type definitions
         self.var_ug = {} # For procedures
+        self.var_ug_na = [] # For procedures
 
 
         # Define a set of symbols to exclude
