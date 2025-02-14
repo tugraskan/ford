@@ -492,7 +492,7 @@ class Project:
                     # add missing variables to the procedure_json DICT
                     procedure.var_ug[key] = None
                     procedure.var_ug_na.append(key)
-
+!
             print("wowza")
 
 
