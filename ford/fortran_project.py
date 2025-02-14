@@ -372,8 +372,10 @@ class Project:
 
         return type_dict  # Optional, if you want to return the dictionary
 
+    import os
+    import json
+
     def buildjson(self, procedures):
-        grouped_by_type = {}
         none_type_vars = []
         print("@@@ start @@@")
 
@@ -409,6 +411,7 @@ class Project:
 
         # Loop through all procedures
         for procedure in procedures:
+            grouped_by_type = {}  # Reset the grouped_by_type for each procedure
             for var_name, var_obj in procedure.var_ug.items():
                 if var_obj is None:
                     none_type_vars.append(var_name)  # Append the variable name
@@ -427,8 +430,20 @@ class Project:
                 # Process the variable (and any nested proto variables)
                 grouped_by_type[type_name][var_name] = process_var(var_obj)
 
-        # Return the results or save to file as needed (not shown here)
-        return grouped_by_type
+            # Define the subfolder path (you can customize the subfolder name)
+            subfolder_path = 'json_output'
+
+            # Create the subfolder if it doesn't exist
+            if not os.path.exists(subfolder_path):
+                os.makedirs(subfolder_path)
+
+            # Define the output file path within the subfolder, using the procedure's name in the file name
+            output_file_path = os.path.join(subfolder_path, procedure.name + ' output.json')
+
+            # Output the JSON data to the file in the subfolder
+            with open(output_file_path, 'w') as f:
+                json.dump(grouped_by_type, f, indent=4)
+            print(f"JSON output written to {output_file_path}")
 
     def get_procedures(self):
         procedures = []
@@ -528,7 +543,7 @@ class Project:
                 print(f"Updated var_ug[{key}].proto[0].variables with new_v")
             else:
                 print(f"Warning: mvar.proto is None for {mvar.name}")
-                procedure.var_ug_na.append((nested_key, nested_values))
+                #procedure.var_ug_na.append((nested_key, nested_values))
 
     @property
     def allfiles(self):
