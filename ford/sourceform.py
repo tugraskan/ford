@@ -772,8 +772,13 @@ class FortranContainer(FortranBase):
         self.member_access_results = []  # For `%`-based member access
         self.other_results = []  # For non-member-access items
         self.type_results = {} # For type definitions
+
         self.var_ug = {} # For procedures
         self.var_ug_na = [] # For procedures
+        self.ug_flag = False # For procedures
+        self.ug_flag2 = False  # For procedures
+        self.io_lines = []
+        self.fvar = {}
 
 
         # Define a set of symbols to exclude
@@ -797,9 +802,15 @@ class FortranContainer(FortranBase):
 
         # Fortran Reserved Words
         self.fortran_reserved = {
-            "allocate", "deallocate", "open", "close", "inquire", "backspace", "file",
-            "exist", "source", "iostat", "kind", "len", "size", "allocated", "associated",
-            "null", "none", "true", "false", "read", "write", "print", "format", "unit", "rewind"
+            "allocate", "deallocate",
+             "source",  "kind", "len", "size", "allocated", "associated",
+            "null", "none", "true", "false"
+        }
+
+        #Fortran IO Words
+        self.fortran_io = {
+            "read", "write", "print", "format", "unit", "rewind", "backspace", "endfile",
+            "inquire", "open", "close", "flush", "file", "exist", "iostat"
         }
 
         # Custom Keywords
@@ -1166,6 +1177,10 @@ class FortranContainer(FortranBase):
         FortranProcedure, and FortranModuleProcedureImplementation
         """
 
+        lowered_line = line.strip().lower()
+        if lowered_line.startswith(('open', 'read', 'write')):
+            self.io_lines.append(line)
+
         if not hasattr(self, "calls"):
             raise Exception(f"Cannot add procedure calls to {self.__class__.__name__}")
 
@@ -1363,6 +1378,10 @@ class FortranCodeUnit(FortranContainer):
         def should_be_public(name: str) -> bool:
             """Is name public?"""
             return self.permission == "public" or name in self.public_list
+
+# Function to print out all_vars
+        #def print_all_vars(self):
+
 
         def filter_public(collection: dict) -> dict:
             """Return a new dict of only the public objects from collection"""
@@ -2459,6 +2478,8 @@ class FortranVariable(FortranBase):
         self.initial = initial
         self.dimension = ""
         self.visible = False
+        self.ug = False
+        self.ug2 = False
 
         indexlist = []
         indexparen = self.name.find("(")
@@ -2725,7 +2746,7 @@ class FortranBlockData(FortranContainer):
             self.all_types.update(types)
             self.all_vars.update(variables)
         self.uses = [m[0] for m in self.uses]
-        self.all_vars_ug2 = {}
+
 
         typelist = {}
         for dtype in self.types:
