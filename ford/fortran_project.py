@@ -212,7 +212,6 @@ class Project:
             self.modules.append(module)
             for routine in module.routines:
                 namelist_check(routine)
-            #self.build_mtype_dictionary(module) # is this really necessary?
 
         for submod in new_file.submodules:
             self.submodules.append(submod)
@@ -230,7 +229,7 @@ class Project:
             namelist_check(subroutine)
             self.extract_non_fortran_and_non_integers(subroutine)
             self.build_stype_dictionary(subroutine)
-            self.build_stype_set(subroutine)
+
 
         for program in new_file.programs:
             program.visible = True
@@ -275,8 +274,9 @@ class Project:
                 subroutine.fortran_reserved |
                 subroutine.fortran_custom |
                 subroutine.symbols |
-                subroutine_variable_names,
-                subroutine.fortran_io
+                subroutine.fortran_io |
+                subroutine_variable_names
+
         )
 
         # Convert `other_results` to a set for efficient processing
@@ -298,39 +298,6 @@ class Project:
                     filtered_items.add(item)
 
         return filtered_items
-
-    def build_stype_set(self, subroutine):
-        """
-        Builds a set of key-value pairs representing the types and their attributes from a list of variable paths.
-
-        Parameters
-        ----------
-        subroutine : object
-            An object containing `member_access_results` and `type_results`.
-
-        Updates
-        -------
-        subroutine.type_results : set
-            Updates the type_results attribute to hold a set of key-value pairs representing the types and their attributes.
-
-        Returns
-        -------
-        set
-            A set of key-value pairs representing the types and their attributes.
-        """
-        type_set = set()
-
-        for var in subroutine.member_access_results:
-            parts = var.split('%')  # Split by '%'
-            # Create a tuple of the split parts
-            path_tuple = tuple(parts)
-            type_set.add(path_tuple)  # Add the tuple to the set
-
-        # Update subroutine.type_results with the final set
-        subroutine.type_results2 = type_set
-
-        return type_set
-
 
 
     def build_stype_dictionary(self, subroutine):
@@ -373,78 +340,51 @@ class Project:
 
         return type_dict  # Optional, if you want to return the dictionary
 
-    import os
-    import json
+    def _clean_fvar_recursive(self, data):
+        """
+        Recursively process the data structure for JSON serialization.
 
-    def buildjson(self, procedures):
-        none_type_vars = []
-        print("@@@ start @@@")
+        Since your fvar structure already contains only simple keys (such as
+        'name', 'vartype', 'initial', 'filename', 'doc_list', and 'variables'),
+        this function recurses over dictionaries and lists and returns the same structure.
 
-        # Recursive function to handle variables and nested proto types
-        def process_var(var_obj):
-            # Check if the variable object is None
-            if var_obj is None:
-                return None
+        Parameters:
+          data: a dict, list, or primitive value.
 
-            # Prepare the variable details
-            var_details = {
-                'name': var_obj.name,
-                'type': var_obj.vartype,
-                'initial': var_obj.initial,
-                'doc': var_obj.doc_list
-            }
+        Returns:
+          data with all nested values processed.
+        """
+        if isinstance(data, dict):
+            new_data = {}
+            for key, value in data.items():
+                new_data[key] = self._clean_fvar_recursive(value)
+            return new_data
+        elif isinstance(data, list):
+            return [self._clean_fvar_recursive(item) for item in data]
+        else:
+            return data
 
-            # If the variable has a proto, process it recursively
-            if hasattr(var_obj, 'proto') and var_obj.proto:
-                var_details['proto'] = None  # Initialize as None in case there's no valid proto variable
-                if hasattr(var_obj.proto[0], 'variables') and var_obj.proto[0].variables:
-                    for proto_var in var_obj.proto[0].variables:
-                        # Recursively process the proto variable
-                        nested_var_details = process_var(proto_var)
-                        if nested_var_details:  # Only append if it's valid
-                            if var_details['proto'] is None:
-                                var_details['proto'] = []  # Ensure it's a list before appending
-                            var_details['proto'].append(nested_var_details)
-                else:
-                    var_details['proto'] = None
+    def procedures_fvar_to_json(self, procedures):
+        """
+        Iterate over the provided list of procedures, convert each procedure's fvar
+        structure (a custom nested dictionary) into a JSON string, and store that string
+        in the procedure's pjson attribute.
 
-            return var_details
+        Each procedure is expected to have a 'name' attribute and an 'fvar' attribute.
+        After processing, procedure.pjson will contain that procedure's JSON.
 
-        # Loop through all procedures
+        Parameters:
+          procedures (list): A list of procedure objects.
+        """
         for procedure in procedures:
-            grouped_by_type = {}  # Reset the grouped_by_type for each procedure
-            for var_name, var_obj in procedure.var_ug.items():
-                if var_obj is None:
-                    none_type_vars.append(var_name)  # Append the variable name
-                    continue  # Skip processing if the variable is None
+            # Process the fvar structure if available, otherwise use an empty dictionary.
+            if hasattr(procedure, 'fvar'):
+                cleaned = self._clean_fvar_recursive(procedure.fvar)
+            else:
+                cleaned = {}
 
-                # Check if 'filename' attribute exists and assign type name
-                if hasattr(var_obj, 'filename'):
-                    type_name = var_obj.filename
-                else:
-                    type_name = None
-
-                # Initialize the dictionary for this type if it doesn't exist
-                if type_name not in grouped_by_type:
-                    grouped_by_type[type_name] = {}
-
-                # Process the variable (and any nested proto variables)
-                grouped_by_type[type_name][var_name] = process_var(var_obj)
-
-            # Define the subfolder path (you can customize the subfolder name)
-            subfolder_path = 'json_output'
-
-            # Create the subfolder if it doesn't exist
-            if not os.path.exists(subfolder_path):
-                os.makedirs(subfolder_path)
-
-            # Define the output file path within the subfolder, using the procedure's name in the file name
-            output_file_path = os.path.join(subfolder_path, procedure.name + ' output.json')
-
-            # Output the JSON data to the file in the subfolder
-            with open(output_file_path, 'w') as f:
-                json.dump(grouped_by_type, f, indent=4)
-            print(f"JSON output written to {output_file_path}")
+            # Store the JSON string in the procedure's pjson attribute.
+            procedure.pjson = json.dumps(cleaned, indent=2)
 
     def get_procedures(self):
         procedures = []
@@ -461,72 +401,12 @@ class Project:
 
         return procedures   # Return the list of non-procedure variables
 
-    def xxcross_walk_type_dicts(self, procedures):
-        """Main function to crosswalk type_results and all_vars to generate JSON output."""
-        for procedure in procedures:
-
-            print('%%%% ' + procedure.name)
-            mvar_dict = {}
-            for mvar in procedure.all_vars_ug:
-                mvar_dict[mvar.name] = mvar
-
-            for key, value in procedure.type_results.items():
-                if key in procedure.all_vars_ug:
-                    print(f"$$$$ {key} Found in all_vars")
-                    mvar = procedure.all_vars_ug[key]
-                    procedure.var_ug[mvar.name] = mvar
-
-                    # Recursively check for nested structures (if needed)
-                    if value:
-                        print(f"$$$$ {key} nested structure")
-                        self.recursive_check(key, value, mvar, procedure)
-                        print('check 1')
-                        procedure.var_ug[key] = mvar
-                    else:
-                        print(f"$$$$ {key} No nested structure")
-                        if mvar.vartype == 'type':
-                            procedure.var_ug[key].proto[0].variables = None  # Set variables to None if proto exists
-                            print(f"$$$$ {key} proto set to None")
-                        else:
-                            print(f"$$$$ {key} is not a type")
-                    print('check 2')
-                else:
-                    print(f" $$$$ {key} Not Found in all_vars")
-                    # add missing variables to the procedure_json DICT
-                    procedure.var_ug[key] = None
-                    procedure.var_ug_na.append(key)
-                    print(f"$$$$ {key} added to var_ug_na")
-                print('check 3')
-            print("wowza")
-
-    def recursive_check(self, key, value, var, procedure, xvars):
-        """Recursive function to check for nested keys and values and add them to the JSON structure."""
-        var.proto[0].ug_flag = True
-        for nested_key, nested_values in value.items():
-            # Find the actual variable object matching nested_key
-            pvar = next((v for v in var.proto[0].variables if v.name == nested_key), None)
-
-            if pvar:  # If the variable exists
-                pvar.ug = True
-
-                # Recursively check for nested structures
-                if nested_values:
-                    pvar.ug2 = True
-                    self.recursive_check(nested_key, nested_values, pvar, procedure)
-                    print('check 1')
-                else:
-                    print('check 2')
-            else:
-                procedure.var_ug_na.append((nested_key, nested_values))
-                print('check 3')
-        print('wowza')
 
     def cross_walk_type_dicts(self, procedures):
         for procedure in procedures:
             print('%%%% ' + procedure.name)
             for key, value in procedure.type_results.items():
                 if key in procedure.all_vars:
-                    # Create the custom dictionary representation for the variable.
                     procedure.fvar[key] = {
                         'name': procedure.all_vars[key].name,
                         'vartype': procedure.all_vars[key].vartype,
@@ -536,12 +416,14 @@ class Project:
                         'variables': {},
                         'original': procedure.all_vars[key]
                     }
-                    # Now pass the custom representation to r_check.
                     if value:
                         print(f"$$$$ {key} nested structure")
                         self.r_check(procedure.fvar[key], value)
+                        # Remove original from the top-level branch after recursion.
+                        procedure.fvar[key].pop('original', None)
                         print('check 1')
                     else:
+                        procedure.fvar[key].pop('original', None)
                         print('check 2')
                 else:
                     procedure.var_ug_na.append(key)
@@ -552,37 +434,35 @@ class Project:
         """
         Recursive function to check nested keys/values and add them to the parent's custom representation.
 
-        Parameters:
-          parent_rep (dict): A dictionary representing the parent variable. It must include:
-                              - 'variables': a dict where nested custom representations will be added.
-                              - 'original': the original FortranVariable object.
-          value (dict): A dict whose keys represent nested variable names with further nesting as their values.
+        The custom representation is a dictionary that includes:
+          - 'name', 'vartype', 'initial', 'filename', 'doc_list', 'variables'
+          - 'original' is stored temporarily only for recursion.
+
+        After processing each branch, the 'original' key is removed.
         """
         for nested_key, nested_values in value.items():
             parent_orig = parent_rep.get('original')
             if not parent_orig:
-                print("Parent original object not found in representation; cannot continue recursion.")
+                print("Parent original object not found; cannot continue recursion.")
                 continue
 
-            # Find a FortranVariable in parent's proto[0].variables whose .name matches nested_key.
+            # Find the matching variable in parent's proto[0].variables by name.
             found_var = next(
                 (var for var in parent_orig.proto[0].variables if var.name == nested_key),
                 None
             )
 
             if found_var is not None:
-                # Create a custom dictionary representation for the nested variable.
+                # Build a custom representation for the nested variable.
                 new_rep = {
                     'name': found_var.name,
                     'vartype': found_var.vartype,
                     'initial': found_var.initial,
-                    'filename': found_var.filename,
+                    # 'filename': found_var.filename,  # If you want to include filename, uncomment it.
                     'doc_list': found_var.doc_list,
                     'variables': {},
-                    'original': found_var
+                    'original': found_var  # temporary; used only for recursion.
                 }
-
-                # Add the new representation to the parent's 'variables' dict.
                 parent_rep['variables'][nested_key] = new_rep
 
                 if nested_values:
@@ -591,6 +471,9 @@ class Project:
                     print("Nested check complete.")
                 else:
                     print(f"No further nested values for key: {nested_key}")
+
+                # Remove the 'original' key from this branch now that recursion is complete.
+                new_rep.pop('original', None)
             else:
                 print(f"Key '{nested_key}' not found in parent's proto variables by name.")
 

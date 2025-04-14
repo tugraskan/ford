@@ -775,10 +775,9 @@ class FortranContainer(FortranBase):
 
         self.var_ug = {} # For procedures
         self.var_ug_na = [] # For procedures
-        self.ug_flag = False # For procedures
-        self.ug_flag2 = False  # For procedures
         self.io_lines = []
         self.fvar = {}
+        self.pjson = {}
 
 
         # Define a set of symbols to exclude

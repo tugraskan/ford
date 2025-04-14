@@ -28,7 +28,7 @@ def main():
     # Extract metadata for each module in the project
 
     # Write the metadata to a JSON file
-    project.buildjson(procedures)
+    project.procedures_fvar_to_json(procedures)
 
 
 
