@@ -6,9 +6,10 @@ from pathlib import Path
 
 
 def main():
-    # Specify the source directory for the Fortran files
+    # Specify the source directory for the Fortran files\
+    source_dir = r'C:\Users\taci.ugraskan\source\repos\swatnet\Globals\OG'
     source_dir = r'C:\Users\taci.ugraskan\source\repos\swatnet\Globals\src'
-    #source_dir = r'C:\Users\taci.ugraskan\source\repos\swatnet\Globals\OG'
+
 
     # Create ProjectSettings with the source directory
     project_settings = ProjectSettings(src_dir=[Path(source_dir)])
@@ -21,7 +22,6 @@ def main():
 
     procedures = project.get_procedures()
 
-    #project.ncross_walk_type_dicts(procedures)
 
     project.cross_walk_type_dicts(procedures)
 
@@ -30,9 +30,9 @@ def main():
     # Write the metadata to a JSON file
     project.procedures_fvar_to_json(procedures)
 
+    project.io_xwalk(procedures)
 
-
-    #print(f"Metadata has been written to {output_file}")
+    print(f"Metadata has been written to {output_file}")
 
 if __name__ == "__main__":
     main()

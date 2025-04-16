@@ -746,6 +746,15 @@ class FortranContainer(FortranBase):
 
     NUMBER_RE = re.compile(r"^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$")
 
+    # New pattern for parsing Fortran open statements with file and recl info:
+    OPEN_FILE_RE = re.compile(
+        r'open\s*\(\s*'
+        r'(?P<unit>[^,)\s]+)\s*,'
+        r'.*?file\s*=\s*(?P<file>(?:\'[^\']*\'|[^,\)]+))'
+        r'(?:\s*,\s*recl\s*=\s*(?P<recl>\d+))?',
+        re.IGNORECASE
+    )
+
     def __init__(
         self, source, first_line, parent=None, inherited_permission="public", strings=[]
     ):
@@ -778,6 +787,8 @@ class FortranContainer(FortranBase):
         self.io_lines = []
         self.fvar = {}
         self.pjson = {}
+        self.io_open = {}
+        self.io_xwalk = {}
 
 
         # Define a set of symbols to exclude
@@ -1167,18 +1178,43 @@ class FortranContainer(FortranBase):
         if not isinstance(self, FortranSourceFile):
             raise Exception("File ended while still nested.")
 
-
-
-    def _add_procedure_calls(
-        self, line: str, associations: Associations = Associations()
-    ) -> None:
-        """Helper to register procedure calls. For FortranProgram,
-        FortranProcedure, and FortranModuleProcedureImplementation
+    def restore_strings(self, line: str, strings: list) -> str:
         """
+            Restores original string literals in a line by replacing tokens of the form "number"
+            with their corresponding entries from the provided strings list.
 
-        lowered_line = line.strip().lower()
+            Args:
+                line (str): The line containing tokenized string literals.
+                strings (list): A list of original string literals saved prior to substitution.
+
+            Returns:
+                str: The line with the original string literals restored.
+            """
+        token_pattern = re.compile(r'"(\d+)"')
+        # Use a lambda for inline replacement without defining an explicit 'repl' function.
+        return token_pattern.sub(lambda match: strings[int(match.group(1))], line)
+    def _add_procedure_calls(self, line: str, associations: Associations = Associations()) -> None:
+        # First, restore the original strings in the line.
+        restored_line = self.restore_strings(line, self.strings)
+
+        lowered_line = restored_line.strip().lower()
         if lowered_line.startswith(('open', 'read', 'write')):
-            self.io_lines.append(line)
+            self.io_lines.append(restored_line)
+        if lowered_line.startswith('open'):
+            key = lowered_line
+            if key not in self.io_open:
+                match = self.OPEN_FILE_RE.search(restored_line)
+                if match:
+                    parsed_open = {
+                        'unit': match.group('unit').strip(),
+                        'file': match.group('file').strip(),
+                        'recl': match.group('recl').strip() if match.group('recl') is not None else None,
+                        'original_line': restored_line.strip()
+                    }
+                else:
+                    parsed_open = {'original_line': restored_line.strip()}
+                self.io_open[key] = parsed_open
+
 
         if not hasattr(self, "calls"):
             raise Exception(f"Cannot add procedure calls to {self.__class__.__name__}")

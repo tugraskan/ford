@@ -386,6 +386,130 @@ class Project:
             # Store the JSON string in the procedure's pjson attribute.
             procedure.pjson = json.dumps(cleaned, indent=2)
 
+    def io_xwalk(self, procedures):
+        """
+        For each procedure in the provided list, process its io_open dictionary entries.
+        Also resolve unit variables to their numeric values using procedure.other_results
+        or procedure.all_vars if needed.
+        """
+        master_list = []
+
+        for procedure in procedures:
+            # Check if the procedure has a nonempty io_open attribute.
+            if hasattr(procedure, 'io_open') and procedure.io_open:
+                for key, open_entry in procedure.io_open.items():
+                    file_val = open_entry.get('file', '').strip()
+
+                    # ----- Distinguish literal vs. variable-based file value -----
+                    if ((file_val.startswith("'") and file_val.endswith("'")) or
+                            (file_val.startswith('"') and file_val.endswith('"'))):
+                        open_entry['file_name'] = file_val  # literal filename
+                        open_entry['is_literal'] = True
+                    else:
+                        open_entry['is_literal'] = False
+                        var_info = self._find_variable_info(procedure, file_val)
+                        if var_info:
+                            open_entry['file_name'] = var_info.get('initial', None)
+                            open_entry['var_info'] = var_info
+                        else:
+                            open_entry['file_name'] = None
+                            open_entry['var_info'] = None
+
+                        # Now extract top-level variable info to set mod and intype.
+                        parts = file_val.split('%')
+                        if parts:
+                            top_level_key = parts[0].strip()
+                            if top_level_key in procedure.fvar:
+                                top_info = procedure.fvar[top_level_key]
+                                open_entry['mod'] = top_info.get('filename', None)
+                                open_entry['intype'] = top_info.get('name', None)
+                            else:
+                                open_entry['mod'] = None
+                                open_entry['intype'] = None
+
+                    # ----- Resolve the unit number -----
+                    unit_val = open_entry.get('unit', '').strip()
+                    unit_num = None
+
+                    if unit_val.isdigit():
+                        # If the unit is already numeric, just store it as is.
+                        unit_num = unit_val
+                    else:
+                        # The unit might be a variable reference. Look in procedure.other_results.
+                        if hasattr(procedure, 'other_results') and procedure.other_results:
+                            other_list = procedure.other_results
+                            for i, token in enumerate(other_list):
+                                if token == unit_val and (i + 1) < len(other_list):
+                                    maybe_num = str(other_list[i + 1]).strip()
+                                    if maybe_num.isdigit():
+                                        # It's a digit like '1230'.
+                                        unit_num = maybe_num
+                                        break
+                                    else:
+                                        # maybe_num itself might be another variable. Check procedure.all_vars.
+                                        if (hasattr(procedure, 'all_vars') and
+                                                procedure.all_vars and
+                                                unit_val in procedure.all_vars):
+                                            var_obj = procedure.all_vars[unit_val]
+                                            # If the variable has an 'initial' value, use that as the numeric unit.
+                                            if hasattr(var_obj, 'initial') and var_obj.initial is not None:
+                                                unit_num = str(var_obj.initial).strip()
+                                            break  # we found our best match
+                    open_entry['unit_num'] = unit_num
+
+                    # ----- Build the entry for the master_list -----
+                    master_entry = {
+                        "used_in": procedure.name,
+                        "file_name": open_entry.get("file_name"),
+                        "unit": open_entry.get("unit"),
+                        "unit_num": open_entry.get("unit_num"),
+                        "recl": open_entry.get("recl"),
+                    }
+                    # For non-literal references, include module info.
+                    if not open_entry.get("is_literal", True):
+                        master_entry["mod"] = open_entry.get("mod")
+                        master_entry["intype"] = open_entry.get("intype")
+
+                    master_list.append(master_entry)
+
+        return master_list
+
+    def _find_variable_info(self, procedure, var_ref):
+        """
+        Given a Fortran variable reference (e.g., 'in_link%aqu_cha'),
+        walk through procedure.fvar to find the matching dictionary that includes keys like
+        'name', 'vartype', 'filename', 'initial', and 'doc_list'.
+
+        Returns the variable's dictionary or None if not found.
+        """
+        # If there's no fvar or it's not a dict, we can't proceed
+        if not hasattr(procedure, 'fvar') or not isinstance(procedure.fvar, dict):
+            return None
+
+        # Split the reference by '%'
+        parts = var_ref.split('%')
+        if not parts:
+            return None
+
+        # Start at the top-level fvar
+        current_dict = procedure.fvar
+        for i, part in enumerate(parts):
+            if part in current_dict:
+                # If this is not the last part, move into its 'variables' sub-dict
+                if i < len(parts) - 1:
+                    # Move inside the nested structure
+                    next_dict = current_dict[part].get('variables', None)
+                    if not next_dict:
+                        return None
+                    current_dict = next_dict
+                else:
+                    # Last part; we've found the final variable dict
+                    return current_dict[part]
+            else:
+                # No match
+                return None
+        # If we exit the loop without returning, no match was found
+        return None
     def get_procedures(self):
         procedures = []
 
