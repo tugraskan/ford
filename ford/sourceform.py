@@ -746,14 +746,12 @@ class FortranContainer(FortranBase):
 
     NUMBER_RE = re.compile(r"^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$")
 
-    # New pattern for parsing Fortran open statements with file and recl info:
-    OPEN_FILE_RE = re.compile(
-        r'open\s*\(\s*'
-        r'(?P<unit>[^,)\s]+)\s*,'
-        r'.*?file\s*=\s*(?P<file>(?:\'[^\']*\'|[^,\)]+))'
-        r'(?:\s*,\s*recl\s*=\s*(?P<recl>\d+))?',
-        re.IGNORECASE
-    )
+    UNIT_RE = re.compile(r'open\s*\(\s*(?P<unit>[^,)\s]+)', re.IGNORECASE)
+    # pull recl if present anywhere
+    RECL_RE = re.compile(r'recl\s*=\s*(\d+)', re.IGNORECASE)
+    TRIM_ADJUST_RE = re.compile(r'^(?:\s*(?:trim|adjustl))\s*\(\s*(.+)\s*\)\s*$',
+                                re.IGNORECASE)
+
 
     def __init__(
         self, source, first_line, parent=None, inherited_permission="public", strings=[]
@@ -1193,28 +1191,115 @@ class FortranContainer(FortranBase):
         token_pattern = re.compile(r'"(\d+)"')
         # Use a lambda for inline replacement without defining an explicit 'repl' function.
         return token_pattern.sub(lambda match: strings[int(match.group(1))], line)
-    def _add_procedure_calls(self, line: str, associations: Associations = Associations()) -> None:
-        # First, restore the original strings in the line.
-        restored_line = self.restore_strings(line, self.strings)
 
-        lowered_line = restored_line.strip().lower()
-        if lowered_line.startswith(('open', 'read', 'write')):
-            self.io_lines.append(restored_line)
-        if lowered_line.startswith('open'):
-            key = lowered_line
-            if key not in self.io_open:
-                match = self.OPEN_FILE_RE.search(restored_line)
-                if match:
-                    parsed_open = {
-                        'unit': match.group('unit').strip(),
-                        'file': match.group('file').strip(),
-                        'recl': match.group('recl').strip() if match.group('recl') is not None else None,
-                        'original_line': restored_line.strip()
-                    }
-                else:
-                    parsed_open = {'original_line': restored_line.strip()}
-                self.io_open[key] = parsed_open
+    def _parse_io_open(self, line: str) -> None:
+        """
+        Extracts any open/read/write I/O metadata from `line` and stores it
+        into self.io_lines and self.io_open exactly as before.
+        """
+        restored = self.restore_strings(line, self.strings)
+        low = restored.strip().lower()
 
+        # 1) Record the raw I/O line
+        if low.startswith(('open','read','write')):
+            self.io_lines.append(restored)
+
+        # 2) Handle only open(...)
+        if not low.startswith('open'):
+            return
+
+        key = low
+        if key in self.io_open:
+            return
+
+        entry = {'original_line': restored.strip()}
+
+        # — unit —
+        m_unit       = self.UNIT_RE.search(restored)
+        entry['unit'] = m_unit.group('unit').strip() if m_unit else None
+
+        # — recl —
+        m_recl        = self.RECL_RE.search(restored)
+        entry['recl'] = m_recl.group(1) if m_recl else None
+
+        # — raw_file between file= and final ')' —
+        raw_f = None
+        m_file = re.search(r'file\s*=', restored, re.IGNORECASE)
+        if m_file:
+            start = m_file.end()  # position just after the '='
+            end = restored.rfind(')')  # last closing paren of open(...)
+            raw_f = restored[start:end].strip()
+
+            # strip any trailing ", recl=..."
+            m_trail = re.search(r',\s*recl\s*=.*$', raw_f, re.IGNORECASE)
+            if m_trail:
+                raw_f = raw_f[:m_trail.start()].strip()
+
+        entry['raw_file'] = raw_f
+
+        # — z_root detection (trim(...)//…) —
+        z_root    = False
+        root_expr = None
+        file_expr = raw_f
+        if raw_f:
+            slash_idx = raw_f.lower().find('//')
+            if slash_idx != -1 and (
+                'trim(' in raw_f.lower()[:slash_idx] or
+                'adjustl(' in raw_f.lower()[:slash_idx]
+            ):
+                z_root    = True
+                left, right = raw_f.split('//',1)
+                file_expr   = right.strip()
+                inner = left.strip()
+                while (tm := self.TRIM_ADJUST_RE.match(inner)):
+                    inner = tm.group(1).strip()
+                root_expr = inner
+
+        entry.update({
+            'z_root':    z_root,
+            'root_expr': root_expr,
+            'file_expr': file_expr,
+        })
+
+        # — array indexing + top%sub normalization —
+        z_array = False
+        array_idx = None
+        top_key   = None
+        sub_key   = None
+        normalized = file_expr
+        if file_expr:
+            parts   = file_expr.split('%',1)
+            top_tok = parts[0].strip()
+            if '(' in top_tok and ')' in top_tok:
+                z_array   = True
+                array_idx = top_tok[top_tok.find('(')+1 : top_tok.find(')')]
+                top_key   = top_tok.split('(')[0].strip()
+            else:
+                top_key = top_tok
+            if len(parts) > 1:
+                sub_key    = parts[1].strip()
+                normalized = f"{top_key}%{sub_key}"
+
+        entry.update({
+            'z_array_ref':   z_array,
+            'array_index':   array_idx,
+            'top_level_key': top_key,
+            'sub_var_key':   sub_key,
+            'file':          normalized,
+        })
+
+        self.io_open[key] = entry
+    def _add_procedure_calls(
+        self, line: str, associations: Associations = Associations()
+    ) -> None:
+        """Helper to register procedure calls. For FortranProgram,
+        FortranProcedure, and FortranModuleProcedureImplementation
+        """
+
+        # ==== call the new I/O parser ====
+        self._parse_io_open(line)
+
+        # ==== then run your original, unmodified call‐chain logic ====
 
         if not hasattr(self, "calls"):
             raise Exception(f"Cannot add procedure calls to {self.__class__.__name__}")
@@ -1227,20 +1312,15 @@ class FortranContainer(FortranBase):
         # Match subcall, if present
         if match := self.SUBCALL_RE.search(_lines[0]):
             call_chains.append(match["call_chain"])
-            # No function calls on this parendepth (because theres a subcall)
+            # No function calls on this parendepth (because there's a subcall)
             parendepth += 1
             _lines = ford.utils.strip_paren(line, parendepth)
 
-
         # Match calls, and nested calls
-
-        # Check every level of parendepth
         while len(_lines) > 0:
             for subline in _lines:
-
                 # Process member access in the current subline
-                self._member_access(subline)  # Call _member_access for each subline
-
+                self._member_access(subline)
                 for match in self.CALL_RE.finditer(subline):
                     call_chains.append(match["call_chain"])
             parendepth += 1
@@ -1249,15 +1329,12 @@ class FortranContainer(FortranBase):
         # Add call chains to self.calls
         for chain_str in call_chains:
             call_chain = CALL_AND_WHITESPACE_RE.sub("", chain_str).lower().split("%")
-
             if call_chain[0] in associations:
                 call_chain[0:1] = associations[call_chain[0]]
-
             if call_chain[-1] in INTRINSICS or call_chain[-1] in (
                 call[-1] for call in self.calls
             ):
                 continue
-
             self.calls.append(call_chain)
 
     def _member_access(self, line: str) -> None:

@@ -387,92 +387,120 @@ class Project:
             procedure.pjson = json.dumps(cleaned, indent=2)
 
     def io_xwalk(self, procedures):
-        """
-        For each procedure in the provided list, process its io_open dictionary entries.
-        Also resolve unit variables to their numeric values using procedure.other_results
-        or procedure.all_vars if needed.
-        """
         master_list = []
 
-        for procedure in procedures:
-            # Check if the procedure has a nonempty io_open attribute.
-            if hasattr(procedure, 'io_open') and procedure.io_open:
-                for key, open_entry in procedure.io_open.items():
-                    file_val = open_entry.get('file', '').strip()
+        for proc in procedures:
+            if not hasattr(proc, "io_open"):
+                continue
 
-                    # ----- Distinguish literal vs. variable-based file value -----
-                    if ((file_val.startswith("'") and file_val.endswith("'")) or
-                            (file_val.startswith('"') and file_val.endswith('"'))):
-                        open_entry['file_name'] = file_val  # literal filename
-                        open_entry['is_literal'] = True
-                    else:
-                        open_entry['is_literal'] = False
-                        var_info = self._find_variable_info(procedure, file_val)
-                        if var_info:
-                            open_entry['file_name'] = var_info.get('initial', None)
-                            open_entry['var_info'] = var_info
+            for entry in proc.io_open.values():
+                original_line = entry.get("original_line")
+                unit_tok = (entry.get("unit") or "").strip()
+                recl = entry.get("recl")
+                raw_file = (entry.get("raw_file") or "").strip()
+                z_root = entry.get("z_root", False)
+                root_expr = entry.get("root_expr")
+                file_expr = entry.get("file_expr", raw_file).strip()
+                z_array = entry.get("z_array_ref", False)
+                idx = entry.get("array_index")
+                top_key = entry.get("top_level_key")
+                sub_key = entry.get("sub_var_key")
+
+                file_name = None
+                mod = None
+                intype = None
+                sub_info = None
+
+                # 1) Literal
+                if raw_file.startswith(("'", '"')) and raw_file.endswith(("'", '"')):
+                    file_name = raw_file.strip("'\"")
+
+                # 2) Root
+                elif z_root and root_expr:
+                    tkey = root_expr.split("%", 1)[0]
+                    skey = root_expr.split("%", 1)[1] if "%" in root_expr else None
+
+                    top_info = proc.fvar.get(tkey)
+                    if top_info:
+                        mod = top_info["filename"]
+                        intype = top_info["name"]
+                        if skey and skey in top_info["variables"]:
+                            sub_info = top_info["variables"][skey]
+                            file_name = sub_info["initial"]
                         else:
-                            open_entry['file_name'] = None
-                            open_entry['var_info'] = None
+                            file_name = top_info["initial"]
 
-                        # Now extract top-level variable info to set mod and intype.
-                        parts = file_val.split('%')
-                        if parts:
-                            top_level_key = parts[0].strip()
-                            if top_level_key in procedure.fvar:
-                                top_info = procedure.fvar[top_level_key]
-                                open_entry['mod'] = top_info.get('filename', None)
-                                open_entry['intype'] = top_info.get('name', None)
+                # 3) Array
+                elif z_array and top_key and sub_key:
+                    top_info = proc.fvar.get(top_key)
+                    if top_info:
+                        mod = top_info["filename"]
+                        intype = top_info["name"]
+                        sub_info = top_info["variables"].get(sub_key)
+                        if sub_info:
+                            initial = sub_info["initial"]
+                            file_name = f"{intype}({idx}){initial}"
+
+                # 4) Base
+                elif top_key and sub_key:
+                    top_info = proc.fvar.get(top_key)
+                    if top_info:
+                        mod = top_info["filename"]
+                        intype = top_info["name"]
+                        sub_info = top_info["variables"].get(sub_key)
+                        if sub_info:
+                            file_name = sub_info["initial"]
+                        else:
+                            file_name = top_info["initial"]
+
+                # ─── Now resolve unit_num & flag, for *all* branches ───
+                unit_num = None
+                unit_from_other = False
+
+                if unit_tok.isdigit():
+                    unit_num = unit_tok
+                else:
+                    or_list = getattr(proc, "other_results", []) or []
+                    for i, t in enumerate(or_list):
+                        if t == unit_tok and (i + 1) < len(or_list):
+                            unit_from_other = True
+                            nxt = str(or_list[i + 1]).strip()
+                            if nxt.isdigit():
+                                unit_num = nxt
                             else:
-                                open_entry['mod'] = None
-                                open_entry['intype'] = None
+                                var_obj = proc.all_vars.get(unit_tok)
+                                init = getattr(var_obj, "initial", None) if var_obj else None
+                                unit_num = str(init).strip() if init is not None else nxt
+                            break
 
-                    # ----- Resolve the unit number -----
-                    unit_val = open_entry.get('unit', '').strip()
-                    unit_num = None
+                entry.update({
+                    "file_name": file_name,
+                    "mod": mod,
+                    "intype": intype,
+                    "sub_var_info": sub_info,
+                    "unit_num": unit_num,
+                    "unit_from_other": unit_from_other,
+                })
 
-                    if unit_val.isdigit():
-                        # If the unit is already numeric, just store it as is.
-                        unit_num = unit_val
-                    else:
-                        # The unit might be a variable reference. Look in procedure.other_results.
-                        if hasattr(procedure, 'other_results') and procedure.other_results:
-                            other_list = procedure.other_results
-                            for i, token in enumerate(other_list):
-                                if token == unit_val and (i + 1) < len(other_list):
-                                    maybe_num = str(other_list[i + 1]).strip()
-                                    if maybe_num.isdigit():
-                                        # It's a digit like '1230'.
-                                        unit_num = maybe_num
-                                        break
-                                    else:
-                                        # maybe_num itself might be another variable. Check procedure.all_vars.
-                                        if (hasattr(procedure, 'all_vars') and
-                                                procedure.all_vars and
-                                                unit_val in procedure.all_vars):
-                                            var_obj = procedure.all_vars[unit_val]
-                                            # If the variable has an 'initial' value, use that as the numeric unit.
-                                            if hasattr(var_obj, 'initial') and var_obj.initial is not None:
-                                                unit_num = str(var_obj.initial).strip()
-                                            break  # we found our best match
-                    open_entry['unit_num'] = unit_num
+                # ─── Append exactly once per entry ───
+                master_list.append({
+                    "used_in": proc.name,
+                    "original_line": original_line,
+                    "file_name": file_name,
+                    "unit": unit_tok,
+                    "unit_num": unit_num,
+                    "unit_from_other": unit_from_other,
+                    "recl": recl,
+                    "z_root": z_root,
+                    "z_array_ref": z_array,
+                    "array_index": idx,
+                    "top_key": top_key,
+                    "sub_key": sub_key,
+                    "mod": mod,
+                    "intype": intype,
+                })
 
-                    # ----- Build the entry for the master_list -----
-                    master_entry = {
-                        "used_in": procedure.name,
-                        "file_name": open_entry.get("file_name"),
-                        "unit": open_entry.get("unit"),
-                        "unit_num": open_entry.get("unit_num"),
-                        "recl": open_entry.get("recl"),
-                    }
-                    # For non-literal references, include module info.
-                    if not open_entry.get("is_literal", True):
-                        master_entry["mod"] = open_entry.get("mod")
-                        master_entry["intype"] = open_entry.get("intype")
-
-                    master_list.append(master_entry)
-
-        return master_list
+        return json.dumps(master_list, indent=2)
 
     def _find_variable_info(self, procedure, var_ref):
         """
