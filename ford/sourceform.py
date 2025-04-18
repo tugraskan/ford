@@ -64,6 +64,51 @@ from ford._typing import PathLike
 if TYPE_CHECKING:
     from ford.fortran_project import Project
 
+class IoSession:
+    def __init__(self, unit, filename):
+        self.unit       = unit
+        self.file       = filename
+        self.operations = []  # list of (kind, raw_line)
+
+    def add(self, kind, raw):
+        self.operations.append((kind, raw))
+
+class IoTracker:
+    def __init__(self):
+        self._open_sessions = {}   # unit → IoSession
+        self.completed      = []   # list of IoSession
+
+    def start(self, unit, filename):
+        # if someone re‑opens an already open unit, close the old session
+        if unit in self._open_sessions:
+            self.completed.append(self._open_sessions.pop(unit))
+        self._open_sessions[unit] = IoSession(unit, filename)
+
+    def record(self, unit, kind, raw):
+        sess = self._open_sessions.get(unit)
+        if sess:
+            sess.add(kind, raw)
+
+    def close(self, unit):
+        sess = self._open_sessions.pop(unit, None)
+        if sess:
+            self.completed.append(sess)
+
+    def finalize(self):
+        # any units still open get auto‑closed
+        for unit, sess in list(self._open_sessions.items()):
+            self.completed.append(sess)
+        self._open_sessions.clear()
+
+    def report(self):
+        # simple text report; you could stash these sessions instead
+        for sess in self.completed:
+            print(f"Unit {sess.unit!r} → file {sess.file!r}")
+            for kind, raw in sess.operations:
+                print(f"  {kind:5s} → {raw.strip()}")
+            print()
+
+
 
 VAR_TYPE_STRING = r"^integer|real|double\s*precision|character|complex|double\s*complex|logical|type|class|procedure|enumerator"
 VARKIND_RE = re.compile(r"\((.*)\)|\*\s*(\d+|\(.*\))")
@@ -182,20 +227,7 @@ class FortranBase:
     """
 
     IS_SPOOF = False
-
-    POINTS_TO_RE = re.compile(r"\s*=>\s*", re.IGNORECASE)
-    SPLIT_RE = re.compile(r"\s*,\s*", re.IGNORECASE)
-
-    pretty_obj = {
-        "proc": "procedures",
-        "type": "derived types",
-        "sourcefile": "source files",
-        "program": "programs",
-        "module": "modules and submodules",
-        "submodule": "modules and submodules",
-        "interface": "abstract interfaces",
-        "blockdata": "block data units",
-    }
+    # … your existing class‐level regexes and mappings …
 
     def __init__(
         self,
@@ -205,6 +237,9 @@ class FortranBase:
         inherited_permission: str = "public",
         strings: Optional[List[str]] = None,
     ):
+        # start an I/O session tracker for this code unit
+        self.io_tracker = IoTracker()
+
         self.name = "unknown"
         self.visible = False
         self.permission = inherited_permission.lower()
@@ -229,9 +264,7 @@ class FortranBase:
         self.hierarchy = self._make_hierarchy()
         self.read_metadata()
 
-        # Some entities are reachable from more than one parent (for example,
-        # public procedures that are also part of a generic interface), so we
-        # need to make sure we don't convert the docstrings twice
+        # Some entities are reachable from more than one parent …
         self.source_file._to_be_markdowned.append(self)
 
         self._initialize(first_line)
@@ -746,7 +779,10 @@ class FortranContainer(FortranBase):
 
     NUMBER_RE = re.compile(r"^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$")
 
-    UNIT_RE = re.compile(r'open\s*\(\s*(?P<unit>[^,)\s]+)', re.IGNORECASE)
+    UNIT_RE = re.compile(
+        r'\b(?:open|read|write|close)\s*\(\s*(?P<unit>[^,)\s]+)',
+        re.IGNORECASE
+    )
     # pull recl if present anywhere
     RECL_RE = re.compile(r'recl\s*=\s*(\d+)', re.IGNORECASE)
     TRIM_ADJUST_RE = re.compile(r'^(?:\s*(?:trim|adjustl))\s*\(\s*(.+)\s*\)\s*$',
@@ -1194,101 +1230,47 @@ class FortranContainer(FortranBase):
 
     def _parse_io_open(self, line: str) -> None:
         """
-        Extracts any open/read/write I/O metadata from `line` and stores it
-        into self.io_lines and self.io_open exactly as before.
+        Track Fortran I/O statements by funneling them into the IoTracker.
         """
-        restored = self.restore_strings(line, self.strings)
-        low = restored.strip().lower()
+        raw = self.restore_strings(line, self.strings)
+        low = raw.strip().lower()
 
-        # 1) Record the raw I/O line
-        if low.startswith(('open','read','write')):
-            self.io_lines.append(restored)
+        # OPEN → start a new session (auto‑closing any previous on the same unit)
+        if low.startswith('open'):
+            m_unit = self.UNIT_RE.search(raw)
+            unit = m_unit.group('unit') if m_unit else None
 
-        # 2) Handle only open(...)
-        if not low.startswith('open'):
+            m_file = re.search(r'file\s*=\s*([^,)]+)', raw, re.IGNORECASE)
+            fname = m_file.group(1).strip() if m_file else None
+
+            self.io_tracker.start(unit, fname)
             return
 
-        key = low
-        if key in self.io_open:
+        # READ → record a read operation
+        if low.startswith('read'):
+            m_unit = self.UNIT_RE.search(raw)
+            unit = m_unit.group('unit') if m_unit else None
+
+            self.io_tracker.record(unit, 'read', raw)
             return
 
-        entry = {'original_line': restored.strip()}
+        # WRITE → record a write operation
+        if low.startswith('write'):
+            m_unit = self.UNIT_RE.search(raw)
+            unit = m_unit.group('unit') if m_unit else None
 
-        # — unit —
-        m_unit       = self.UNIT_RE.search(restored)
-        entry['unit'] = m_unit.group('unit').strip() if m_unit else None
+            self.io_tracker.record(unit, 'write', raw)
+            return
 
-        # — recl —
-        m_recl        = self.RECL_RE.search(restored)
-        entry['recl'] = m_recl.group(1) if m_recl else None
+        # CLOSE → record and then close the session
+        if low.startswith('close'):
+            m_unit = self.UNIT_RE.search(raw)
+            unit = m_unit.group('unit') if m_unit else None
 
-        # — raw_file between file= and final ')' —
-        raw_f = None
-        m_file = re.search(r'file\s*=', restored, re.IGNORECASE)
-        if m_file:
-            start = m_file.end()  # position just after the '='
-            end = restored.rfind(')')  # last closing paren of open(...)
-            raw_f = restored[start:end].strip()
+            self.io_tracker.record(unit, 'close', raw)
+            self.io_tracker.close(unit)
+            return
 
-            # strip any trailing ", recl=..."
-            m_trail = re.search(r',\s*recl\s*=.*$', raw_f, re.IGNORECASE)
-            if m_trail:
-                raw_f = raw_f[:m_trail.start()].strip()
-
-        entry['raw_file'] = raw_f
-
-        # — z_root detection (trim(...)//…) —
-        z_root    = False
-        root_expr = None
-        file_expr = raw_f
-        if raw_f:
-            slash_idx = raw_f.lower().find('//')
-            if slash_idx != -1 and (
-                'trim(' in raw_f.lower()[:slash_idx] or
-                'adjustl(' in raw_f.lower()[:slash_idx]
-            ):
-                z_root    = True
-                left, right = raw_f.split('//',1)
-                file_expr   = right.strip()
-                inner = left.strip()
-                while (tm := self.TRIM_ADJUST_RE.match(inner)):
-                    inner = tm.group(1).strip()
-                root_expr = inner
-
-        entry.update({
-            'z_root':    z_root,
-            'root_expr': root_expr,
-            'file_expr': file_expr,
-        })
-
-        # — array indexing + top%sub normalization —
-        z_array = False
-        array_idx = None
-        top_key   = None
-        sub_key   = None
-        normalized = file_expr
-        if file_expr:
-            parts   = file_expr.split('%',1)
-            top_tok = parts[0].strip()
-            if '(' in top_tok and ')' in top_tok:
-                z_array   = True
-                array_idx = top_tok[top_tok.find('(')+1 : top_tok.find(')')]
-                top_key   = top_tok.split('(')[0].strip()
-            else:
-                top_key = top_tok
-            if len(parts) > 1:
-                sub_key    = parts[1].strip()
-                normalized = f"{top_key}%{sub_key}"
-
-        entry.update({
-            'z_array_ref':   z_array,
-            'array_index':   array_idx,
-            'top_level_key': top_key,
-            'sub_var_key':   sub_key,
-            'file':          normalized,
-        })
-
-        self.io_open[key] = entry
     def _add_procedure_calls(
         self, line: str, associations: Associations = Associations()
     ) -> None:
@@ -1421,16 +1403,23 @@ class FortranCodeUnit(FortranContainer):
         self.public_list: List[str] = []
         self.namelists: List[FortranNamelist] = []
 
-    def _cleanup(self) -> None:
-        self.process_attribs()
-        self.all_procs = {p.name.lower(): p for p in self.routines}
-        for interface in self.interfaces:
-            if not interface.abstract:
-                self.all_procs[interface.name.lower()] = interface
-            if interface.generic:
-                for proc in interface.routines:
-                    self.all_procs[proc.name.lower()] = proc
-        self.variables = [v for v in self.variables if "external" not in v.attribs]
+    class FortranCodeUnit(FortranContainer):
+
+        def _cleanup(self) -> None:
+            # finish any half‑open sessions and emit their reports
+            self.io_tracker.finalize()
+            self.io_tracker.report()
+
+            # existing cleanup logic
+            self.process_attribs()
+            self.all_procs = {p.name.lower(): p for p in self.routines}
+            for interface in self.interfaces:
+                if not interface.abstract:
+                    self.all_procs[interface.name.lower()] = interface
+                if interface.generic:
+                    for proc in interface.routines:
+                        self.all_procs[proc.name.lower()] = proc
+            self.variables = [v for v in self.variables if "external" not in v.attribs]
 
     def correlate(self, project: Project) -> None:
         # Add procedures, interfaces and types from parent to our lists
@@ -2251,6 +2240,10 @@ class FortranType(FortranContainer):
         self.constructor: Optional[FortranSubroutine] = None
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+
         # Match parameters with variables
         for i in range(len(self.parameters)):
             for var in self.variables:
@@ -2370,17 +2363,19 @@ class FortranEnum(FortranContainer):
         self.name = ""
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+
         prev_val = -1
         for var in self.variables:
             if not var.initial:
                 var.initial = prev_val + 1
-
             initial = (
                 remove_kind_suffix(var.initial)
                 if isinstance(var.initial, str)
                 else var.initial
             )
-
             try:
                 prev_val = int(initial)
             except ValueError:
@@ -2461,6 +2456,10 @@ class FortranInterface(FortranContainer):
         self.sort_components()
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+
         if not self.abstract and self.generic:
             return
 
@@ -2837,6 +2836,9 @@ class FortranBlockData(FortranContainer):
         self.param_dict = {}
 
     def correlate(self, project):
+
+        self.io_tracker.report()
+        self.process_attribs()
         # Add procedures, interfaces and types from parent to our lists
         self.all_types = {}
         for dt in self.types:
@@ -2888,6 +2890,10 @@ class FortranBlockData(FortranContainer):
             dtype.prune()
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+
         self.process_attribs()
 
     def process_attribs(self):
@@ -2955,6 +2961,14 @@ class FortranCommon(FortranBase):
             self.other_uses = lst
 
         self.sort_components()
+
+    def _cleanup(self) -> None:
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+
+        # now apply attribute processing if needed
+        self.process_attribs()
 
 
 class FortranSpoof:

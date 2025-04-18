@@ -387,120 +387,32 @@ class Project:
             procedure.pjson = json.dumps(cleaned, indent=2)
 
     def io_xwalk(self, procedures):
-        master_list = []
+        """
+        Build a JSON cross‑walk of all I/O sessions recorded in each procedure.
+        Each session is a group of open/read/write/close calls in order.
+        """
+        sessions = []
 
         for proc in procedures:
-            if not hasattr(proc, "io_open"):
+            # skip things that never recorded any I/O
+            if not hasattr(proc, "io_tracker"):
                 continue
 
-            for entry in proc.io_open.values():
-                original_line = entry.get("original_line")
-                unit_tok = (entry.get("unit") or "").strip()
-                recl = entry.get("recl")
-                raw_file = (entry.get("raw_file") or "").strip()
-                z_root = entry.get("z_root", False)
-                root_expr = entry.get("root_expr")
-                file_expr = entry.get("file_expr", raw_file).strip()
-                z_array = entry.get("z_array_ref", False)
-                idx = entry.get("array_index")
-                top_key = entry.get("top_level_key")
-                sub_key = entry.get("sub_var_key")
+            # finalize any stragglers (if you haven't already called this)
+            proc.io_tracker.finalize()
 
-                file_name = None
-                mod = None
-                intype = None
-                sub_info = None
-
-                # 1) Literal
-                if raw_file.startswith(("'", '"')) and raw_file.endswith(("'", '"')):
-                    file_name = raw_file.strip("'\"")
-
-                # 2) Root
-                elif z_root and root_expr:
-                    tkey = root_expr.split("%", 1)[0]
-                    skey = root_expr.split("%", 1)[1] if "%" in root_expr else None
-
-                    top_info = proc.fvar.get(tkey)
-                    if top_info:
-                        mod = top_info["filename"]
-                        intype = top_info["name"]
-                        if skey and skey in top_info["variables"]:
-                            sub_info = top_info["variables"][skey]
-                            file_name = sub_info["initial"]
-                        else:
-                            file_name = top_info["initial"]
-
-                # 3) Array
-                elif z_array and top_key and sub_key:
-                    top_info = proc.fvar.get(top_key)
-                    if top_info:
-                        mod = top_info["filename"]
-                        intype = top_info["name"]
-                        sub_info = top_info["variables"].get(sub_key)
-                        if sub_info:
-                            initial = sub_info["initial"]
-                            file_name = f"{intype}({idx}){initial}"
-
-                # 4) Base
-                elif top_key and sub_key:
-                    top_info = proc.fvar.get(top_key)
-                    if top_info:
-                        mod = top_info["filename"]
-                        intype = top_info["name"]
-                        sub_info = top_info["variables"].get(sub_key)
-                        if sub_info:
-                            file_name = sub_info["initial"]
-                        else:
-                            file_name = top_info["initial"]
-
-                # ─── Now resolve unit_num & flag, for *all* branches ───
-                unit_num = None
-                unit_from_other = False
-
-                if unit_tok.isdigit():
-                    unit_num = unit_tok
-                else:
-                    or_list = getattr(proc, "other_results", []) or []
-                    for i, t in enumerate(or_list):
-                        if t == unit_tok and (i + 1) < len(or_list):
-                            unit_from_other = True
-                            nxt = str(or_list[i + 1]).strip()
-                            if nxt.isdigit():
-                                unit_num = nxt
-                            else:
-                                var_obj = proc.all_vars.get(unit_tok)
-                                init = getattr(var_obj, "initial", None) if var_obj else None
-                                unit_num = str(init).strip() if init is not None else nxt
-                            break
-
-                entry.update({
-                    "file_name": file_name,
-                    "mod": mod,
-                    "intype": intype,
-                    "sub_var_info": sub_info,
-                    "unit_num": unit_num,
-                    "unit_from_other": unit_from_other,
-                })
-
-                # ─── Append exactly once per entry ───
-                master_list.append({
+            for sess in proc.io_tracker.completed:
+                sessions.append({
                     "used_in": proc.name,
-                    "original_line": original_line,
-                    "file_name": file_name,
-                    "unit": unit_tok,
-                    "unit_num": unit_num,
-                    "unit_from_other": unit_from_other,
-                    "recl": recl,
-                    "z_root": z_root,
-                    "z_array_ref": z_array,
-                    "array_index": idx,
-                    "top_key": top_key,
-                    "sub_key": sub_key,
-                    "mod": mod,
-                    "intype": intype,
+                    "unit": sess.unit,
+                    "file": sess.file,
+                    "operations": [
+                        {"kind": kind, "raw_line": raw.strip()}
+                        for kind, raw in sess.operations
+                    ],
                 })
 
-        return json.dumps(master_list, indent=2)
+        return json.dumps(sessions, indent=2)
 
     def _find_variable_info(self, procedure, var_ref):
         """
