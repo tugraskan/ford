@@ -130,10 +130,15 @@ class MetaMarkdown(Markdown):
 
 
 class AliasPreprocessor(Preprocessor):
-    """Substitute text aliases of the form ``|foo|`` from a dictionary
-    of aliases and their replacements"""
+    r"""Substitute text aliases of the form ``|foo|`` from a dictionary
+    of aliases and their replacements.
+    The backslash ``\`` acts as an escape character, aliases of the
+    form ``\|foo|`` will not be replaced, but instead copied verbatim
+    without the preceding backslash.
+    """
 
-    ALIAS_RE = re.compile(r"\|([^ ].*?[^ ]?)\|")
+    # pattern to match alias only if not preceded by `\`
+    ALIAS_RE = re.compile(r"(?<!\\)\|([^ ].*?[^ ]?)\|")
 
     def __init__(self, md: Markdown, aliases: Dict[str, str]):
         self.aliases = aliases
@@ -149,7 +154,11 @@ class AliasPreprocessor(Preprocessor):
 
     def run(self, lines: List[str]) -> List[str]:
         for line_num, line in enumerate(lines):
-            lines[line_num] = self.ALIAS_RE.sub(self._lookup, line)
+            # replace the real aliases
+            line = self.ALIAS_RE.sub(self._lookup, line)
+            # replace the escaped aliases verbatim, without the preceding `\`
+            line = re.sub(r"\\(\|([^ ].*?[^ ]?)\|)", r"\g<1>", line)
+            lines[line_num] = line
         return lines
 
 
@@ -210,6 +219,8 @@ class FordLinkProcessor(InlineProcessor):
         name = m["name"]
 
         def find_child(context):
+            # This is allowed to fail because we might be looking for
+            # "entity" in the wrong context
             with suppress(ValueError):
                 return context.find_child(name, m["entity"])
 
@@ -220,7 +231,12 @@ class FordLinkProcessor(InlineProcessor):
                 item = find_child(parent)
 
             if m["child_name"] and item is not None:
-                item = item.find_child(m["child_name"], m["child_entity"])
+                try:
+                    # This isn't allowed to fail because the user has
+                    # given us all the information required
+                    item = item.find_child(m["child_name"], m["child_entity"])
+                except ValueError as e:
+                    raise ValueError(f"Error when parsing link '{m.group()}': {e}")
 
         if item is None:
             item = self.project.find(**m.groupdict())
@@ -248,9 +264,13 @@ class FordLinkProcessor(InlineProcessor):
             # This is really to keep mypy happy
             raise RuntimeError(f"Found item {name} but no url")
 
-        # Make sure links are relative to base url
-        full_url = self.md.base_url / item_url
-        rel_url = relpath(full_url, self.md.current_path)
+        # Make sure links are relative to base url, unless they are
+        # already absolute (because they're external)
+        if item_url.startswith("http"):
+            rel_url = item_url
+        else:
+            full_url = self.md.base_url / item_url
+            rel_url = relpath(full_url, self.md.current_path)
         link.attrib["href"] = str(rel_url)
         link.text = item.name
         return link
