@@ -65,6 +65,122 @@ if TYPE_CHECKING:
     from ford.fortran_project import Project
 
 
+class IoSession:
+    def __init__(self, unit, filename):
+        self.unit       = unit
+        self.file       = filename
+        self.operations = []
+    def add(self, kind, raw):
+        self.operations.append((kind, raw))
+
+class IoTracker:
+    def __init__(self):
+        self._open_sessions = {}            # unit → IoSession
+        self.completed      = defaultdict(list)  # unit → [IoSession,…]
+        self.file_mappings  = defaultdict(set)   # filename → {unit1, unit2, ...}
+
+    def start(self, unit, filename):
+        if unit in self._open_sessions:
+            # stash the old one under its unit
+            self.completed[unit].append(self._open_sessions.pop(unit))
+        self._open_sessions[unit] = IoSession(unit, filename)
+        if filename:
+            self.file_mappings[filename].add(unit)
+
+    def record(self, unit, kind, raw):
+        sess = self._open_sessions.get(unit)
+        if sess:
+            sess.add(kind, raw)
+
+    def close(self, unit):
+        sess = self._open_sessions.pop(unit, None)
+        if sess:
+            self.completed[unit].append(sess)
+
+    def finalize(self):
+        # close out any stragglers
+        for unit, sess in list(self._open_sessions.items()):
+            self.completed[unit].append(sess)
+        self._open_sessions.clear()
+
+    def report(self):
+        # report **all** sessions, grouped by unit
+        for unit, sessions in self.completed.items():
+            for sess in sessions:
+                print(f"Unit {unit!r} → file {sess.file!r}")
+                for kind, raw in sess.operations:
+                    print(f"  {kind:5s} → {raw.strip()}")
+                print()
+            print(f"── end of all sessions for unit {unit!r} ──\n")
+
+    def aggregate(self):
+        """
+        Return a dict:
+          unit → {
+            "files":      [filename1, filename2, …],
+            "operations": [ {"kind":…, "raw_line":…}, … ]
+          }
+        """
+        agg: dict[str, dict] = {}
+        for unit, sessions in self.completed.items():
+            files = []
+            ops = []
+            for sess in sessions:
+                if sess.file not in files:
+                    files.append(sess.file)
+                for kind, raw in sess.operations:
+                    ops.append({"kind": kind, "raw_line": raw.strip()})
+            agg[unit] = {"files": files, "operations": ops}
+        return agg
+
+    def get_io_summary(self):
+        """
+        Return a summary of I/O operations suitable for documentation
+        """
+        summary = {
+            "units": {},
+            "files": {},
+            "operations": {
+                "read": 0,
+                "write": 0,
+                "open": 0,
+                "close": 0
+            }
+        }
+
+        # Count operations by type
+        for unit, sessions in self.completed.items():
+            unit_ops = {"read": 0, "write": 0, "open": 0, "close": 0}
+            unit_files = set()
+
+            for sess in sessions:
+                if sess.file:
+                    unit_files.add(sess.file)
+
+                for kind, _ in sess.operations:
+                    unit_ops[kind] += 1
+                    summary["operations"][kind] += 1
+
+            summary["units"][unit] = {
+                "files": list(unit_files),
+                "operations": unit_ops,
+                "total_operations": sum(unit_ops.values())
+            }
+
+        # Summarize files
+        for filename, units in self.file_mappings.items():
+            if not filename:
+                continue
+
+            summary["files"][filename] = {
+                "units": list(units),
+                "unit_count": len(units)
+            }
+
+        return summary
+
+
+
 VAR_TYPE_STRING = r"^integer|real|double\s*precision|character|complex|double\s*complex|logical|type|class|procedure|enumerator"
 VARKIND_RE = re.compile(r"\((.*)\)|\*\s*(\d+|\(.*\))")
 KIND_RE = re.compile(r"kind\s*=\s*([^,\s]+)", re.IGNORECASE)
@@ -182,20 +298,7 @@ class FortranBase:
     """
 
     IS_SPOOF = False
-
-    POINTS_TO_RE = re.compile(r"\s*=>\s*", re.IGNORECASE)
-    SPLIT_RE = re.compile(r"\s*,\s*", re.IGNORECASE)
-
-    pretty_obj = {
-        "proc": "procedures",
-        "type": "derived types",
-        "sourcefile": "source files",
-        "program": "programs",
-        "module": "modules and submodules",
-        "submodule": "modules and submodules",
-        "interface": "abstract interfaces",
-        "blockdata": "block data units",
-    }
+    # … your existing class‐level regexes and mappings …
 
     def __init__(
         self,
@@ -205,6 +308,9 @@ class FortranBase:
         inherited_permission: str = "public",
         strings: Optional[List[str]] = None,
     ):
+        # start an I/O session tracker for this code unit
+        self.io_tracker = IoTracker()
+
         self.name = "unknown"
         self.visible = False
         self.permission = inherited_permission.lower()
@@ -229,9 +335,7 @@ class FortranBase:
         self.hierarchy = self._make_hierarchy()
         self.read_metadata()
 
-        # Some entities are reachable from more than one parent (for example,
-        # public procedures that are also part of a generic interface), so we
-        # need to make sure we don't convert the docstrings twice
+        # Some entities are reachable from more than one parent …
         self.source_file._to_be_markdowned.append(self)
 
         self._initialize(first_line)
@@ -469,6 +573,29 @@ class FortranBase:
                     warn(
                         f"Could not extract source code for {self.obj} '{self.name}' in file '{self.filename}'"
                     )
+        # Add I/O information to metadata if available
+        if hasattr(self, 'io_tracker') and isinstance(self, (FortranProcedure, FortranProgram, FortranModule)):
+            io_summary = self.io_tracker.get_io_summary()
+            if io_summary["operations"]["total"] > 0:
+                self.meta.io_summary = io_summary
+
+                # Generate I/O documentation section
+                if io_summary["files"]:
+                    io_doc = "<h3>File I/O</h3><ul>"
+                    for filename, file_info in io_summary["files"].items():
+                        io_doc += f"<li><strong>{filename}</strong>: accessed via {len(file_info['units'])} unit(s)</li>"
+                    io_doc += "</ul>"
+
+                    if io_summary["operations"]["read"] > 0 or io_summary["operations"]["write"] > 0:
+                        io_doc += "<h4>I/O Operations</h4><ul>"
+                        if io_summary["operations"]["read"] > 0:
+                            io_doc += f"<li>Read operations: {io_summary['operations']['read']}</li>"
+                        if io_summary["operations"]["write"] > 0:
+                            io_doc += f"<li>Write operations: {io_summary['operations']['write']}</li>"
+                        io_doc += "</ul>"
+
+                    # Append to documentation
+                    self.doc += io_doc
 
     def sort_components(self) -> None:
         """Sorts components using the method specified in the object
@@ -729,6 +856,35 @@ class FortranContainer(FortranBase):
     NAMELIST_RE = re.compile(
         r"namelist\s*/(?P<name>\w+)/\s*(?P<vars>(?:\w+,?\s*)+)", re.IGNORECASE
     )
+    ASSIGNMENT_RE = re.compile(
+        r"^\s*(?P<lhs>(?:\w+%)*\w+)\s*=\s*(?P<rhs>.+)$",
+        re.IGNORECASE | re.VERBOSE,
+    )
+
+    IO_VAR_STATEMENT_RE = re.compile(
+        r"""^\s*
+            (?P<io_stmt>inquire|open|write)            # Fortran I/O statement
+            \s*\(                                      # Opening parenthesis
+            (?P<arguments>.*?)\)                       # Arguments inside parentheses
+            \s*$
+        """,
+        re.IGNORECASE | re.VERBOSE,
+    )
+
+    MEMBER_ACCESS_RE = re.compile(
+        r"\w+(?:\(\))?(?:%\w+(?:\(\))?)+",  # Match items containing % explicitly
+        re.IGNORECASE,
+    )
+
+    NUMBER_RE = re.compile(r"^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$")
+
+    IO_UNIT_RE = re.compile(r'\(\s*(?P<unit>[^,)\s]+)\s*,')
+
+    # pull recl if present anywhere
+    RECL_RE = re.compile(r'recl\s*=\s*(\d+)', re.IGNORECASE)
+    TRIM_ADJUST_RE = re.compile(r'^(?:\s*(?:trim|adjustl))\s*\(\s*(.+)\s*\)\s*$',
+                                re.IGNORECASE)
+
 
     def __init__(
         self, source, first_line, parent=None, inherited_permission="public", strings=[]
@@ -750,6 +906,59 @@ class FortranContainer(FortranBase):
         self.VARIABLE_RE = re.compile(
             self.VARIABLE_STRING.format(typestr), re.IGNORECASE
         )
+
+        # Initialize the new attribute to store variable assignments
+
+        self.member_access_results = []  # For `%`-based member access
+        self.other_results = []  # For non-member-access items
+        self.type_results = {} # For type definitions
+
+        self.var_ug = {} # For procedures
+        self.var_ug_na = [] # For procedures
+        self.io_lines = []
+        self.fvar = {}
+        self.pjson = {}
+        self.io_open = {}
+        self.io_xwalk = {}
+
+
+        # Define a set of symbols to exclude
+        self.symbols = {"*", "<", ">", "=", ":", ".", ",","/","-","+", '**'}
+        # Fortran Control Structures
+        self.fortran_control = {
+            "if", "then", "do", "select", "case", "end", "cycle", "stop", "continue", "goto", "else",
+            "implicit", "call", "return", "exit", "enddo", "endif", 'while', 'elseif'
+        }
+
+        # Fortran Operators
+        self.fortran_operators = {
+            ".or.", ".and.", ".not.", "=", "<", ">", "0:0"
+        }
+
+        # Fortran Intrinsic Functions
+        self.fortran_intrinsics = {
+            "abs", "acos", "asin", "atan", "exp", "log", "log10", "mod", "sin", "cos",
+            "tan", "sqrt", "min", "max", "amin1", "amax1", "Sqrt", "alog", "alog10"
+        }
+
+        # Fortran Reserved Words
+        self.fortran_reserved = {
+            "allocate", "deallocate",
+             "source",  "kind", "len", "size", "allocated", "associated",
+            "null", "none", "true", "false"
+        }
+
+        #Fortran IO Words
+        self.fortran_io = {
+            "read", "write", "print", "format", "unit", "rewind", "backspace", "endfile",
+            "inquire", "open", "close", "flush", "file", "exist", "iostat"
+        }
+
+        # Custom Keywords
+        self.fortran_custom = {
+            "-Theta", "Theta", "Max", "Min", "Exp", "float", "int"
+        }
+
 
         # This is a little bit confusing, because `permission` here is sort of
         # overloaded for "permission for this entity", and "permission for child
@@ -1092,8 +1301,89 @@ class FortranContainer(FortranBase):
 
                 self._add_procedure_calls(line, associations)
 
+            else :
+                self._member_access(line)
+
+
+
         if not isinstance(self, FortranSourceFile):
             raise Exception("File ended while still nested.")
+
+    def restore_strings(self, line: str, strings: list) -> str:
+        """
+            Restores original string literals in a line by replacing tokens of the form "number"
+            with their corresponding entries from the provided strings list.
+
+            Args:
+                line (str): The line containing tokenized string literals.
+                strings (list): A list of original string literals saved prior to substitution.
+
+            Returns:
+                str: The line with the original string literals restored.
+            """
+        token_pattern = re.compile(r'"(\d+)"')
+        # Use a lambda for inline replacement without defining an explicit 'repl' function.
+        return token_pattern.sub(lambda match: strings[int(match.group(1))], line)
+
+    def _parse_io_open(self, line: str) -> None:
+        """Parse I/O operations and track them in the io_tracker"""
+        raw = self.restore_strings(line, self.strings)
+        low = raw.strip().lower()
+
+        if low.startswith('open'):
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+
+            # Extract file name
+            mf = re.search(r'file\s*=\s*([^,)]+)', raw, re.IGNORECASE)
+            fname = mf.group(1).strip() if mf else None
+
+            # Extract record length if present
+            recl = None
+            mr = self.RECL_RE.search(raw)
+            if mr:
+                recl = mr.group(1)
+
+            # Start tracking this I/O session
+            self.io_tracker.start(unit, fname)
+
+            # Record additional metadata
+            if recl:
+                self.io_tracker.record(unit, "meta", f"Record length: {recl}")
+
+            self.io_tracker.record(unit, "open", raw)
+            return
+
+        if low.startswith('read'):
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+
+            # Try to extract format information
+            fmt = re.search(r'fmt\s*=\s*([^,)]+)', raw, re.IGNORECASE)
+            if fmt:
+                self.io_tracker.record(unit, "meta", f"Format: {fmt.group(1).strip()}")
+
+            self.io_tracker.record(unit, "read", raw)
+            return
+
+        if low.startswith('write'):
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+
+            # Try to extract format information
+            fmt = re.search(r'fmt\s*=\s*([^,)]+)', raw, re.IGNORECASE)
+            if fmt:
+                self.io_tracker.record(unit, "meta", f"Format: {fmt.group(1).strip()}")
+
+            self.io_tracker.record(unit, "write", raw)
+            return
+
+        if low.startswith('close'):
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+            self.io_tracker.record(unit, "close", raw)
+            self.io_tracker.close(unit)
+            return
 
     def _add_procedure_calls(
         self, line: str, associations: Associations = Associations()
@@ -1101,6 +1391,11 @@ class FortranContainer(FortranBase):
         """Helper to register procedure calls. For FortranProgram,
         FortranProcedure, and FortranModuleProcedureImplementation
         """
+
+        # ==== call the new I/O parser ====
+        self._parse_io_open(line)
+
+        # ==== then run your original, unmodified call‐chain logic ====
 
         if not hasattr(self, "calls"):
             raise Exception(f"Cannot add procedure calls to {self.__class__.__name__}")
@@ -1113,15 +1408,15 @@ class FortranContainer(FortranBase):
         # Match subcall, if present
         if match := self.SUBCALL_RE.search(_lines[0]):
             call_chains.append(match["call_chain"])
-            # No function calls on this parendepth (because theres a subcall)
+            # No function calls on this parendepth (because there's a subcall)
             parendepth += 1
             _lines = ford.utils.strip_paren(line, parendepth)
 
         # Match calls, and nested calls
-
-        # Check every level of parendepth
         while len(_lines) > 0:
             for subline in _lines:
+                # Process member access in the current subline
+                self._member_access(subline)
                 for match in self.CALL_RE.finditer(subline):
                     call_chains.append(match["call_chain"])
             parendepth += 1
@@ -1130,16 +1425,61 @@ class FortranContainer(FortranBase):
         # Add call chains to self.calls
         for chain_str in call_chains:
             call_chain = CALL_AND_WHITESPACE_RE.sub("", chain_str).lower().split("%")
-
             if call_chain[0] in associations:
                 call_chain[0:1] = associations[call_chain[0]]
-
             if call_chain[-1] in INTRINSICS or call_chain[-1] in (
                 call[-1] for call in self.calls
             ):
                 continue
-
             self.calls.append(call_chain)
+
+    def _member_access(self, line: str) -> None:
+        """
+            Processes a single line of code to extract member access patterns
+            and other unique items while avoiding duplicates.
+
+            Parameters
+            ----------
+            line : str
+                A line of code to process.
+            """
+        # Step 1: Format and clean the input line
+        # Strip whitespace and split the line into components
+        cleaned_line = line.strip()
+        all_items = re.split(r"[,\s]+", cleaned_line)
+
+        # Step 2: Remove all occurrences of `()`
+        cleaned_items = [re.sub(r"\(\)", "", item).strip() for item in all_items if item.strip()]
+
+        # Step 3: Further split items by '=' into key-value pairs
+        split_items = []
+        for item in cleaned_items:
+            if "=" in item:
+                split_items.extend(item.split("="))  # Split by '=' and keep both parts
+            else:
+                split_items.append(item)
+
+        # Step 4: Initialize sets for deduplication
+        existing_member_access = set(self.member_access_results)
+        existing_other_results = set(self.other_results)
+
+        # Step 5: Process cleaned and split items
+        for item in split_items:
+            # Remove standalone or leftover parentheses from items
+            fully_cleaned_item = re.sub(r"[()]", "", item)
+
+            # Check for `%`-based member access patterns using regex
+            if self.MEMBER_ACCESS_RE.match(fully_cleaned_item):
+                if fully_cleaned_item not in existing_member_access:
+                    self.member_access_results.append(fully_cleaned_item)
+                    existing_member_access.add(fully_cleaned_item)
+            else:
+                # Add non-member access items to other_results
+                if fully_cleaned_item not in existing_other_results:
+                    self.other_results.append(fully_cleaned_item)
+                    existing_other_results.add(fully_cleaned_item)
+
+
 
     def _cleanup(self):
         raise NotImplementedError()
@@ -1177,16 +1517,22 @@ class FortranCodeUnit(FortranContainer):
         self.public_list: List[str] = []
         self.namelists: List[FortranNamelist] = []
 
-    def _cleanup(self) -> None:
-        self.process_attribs()
-        self.all_procs = {p.name.lower(): p for p in self.routines}
-        for interface in self.interfaces:
-            if not interface.abstract:
-                self.all_procs[interface.name.lower()] = interface
-            if interface.generic:
-                for proc in interface.routines:
-                    self.all_procs[proc.name.lower()] = proc
-        self.variables = [v for v in self.variables if "external" not in v.attribs]
+    class FortranCodeUnit(FortranContainer):
+        def _cleanup(self) -> None:
+            # finalize & print all I/O for this code‐unit
+            self.io_tracker.finalize()
+            self.io_tracker.report()
+
+            # existing cleanup logic
+            self.process_attribs()
+            self.all_procs = {p.name.lower(): p for p in self.routines}
+            for interface in self.interfaces:
+                if not interface.abstract:
+                    self.all_procs[interface.name.lower()] = interface
+                if interface.generic:
+                    for proc in interface.routines:
+                        self.all_procs[proc.name.lower()] = proc
+            self.variables = [v for v in self.variables if "external" not in v.attribs]
 
     def correlate(self, project: Project) -> None:
         # Add procedures, interfaces and types from parent to our lists
@@ -1246,6 +1592,10 @@ class FortranCodeUnit(FortranContainer):
         def should_be_public(name: str) -> bool:
             """Is name public?"""
             return self.permission == "public" or name in self.public_list
+
+# Function to print out all_vars
+        #def print_all_vars(self):
+
 
         def filter_public(collection: dict) -> dict:
             """Return a new dict of only the public objects from collection"""
@@ -2003,6 +2353,10 @@ class FortranType(FortranContainer):
         self.constructor: Optional[FortranSubroutine] = None
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+
         # Match parameters with variables
         for i in range(len(self.parameters)):
             for var in self.variables:
@@ -2123,17 +2477,19 @@ class FortranEnum(FortranContainer):
         self.name = ""
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+
         prev_val = -1
         for var in self.variables:
             if not var.initial:
                 var.initial = prev_val + 1
-
             initial = (
                 remove_kind_suffix(var.initial)
                 if isinstance(var.initial, str)
                 else var.initial
             )
-
             try:
                 prev_val = int(initial)
             except ValueError:
@@ -2214,6 +2570,10 @@ class FortranInterface(FortranContainer):
         self.sort_components()
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+
         if not self.abstract and self.generic:
             return
 
@@ -2343,6 +2703,8 @@ class FortranVariable(FortranBase):
         self.initial = initial
         self.dimension = ""
         self.visible = False
+        self.ug = False
+        self.ug2 = False
 
         indexlist = []
         indexparen = self.name.find("(")
@@ -2588,6 +2950,9 @@ class FortranBlockData(FortranContainer):
         self.param_dict = {}
 
     def correlate(self, project):
+
+        self.io_tracker.report()
+        self.process_attribs()
         # Add procedures, interfaces and types from parent to our lists
         self.all_types = {}
         for dt in self.types:
@@ -2597,6 +2962,7 @@ class FortranBlockData(FortranContainer):
             self.all_vars[var.name.lower()] = var
         self.all_absinterfaces = {}
         self.all_procs = {}
+        self.all_vars_ug = {}
 
         # Add procedures and types from USED modules to our lists
         for mod, extra in self.uses:
@@ -2608,6 +2974,7 @@ class FortranBlockData(FortranContainer):
             self.all_types.update(types)
             self.all_vars.update(variables)
         self.uses = [m[0] for m in self.uses]
+
 
         typelist = {}
         for dtype in self.types:
@@ -2637,6 +3004,10 @@ class FortranBlockData(FortranContainer):
             dtype.prune()
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+
         self.process_attribs()
 
     def process_attribs(self):
@@ -2704,6 +3075,14 @@ class FortranCommon(FortranBase):
             self.other_uses = lst
 
         self.sort_components()
+
+    def _cleanup(self) -> None:
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+
+        # now apply attribute processing if needed
+        self.process_attribs()
 
 
 class FortranSpoof:
