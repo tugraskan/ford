@@ -526,9 +526,14 @@ class FortranBase:
 
         # Remove any common leading whitespace from the docstring
         # so that the markdown conversion is a bit more robust
-        self.doc = md.reset().convert(
-            textwrap.dedent("\n".join(self.doc_list)), context=self
-        )
+        try:
+            self.doc = md.reset().convert(
+                textwrap.dedent("\n".join(self.doc_list)), context=self
+            )
+        except (RuntimeError, ValueError) as e:
+            raise ValueError(
+                f"Error when rendering docstring for {self.obj} '{self.name}' in '{self.filename}':\n    {e}"
+            )
 
         if self.meta.summary is not None:
             self.meta.summary = md.convert("\n".join(self.meta.summary), context=self)
@@ -2419,14 +2424,15 @@ class FortranType(FortranContainer):
         self.boundprocs = inherited + self.boundprocs
         # Match up generic type-bound procedures to their particular bindings
         for proc in self.boundprocs:
-            for bp in inherited_generic:
-                if bp.name.lower() == proc.name.lower() and isinstance(
-                    bp, FortranBoundProcedure
-                ):
-                    proc.bindings = bp.bindings + proc.bindings
-                    break
-            if proc.generic:
-                proc.correlate(project)
+            if type(proc) is FortranBoundProcedure:
+                for bp in inherited_generic:
+                    if bp.name.lower() == proc.name.lower() and isinstance(
+                        bp, FortranBoundProcedure
+                    ):
+                        proc.bindings = bp.bindings + proc.bindings
+                        break
+                if proc.generic:
+                    proc.correlate(project)
         # Match finalprocs
         for fp in self.finalprocs:
             fp.correlate(project)
@@ -3624,6 +3630,9 @@ class ExternalBoundProcedure(FortranBoundProcedure):
         self.parent = parent
         self.obj = "proc"
         self.bindings = []
+        self.attribs = []
+        self.deferred = False
+        self.generic = False
 
 
 class ExternalType(FortranType):
@@ -3635,6 +3644,7 @@ class ExternalType(FortranType):
         self.parent = parent
         self.obj = "type"
         self.boundprocs = []
+        self.variables = []
 
 
 class ExternalVariable(FortranVariable):

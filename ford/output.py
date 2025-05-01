@@ -45,7 +45,6 @@ from ford.settings import ProjectSettings, EntitySettings
 
 loc = pathlib.Path(__file__).parent
 env = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(loc / "templates"),
     trim_blocks=True,
     lstrip_blocks=True,
 )
@@ -120,6 +119,10 @@ class Documentation:
         # Also, in future for other template, we may not need to
         # pass the data obj.
         env.globals["projectData"] = asdict(settings)
+        env.loader = jinja2.FileSystemLoader(
+            settings.html_template_dir + [loc / "templates"]
+        )
+
         self.project = project
         self.settings = settings
         # Jinja2's `if` statement counts `None` as truthy, so to avoid
@@ -280,13 +283,13 @@ class Documentation:
         ]:
             (out_dir / directory).mkdir(USER_WRITABLE_ONLY)
 
-        for directory in ["css", "fonts", "js"]:
+        for directory in ["css", "js", "webfonts"]:
             copytree(loc / directory, out_dir / directory)
 
         if self.data["graph"]:
             self.graphs.output_graphs(self.njobs)
         if self.data["search"]:
-            copytree(loc / "tipuesearch", out_dir / "tipuesearch")
+            copytree(loc / "search", out_dir / "search")
             self.tipue.print_output()
 
         try:

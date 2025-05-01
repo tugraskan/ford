@@ -89,13 +89,13 @@ class Tipue_Search_JSON_Generator:
             "title": page_title,
             "text": page_text,
             "tags": page_category,
-            "loc": str(page_url),
+            "url": str(page_url),
         }
 
         self.json_nodes.append(node)
 
     def print_output(self):
-        path = self.output_path / "tipuesearch" / "tipuesearch_content.js"
+        path = self.output_path / "search" / "search_database.json"
 
         root_node = {"pages": self.json_nodes}
         output = json.dumps(root_node, separators=(",", ":"), ensure_ascii=False)

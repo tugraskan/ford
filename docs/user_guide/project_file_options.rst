@@ -11,6 +11,14 @@ ways:
 2. in the ``extra.ford`` table of your `fpm.toml
    <https://fpm.fortran-lang.org>`_ file (*new in version 7.0*).
 
+We recommend using ``fpm.toml`` for Ford settings as it allows comments and the
+syntax is a bit more forgiving. Ford is still run the same way in either case:
+
+.. code:: console
+
+   $ ford <project-file.md>
+
+
 .. _sec-fpm-toml:
 
 ``fpm.toml`` File
@@ -201,6 +209,7 @@ license
 
 The licenses under which the software is released. Options are:
 
+- **agpl**: `GNU Affero General Public License <http://www.gnu.org/licenses/agpl>`_
 - **bsd**: `FreeBSD Documentation License <http://www.freebsd.org/copyright/freebsd-doc-license.html>`_
 - **by**: `Creative Commons attribution <http://creativecommons.org/licenses/by/4.0/>`_
 - **by-nc**: `Creative Commons attribution, non-commercial <http://creativecommons.org/licenses/by-nc/4.0/>`_
@@ -209,7 +218,9 @@ The licenses under which the software is released. Options are:
 - **by-nd**: `Creative Commons attribution, no derivatives <http://creativecommons.org/licenses/by-nd/4.0/>`_
 - **by-sa**: `Creative Commons attribution, share-alike <http://creativecommons.org/licenses/by-sa/4.0/>`_
 - **gfdl**: `GNU Free Documentation License <http://www.gnu.org/licenses/old-licenses/fdl-1.2.en.html>`_
+- **gpl**: `GNU General Public License <http://www.gnu.org/licenses/gpl>`_
 - **isc**: `ISC (Internet Systems Consortium) License <https://opensource.org/licenses/ISC>`_
+- **lgpl**: `GNU Lesser General Public License <http://www.gnu.org/licenses/lgpl>`_
 - **mit**: `MIT <https://opensource.org/licenses/MIT>`_
 - **opl**: `Open Publication License <http://opencontent.org/openpub/>`_
 - **pdl**: `Public Documentation License <http://www.openoffice.org/licenses/PDL.html>`_
@@ -426,6 +437,18 @@ directory that starts with ``test`` anywhere in the source directory tree.
 
       exclude_dir: **/test*
           src/internal
+
+.. _option-html_template_dir:
+
+html_template_dir
+^^^^^^^^^^^^^^^^^
+
+A list of directories to search for HTML templates.
+
+.. caution:: This is an experimental feature!
+
+   You will most likely want to copy-paste the existing templates and
+   modify them. They are not well documented, so use at your own risk!
 
 .. _option-include:
 

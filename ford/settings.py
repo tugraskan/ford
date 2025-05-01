@@ -128,6 +128,7 @@ class ProjectSettings:
     creation_date: str = "%Y-%m-%dT%H:%M:%S.%f%z"
     css: Optional[Path] = None
     dbg: bool = True
+    directory: Path = Path.cwd()
     display: List[str] = field(default_factory=lambda: ["public", "protected"])
     doc_license: str = ""
     docmark: str = "!"
@@ -146,10 +147,12 @@ class ProjectSettings:
     extra_vartypes: list = field(default_factory=list)
     facebook: Optional[str] = None
     favicon: Path = FAVICON_PATH
-    fixed_extensions: list = field(default_factory=lambda: ["f", "for", "F", "FOR"])
+    fixed_extensions: List[str] = field(
+        default_factory=lambda: ["f", "for", "F", "FOR"]
+    )
     fixed_length_limit: bool = True
     force: bool = False
-    fpp_extensions: list = field(
+    fpp_extensions: List[str] = field(
         default_factory=lambda: ["F90", "F95", "F03", "F08", "F15", "F", "FOR"]
     )
     github: Optional[str] = None
@@ -161,16 +164,17 @@ class ProjectSettings:
     graph_maxdepth: int = 10000
     graph_maxnodes: int = 1000000000
     hide_undoc: bool = False
+    html_template_dir: List[Path] = field(default_factory=list)
     incl_src: bool = True
     include: List[Path] = field(default_factory=list)
     license: str = ""
     linkedin: Optional[str] = None
     lower: bool = False
-    macro: list = field(default_factory=list)
+    macro: List[str] = field(default_factory=list)
     mathjax_config: Optional[Path] = None
     max_frontpage_items: int = 10
     md_base_dir: Path = Path(".")
-    md_extensions: list = field(default_factory=list)
+    md_extensions: List[str] = field(default_factory=list)
     media_dir: Optional[Path] = None
     output_dir: Path = Path("./doc")
     page_dir: Optional[Path] = None
@@ -220,6 +224,16 @@ class ProjectSettings:
             if get_origin(default_type) is list and not isinstance(value, list):
                 setattr(self, key, [value])
 
+        for fixed_extension in self.fixed_extensions:
+            if fixed_extension in self.extensions:
+                raise ValueError(
+                    f"Fixed-form extension '{fixed_extension}' also appears in free-form extension list (`extensions = {self.extensions}`)"
+                )
+
+        for mod in self.extra_mods:
+            if mod in self.external:
+                raise ValueError(f"extra-mod '{mod}' also appears in external mods")
+
         self.display = [item.lower() for item in self.display]
         self.extensions = list(set(self.extensions) | set(self.fpp_extensions))
         self.exclude_dir.append(self.output_dir)
@@ -255,14 +269,14 @@ class ProjectSettings:
     def normalise_paths(self, directory=None):
         if directory is None:
             directory = Path.cwd()
-        directory = Path(directory).absolute()
+        self.directory = Path(directory).absolute()
         field_types = get_type_hints(self)
 
         if self.favicon == FAVICON_PATH:
             self.favicon = Path(__file__).parent / FAVICON_PATH
 
         if self.md_base_dir == Path("."):
-            self.md_base_dir = directory
+            self.md_base_dir = self.directory
 
         for key, value in asdict(self).items():
             if value is None:
@@ -272,10 +286,10 @@ class ProjectSettings:
 
             if is_same_type(default_type, List[Path]):
                 value = getattr(self, key)
-                setattr(self, key, [normalise_path(directory, v) for v in value])
+                setattr(self, key, [normalise_path(self.directory, v) for v in value])
 
             if is_same_type(default_type, Path):
-                setattr(self, key, normalise_path(directory, value))
+                setattr(self, key, normalise_path(self.directory, value))
 
         if self.relative:
             self.project_url = self.output_dir
@@ -302,7 +316,10 @@ def load_toml_settings(directory: PathLike) -> Optional[ProjectSettings]:
         return None
 
     print(f"Reading Ford options from {filename.absolute()}")
-    return ProjectSettings(**settings["extra"]["ford"])
+    try:
+        return ProjectSettings(**settings["extra"]["ford"])
+    except ValueError as e:
+        raise ValueError(f"Error parsing settings from '{filename}': {e}")
 
 
 def load_markdown_settings(
@@ -324,7 +341,12 @@ def load_markdown_settings(
             include_preprocessor = IncludePreprocessor(None, configs)
             settings[option] = "\n".join(include_preprocessor.run(value.splitlines()))
 
-    return ProjectSettings.from_markdown_metadata(settings), "\n".join(project_lines)
+    try:
+        return ProjectSettings.from_markdown_metadata(settings), "\n".join(
+            project_lines
+        )
+    except ValueError as e:
+        raise ValueError(f"Error parsing settings from '{filename}': {e}")
 
 
 def convert_setting(default_type: Type, key: str, value: Any) -> Any:
