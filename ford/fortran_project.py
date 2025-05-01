@@ -23,6 +23,7 @@
 #
 
 import os
+import json
 import toposort
 from itertools import chain, product
 from typing import List, Optional, Union, Dict, Set
@@ -30,7 +31,7 @@ from pathlib import Path
 from fnmatch import fnmatch
 
 from ford.console import warn
-from ford.external_project import load_external_modules
+from ford.external_project import load_external_modules, get_module_metadata
 from ford.utils import ProgressBar
 from ford.sourceform import (
     _find_in_list,
@@ -204,7 +205,6 @@ class Project:
             incl_src=settings.incl_src,
             encoding=self.encoding,
         )
-
         def namelist_check(entity):
             self.namelists.extend(getattr(entity, "namelists", []))
 
@@ -227,6 +227,9 @@ class Project:
             subroutine.visible = True
             self.procedures.append(subroutine)
             namelist_check(subroutine)
+            self.extract_non_fortran_and_non_integers(subroutine)
+            self.build_stype_dictionary(subroutine)
+
 
         for program in new_file.programs:
             program.visible = True
@@ -239,6 +242,300 @@ class Project:
             self.blockdata.append(block)
 
         self.files.append(new_file)
+
+    def extract_non_fortran_and_non_integers(self, subroutine):
+        """
+        Extracts items that are neither Fortran keywords, integers, symbols, nor self-defined variables.
+
+        Parameters
+        ----------
+        subroutine : object
+            An object containing `other_results`, `variables`, and `member_access_results`.
+
+        Updates
+        -------
+        subroutine.member_access_results : list
+            Appends filtered items that pass the criteria.
+
+        Returns
+        -------
+        set
+            A filtered set of items that are neither Fortran keywords, integers, symbols, nor self-defined variables.
+        """
+
+        # Extract the names of subroutine variables
+        subroutine_variable_names = {var.name for var in subroutine.variables}
+
+        # Combine all Fortran keywords dynamically using set union
+        all_fortran_keywords = (
+                subroutine.fortran_control |
+                subroutine.fortran_operators |
+                subroutine.fortran_intrinsics |
+                subroutine.fortran_reserved |
+                subroutine.fortran_custom |
+                subroutine.symbols |
+                subroutine.fortran_io |
+                subroutine_variable_names
+
+        )
+
+        # Convert `other_results` to a set for efficient processing
+        items = {item.strip().strip("'\"") for item in subroutine.other_results}
+
+        # Initialize a filtered set for deduplication
+        filtered_items = set()
+
+        for item in items:
+            # Skip empty strings, Fortran keywords, integers, symbols, and subroutine variables
+            if (
+                    item
+                    and item not in all_fortran_keywords
+                    and not subroutine.NUMBER_RE.match(item)
+            ):
+                # Add to filtered set if not already in member_access_results
+                if item not in subroutine.member_access_results:
+                    subroutine.member_access_results.append(item)
+                    filtered_items.add(item)
+
+        return filtered_items
+
+
+    def build_stype_dictionary(self, subroutine):
+        """
+        Builds a nested dictionary representing types and their attributes from a list of variable paths,
+        without creating empty dictionaries.
+
+        Parameters
+        ----------
+        subroutine : object
+            An object containing `member_access_results` (a list of variable paths) and `type_results` (a list to be updated).
+
+        Updates
+        -------
+        subroutine.type_results : list
+            Appends the final nested dictionary representing the types and their attributes.
+
+        Returns
+        -------
+        dict
+            A nested dictionary representing the types and their attributes.
+        """
+        type_dict = {}
+
+        # Check if member_access_results is a valid list
+        if not isinstance(subroutine.member_access_results, list):
+            raise TypeError("Expected 'member_access_results' to be a list.")
+
+        for var in subroutine.member_access_results:
+            parts = var.split('%')  # Split by '%' to get nested type parts
+            current = type_dict
+
+            for part in parts:
+                # Skip empty parts to avoid creating unnecessary empty dictionaries
+                if part:
+                    current = current.setdefault(part, {})
+
+        # Update the subroutine with the final type dictionary
+        subroutine.type_results = type_dict
+
+        return type_dict  # Optional, if you want to return the dictionary
+
+    def _clean_fvar_recursive(self, data):
+        """
+        Recursively process the data structure for JSON serialization.
+
+        Since your fvar structure already contains only simple keys (such as
+        'name', 'vartype', 'initial', 'filename', 'doc_list', and 'variables'),
+        this function recurses over dictionaries and lists and returns the same structure.
+
+        Parameters:
+          data: a dict, list, or primitive value.
+
+        Returns:
+          data with all nested values processed.
+        """
+        if isinstance(data, dict):
+            new_data = {}
+            for key, value in data.items():
+                new_data[key] = self._clean_fvar_recursive(value)
+            return new_data
+        elif isinstance(data, list):
+            return [self._clean_fvar_recursive(item) for item in data]
+        else:
+            return data
+
+    def procedures_fvar_to_json(self, procedures):
+        """
+        Iterate over the provided list of procedures, convert each procedure's fvar
+        structure (a custom nested dictionary) into a JSON string, and store that string
+        in the procedure's pjson attribute.
+
+        Each procedure is expected to have a 'name' attribute and an 'fvar' attribute.
+        After processing, procedure.pjson will contain that procedure's JSON.
+
+        Parameters:
+          procedures (list): A list of procedure objects.
+        """
+        for procedure in procedures:
+            # Process the fvar structure if available, otherwise use an empty dictionary.
+            if hasattr(procedure, 'fvar'):
+                cleaned = self._clean_fvar_recursive(procedure.fvar)
+            else:
+                cleaned = {}
+
+            # Store the JSON string in the procedure's pjson attribute.
+            procedure.pjson = json.dumps(cleaned, indent=2)
+
+    def io_xwalk(self, procedures):
+        master_list = []
+
+        for proc in procedures:
+            if not hasattr(proc, "io_tracker"):
+                continue
+
+            proc.io_tracker.finalize()
+
+            # completed is now a dict: unit → [IoSession, ...]
+            for unit, sessions in proc.io_tracker.completed.items():
+                for sess in sessions:
+                    master_list.append({
+                        "used_in": proc.name,
+                        "unit": unit,
+                        "file": sess.file,
+                        "operations": [
+                            {"kind": kind, "raw_line": raw.strip()}
+                            for kind, raw in sess.operations
+                        ],
+                    })
+
+        return json.dumps(master_list, indent=2)
+
+    def _find_variable_info(self, procedure, var_ref):
+        """
+        Given a Fortran variable reference (e.g., 'in_link%aqu_cha'),
+        walk through procedure.fvar to find the matching dictionary that includes keys like
+        'name', 'vartype', 'filename', 'initial', and 'doc_list'.
+
+        Returns the variable's dictionary or None if not found.
+        """
+        # If there's no fvar or it's not a dict, we can't proceed
+        if not hasattr(procedure, 'fvar') or not isinstance(procedure.fvar, dict):
+            return None
+
+        # Split the reference by '%'
+        parts = var_ref.split('%')
+        if not parts:
+            return None
+
+        # Start at the top-level fvar
+        current_dict = procedure.fvar
+        for i, part in enumerate(parts):
+            if part in current_dict:
+                # If this is not the last part, move into its 'variables' sub-dict
+                if i < len(parts) - 1:
+                    # Move inside the nested structure
+                    next_dict = current_dict[part].get('variables', None)
+                    if not next_dict:
+                        return None
+                    current_dict = next_dict
+                else:
+                    # Last part; we've found the final variable dict
+                    return current_dict[part]
+            else:
+                # No match
+                return None
+        # If we exit the loop without returning, no match was found
+        return None
+    def get_procedures(self):
+        procedures = []
+
+        for procedure in self.procedures:
+            # If the procedure does not have a module (assuming `procedure.module` is a Boolean or exists)
+            print('!!!! ' + procedure.name)
+            if procedure.parobj == 'sourcefile':
+                procedures.append(procedure)
+
+
+        # Sort the procedures (assuming you want to sort by procedure name)
+        procedures.sort(key=lambda x: x.name)
+
+        return procedures   # Return the list of non-procedure variables
+
+
+    def cross_walk_type_dicts(self, procedures):
+        for procedure in procedures:
+            print('%%%% ' + procedure.name)
+            for key, value in procedure.type_results.items():
+                if key in procedure.all_vars:
+                    procedure.fvar[key] = {
+                        'name': procedure.all_vars[key].name,
+                        'vartype': procedure.all_vars[key].vartype,
+                        'initial': procedure.all_vars[key].initial,
+                        'filename': procedure.all_vars[key].filename,
+                        'doc_list': procedure.all_vars[key].doc_list,
+                        'variables': {},
+                        'original': procedure.all_vars[key]
+                    }
+                    if value:
+                        print(f"$$$$ {key} nested structure")
+                        self.r_check(procedure.fvar[key], value)
+                        # Remove original from the top-level branch after recursion.
+                        procedure.fvar[key].pop('original', None)
+                        print('check 1')
+                    else:
+                        procedure.fvar[key].pop('original', None)
+                        print('check 2')
+                else:
+                    procedure.var_ug_na.append(key)
+                    print('check 3')
+            print("wowza")
+
+    def r_check(self, parent_rep, value):
+        """
+        Recursive function to check nested keys/values and add them to the parent's custom representation.
+
+        The custom representation is a dictionary that includes:
+          - 'name', 'vartype', 'initial', 'filename', 'doc_list', 'variables'
+          - 'original' is stored temporarily only for recursion.
+
+        After processing each branch, the 'original' key is removed.
+        """
+        for nested_key, nested_values in value.items():
+            parent_orig = parent_rep.get('original')
+            if not parent_orig:
+                print("Parent original object not found; cannot continue recursion.")
+                continue
+
+            # Find the matching variable in parent's proto[0].variables by name.
+            found_var = next(
+                (var for var in parent_orig.proto[0].variables if var.name == nested_key),
+                None
+            )
+
+            if found_var is not None:
+                # Build a custom representation for the nested variable.
+                new_rep = {
+                    'name': found_var.name,
+                    'vartype': found_var.vartype,
+                    'initial': found_var.initial,
+                    # 'filename': found_var.filename,  # If you want to include filename, uncomment it.
+                    'doc_list': found_var.doc_list,
+                    'variables': {},
+                    'original': found_var  # temporary; used only for recursion.
+                }
+                parent_rep['variables'][nested_key] = new_rep
+
+                if nested_values:
+                    print(f"Recursively checking nested structure for key: {nested_key}")
+                    self.r_check(new_rep, nested_values)
+                    print("Nested check complete.")
+                else:
+                    print(f"No further nested values for key: {nested_key}")
+
+                # Remove the 'original' key from this branch now that recursion is complete.
+                new_rep.pop('original', None)
+            else:
+                print(f"Key '{nested_key}' not found in parent's proto variables by name.")
 
     @property
     def allfiles(self):
@@ -383,6 +680,11 @@ class Project:
         self.prog_lines = sum_lines(self.programs)
         self.block_lines = sum_lines(self.blockdata)
 
+        # Store module metadata
+        #self.module_metadata = [get_module_metadata(module) for module in self.modules] # do this in xwalk  instead or is a json still ultimately needed?
+        #self.xwalk_type_dicts = [self.cross_walk_type_dicts(procedures) for procedures in self.procedures] #all_vars exists, still need a xwalk but do it after correlating
+
+
     def markdown(self, md):
         """
         Process the documentation with Markdown to produce HTML.
@@ -477,8 +779,34 @@ def find_used_modules(
         for candidate in chain(modules, external_modules):
             if dependency_name == candidate.name.lower():
                 dependency[0] = candidate
-                break
 
+                """
+                matches = []
+                for result in entity.type_results:  # Iterate over each list item
+                    if isinstance(result, dict):  # Process only if it's a dictionary
+                        for key, value in result.items():
+                            # Check if the key matches any candidate variable name
+                            if any(var.name == key for var in candidate.variables):
+                                matches.append(key)
+
+                            # If the value is a nested dictionary, search deeper
+                            if isinstance(value, dict):
+                                matches.extend(search_type_results_in_candidate(value, candidate.variables))
+
+                print(matches)
+
+
+                # Check if dependency variables are used in the entity's subroutines
+                #if hasattr(candidate, "variables"):
+                    #module_vars = {var.name for var in candidate.variables}
+                    #for var in candidate.variables:
+                        #if var.name in entity.type_results:
+                            #print(f"Found variable {var.name} in {entity.name}")
+
+
+                """
+
+                break
     # Find the ancestor of this submodule (if entity is one)
     if hasattr(entity, "parent_submodule") and entity.parent_submodule:
         parent_submodule_name = entity.parent_submodule.lower()

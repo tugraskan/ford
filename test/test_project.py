@@ -1116,33 +1116,33 @@ def test_make_links_with_entity_spec(copy_fortran_file):
     data = f"""\
     module a !! {links}
       type b !! {links}
-        integer :: c !! {links}
+        integer :: c
       contains
-        final :: d !! {links}
-        procedure :: e !! {links}
+        final :: d
+        procedure :: e
       end type b
 
-      interface b !! {links}
+      interface b
         module procedure f
       end interface b
 
-      type(b) :: g !! {links}
+      type(b) :: g
     contains
-      subroutine d(self) !! {links}
-        type(b) :: self !! {links}
+      subroutine d(self)
+        type(b) :: self
       end subroutine d
-      subroutine e(self) !! {links}
-        class(b) :: self !! {links}
+      subroutine e(self)
+        class(b) :: self
       end subroutine e
-      function f() !! {links}
-        type(b) :: f !! {links}
+      function f()
+        type(b) :: f
       end function f
     end module a
 
-    program h !! {links}
+    program h
     end program h
 
-    submodule (a) i !! {links}
+    submodule (a) i
     end submodule i
     """
     settings = copy_fortran_file(data)
@@ -1382,3 +1382,114 @@ def test_hide_undoc(copy_fortran_file):
     project = create_project(settings)
 
     assert len(project.modules[0].subroutines) == 1
+
+
+def test_get_module_metadata(copy_fortran_file):
+    data = """\
+    module test_module
+      type :: test_type
+        integer :: component1
+        real :: component2
+      end type test_type
+
+      type :: another_type
+        integer :: component3
+      end type another_type
+
+      integer :: var1
+      real :: var2
+    end module test_module
+    """
+
+    settings = copy_fortran_file(data)
+    project = create_project(settings)
+
+    metadata = project.module_metadata
+
+    assert len(metadata) == 1
+    assert metadata[0]["name"] == "test_module"
+
+    variables = metadata[0]["variables"]
+    assert len(variables) == 2
+    assert variables[0]["name"] == "var1"
+    assert variables[0]["type"] == "integer"
+    assert variables[1]["name"] == "var2"
+    assert variables[1]["type"] == "real"
+
+    derived_types = metadata[0]["derived_types"]
+    assert len(derived_types) == 2
+    assert derived_types[0]["name"] == "test_type"
+    assert len(derived_types[0]["components"]) == 2
+    assert derived_types[0]["components"][0]["name"] == "component1"
+    assert derived_types[0]["components"][0]["type"] == "integer"
+    assert derived_types[0]["components"][1]["name"] == "component2"
+    assert derived_types[0]["components"][1]["type"] == "real"
+    assert derived_types[1]["name"] == "another_type"
+    assert len(derived_types[1]["components"]) == 1
+    assert derived_types[1]["components"][0]["name"] == "component3"
+    assert derived_types[1]["components"][0]["type"] == "integer"
+
+
+def test_get_module_metadata_with_string_dtype(copy_fortran_file):
+    data = """\
+    module test_module
+      type :: test_type
+        integer :: component1
+        real :: component2
+      end type test_type
+
+      character(len=10) :: var1
+      real :: var2
+    end module test_module
+    """
+
+    settings = copy_fortran_file(data)
+    project = create_project(settings)
+
+    metadata = project.module_metadata
+
+    assert len(metadata) == 1
+    assert metadata[0]["name"] == "test_module"
+
+    variables = metadata[0]["variables"]
+    assert len(variables) == 2
+    assert variables[0]["name"] == "var1"
+    assert variables[0]["type"] == "character(len=10)"
+    assert variables[1]["name"] == "var2"
+    assert variables[1]["type"] == "real"
+
+    derived_types = metadata[0]["derived_types"]
+    assert len(derived_types) == 1
+    assert derived_types[0]["name"] == "test_type"
+    assert len(derived_types[0]["components"]) == 2
+    assert derived_types[0]["components"][0]["name"] == "component1"
+    assert derived_types[0]["components"][0]["type"] == "integer"
+    assert derived_types[0]["components"][1]["name"] == "component2"
+    assert derived_types[0]["components"][1]["type"] == "real"
+
+
+def test_get_module_metadata_with_string_var(copy_fortran_file):
+    data = """\
+    module test_module
+      character(len=10) :: var1
+      real :: var2
+    end module test_module
+    """
+
+    settings = copy_fortran_file(data)
+    project = create_project(settings)
+
+    metadata = project.module_metadata
+
+    assert len(metadata) == 1
+    assert metadata[0]["name"] == "test_module"
+
+    variables = metadata[0]["variables"]
+    assert len(variables) == 2
+    assert variables[0]["name"] == "var1"
+    assert variables[0]["type"] == "character(len=10)"
+    assert variables[1]["name"] == "var2"
+    assert variables[1]["type"] == "real"
+
+    derived_types = metadata[0]["derived_types"]
+    assert len(derived_types) == 0

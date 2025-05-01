@@ -18,7 +18,7 @@ any information from the source code and just about any other automatic
 documentation software I found was either proprietary, didn't work very well
 for Fortran, or was limited in terms of how it produced its output.
 [f90doc](http://erikdemaine.org/software/f90doc/) is quite good and I managed
-to modify it so that it could handle most of Fortran 2003, but it produces
+to modify it so that it could handle most of Fortran 3, but it produces
 rather ugly documentation, can't provide as many links between different parts
 of the documentation as I'd like, and is written in Perl (which I'm not that
 familiar with and which lacks the sort of libraries found in Python for
@@ -95,3 +95,18 @@ along with this program.  If not, see the [GNU website](https://www.gnu.org/lice
 
 Documents produced by FORD are derivative works derived from the input used in their production;
 they are not affected by this license.
+
+## Usage
+
+To generate a JSON file with all the derived types and their components, you can use the `generate_json.py` script. This script extracts metadata for each module and writes it to a JSON file.
+
+### Example
+
+1. Ensure you have the necessary dependencies installed.
+2. Run the `generate_json.py` script:
+
+    ```bash
+    python generate_json.py
+    ```
+
+3. The script will create a file named `derived_types_metadata.json` containing the metadata for all derived types and their components.
