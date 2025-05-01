@@ -64,25 +64,28 @@ from ford._typing import PathLike
 if TYPE_CHECKING:
     from ford.fortran_project import Project
 
+
 class IoSession:
     def __init__(self, unit, filename):
         self.unit       = unit
         self.file       = filename
-        self.operations = []  # list of (kind, raw_line)
-
+        self.operations = []
     def add(self, kind, raw):
         self.operations.append((kind, raw))
 
 class IoTracker:
     def __init__(self):
-        self._open_sessions = {}   # unit → IoSession
-        self.completed      = []   # list of IoSession
+        self._open_sessions = {}            # unit → IoSession
+        self.completed      = defaultdict(list)  # unit → [IoSession,…]
+        self.file_mappings  = defaultdict(set)   # filename → {unit1, unit2, ...}
 
     def start(self, unit, filename):
-        # if someone re‑opens an already open unit, close the old session
         if unit in self._open_sessions:
-            self.completed.append(self._open_sessions.pop(unit))
+            # stash the old one under its unit
+            self.completed[unit].append(self._open_sessions.pop(unit))
         self._open_sessions[unit] = IoSession(unit, filename)
+        if filename:
+            self.file_mappings[filename].add(unit)
 
     def record(self, unit, kind, raw):
         sess = self._open_sessions.get(unit)
@@ -92,21 +95,89 @@ class IoTracker:
     def close(self, unit):
         sess = self._open_sessions.pop(unit, None)
         if sess:
-            self.completed.append(sess)
+            self.completed[unit].append(sess)
 
     def finalize(self):
-        # any units still open get auto‑closed
+        # close out any stragglers
         for unit, sess in list(self._open_sessions.items()):
-            self.completed.append(sess)
+            self.completed[unit].append(sess)
         self._open_sessions.clear()
 
     def report(self):
-        # simple text report; you could stash these sessions instead
-        for sess in self.completed:
-            print(f"Unit {sess.unit!r} → file {sess.file!r}")
-            for kind, raw in sess.operations:
-                print(f"  {kind:5s} → {raw.strip()}")
-            print()
+        # report **all** sessions, grouped by unit
+        for unit, sessions in self.completed.items():
+            for sess in sessions:
+                print(f"Unit {unit!r} → file {sess.file!r}")
+                for kind, raw in sess.operations:
+                    print(f"  {kind:5s} → {raw.strip()}")
+                print()
+            print(f"── end of all sessions for unit {unit!r} ──\n")
+
+    def aggregate(self):
+        """
+        Return a dict:
+          unit → {
+            "files":      [filename1, filename2, …],
+            "operations": [ {"kind":…, "raw_line":…}, … ]
+          }
+        """
+        agg: dict[str, dict] = {}
+        for unit, sessions in self.completed.items():
+            files = []
+            ops = []
+            for sess in sessions:
+                if sess.file not in files:
+                    files.append(sess.file)
+                for kind, raw in sess.operations:
+                    ops.append({"kind": kind, "raw_line": raw.strip()})
+            agg[unit] = {"files": files, "operations": ops}
+        return agg
+
+    def get_io_summary(self):
+        """
+        Return a summary of I/O operations suitable for documentation
+        """
+        summary = {
+            "units": {},
+            "files": {},
+            "operations": {
+                "read": 0,
+                "write": 0,
+                "open": 0,
+                "close": 0
+            }
+        }
+
+        # Count operations by type
+        for unit, sessions in self.completed.items():
+            unit_ops = {"read": 0, "write": 0, "open": 0, "close": 0}
+            unit_files = set()
+
+            for sess in sessions:
+                if sess.file:
+                    unit_files.add(sess.file)
+
+                for kind, _ in sess.operations:
+                    unit_ops[kind] += 1
+                    summary["operations"][kind] += 1
+
+            summary["units"][unit] = {
+                "files": list(unit_files),
+                "operations": unit_ops,
+                "total_operations": sum(unit_ops.values())
+            }
+
+        # Summarize files
+        for filename, units in self.file_mappings.items():
+            if not filename:
+                continue
+
+            summary["files"][filename] = {
+                "units": list(units),
+                "unit_count": len(units)
+            }
+
+        return summary
 
 
 
@@ -497,6 +568,29 @@ class FortranBase:
                     warn(
                         f"Could not extract source code for {self.obj} '{self.name}' in file '{self.filename}'"
                     )
+        # Add I/O information to metadata if available
+        if hasattr(self, 'io_tracker') and isinstance(self, (FortranProcedure, FortranProgram, FortranModule)):
+            io_summary = self.io_tracker.get_io_summary()
+            if io_summary["operations"]["total"] > 0:
+                self.meta.io_summary = io_summary
+
+                # Generate I/O documentation section
+                if io_summary["files"]:
+                    io_doc = "<h3>File I/O</h3><ul>"
+                    for filename, file_info in io_summary["files"].items():
+                        io_doc += f"<li><strong>{filename}</strong>: accessed via {len(file_info['units'])} unit(s)</li>"
+                    io_doc += "</ul>"
+
+                    if io_summary["operations"]["read"] > 0 or io_summary["operations"]["write"] > 0:
+                        io_doc += "<h4>I/O Operations</h4><ul>"
+                        if io_summary["operations"]["read"] > 0:
+                            io_doc += f"<li>Read operations: {io_summary['operations']['read']}</li>"
+                        if io_summary["operations"]["write"] > 0:
+                            io_doc += f"<li>Write operations: {io_summary['operations']['write']}</li>"
+                        io_doc += "</ul>"
+
+                    # Append to documentation
+                    self.doc += io_doc
 
     def sort_components(self) -> None:
         """Sorts components using the method specified in the object
@@ -779,10 +873,8 @@ class FortranContainer(FortranBase):
 
     NUMBER_RE = re.compile(r"^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$")
 
-    UNIT_RE = re.compile(
-        r'\b(?:open|read|write|close)\s*\(\s*(?P<unit>[^,)\s]+)',
-        re.IGNORECASE
-    )
+    IO_UNIT_RE = re.compile(r'\(\s*(?P<unit>[^,)\s]+)\s*,')
+
     # pull recl if present anywhere
     RECL_RE = re.compile(r'recl\s*=\s*(\d+)', re.IGNORECASE)
     TRIM_ADJUST_RE = re.compile(r'^(?:\s*(?:trim|adjustl))\s*\(\s*(.+)\s*\)\s*$',
@@ -1229,45 +1321,62 @@ class FortranContainer(FortranBase):
         return token_pattern.sub(lambda match: strings[int(match.group(1))], line)
 
     def _parse_io_open(self, line: str) -> None:
-        """
-        Track Fortran I/O statements by funneling them into the IoTracker.
-        """
+        """Parse I/O operations and track them in the io_tracker"""
         raw = self.restore_strings(line, self.strings)
         low = raw.strip().lower()
 
-        # OPEN → start a new session (auto‑closing any previous on the same unit)
         if low.startswith('open'):
-            m_unit = self.UNIT_RE.search(raw)
-            unit = m_unit.group('unit') if m_unit else None
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
 
-            m_file = re.search(r'file\s*=\s*([^,)]+)', raw, re.IGNORECASE)
-            fname = m_file.group(1).strip() if m_file else None
+            # Extract file name
+            mf = re.search(r'file\s*=\s*([^,)]+)', raw, re.IGNORECASE)
+            fname = mf.group(1).strip() if mf else None
 
+            # Extract record length if present
+            recl = None
+            mr = self.RECL_RE.search(raw)
+            if mr:
+                recl = mr.group(1)
+
+            # Start tracking this I/O session
             self.io_tracker.start(unit, fname)
+
+            # Record additional metadata
+            if recl:
+                self.io_tracker.record(unit, "meta", f"Record length: {recl}")
+
+            self.io_tracker.record(unit, "open", raw)
             return
 
-        # READ → record a read operation
         if low.startswith('read'):
-            m_unit = self.UNIT_RE.search(raw)
-            unit = m_unit.group('unit') if m_unit else None
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
 
-            self.io_tracker.record(unit, 'read', raw)
+            # Try to extract format information
+            fmt = re.search(r'fmt\s*=\s*([^,)]+)', raw, re.IGNORECASE)
+            if fmt:
+                self.io_tracker.record(unit, "meta", f"Format: {fmt.group(1).strip()}")
+
+            self.io_tracker.record(unit, "read", raw)
             return
 
-        # WRITE → record a write operation
         if low.startswith('write'):
-            m_unit = self.UNIT_RE.search(raw)
-            unit = m_unit.group('unit') if m_unit else None
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
 
-            self.io_tracker.record(unit, 'write', raw)
+            # Try to extract format information
+            fmt = re.search(r'fmt\s*=\s*([^,)]+)', raw, re.IGNORECASE)
+            if fmt:
+                self.io_tracker.record(unit, "meta", f"Format: {fmt.group(1).strip()}")
+
+            self.io_tracker.record(unit, "write", raw)
             return
 
-        # CLOSE → record and then close the session
         if low.startswith('close'):
-            m_unit = self.UNIT_RE.search(raw)
-            unit = m_unit.group('unit') if m_unit else None
-
-            self.io_tracker.record(unit, 'close', raw)
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+            self.io_tracker.record(unit, "close", raw)
             self.io_tracker.close(unit)
             return
 
@@ -1404,9 +1513,8 @@ class FortranCodeUnit(FortranContainer):
         self.namelists: List[FortranNamelist] = []
 
     class FortranCodeUnit(FortranContainer):
-
         def _cleanup(self) -> None:
-            # finish any half‑open sessions and emit their reports
+            # finalize & print all I/O for this code‐unit
             self.io_tracker.finalize()
             self.io_tracker.report()
 

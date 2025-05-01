@@ -387,32 +387,28 @@ class Project:
             procedure.pjson = json.dumps(cleaned, indent=2)
 
     def io_xwalk(self, procedures):
-        """
-        Build a JSON cross‑walk of all I/O sessions recorded in each procedure.
-        Each session is a group of open/read/write/close calls in order.
-        """
-        sessions = []
+        master_list = []
 
         for proc in procedures:
-            # skip things that never recorded any I/O
             if not hasattr(proc, "io_tracker"):
                 continue
 
-            # finalize any stragglers (if you haven't already called this)
             proc.io_tracker.finalize()
 
-            for sess in proc.io_tracker.completed:
-                sessions.append({
-                    "used_in": proc.name,
-                    "unit": sess.unit,
-                    "file": sess.file,
-                    "operations": [
-                        {"kind": kind, "raw_line": raw.strip()}
-                        for kind, raw in sess.operations
-                    ],
-                })
+            # completed is now a dict: unit → [IoSession, ...]
+            for unit, sessions in proc.io_tracker.completed.items():
+                for sess in sessions:
+                    master_list.append({
+                        "used_in": proc.name,
+                        "unit": unit,
+                        "file": sess.file,
+                        "operations": [
+                            {"kind": kind, "raw_line": raw.strip()}
+                            for kind, raw in sess.operations
+                        ],
+                    })
 
-        return json.dumps(sessions, indent=2)
+        return json.dumps(master_list, indent=2)
 
     def _find_variable_info(self, procedure, var_ref):
         """
