@@ -146,35 +146,30 @@ class IoTracker:
             agg[unit] = {"files": files, "operations": ops}
         return agg
 
-    def get_io_summary(self):
+    def get_io_summary(self) -> dict:
         """
-        Return a summary of I/O operations suitable for documentation
+        Build a summary suitable for documentation, including per-unit
+        and per-file tallies of operations.
         """
         summary = {
             "units": {},
             "files": {},
             "operations": {"read": 0, "write": 0, "open": 0, "close": 0}
         }
-
-        # Count operations by type
         for unit, sessions in self.completed.items():
             unit_ops = {"read": 0, "write": 0, "open": 0, "close": 0}
             unit_files = set()
-
             for sess in sessions:
                 if sess.file:
                     unit_files.add(sess.file)
                 for kind, _ in sess.operations:
                     unit_ops[kind] = unit_ops.get(kind, 0) + 1
                     summary["operations"][kind] = summary["operations"].get(kind, 0) + 1
-
-            summary[unit] = {
+            summary["units"][unit] = {
                 "files": list(unit_files),
                 "operations": unit_ops,
                 "total_operations": sum(unit_ops.values())
             }
-
-        # Summarize files used
         for filename, units in self.file_mappings.items():
             if not filename:
                 continue
@@ -182,7 +177,6 @@ class IoTracker:
                 "units": list(units),
                 "unit_count": len(units)
             }
-
         return summary
 
 
@@ -925,7 +919,7 @@ class FortranContainer(FortranBase):
         self.io_lines = []
         self.fvar = {}
         self.pjson = {}
-        self.io_open = {}
+        self.io_json = {}
         self.io_xwalk = {}
 
 

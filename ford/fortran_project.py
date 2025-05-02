@@ -58,6 +58,7 @@ from ford.sourceform import (
 )
 from ford.settings import ProjectSettings
 from ford._typing import PathLike
+import logging as log
 
 
 LINK_TYPES = {
@@ -386,29 +387,43 @@ class Project:
             # Store the JSON string in the procedure's pjson attribute.
             procedure.pjson = json.dumps(cleaned, indent=2)
 
-    def io_xwalk(self, procedures):
+    def io_xwalk(self, procedures, output_file=None) -> str:
+        """
+        Use each procedure's own `io_json` attribute as the source of I/O crosswalk data.
+
+        If `output_file` is provided, writes combined JSON to that path;
+        otherwise prints to stdout.
+
+        Returns the combined JSON string.
+        """
         master_list = []
-
         for proc in procedures:
-            if not hasattr(proc, "io_tracker"):
+            json_str = getattr(proc, 'io_json', None)
+            if not json_str:
+                # skip if no io_json on proc
                 continue
+            try:
+                entries = json.loads(json_str)
+            except json.JSONDecodeError:
+                log.error("Invalid JSON in proc.io_json for %s", proc.name)
+                continue
+            for entry in entries:
+                # ensure used_in is set to the procedure name
+                entry.setdefault('used_in', proc.name)
+                master_list.append(entry)
 
-            proc.io_tracker.finalize()
+        combined = json.dumps(master_list, indent=2)
 
-            # completed is now a dict: unit → [IoSession, ...]
-            for unit, sessions in proc.io_tracker.completed.items():
-                for sess in sessions:
-                    master_list.append({
-                        "used_in": proc.name,
-                        "unit": unit,
-                        "file": sess.file,
-                        "operations": [
-                            {"kind": kind, "raw_line": raw.strip()}
-                            for kind, raw in sess.operations
-                        ],
-                    })
+        # always write to io_summary.json in cwd if no explicit path
+        if not output_file:
+            output_file = os.path.join(os.getcwd(), "io_summary.json")
 
-        return json.dumps(master_list, indent=2)
+        with open(output_file, 'w') as f:
+            f.write(combined)
+        log.info("IO JSON written to %s", output_file)
+
+        return combined
+
 
     def _find_variable_info(self, procedure, var_ref):
         """
@@ -477,18 +492,18 @@ class Project:
                         'original': procedure.all_vars[key]
                     }
                     if value:
-                        print(f"$$$$ {key} nested structure")
+                        #print(f"$$$$ {key} nested structure")
                         self.r_check(procedure.fvar[key], value)
                         # Remove original from the top-level branch after recursion.
                         procedure.fvar[key].pop('original', None)
-                        print('check 1')
+                        #print('check 1')
                     else:
                         procedure.fvar[key].pop('original', None)
-                        print('check 2')
+                        #print('check 2')
                 else:
                     procedure.var_ug_na.append(key)
-                    print('check 3')
-            print("wowza")
+                    #print('check 3')
+            #print("wowza")
 
     def r_check(self, parent_rep, value):
         """
@@ -526,11 +541,11 @@ class Project:
                 parent_rep['variables'][nested_key] = new_rep
 
                 if nested_values:
-                    print(f"Recursively checking nested structure for key: {nested_key}")
+                    #print(f"Recursively checking nested structure for key: {nested_key}")
                     self.r_check(new_rep, nested_values)
-                    print("Nested check complete.")
-                else:
-                    print(f"No further nested values for key: {nested_key}")
+                    #print("Nested check complete.")
+                #else:
+                    #print(f"No further nested values for key: {nested_key}")
 
                 # Remove the 'original' key from this branch now that recursion is complete.
                 new_rep.pop('original', None)

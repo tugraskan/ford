@@ -7,8 +7,8 @@ from pathlib import Path
 
 def main():
     # Specify the source directory for the Fortran files\
-    source_dir = r'C:\Users\taci.ugraskan\source\repos\swatnet\Globals\OG'
-    #source_dir = r'C:\Users\taci.ugraskan\source\repos\swatnet\Globals\src'
+    #source_dir = r'C:\Users\taci.ugraskan\source\repos\swatnet\Globals\OG'
+    source_dir = r'C:\Users\taci.ugraskan\source\repos\swatnet\Globals\src'
 
 
     # Create ProjectSettings with the source directory
@@ -32,7 +32,7 @@ def main():
 
     project.io_xwalk(procedures)
 
-    print(f"Metadata has been written to {output_file}")
+    print(f"Metadata has been written to ")
 
 if __name__ == "__main__":
     main()
