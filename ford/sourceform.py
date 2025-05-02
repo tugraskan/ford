@@ -107,11 +107,11 @@ class IoTracker:
     def finalize(self):
         # detect unclosed sessions
         self.stragglers = list(self._open_sessions.values())
-        if self.stragglers:
-            log.warning(
-                "Unclosed IO sessions detected: %s",
-                [s.unit for s in self.stragglers]
-            )
+        #if self.stragglers:
+        #    log.warning(
+        #        "Unclosed IO sessions detected: %s",
+        #        [s.unit for s in self.stragglers]
+        #   )
         # close out any remaining sessions (they remain marked closed=False)
         for unit, sess in list(self._open_sessions.items()):
             self.completed[unit].append(sess)
@@ -127,11 +127,11 @@ class IoTracker:
         for unit, sessions in self.completed.items():
             for sess in sessions:
                 status = 'closed' if sess.closed else 'unclosed'
-                print(f"Unit {unit!r} → file {sess.file!r} [{status}]")
-                for kind, raw in sess.operations:
-                    print(f"  {kind:5s} → {raw.strip()}")
-                print()
-            print(f"── end of all sessions for unit {unit!r} ──\n")
+                #print(f"Unit {unit!r} → file {sess.file!r} [{status}]")
+                #for kind, raw in sess.operations:
+                    #print(f"  {kind:5s} → {raw.strip()}")
+                #print()
+            #print(f"── end of all sessions for unit {unit!r} ──\n")
 
     def aggregate(self):
         agg = {}

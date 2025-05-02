@@ -20,6 +20,8 @@ def main():
     # Correlate the project data (parses and processes the Fortran files)!
     project.correlate()
 
+    print(f"Project data has been correlated.")
+
     procedures = project.get_procedures()
 
 
