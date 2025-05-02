@@ -365,64 +365,30 @@ class Project:
         else:
             return data
 
-    def procedures_fvar_to_json(self, procedures):
+    def procedures_fvar_to_json(self, procedures, out_dir=None):
         """
-        Iterate over the provided list of procedures, convert each procedure's fvar
-        structure (a custom nested dictionary) into a JSON string, and store that string
-        in the procedure's pjson attribute.
-
-        Each procedure is expected to have a 'name' attribute and an 'fvar' attribute.
-        After processing, procedure.pjson will contain that procedure's JSON.
-
-        Parameters:
-          procedures (list): A list of procedure objects.
+        For each procedure:
+        - clean up its `fvar`
+        - dump it to JSON
+        - write that JSON to <proc.name>_fvar.json in out_dir (defaults to ./fvar_json)
         """
-        for procedure in procedures:
-            # Process the fvar structure if available, otherwise use an empty dictionary.
-            if hasattr(procedure, 'fvar'):
-                cleaned = self._clean_fvar_recursive(procedure.fvar)
-            else:
-                cleaned = {}
+        # default into a “fvar_json” sub-folder of cwd
+        out_dir = out_dir or os.path.join(os.getcwd(), "fvar_json")
+        os.makedirs(out_dir, exist_ok=True)
 
-            # Store the JSON string in the procedure's pjson attribute.
-            procedure.pjson = json.dumps(cleaned, indent=2)
-
-    def io_xwalk(self, procedures, output_file=None) -> str:
-        """
-        Use each procedure's own `io_json` attribute as the source of I/O crosswalk data.
-
-        If `output_file` is provided, writes combined JSON to that path;
-        otherwise prints to stdout.
-
-        Returns the combined JSON string.
-        """
-        master_list = []
         for proc in procedures:
-            json_str = getattr(proc, 'io_json', None)
-            if not json_str:
-                # skip if no io_json on proc
+            cleaned = self._clean_fvar_recursive(proc.fvar) if hasattr(proc, 'fvar') else {}
+            text = json.dumps(cleaned, indent=2)
+
+            proc.pjson = text
+            if not cleaned:
                 continue
-            try:
-                entries = json.loads(json_str)
-            except json.JSONDecodeError:
-                log.error("Invalid JSON in proc.io_json for %s", proc.name)
-                continue
-            for entry in entries:
-                # ensure used_in is set to the procedure name
-                entry.setdefault('used_in', proc.name)
-                master_list.append(entry)
 
-        combined = json.dumps(master_list, indent=2)
+            fname = os.path.join(out_dir, f"{proc.name}_fvar.json")
+            with open(fname, 'w') as f:
+                f.write(text)
+            print(f"Wrote FVAR JSON for {proc.name} → {fname}")
 
-        # always write to io_summary.json in cwd if no explicit path
-        if not output_file:
-            output_file = os.path.join(os.getcwd(), "io_summary.json")
-
-        with open(output_file, 'w') as f:
-            f.write(combined)
-        log.info("IO JSON written to %s", output_file)
-
-        return combined
 
 
     def _find_variable_info(self, procedure, var_ref):
@@ -466,7 +432,7 @@ class Project:
 
         for procedure in self.procedures:
             # If the procedure does not have a module (assuming `procedure.module` is a Boolean or exists)
-            print('!!!! ' + procedure.name)
+            #print('!!!! ' + procedure.name)
             if procedure.parobj == 'sourcefile':
                 procedures.append(procedure)
 
@@ -479,7 +445,7 @@ class Project:
 
     def cross_walk_type_dicts(self, procedures):
         for procedure in procedures:
-            print('%%%% ' + procedure.name)
+            #print('%%%% ' + procedure.name)
             for key, value in procedure.type_results.items():
                 if key in procedure.all_vars:
                     procedure.fvar[key] = {
@@ -551,6 +517,50 @@ class Project:
                 new_rep.pop('original', None)
             else:
                 print(f"Key '{nested_key}' not found in parent's proto variables by name.")
+        
+    def procedures_io_to_json(self, procedures, out_dir=None):
+        """
+        For each procedure:
+        - finalize its io_tracker
+        - if it recorded any sessions, build a list of ops
+        - dump to JSON and write to <proc.name>_io.json in out_dir (defaults to ./io_json)
+        Returns a dict of proc.name → its JSON string.
+        """
+        # default into an “io_json” subfolder of cwd
+        out_dir = out_dir or os.path.join(os.getcwd(), "io_json")
+        os.makedirs(out_dir, exist_ok=True)
+
+        mapping = {}
+
+        for proc in procedures:
+            proc.io_tracker.finalize()
+
+            master = []
+            for unit, sessions in proc.io_tracker.completed.items():
+                for sess in sessions:
+                    for kind, raw in sess.operations:
+                        master.append({
+                            "used_in": proc.name,
+                            "unit":     unit,
+                            "file":     sess.file,
+                            "kind":     kind,
+                            "raw_line": raw.strip()
+                        })
+
+            if not master:
+                continue
+
+            text = json.dumps(master, indent=2)
+            proc.io_json = text
+            mapping[proc.name] = text
+
+            # write out the JSON file
+            fname = os.path.join(out_dir, f"{proc.name}_io.json")
+            with open(fname, 'w') as f:
+                f.write(text)
+            print(f"Wrote I/O JSON for {proc.name} → {fname}")
+
+        return mapping
 
     @property
     def allfiles(self):

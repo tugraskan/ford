@@ -119,21 +119,11 @@ class IoTracker:
 
     @property
     def has_stragglers(self) -> bool:
-        """True if any sessions never got closed."""
+        """True if any sessions never properly closed."""
         return bool(self.stragglers)
 
-    def report(self):
-        # report **all** sessions, including stragglers, grouped by unit
-        for unit, sessions in self.completed.items():
-            for sess in sessions:
-                status = 'closed' if sess.closed else 'unclosed'
-                #print(f"Unit {unit!r} → file {sess.file!r} [{status}]")
-                #for kind, raw in sess.operations:
-                    #print(f"  {kind:5s} → {raw.strip()}")
-                #print()
-            #print(f"── end of all sessions for unit {unit!r} ──\n")
-
-    def aggregate(self):
+    def aggregate(self) -> dict:
+        """Flatten completed sessions into a simple dict summary."""
         agg = {}
         for unit, sessions in self.completed.items():
             files = []
@@ -148,36 +138,80 @@ class IoTracker:
 
     def get_io_summary(self) -> dict:
         """
-        Build a summary suitable for documentation, including per-unit
-        and per-file tallies of operations.
+        Build a concise summary of I/O operations:
+          - per-unit counts and files
+          - global operation tallies
         """
         summary = {
             "units": {},
             "files": {},
-            "operations": {"read": 0, "write": 0, "open": 0, "close": 0}
+            "operations": {}
         }
+        # unit-level breakdown
         for unit, sessions in self.completed.items():
-            unit_ops = {"read": 0, "write": 0, "open": 0, "close": 0}
+            unit_ops = defaultdict(int)
             unit_files = set()
             for sess in sessions:
                 if sess.file:
                     unit_files.add(sess.file)
                 for kind, _ in sess.operations:
-                    unit_ops[kind] = unit_ops.get(kind, 0) + 1
-                    summary["operations"][kind] = summary["operations"].get(kind, 0) + 1
+                    unit_ops[kind] += 1
+                    summary["operations"].setdefault(kind, 0)
+                    summary["operations"][kind] += 1
             summary["units"][unit] = {
-                "files": list(unit_files),
-                "operations": unit_ops,
-                "total_operations": sum(unit_ops.values())
+                "unit_files": list(unit_files),
+                "counts": dict(unit_ops)
             }
+        # file-level usage
         for filename, units in self.file_mappings.items():
             if not filename:
                 continue
-            summary["files"][filename] = {
-                "units": list(units),
-                "unit_count": len(units)
-            }
+            summary["files"][filename] = len(units)
         return summary
+
+    def report(self) -> None:
+        """Print a detailed I/O report for each completed session."""
+        for unit, sessions in self.completed.items():
+            for sess in sessions:
+                status = 'closed' if sess.closed else 'unclosed'
+                print(f"Unit {unit!r} → file {sess.file!r} [{status}]")
+                for kind, raw in sess.operations:
+                    print(f"  {kind:7s} → {raw.strip()}")
+                print()
+            print(f"── end of sessions for unit {unit!r} ──\n")
+
+    def io_xwalk(self, procedures, output_file=None, detailed=False) -> str:
+        """
+        Generate a concise I/O summary JSON for each procedure's tracker.
+
+        If `detailed=True`, also print the full session report per procedure.
+        Writes the combined summary to `output_file` if provided;
+        otherwise writes to 'io_summary.json' under './io'.
+
+        Returns the JSON string.
+        """
+        project_summary = {}
+        for proc in procedures:
+            tracker = proc.io_tracker
+            tracker.finalize()
+            if detailed:
+                print(f"=== Detailed I/O Report for {proc.name} ===")
+                tracker.report()
+            if not tracker.completed:
+                continue
+            project_summary[proc.name] = tracker.get_io_summary()
+
+        json_str = json.dumps(project_summary, indent=2)
+
+        if not output_file:
+            subdir = os.path.join(os.getcwd(), 'io')
+            os.makedirs(subdir, exist_ok=True)
+            output_file = os.path.join(subdir, 'io_summary.json')
+
+        with open(output_file, 'w') as f:
+            f.write(json_str)
+        log.info("I/O summary JSON written to %s", output_file)
+        return json_str
 
 
 
@@ -296,6 +330,9 @@ class FortranBase:
     An object containing the data common to all of the classes used to represent
     Fortran data.
     """
+
+    POINTS_TO_RE = re.compile(r"\s*=>\s*", re.IGNORECASE)
+    SPLIT_RE     = re.compile(r"\s*,\s*", re.IGNORECASE)
 
     IS_SPOOF = False
     # … your existing class‐level regexes and mappings …
