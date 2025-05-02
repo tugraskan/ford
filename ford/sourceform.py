@@ -69,149 +69,139 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 class IoSession:
-    def __init__(self, unit, filename):
+    def __init__(self, unit, filename, loop_context=None, line_no=None):
         self.unit = unit
         self.file = filename
         self.operations = []
         self.closed = False
+        self.loop_context = loop_context  # e.g., loop variable/name
+        self.line_no = line_no            # record line number for context
 
-    def add(self, kind, raw):
-        self.operations.append((kind, raw))
+    def add(self, kind, raw, line_no=None):
+        """Record an I/O operation with optional line number."""
+        self.operations.append({
+            "kind": kind,
+            "raw": raw.strip(),
+            "line": line_no
+        })
+
+    def close(self) -> None:
+        """Mark the session as closed."""
+        self.closed = True
 
 class IoTracker:
     def __init__(self):
         self._open_sessions = {}                # unit → IoSession
-        self.completed = defaultdict(list)      # unit → [IoSession,…]
+        self.completed = defaultdict(list)      # unit → [IoSession,...]
         self.file_mappings = defaultdict(set)   # filename → {unit1, unit2, ...}
         self.stragglers = []                    # IoSessions never closed
 
-    def start(self, unit, filename):
+    def start(self, unit, filename, line_no=None):
+        """Begin a new I/O session, closing any prior one on same unit."""
         if unit in self._open_sessions:
             old = self._open_sessions.pop(unit)
             self.completed[unit].append(old)
-        self._open_sessions[unit] = IoSession(unit, filename)
+        sess = IoSession(unit, filename, line_no=line_no)
+        self._open_sessions[unit] = sess
         if filename:
             self.file_mappings[filename].add(unit)
 
-    def record(self, unit, kind, raw):
+    def record(self, unit, kind, raw, line_no=None):
+        """Record a raw I/O operation under the open session for `unit`."""
         sess = self._open_sessions.get(unit)
         if sess:
-            sess.add(kind, raw)
+            sess.add(kind, raw, line_no)
 
-    def close(self, unit):
+    def close(self, unit, line_no=None):
+        """Close and archive the I/O session for `unit`."""
         sess = self._open_sessions.pop(unit, None)
         if sess:
-            sess.closed = True
+            sess.add('close', f'close({unit})', line_no)
+            sess.close()
             self.completed[unit].append(sess)
 
-    def finalize(self):
-        # detect unclosed sessions
+    def finalize(self) -> None:
+        """Archive any unclosed sessions as stragglers."""
         self.stragglers = list(self._open_sessions.values())
-        #if self.stragglers:
-        #    log.warning(
-        #        "Unclosed IO sessions detected: %s",
-        #        [s.unit for s in self.stragglers]
-        #   )
-        # close out any remaining sessions (they remain marked closed=False)
+        if self.stragglers:
+            log.warning("Unclosed IO sessions: %s", [s.unit for s in self.stragglers])
         for unit, sess in list(self._open_sessions.items()):
             self.completed[unit].append(sess)
         self._open_sessions.clear()
 
-    @property
-    def has_stragglers(self) -> bool:
-        """True if any sessions never properly closed."""
-        return bool(self.stragglers)
-
-    def aggregate(self) -> dict:
-        """Flatten completed sessions into a simple dict summary."""
-        agg = {}
-        for unit, sessions in self.completed.items():
-            files = []
-            ops = []
-            for sess in sessions:
-                if sess.file not in files:
-                    files.append(sess.file)
-                for kind, raw in sess.operations:
-                    ops.append({"kind": kind, "raw_line": raw.strip()})
-            agg[unit] = {"files": files, "operations": ops}
-        return agg
-
-    def get_io_summary(self) -> dict:
-        """
-        Build a concise summary of I/O operations:
-          - per-unit counts and files
-          - global operation tallies
-        """
-        summary = {
-            "units": {},
-            "files": {},
-            "operations": {}
-        }
-        # unit-level breakdown
-        for unit, sessions in self.completed.items():
-            unit_ops = defaultdict(int)
-            unit_files = set()
-            for sess in sessions:
-                if sess.file:
-                    unit_files.add(sess.file)
-                for kind, _ in sess.operations:
-                    unit_ops[kind] += 1
-                    summary["operations"].setdefault(kind, 0)
-                    summary["operations"][kind] += 1
-            summary["units"][unit] = {
-                "unit_files": list(unit_files),
-                "counts": dict(unit_ops)
-            }
-        # file-level usage
-        for filename, units in self.file_mappings.items():
-            if not filename:
-                continue
-            summary["files"][filename] = len(units)
-        return summary
-
     def report(self) -> None:
-        """Print a detailed I/O report for each completed session."""
+        """Print full I/O report for debugging."""
         for unit, sessions in self.completed.items():
             for sess in sessions:
                 status = 'closed' if sess.closed else 'unclosed'
-                print(f"Unit {unit!r} → file {sess.file!r} [{status}]")
-                for kind, raw in sess.operations:
-                    print(f"  {kind:7s} → {raw.strip()}")
+                print(f"Unit {unit!r} File {sess.file!r} [{status}]")
+                for op in sess.operations:
+                    print(f"  Line {op['line']}: {op['kind']:7s} → {op['raw']}")
                 print()
-            print(f"── end of sessions for unit {unit!r} ──\n")
+            print(f"-- end of unit {unit} --\n")
+
+    def get_io_summary(self) -> dict:
+        """Return concise counts per unit and global op counts."""
+        summary = {'units': {}, 'files': {}, 'operations': {}}
+        for unit, sessions in self.completed.items():
+            counts = defaultdict(int)
+            files = set()
+            for sess in sessions:
+                files.add(sess.file)
+                for op in sess.operations:
+                    counts[op['kind']] += 1
+                    summary['operations'].setdefault(op['kind'], 0)
+                    summary['operations'][op['kind']] += 1
+            summary['units'][unit] = {'files': list(files), 'counts': dict(counts)}
+        for fname, units in self.file_mappings.items():
+            if fname:
+                summary['files'][fname] = {'units': list(units), 'count': len(units)}
+        return summary
+
+    def summarize_file_io(self) -> dict:
+        """Classify each file's headers vs data columns."""
+        result = {}
+        for sessions in self.completed.values():
+            for sess in sessions:
+                fname = sess.file or '<unknown>'
+                rec = result.setdefault(fname, {'headers': [], 'data_reads': []})
+                for op in sess.operations:
+                    if op['kind'] != 'read':
+                        continue
+                    cols_str = op['raw'].split(')')[-1]
+                    cols = [c.strip() for c in re.split(r'\s*,\s*', cols_str) if c.strip()]
+                    if len(cols) == 1:
+                        if cols[0] not in rec['headers']:
+                            rec['headers'].append(cols[0])
+                    else:
+                        rec['data_reads'].append({'columns': cols, 'line': op['line']})
+        return result
 
     def io_xwalk(self, procedures, output_file=None, detailed=False) -> str:
         """
-        Generate a concise I/O summary JSON for each procedure's tracker.
-
-        If `detailed=True`, also print the full session report per procedure.
-        Writes the combined summary to `output_file` if provided;
-        otherwise writes to 'io_summary.json' under './io'.
-
-        Returns the JSON string.
+        Produce JSON summary of I/O per procedure:
+          - if detailed: print full report
+          - always write concise file-level headers/data
         """
-        project_summary = {}
+        all_summary = {}
         for proc in procedures:
             tracker = proc.io_tracker
             tracker.finalize()
             if detailed:
-                print(f"=== Detailed I/O Report for {proc.name} ===")
+                print(f"=== I/O for {proc.name} ===")
                 tracker.report()
             if not tracker.completed:
                 continue
-            project_summary[proc.name] = tracker.get_io_summary()
-
-        json_str = json.dumps(project_summary, indent=2)
-
+            all_summary[proc.name] = tracker.summarize_file_io()
+        json_out = json.dumps(all_summary, indent=2)
         if not output_file:
-            subdir = os.path.join(os.getcwd(), 'io')
-            os.makedirs(subdir, exist_ok=True)
-            output_file = os.path.join(subdir, 'io_summary.json')
-
+            out_dir = os.path.join(os.getcwd(), 'io_summary')
+            os.makedirs(out_dir, exist_ok=True)
+            output_file = os.path.join(out_dir, 'io_summary.json')
         with open(output_file, 'w') as f:
-            f.write(json_str)
-        log.info("I/O summary JSON written to %s", output_file)
-        return json_str
+            f.write(json_out)
+        log.info("I/O summary saved to %s", output_file)
+        return json_out
 
 
 

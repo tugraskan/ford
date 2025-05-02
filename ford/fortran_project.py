@@ -385,9 +385,12 @@ class Project:
                 continue
 
             fname = os.path.join(out_dir, f"{proc.name}_fvar.json")
-            with open(fname, 'w') as f:
-                f.write(text)
-            print(f"Wrote FVAR JSON for {proc.name} → {fname}")
+            try:
+                with open(fname, 'w') as f:
+                    f.write(text)
+                print(f"Wrote FVAR JSON for {proc.name} → {fname}")
+            except IOError as e:
+                log.error(f"Failed to write FVAR JSON for {proc.name} to {fname}: {e}")
 
 
 
@@ -479,14 +482,14 @@ class Project:
           - 'name', 'vartype', 'initial', 'filename', 'doc_list', 'variables'
           - 'original' is stored temporarily only for recursion.
 
-        After processing each branch, the 'original' key is removed.
+                log.error("Parent original object not found; cannot continue recursion.")
         """
         for nested_key, nested_values in value.items():
             parent_orig = parent_rep.get('original')
             if not parent_orig:
                 print("Parent original object not found; cannot continue recursion.")
                 continue
-
+                log.error("Parent original object not found; cannot continue recursion.")
             # Find the matching variable in parent's proto[0].variables by name.
             found_var = next(
                 (var for var in parent_orig.proto[0].variables if var.name == nested_key),
@@ -526,42 +529,45 @@ class Project:
         - dump to JSON and write to <proc.name>_io.json in out_dir (defaults to ./io_json)
         Returns a dict of proc.name → its JSON string.
         """
-        # default into an “io_json” subfolder of cwd
+        # default into an “io_json” sub-folder of cwd
         out_dir = out_dir or os.path.join(os.getcwd(), "io_json")
         os.makedirs(out_dir, exist_ok=True)
 
         mapping = {}
 
         for proc in procedures:
+            # finalize and archive any open sessions
             proc.io_tracker.finalize()
 
             master = []
             for unit, sessions in proc.io_tracker.completed.items():
                 for sess in sessions:
-                    for kind, raw in sess.operations:
+                    for op in sess.operations:
+                        kind = op.get("kind")
+                        raw  = op.get("raw")
                         master.append({
-                            "used_in": proc.name,
-                            "unit":     unit,
-                            "file":     sess.file,
-                            "kind":     kind,
-                            "raw_line": raw.strip()
+                            "used_in":  proc.name,
+                            "unit":      unit,
+                            "file":      sess.file,
+                            "kind":      kind,
+                            "raw_line":  raw
                         })
 
             if not master:
                 continue
 
+            # pretty-print JSON and stash on the proc
             text = json.dumps(master, indent=2)
             proc.io_json = text
             mapping[proc.name] = text
 
-            # write out the JSON file
+            # write the per-procedure JSON file
             fname = os.path.join(out_dir, f"{proc.name}_io.json")
             with open(fname, 'w') as f:
                 f.write(text)
             print(f"Wrote I/O JSON for {proc.name} → {fname}")
 
         return mapping
-
     @property
     def allfiles(self):
         """Instead of duplicating files, it is much more efficient to create the itterator on the fly"""
