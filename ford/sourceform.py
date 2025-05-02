@@ -61,28 +61,34 @@ from ford._markdown import MetaMarkdown
 from ford.settings import ProjectSettings, EntitySettings
 from ford._typing import PathLike
 
+import logging
+
 if TYPE_CHECKING:
     from ford.fortran_project import Project
 
+log = logging.getLogger(__name__)
 
 class IoSession:
     def __init__(self, unit, filename):
-        self.unit       = unit
-        self.file       = filename
+        self.unit = unit
+        self.file = filename
         self.operations = []
+        self.closed = False
+
     def add(self, kind, raw):
         self.operations.append((kind, raw))
 
 class IoTracker:
     def __init__(self):
-        self._open_sessions = {}            # unit → IoSession
-        self.completed      = defaultdict(list)  # unit → [IoSession,…]
-        self.file_mappings  = defaultdict(set)   # filename → {unit1, unit2, ...}
+        self._open_sessions = {}                # unit → IoSession
+        self.completed = defaultdict(list)      # unit → [IoSession,…]
+        self.file_mappings = defaultdict(set)   # filename → {unit1, unit2, ...}
+        self.stragglers = []                    # IoSessions never closed
 
     def start(self, unit, filename):
         if unit in self._open_sessions:
-            # stash the old one under its unit
-            self.completed[unit].append(self._open_sessions.pop(unit))
+            old = self._open_sessions.pop(unit)
+            self.completed[unit].append(old)
         self._open_sessions[unit] = IoSession(unit, filename)
         if filename:
             self.file_mappings[filename].add(unit)
@@ -95,33 +101,40 @@ class IoTracker:
     def close(self, unit):
         sess = self._open_sessions.pop(unit, None)
         if sess:
+            sess.closed = True
             self.completed[unit].append(sess)
 
     def finalize(self):
-        # close out any stragglers
+        # detect unclosed sessions
+        self.stragglers = list(self._open_sessions.values())
+        if self.stragglers:
+            log.warning(
+                "Unclosed IO sessions detected: %s",
+                [s.unit for s in self.stragglers]
+            )
+        # close out any remaining sessions (they remain marked closed=False)
         for unit, sess in list(self._open_sessions.items()):
             self.completed[unit].append(sess)
         self._open_sessions.clear()
 
+    @property
+    def has_stragglers(self) -> bool:
+        """True if any sessions never got closed."""
+        return bool(self.stragglers)
+
     def report(self):
-        # report **all** sessions, grouped by unit
+        # report **all** sessions, including stragglers, grouped by unit
         for unit, sessions in self.completed.items():
             for sess in sessions:
-                print(f"Unit {unit!r} → file {sess.file!r}")
+                status = 'closed' if sess.closed else 'unclosed'
+                print(f"Unit {unit!r} → file {sess.file!r} [{status}]")
                 for kind, raw in sess.operations:
                     print(f"  {kind:5s} → {raw.strip()}")
                 print()
             print(f"── end of all sessions for unit {unit!r} ──\n")
 
     def aggregate(self):
-        """
-        Return a dict:
-          unit → {
-            "files":      [filename1, filename2, …],
-            "operations": [ {"kind":…, "raw_line":…}, … ]
-          }
-        """
-        agg: dict[str, dict] = {}
+        agg = {}
         for unit, sessions in self.completed.items():
             files = []
             ops = []
@@ -140,12 +153,7 @@ class IoTracker:
         summary = {
             "units": {},
             "files": {},
-            "operations": {
-                "read": 0,
-                "write": 0,
-                "open": 0,
-                "close": 0
-            }
+            "operations": {"read": 0, "write": 0, "open": 0, "close": 0}
         }
 
         # Count operations by type
@@ -156,22 +164,20 @@ class IoTracker:
             for sess in sessions:
                 if sess.file:
                     unit_files.add(sess.file)
-
                 for kind, _ in sess.operations:
-                    unit_ops[kind] += 1
-                    summary["operations"][kind] += 1
+                    unit_ops[kind] = unit_ops.get(kind, 0) + 1
+                    summary["operations"][kind] = summary["operations"].get(kind, 0) + 1
 
-            summary["units"][unit] = {
+            summary[unit] = {
                 "files": list(unit_files),
                 "operations": unit_ops,
                 "total_operations": sum(unit_ops.values())
             }
 
-        # Summarize files
+        # Summarize files used
         for filename, units in self.file_mappings.items():
             if not filename:
                 continue
-
             summary["files"][filename] = {
                 "units": list(units),
                 "unit_count": len(units)
@@ -878,7 +884,8 @@ class FortranContainer(FortranBase):
 
     NUMBER_RE = re.compile(r"^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$")
 
-    IO_UNIT_RE = re.compile(r'\(\s*(?P<unit>[^,)\s]+)\s*,')
+    # Better regex that handles both cases: (108) and (108, ...)
+    IO_UNIT_RE = re.compile(r'\(\s*(?P<unit>[^,)\s]+)(?:\s*,|\s*\))')
 
     # pull recl if present anywhere
     RECL_RE = re.compile(r'recl\s*=\s*(\d+)', re.IGNORECASE)
@@ -1377,6 +1384,12 @@ class FortranContainer(FortranBase):
 
             self.io_tracker.record(unit, "write", raw)
             return
+        
+        if low.startswith('backspace'):
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+            self.io_tracker.record(unit, "backspace", raw)
+            return
 
         if low.startswith('close'):
             m = self.IO_UNIT_RE.search(raw)
@@ -1517,22 +1530,22 @@ class FortranCodeUnit(FortranContainer):
         self.public_list: List[str] = []
         self.namelists: List[FortranNamelist] = []
 
-    class FortranCodeUnit(FortranContainer):
-        def _cleanup(self) -> None:
-            # finalize & print all I/O for this code‐unit
-            self.io_tracker.finalize()
-            self.io_tracker.report()
+  
+    def _cleanup(self) -> None:        
+        # finalize & print all I/O for this code‐unit
+        self.io_tracker.finalize()
+        self.io_tracker.report()
 
-            # existing cleanup logic
-            self.process_attribs()
-            self.all_procs = {p.name.lower(): p for p in self.routines}
-            for interface in self.interfaces:
-                if not interface.abstract:
-                    self.all_procs[interface.name.lower()] = interface
-                if interface.generic:
-                    for proc in interface.routines:
-                        self.all_procs[proc.name.lower()] = proc
-            self.variables = [v for v in self.variables if "external" not in v.attribs]
+        # existing cleanup logic
+        self.process_attribs()
+        self.all_procs = {p.name.lower(): p for p in self.routines}
+        for interface in self.interfaces:
+            if not interface.abstract:
+                self.all_procs[interface.name.lower()] = interface
+            if interface.generic:
+                for proc in interface.routines:
+                    self.all_procs[proc.name.lower()] = proc
+        self.variables = [v for v in self.variables if "external" not in v.attribs]
 
     def correlate(self, project: Project) -> None:
         # Add procedures, interfaces and types from parent to our lists
