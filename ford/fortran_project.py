@@ -244,6 +244,16 @@ class Project:
 
         self.files.append(new_file)
 
+    def export_call_graph(self, procedures, out_path="call_graph.json"):
+        graph = {}
+        for proc in procedures:
+            graph[proc.name] = {
+                "calls": [call if isinstance(call, str) else call.name for call in proc.calls],
+                "file": proc.filename
+            }
+        with open(out_path, 'w') as f:
+            json.dump(graph, f, indent=2)    
+
     def extract_non_fortran_and_non_integers(self, subroutine):
         """
         Extracts items that are neither Fortran keywords, integers, symbols, nor self-defined variables.
@@ -323,6 +333,9 @@ class Project:
         """
         type_dict = {}
 
+        # copy variables to var_ug_local
+        subroutine.var_ug_local = subroutine.variables
+
         # Check if member_access_results is a valid list
         if not isinstance(subroutine.member_access_results, list):
             raise TypeError("Expected 'member_access_results' to be a list.")
@@ -364,20 +377,49 @@ class Project:
             return [self._clean_fvar_recursive(item) for item in data]
         else:
             return data
-
+    
     def procedures_fvar_to_json(self, procedures, out_dir=None):
         """
         For each procedure:
         - clean up its `fvar`
-        - dump it to JSON
-        - write that JSON to <proc.name>_fvar.json in out_dir (defaults to ./fvar_json)
+        - dump it to JSON in ./fvar_json
+        - dump local variables list (with name, vartype, initial, doc_list) to ./local_json
         """
-        # default into a “fvar_json” sub-folder of cwd
+        # default into a "fvar_json" sub-folder of cwd
         out_dir = out_dir or os.path.join(os.getcwd(), "fvar_json")
         os.makedirs(out_dir, exist_ok=True)
 
+        # also prepare a "local_json" folder for var_ug_local dumps
+        local_dir = os.path.join(os.getcwd(), "local_json")
+        os.makedirs(local_dir, exist_ok=True)
+
         for proc in procedures:
+            # 1) clean the existing fvar dict
             cleaned = self._clean_fvar_recursive(proc.fvar) if hasattr(proc, 'fvar') else {}
+
+            # 2) build the local-variable list for this proc
+            local_list = []
+            if hasattr(proc, 'var_ug_local'):
+                for var in proc.var_ug_local:
+                    local_list.append({
+                        'name': var.name,
+                        'vartype': getattr(var, 'vartype', getattr(var, 'type', None)),
+                        'initial': getattr(var, 'initial', None),
+                        'doc_list': getattr(var, 'doc_list', []),
+                    })
+
+            # 3) write out the locals JSON if any
+            if local_list:
+                try:
+                    local_text = json.dumps(local_list, indent=2)
+                    local_fname = os.path.join(local_dir, f"{proc.name}_local.json")
+                    with open(local_fname, 'w') as lf:
+                        lf.write(local_text)
+                    log.info("Wrote LOCAL JSON for %s → %s", proc.name, local_fname)
+                except IOError as e:
+                    log.error("Failed to write LOCAL JSON for %s: %s", proc.name, e)
+
+            # now do the existing fvar dump
             text = json.dumps(cleaned, indent=2)
 
             proc.pjson = text
@@ -388,11 +430,8 @@ class Project:
             try:
                 with open(fname, 'w') as f:
                     f.write(text)
-                print(f"Wrote FVAR JSON for {proc.name} → {fname}")
             except IOError as e:
                 log.error(f"Failed to write FVAR JSON for {proc.name} to {fname}: {e}")
-
-
 
     def _find_variable_info(self, procedure, var_ref):
         """
@@ -522,52 +561,66 @@ class Project:
                 print(f"Key '{nested_key}' not found in parent's proto variables by name.")
         
     def procedures_io_to_json(self, procedures, out_dir=None):
-        """
-        For each procedure:
-        - finalize its io_tracker
-        - if it recorded any sessions, build a list of ops
-        - dump to JSON and write to <proc.name>_io.json in out_dir (defaults to ./io_json)
-        Returns a dict of proc.name → its JSON string.
-        """
-        # default into an “io_json” sub-folder of cwd
-        out_dir = out_dir or os.path.join(os.getcwd(), "io_json")
-        os.makedirs(out_dir, exist_ok=True)
+            """
+            For each procedure:
+            - finalize its io_tracker
+            - build a per-file summary of headers vs data columns
+            - write one combined JSON to io_summary.json in out_dir
+            - write individual summaries to <proc>.io.json
+            - write individual timelines to <proc>_io_timeline.json
+            Returns the master summary dict.
+            """
 
-        mapping = {}
+            # 1) Prepare output directory
+            out_dir = out_dir or os.path.join(os.getcwd(), 'io_summary')
+            os.makedirs(out_dir, exist_ok=True)
 
-        for proc in procedures:
-            # finalize and archive any open sessions
-            proc.io_tracker.finalize()
+            project_summary = {}
+            for proc in procedures:
+                tracker = proc.io_tracker
+                tracker.finalize()
+                if not tracker.completed:
+                    continue
 
-            master = []
-            for unit, sessions in proc.io_tracker.completed.items():
-                for sess in sessions:
-                    for op in sess.operations:
-                        kind = op.get("kind")
-                        raw  = op.get("raw")
-                        master.append({
-                            "used_in":  proc.name,
-                            "unit":      unit,
-                            "file":      sess.file,
-                            "kind":      kind,
-                            "raw_line":  raw
-                        })
+                # a) build per-proc summary
+                summary = tracker.summarize_file_io()
+                project_summary[proc.name] = summary
 
-            if not master:
-                continue
+                # b) write per-proc summary JSON
+                single_path = os.path.join(out_dir, f"{proc.name}.io.json")
+                try:
+                    with open(single_path, 'w') as f:
+                        json.dump(summary, f, indent=2)
+                    log.info("I/O summary for %s written to %s", proc.name, single_path)
+                except IOError as e:
+                    log.error("Failed to write I/O summary for %s: %s", proc.name, e)
 
-            # pretty-print JSON and stash on the proc
-            text = json.dumps(master, indent=2)
-            proc.io_json = text
-            mapping[proc.name] = text
+            # 2) write master bird’s-eye summary
+            master_path = os.path.join(out_dir, 'io_summary.json')
+            try:
+                with open(master_path, 'w') as f:
+                    json.dump(project_summary, f, indent=2)
+                log.info("Master I/O summary written to %s", master_path)
+            except IOError as e:
+                log.error("Failed to write master I/O summary: %s", e)
 
-            # write the per-procedure JSON file
-            fname = os.path.join(out_dir, f"{proc.name}_io.json")
-            with open(fname, 'w') as f:
-                f.write(text)
-            print(f"Wrote I/O JSON for {proc.name} → {fname}")
+            # 3) write per-procedure I/O timelines
+            for proc in procedures:
+                tracker = proc.io_tracker
+                tracker.finalize()
+                if not tracker.completed:
+                    continue
 
-        return mapping
+                timeline = tracker.operations_timeline()
+                tl_path = os.path.join(out_dir, f"{proc.name}_io_timeline.json")
+                try:
+                    with open(tl_path, 'w') as tf:
+                        json.dump(timeline, tf, indent=2)
+                    log.info("I/O timeline for %s written to %s", proc.name, tl_path)
+                except IOError as e:
+                    log.error("Failed to write I/O timeline for %s: %s", proc.name, e)
+
+            return project_summary
     @property
     def allfiles(self):
         """Instead of duplicating files, it is much more efficient to create the itterator on the fly"""

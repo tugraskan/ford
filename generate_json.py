@@ -7,7 +7,7 @@ from pathlib import Path
 
 def main():
     # Specify the source directory for the Fortran files\
-    #source_dir = r'C:\Users\taci.ugraskan\source\repos\swatnet\Globals\OG'
+    source_dir = r'C:\Users\taci.ugraskan\source\repos\ford\src'
     source_dir = r'C:\Users\taci.ugraskan\source\repos\swatnet\Globals\src'
 
 
@@ -20,7 +20,7 @@ def main():
     # Correlate the project data (parses and processes the Fortran files)!
     project.correlate()
 
-    print(f"Project data has been correlated.")
+    print(f"Project data has been correlated for source directory: {source_dir}")
 
     procedures = project.get_procedures()
 
@@ -32,9 +32,12 @@ def main():
     # Write the metadata to a JSON file
     project.procedures_fvar_to_json(procedures)
 
-    project.io_xwalk(procedures)
+    project.procedures_io_to_json(procedures)
 
-    print(f"Metadata has been written to ")
+    project.export_call_graph(procedures)
+
+    #output_file = project_settings.output_file if hasattr(project_settings, 'output_file') else "output.json"
+    #print(f"Metadata has been written to {output_file}")
 
 if __name__ == "__main__":
     main()

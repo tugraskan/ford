@@ -62,11 +62,23 @@ from ford.settings import ProjectSettings, EntitySettings
 from ford._typing import PathLike
 
 import logging
+from collections import defaultdict
 
 if TYPE_CHECKING:
     from ford.fortran_project import Project
 
 log = logging.getLogger(__name__)
+
+def extract_base(col: str) -> str:
+    """
+    Strip off any array‐index or component qualifiers
+    so you only get the raw variable name.
+    E.g. "aq_ch(iaq)%name"  → "aq_ch"
+    """
+    # take everything before the first '('
+    base = col.split('(', 1)[0]
+    # then drop any %component
+    return base.split('%', 1)[0]
 
 class IoSession:
     def __init__(self, unit, filename, loop_context=None, line_no=None):
@@ -96,6 +108,47 @@ class IoTracker:
         self.file_mappings = defaultdict(set)   # filename → {unit1, unit2, ...}
         self.stragglers = []                    # IoSessions never closed
 
+    def normalize_file_key(self, fname: str) -> str:
+        """
+        Collapse any TRIM/ADJUSTL wrappers and '//' concatenations so that
+        both
+        TRIM(ADJUSTL(in_path_hmd%hmd))//hmd(i)%filename
+        and
+        hmd(i)%filename
+        become simply
+        hmd(i)%filename
+        """
+        if not fname:
+            return "<unknown>"
+        f = fname.strip().strip('"').strip("'")
+        # if string‐concat present, keep only after the last //
+        if '//' in f:
+            f = f.rsplit('//', 1)[-1].strip()
+        # strip single TRIM(...) or ADJUSTL(...) wrapper
+        m = re.match(r'^(?:TRIM|ADJUSTL)\((.+)\)$', f, re.IGNORECASE)
+        if m:
+            return self.normalize_file_key(m.group(1).strip())
+        return f    
+    
+    def operations_timeline(self) -> dict[str, list[dict]]:
+        """
+        Return a full, ordered list of I/O ops per normalized file:
+          { file_key: [ { "kind": kind, "raw_line": raw }, … ], … }
+        """
+        timeline: dict[str, list[dict]] = {}
+        # sessions preserves order of opens/closes per unit
+        for sessions in self.completed.values():
+            for sess in sessions:
+                # normalize the filename just like in summarize_file_io
+                file_key = self.normalize_file_key(sess.file)
+                ops = timeline.setdefault(file_key, [])
+                for op in sess.operations:
+                    ops.append({
+                        "kind":     op["kind"],
+                        "raw_line": op["raw"]
+                    })
+        return timeline
+
     def start(self, unit, filename, line_no=None):
         """Begin a new I/O session, closing any prior one on same unit."""
         if unit in self._open_sessions:
@@ -124,7 +177,7 @@ class IoTracker:
         """Archive any unclosed sessions as stragglers."""
         self.stragglers = list(self._open_sessions.values())
         if self.stragglers:
-            log.warning("Unclosed IO sessions: %s", [s.unit for s in self.stragglers])
+            log.warning("Unclosed IO sessions: %s", [(s.unit, s.file) for s in self.stragglers])
         for unit, sess in list(self._open_sessions.items()):
             self.completed[unit].append(sess)
         self._open_sessions.clear()
@@ -134,11 +187,7 @@ class IoTracker:
         for unit, sessions in self.completed.items():
             for sess in sessions:
                 status = 'closed' if sess.closed else 'unclosed'
-                print(f"Unit {unit!r} File {sess.file!r} [{status}]")
-                for op in sess.operations:
-                    print(f"  Line {op['line']}: {op['kind']:7s} → {op['raw']}")
-                print()
-            print(f"-- end of unit {unit} --\n")
+
 
     def get_io_summary(self) -> dict:
         """Return concise counts per unit and global op counts."""
@@ -158,50 +207,99 @@ class IoTracker:
                 summary['files'][fname] = {'units': list(units), 'count': len(units)}
         return summary
 
-    def summarize_file_io(self) -> dict:
-        """Classify each file's headers vs data columns."""
-        result = {}
+    def summarize_file_io(self) -> dict[str, dict]:
+        """
+        Produce a concise summary of I/O per file:
+          - headers:      in‐order unique titldum/header reads
+          - index_reads:  in‐order unique single‐column 'i' reads
+          - data_reads:   unique tuples of full column strings with a 'rows' count,
+                          including single‐col array or derived‐type reads
+        """
+        result: dict[str, dict] = {}
+
+        # 1) Ingest all reads
         for sessions in self.completed.values():
             for sess in sessions:
-                fname = sess.file or '<unknown>'
-                rec = result.setdefault(fname, {'headers': [], 'data_reads': []})
+                fname = self.normalize_file_key(sess.file)
+                rec = result.setdefault(fname, {
+                    "unit":        sess.unit,
+                    "headers":     [],
+                    "index_reads": [],
+                    "data_reads":  []
+                })
+
                 for op in sess.operations:
-                    if op['kind'] != 'read':
+                    if op["kind"].lower() != "read":
                         continue
-                    cols_str = op['raw'].split(')')[-1]
-                    cols = [c.strip() for c in re.split(r'\s*,\s*', cols_str) if c.strip()]
-                    if len(cols) == 1:
-                        if cols[0] not in rec['headers']:
-                            rec['headers'].append(cols[0])
+                    
+
+                    # get text after the format ')'
+                    m = re.match(r'read\s*\([^)]+\)\s*(.*)', op["raw"], re.IGNORECASE)
+                    if not m:
+                        continue
+                    cols_part = m.group(1).strip()
+
+                    # split on top‐level commas
+                    cols, buf, depth = [], "", 0
+                    for ch in cols_part:
+                        if ch == "(":
+                            depth += 1; buf += ch
+                        elif ch == ")" and depth > 0:
+                            depth -= 1; buf += ch
+                        elif ch == "," and depth == 0:
+                            cols.append(buf.strip()); buf = ""
+                        else:
+                            buf += ch
+                    if buf.strip():
+                        cols.append(buf.strip())
+
+                    # strip one layer of parens, keep full qualifier
+                    clean_cols = []
+                    for c in cols:
+                        c2 = c.strip()
+                        if c2.startswith("(") and c2.endswith(")"):
+                            c2 = c2[1:-1].strip()
+                        clean_cols.append(c2)
+
+                    # classify single‐ vs multi‐column
+                    if len(clean_cols) == 1:
+                        single = clean_cols[0]
+                        # index read
+                        if single == "i":
+                            if single not in rec["index_reads"]:
+                                rec["index_reads"].append(single)
+
+                        # header reads remain titldum/header
+                        elif single in ("titldum", "header"):
+                            if single not in rec["headers"]:
+                                rec["headers"].append(single)
+
+                        # any single‐col with '(' or '%' → data_reads
+                        elif "(" in single or "%" in single:
+                            rec["data_reads"].append((single,))
+
+                        # else truly a header
+                        else:
+                            if single not in rec["headers"]:
+                                rec["headers"].append(single)
+
                     else:
-                        rec['data_reads'].append({'columns': cols, 'line': op['line']})
+                        # multi‐column → data_reads
+                        rec["data_reads"].append(tuple(clean_cols))
+
+        # 2) Collapse duplicate data_reads into row counts
+        for rec in result.values():
+            dr_counts: dict[tuple[str, ...], int] = defaultdict(int)
+            for cols in rec["data_reads"]:
+                dr_counts[cols] += 1
+
+            rec["data_reads"] = [
+                {"columns": list(cols), "rows": count}
+                for cols, count in dr_counts.items()
+            ]
+
         return result
 
-    def io_xwalk(self, procedures, output_file=None, detailed=False) -> str:
-        """
-        Produce JSON summary of I/O per procedure:
-          - if detailed: print full report
-          - always write concise file-level headers/data
-        """
-        all_summary = {}
-        for proc in procedures:
-            tracker = proc.io_tracker
-            tracker.finalize()
-            if detailed:
-                print(f"=== I/O for {proc.name} ===")
-                tracker.report()
-            if not tracker.completed:
-                continue
-            all_summary[proc.name] = tracker.summarize_file_io()
-        json_out = json.dumps(all_summary, indent=2)
-        if not output_file:
-            out_dir = os.path.join(os.getcwd(), 'io_summary')
-            os.makedirs(out_dir, exist_ok=True)
-            output_file = os.path.join(out_dir, 'io_summary.json')
-        with open(output_file, 'w') as f:
-            f.write(json_out)
-        log.info("I/O summary saved to %s", output_file)
-        return json_out
 
 
 
@@ -943,11 +1041,11 @@ class FortranContainer(FortranBase):
 
         self.var_ug = {} # For procedures
         self.var_ug_na = [] # For procedures
+        self.var_ug_local = {} # For procedures
         self.io_lines = []
         self.fvar = {}
         self.pjson = {}
         self.io_json = {}
-        self.io_xwalk = {}
 
 
         # Define a set of symbols to exclude
@@ -1352,33 +1450,67 @@ class FortranContainer(FortranBase):
         token_pattern = re.compile(r'"(\d+)"')
         # Use a lambda for inline replacement without defining an explicit 'repl' function.
         return token_pattern.sub(lambda match: strings[int(match.group(1))], line)
+    
+    def extract_filename_expr(self, raw_line: str) -> str:
+        """
+        Given a line like "open (108,file = hmd(i)%filename)",
+        returns "hmd(i)%filename" (including any nested parentheses or // operations).
+        """
+        # find the file= token
+        m = re.search(r'file\s*=', raw_line, re.IGNORECASE)
+        if not m:
+            return None
+
+        # start just after the '='
+        idx = m.end()
+        # skip whitespace
+        while idx < len(raw_line) and raw_line[idx].isspace():
+            idx += 1
+
+        # collect chars until we hit the closing ')' of the OPEN(...)
+        depth = 0
+        chars = []
+        while idx < len(raw_line):
+            ch = raw_line[idx]
+            if ch == '(':
+                depth += 1
+                chars.append(ch)
+            elif ch == ')':
+                if depth == 0:
+                    break   # this is the closing paren of open(...)
+                depth -= 1
+                chars.append(ch)
+            else:
+                chars.append(ch)
+            idx += 1
+
+        return ''.join(chars).strip()
 
     def _parse_io_open(self, line: str) -> None:
-        """Parse I/O operations and track them in the io_tracker"""
         raw = self.restore_strings(line, self.strings)
         low = raw.strip().lower()
 
         if low.startswith('open'):
-            m = self.IO_UNIT_RE.search(raw)
-            unit = m.group('unit') if m else None
-
-            # Extract file name
-            mf = re.search(r'file\s*=\s*([^,)]+)', raw, re.IGNORECASE)
-            fname = mf.group(1).strip() if mf else None
-
             # Extract record length if present
             recl = None
-            mr = self.RECL_RE.search(raw)
-            if mr:
-                recl = mr.group(1)
+            if m := self.RECL_RE.search(raw):
+                recl = m.group(1)
 
-            # Start tracking this I/O session
+            # Extract full filename expression
+            fname = self.extract_filename_expr(raw)
+
+            # Extract unit number
+            unit_m = self.IO_UNIT_RE.search(raw)
+            unit = unit_m.group('unit') if unit_m else None
+
+            # Start a new session for this unit/file
             self.io_tracker.start(unit, fname)
 
-            # Record additional metadata
-            if recl:
+            # Record record-length metadata if found
+            if recl is not None:
                 self.io_tracker.record(unit, "meta", f"Record length: {recl}")
 
+            # Record the open itself
             self.io_tracker.record(unit, "open", raw)
             return
 
@@ -1405,6 +1537,13 @@ class FortranContainer(FortranBase):
 
             self.io_tracker.record(unit, "write", raw)
             return
+        
+        # record explicit file rewinds
+        if low.startswith('rewind'):
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+            self.io_tracker.record(unit, "rewind", raw)
+            return    
         
         if low.startswith('backspace'):
             m = self.IO_UNIT_RE.search(raw)
