@@ -406,6 +406,7 @@ class Project:
                         'vartype': getattr(var, 'vartype', getattr(var, 'type', None)),
                         'initial': getattr(var, 'initial', None),
                         'doc_list': getattr(var, 'doc_list', []),
+                        'line_number': getattr(var, 'line_number', None)   # <--- NEW LINE
                     })
 
             # 3) write out the locals JSON if any
@@ -420,6 +421,10 @@ class Project:
                     log.error("Failed to write LOCAL JSON for %s: %s", proc.name, e)
 
             # now do the existing fvar dump
+
+            if isinstance(cleaned, dict):
+                cleaned['line_number'] = getattr(proc, 'line_number', None)
+
             text = json.dumps(cleaned, indent=2)
 
             proc.pjson = text

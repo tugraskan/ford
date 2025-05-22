@@ -409,12 +409,30 @@ def _find_in_list(collection: Iterable, name: str) -> Optional[FortranBase]:
 
 def read_docstring(source: FortranReader, docmark: str) -> List[str]:
     """Read a contiguous docstring"""
-    docstring = []
-    docmark = f"!{docmark}"
-    length = len(docmark)
-    while (line := next(source)).startswith(docmark):
-        docstring.append(line[length:])
-    source.pass_back(line)
+    docstring: List[str] = []
+    docmark_str = f"!{docmark}"
+    length = len(docmark_str)
+
+    # if source isn’t really iterable (e.g. a FortranSourceFile), bail out
+    if not hasattr(source, "__next__"):
+        return docstring
+
+    try:
+        # consume leading doc-comment lines
+        while True:
+            line = next(source)
+            if line.startswith(docmark_str):
+                docstring.append(line[length:])
+            else:
+                source.pass_back(line)
+                break
+    except StopIteration:
+        # ran off EOF—just return whatever we got
+        pass
+    except TypeError:
+        # source wasn’t iterable after all
+        return []
+
     return docstring
 
 
@@ -517,7 +535,11 @@ class FortranBase:
             self.settings = ProjectSettings()
 
         self.base_url = pathlib.Path(self.settings.project_url)
-        self.doc_list = read_docstring(source, self.settings.docmark)
+        try:
+            self.doc_list = read_docstring(source, self.settings.docmark)
+        except TypeError:
+            # source isn’t iterable (e.g. a FortranSourceFile), so no docstring to read
+            self.doc_list = []
         self.hierarchy = self._make_hierarchy()
         self.read_metadata()
 
@@ -3897,14 +3919,25 @@ class ExternalType(FortranType):
 class ExternalVariable(FortranVariable):
     _project_list = "extVariables"
 
-    def __init__(self, name: str, url: str = "", parent=None):
-        self.name = name
+    def __init__(self, name: str, url: str = "", parent=None, line_number=None):
+        super().__init__(
+            name=name,
+            vartype="",  # Use correct type string if known, or keep empty
+            parent=parent,
+            attribs=[],
+            intent="",
+            optional=False,
+            permission="public",
+            parameter=False,
+            kind=None,
+            strlen=None,
+            proto=None,
+            doc=None,
+            points=False,
+            initial=None,
+            line_number=line_number,
+        )
         self.external_url = url
-        self.parent = parent
-        self.obj = "variable"
-        self.kind = None
-        self.strlen = None
-        self.proto = None
 
 
 class ExternalSubmodule(FortranSubmodule):
