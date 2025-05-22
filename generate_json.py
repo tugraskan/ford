@@ -7,8 +7,8 @@ from pathlib import Path
 
 def main():
     # Specify the source directory for the Fortran files\
-    source_dir = r'C:\Users\taci.ugraskan\source\repos\ford\src'
-    source_dir = r'C:\Users\taci.ugraskan\source\repos\swatnet\Globals\src'
+    source_dir = r'C:\Users\taci.ugraskan\source\repos\ford\tsrc'
+    # source_dir = r'C:\Users\taci.ugraskan\source\repos\ford\src'
 
 
     # Create ProjectSettings with the source directory

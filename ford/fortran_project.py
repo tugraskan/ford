@@ -526,9 +526,8 @@ class Project:
         for nested_key, nested_values in value.items():
             parent_orig = parent_rep.get('original')
             if not parent_orig:
-                print("Parent original object not found; cannot continue recursion.")
-                continue
                 log.error("Parent original object not found; cannot continue recursion.")
+                continue
             # Find the matching variable in parent's proto[0].variables by name.
             found_var = next(
                 (var for var in parent_orig.proto[0].variables if var.name == nested_key),
@@ -561,66 +560,48 @@ class Project:
                 print(f"Key '{nested_key}' not found in parent's proto variables by name.")
         
     def procedures_io_to_json(self, procedures, out_dir=None):
-            """
-            For each procedure:
-            - finalize its io_tracker
-            - build a per-file summary of headers vs data columns
-            - write one combined JSON to io_summary.json in out_dir
-            - write individual summaries to <proc>.io.json
-            - write individual timelines to <proc>_io_timeline.json
-            Returns the master summary dict.
-            """
+        """
+        For each procedure:
+        - finalize its io_tracker
+        - generate summarize_file_io() result including summary and timeline
+        - write to a single <proc>.io.json file in out_dir
 
-            # 1) Prepare output directory
-            out_dir = out_dir or os.path.join(os.getcwd(), 'io_summary')
-            os.makedirs(out_dir, exist_ok=True)
+        Also creates a master io_summary.json.
+        """
+        out_dir = out_dir or os.path.join(os.getcwd(), 'io_summary')
+        os.makedirs(out_dir, exist_ok=True)
 
-            project_summary = {}
-            for proc in procedures:
-                tracker = proc.io_tracker
-                tracker.finalize()
-                if not tracker.completed:
-                    continue
+        project_summary = {}
 
-                # a) build per-proc summary
-                summary = tracker.summarize_file_io()
-                project_summary[proc.name] = summary
+        for proc in procedures:
+            tracker = proc.io_tracker
+            tracker.finalize()
 
-                # b) write per-proc summary JSON
-                single_path = os.path.join(out_dir, f"{proc.name}.io.json")
-                try:
-                    with open(single_path, 'w') as f:
-                        json.dump(summary, f, indent=2)
-                    log.info("I/O summary for %s written to %s", proc.name, single_path)
-                except IOError as e:
-                    log.error("Failed to write I/O summary for %s: %s", proc.name, e)
+            result = tracker.summarize_file_io()
+            if not result:
+                continue
 
-            # 2) write master bird’s-eye summary
-            master_path = os.path.join(out_dir, 'io_summary.json')
+            project_summary[proc.name] = result
+
+            # Save individual file
+            path = os.path.join(out_dir, f"{proc.name}.io.json")
             try:
-                with open(master_path, 'w') as f:
-                    json.dump(project_summary, f, indent=2)
-                log.info("Master I/O summary written to %s", master_path)
+                with open(path, 'w') as f:
+                    json.dump(result, f, indent=2)
+                log.info("Wrote I/O summary for %s → %s", proc.name, path)
             except IOError as e:
-                log.error("Failed to write master I/O summary: %s", e)
+                log.error("Failed to write I/O summary for %s: %s", proc.name, e)
 
-            # 3) write per-procedure I/O timelines
-            for proc in procedures:
-                tracker = proc.io_tracker
-                tracker.finalize()
-                if not tracker.completed:
-                    continue
+        # Save master summary
+        master_path = os.path.join(out_dir, 'io_summary.json')
+        try:
+            with open(master_path, 'w') as f:
+                json.dump(project_summary, f, indent=2)
+            log.info("Wrote master I/O summary → %s", master_path)
+        except IOError as e:
+            log.error("Failed to write master I/O summary: %s", e)
 
-                timeline = tracker.operations_timeline()
-                tl_path = os.path.join(out_dir, f"{proc.name}_io_timeline.json")
-                try:
-                    with open(tl_path, 'w') as tf:
-                        json.dump(timeline, tf, indent=2)
-                    log.info("I/O timeline for %s written to %s", proc.name, tl_path)
-                except IOError as e:
-                    log.error("Failed to write I/O timeline for %s: %s", proc.name, e)
-
-            return project_summary
+        return project_summary
     @property
     def allfiles(self):
         """Instead of duplicating files, it is much more efficient to create the itterator on the fly"""

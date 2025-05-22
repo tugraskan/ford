@@ -132,22 +132,19 @@ class IoTracker:
     
     def operations_timeline(self) -> dict[str, list[dict]]:
         """
-        Return a full, ordered list of I/O ops per normalized file:
-          { file_key: [ { "kind": kind, "raw_line": raw }, … ], … }
+        Returns a dict mapping file or synthetic unit-based name → chronological list of raw I/O operations.
+        Used to populate the 'timeline' entry per unit or file.
         """
-        timeline: dict[str, list[dict]] = {}
-        # sessions preserves order of opens/closes per unit
-        for sessions in self.completed.values():
+        result = {}
+
+        for unit, sessions in self.completed.items():  # 🔄 FIXED
             for sess in sessions:
-                # normalize the filename just like in summarize_file_io
-                file_key = self.normalize_file_key(sess.file)
-                ops = timeline.setdefault(file_key, [])
-                for op in sess.operations:
-                    ops.append({
-                        "kind":     op["kind"],
-                        "raw_line": op["raw"]
-                    })
-        return timeline
+                key = sess.file
+                if key == "<unknown>" and sess.unit:
+                    key = f"unit_{sess.unit}"
+                result.setdefault(key, []).extend(sess.operations)
+
+        return result
 
     def start(self, unit, filename, line_no=None):
         """Begin a new I/O session, closing any prior one on same unit."""
@@ -164,6 +161,24 @@ class IoTracker:
         sess = self._open_sessions.get(unit)
         if sess:
             sess.add(kind, raw, line_no)
+
+    def record_or_create(self, unit, kind, raw, line_no=None):
+        """
+        Record an I/O operation, creating a synthetic session if needed.
+        Used for cases like WRITE where the file isn't explicitly opened.
+        """
+        if unit is None:
+            return
+
+        unit = str(unit)
+        if unit not in self._open_sessions:
+            filename = f"unit_{unit}"
+            sess = IoSession(unit=unit, filename=filename, line_no=line_no)
+            self._open_sessions[unit] = sess
+        else:
+            sess = self._open_sessions[unit]
+
+        sess.add(kind, raw, line_no)
 
     def close(self, unit, line_no=None):
         """Close and archive the I/O session for `unit`."""
@@ -209,37 +224,55 @@ class IoTracker:
 
     def summarize_file_io(self) -> dict[str, dict]:
         """
-        Produce a concise summary of I/O per file:
-          - headers:      in‐order unique titldum/header reads
-          - index_reads:  in‐order unique single‐column 'i' reads
-          - data_reads:   unique tuples of full column strings with a 'rows' count,
-                          including single‐col array or derived‐type reads
+        Produce both:
+        - a structured I/O summary per file:
+            - headers:        titldum/header reads
+            - index_reads:    single-column 'i' reads
+            - data_reads:     grouped reads by columns
+            - header_writes:  single-column titldum/header writes
+            - data_writes:    grouped writes by columns
+        - a full raw I/O timeline per file
         """
-        result: dict[str, dict] = {}
+        raw_result: dict[str, dict] = {}
 
-        # 1) Ingest all reads
         for sessions in self.completed.values():
             for sess in sessions:
                 fname = self.normalize_file_key(sess.file)
-                rec = result.setdefault(fname, {
-                    "unit":        sess.unit,
-                    "headers":     [],
-                    "index_reads": [],
-                    "data_reads":  []
+                if fname == "<unknown>" and sess.unit:
+                    fname = f"unit_{sess.unit}"
+                rec = raw_result.setdefault(fname, {
+                    "unit":           sess.unit,
+                    "headers":        [],
+                    "index_reads":    [],
+                    "data_reads":     [],
+                    "header_writes":  [],
+                    "data_writes":    []
                 })
 
                 for op in sess.operations:
-                    if op["kind"].lower() != "read":
+                    kind = op["kind"].lower()
+                    if kind not in ("read", "write"):
                         continue
-                    
 
-                    # get text after the format ')'
-                    m = re.match(r'read\s*\([^)]+\)\s*(.*)', op["raw"], re.IGNORECASE)
-                    if not m:
-                        continue
-                    cols_part = m.group(1).strip()
+                    raw_line = op["raw"]
 
-                    # split on top‐level commas
+                    # --- Robustly extract the part after write(...) or read(...)
+                    paren_level = 0
+                    end_idx = None
+                    for idx, ch in enumerate(raw_line):
+                        if ch == '(':
+                            paren_level += 1
+                        elif ch == ')':
+                            paren_level -= 1
+                            if paren_level == 0:
+                                end_idx = idx
+                                break
+                    if end_idx is None or end_idx + 1 >= len(raw_line):
+                        continue  # malformed
+
+                    cols_part = raw_line[end_idx + 1:].strip()
+
+                    # --- Split on top-level commas (ignoring nested parentheses)
                     cols, buf, depth = [], "", 0
                     for ch in cols_part:
                         if ch == "(":
@@ -253,7 +286,7 @@ class IoTracker:
                     if buf.strip():
                         cols.append(buf.strip())
 
-                    # strip one layer of parens, keep full qualifier
+                    # --- Strip one layer of parens from each col
                     clean_cols = []
                     for c in cols:
                         c2 = c.strip()
@@ -261,44 +294,65 @@ class IoTracker:
                             c2 = c2[1:-1].strip()
                         clean_cols.append(c2)
 
-                    # classify single‐ vs multi‐column
-                    if len(clean_cols) == 1:
-                        single = clean_cols[0]
-                        # index read
-                        if single == "i":
-                            if single not in rec["index_reads"]:
-                                rec["index_reads"].append(single)
-
-                        # header reads remain titldum/header
-                        elif single in ("titldum", "header"):
-                            if single not in rec["headers"]:
-                                rec["headers"].append(single)
-
-                        # any single‐col with '(' or '%' → data_reads
-                        elif "(" in single or "%" in single:
-                            rec["data_reads"].append((single,))
-
-                        # else truly a header
+                    # === Classification ===
+                    if kind == "read":
+                        if len(clean_cols) == 1:
+                            single = clean_cols[0]
+                            if single == "i":
+                                if single not in rec["index_reads"]:
+                                    rec["index_reads"].append(single)
+                            elif single in ("titldum", "header"):
+                                if single not in rec["headers"]:
+                                    rec["headers"].append(single)
+                            elif "(" in single or "%" in single:
+                                rec["data_reads"].append((single,))
+                            else:
+                                if single not in rec["headers"]:
+                                    rec["headers"].append(single)
                         else:
-                            if single not in rec["headers"]:
-                                rec["headers"].append(single)
+                            rec["data_reads"].append(tuple(clean_cols))
 
-                    else:
-                        # multi‐column → data_reads
-                        rec["data_reads"].append(tuple(clean_cols))
+                    elif kind == "write":
+                        if len(clean_cols) == 1 and clean_cols[0] in ("titldum", "header"):
+                            if clean_cols[0] not in rec["header_writes"]:
+                                rec["header_writes"].append(clean_cols[0])
+                        else:
+                            rec["data_writes"].append(tuple(clean_cols))
 
-        # 2) Collapse duplicate data_reads into row counts
-        for rec in result.values():
+        # Step 2: Collapse duplicate reads and writes
+        final_result = {}
+
+        for fname, rec in raw_result.items():
+            # collapse data_reads
             dr_counts: dict[tuple[str, ...], int] = defaultdict(int)
             for cols in rec["data_reads"]:
                 dr_counts[cols] += 1
-
             rec["data_reads"] = [
                 {"columns": list(cols), "rows": count}
                 for cols, count in dr_counts.items()
             ]
 
-        return result
+            # collapse data_writes
+            dw_counts: dict[tuple[str, ...], int] = defaultdict(int)
+            for cols in rec["data_writes"]:
+                dw_counts[cols] += 1
+            rec["data_writes"] = [
+                {"columns": list(cols), "rows": count}
+                for cols, count in dw_counts.items()
+            ]
+
+            # attach timeline
+            timeline = self.operations_timeline().get(fname, [])
+            all_timelines = self.operations_timeline()
+            log.debug("Available timeline keys: %s", list(all_timelines.keys()))
+            log.debug("Available ops for key %s: %s", fname, all_timelines.get(fname, []))
+
+            final_result[fname] = {
+                "summary": rec,
+                "timeline": timeline
+            }
+
+        return final_result
 
 
 
@@ -1530,12 +1584,11 @@ class FortranContainer(FortranBase):
             m = self.IO_UNIT_RE.search(raw)
             unit = m.group('unit') if m else None
 
-            # Try to extract format information
             fmt = re.search(r'fmt\s*=\s*([^,)]+)', raw, re.IGNORECASE)
             if fmt:
-                self.io_tracker.record(unit, "meta", f"Format: {fmt.group(1).strip()}")
+                self.io_tracker.record_or_create(unit, "meta", f"Format: {fmt.group(1).strip()}")
 
-            self.io_tracker.record(unit, "write", raw)
+            self.io_tracker.record_or_create(unit, "write", raw)
             return
         
         # record explicit file rewinds
