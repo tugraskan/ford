@@ -486,9 +486,16 @@ class FortranBase:
         parent: Optional[FortranContainer] = None,
         inherited_permission: str = "public",
         strings: Optional[List[str]] = None,
+        line_number: int = None,
     ):
         # start an I/O session tracker for this code unit
         self.io_tracker = IoTracker()
+
+        # Record starting line number
+        if line_number is not None:
+            self.line_number = line_number
+        else:
+            self.line_number = getattr(source, "line_number", None)
 
         self.name = "unknown"
         self.visible = False
@@ -2902,7 +2909,19 @@ class FortranVariable(FortranBase):
         doc=None,
         points=False,
         initial=None,
+        line_number=None,  # <-- NEW!
     ):
+        # ---- Call base class init! ----
+        super().__init__(
+            source=parent.source_file if parent and hasattr(parent, "source_file") else None,
+            first_line=None,
+            parent=parent,
+            inherited_permission=permission,
+            strings=None,
+            line_number=line_number,
+        )
+        # ---- End call to base ----
+
         self.name = name
         self.vartype = vartype.lower()
         self.parent = parent
@@ -2950,6 +2969,7 @@ class FortranVariable(FortranBase):
         self.hierarchy = self._make_hierarchy()
         self.read_metadata()
         self.source_file._to_be_markdowned.append(self)
+
 
     def correlate(self, project):
         if not self.proto:
@@ -3610,6 +3630,7 @@ def line_to_variables(source, line, inherit_permission, parent):
                 doc,
                 points,
                 initial,
+                line_number=getattr(source, 'line_number', None),
             )
         )
 
