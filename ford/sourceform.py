@@ -546,7 +546,9 @@ class FortranBase:
         # Some entities are reachable from more than one parent …
         self.source_file._to_be_markdowned.append(self)
 
-        self._initialize(first_line)
+        # only initialize if we have a real regex match
+        if first_line:
+            self._initialize(first_line)
         del self.strings
 
     def _make_hierarchy(self) -> List[FortranContainer]:
@@ -1185,6 +1187,8 @@ class FortranContainer(FortranBase):
         associations = Associations()
 
         for line in source:
+            # grab the current line number from the FortranReader
+            lineno = getattr(source, "line_number", None)
             if line[0:2] == "!" + self.settings.docmark:
                 self.doc_list.append(line[2:])
                 continue
@@ -1320,7 +1324,7 @@ class FortranContainer(FortranBase):
                 blocklevel += 1
             elif match := self.ASSOCIATE_RE.match(line):
                 # Associations 'call' the rhs of the => operator
-                self._add_procedure_calls(line, associations)
+                self._add_procedure_calls(line, associations, line_no=lineno)
 
                 # Register the associations
                 assoc_batch = paren_split(",", strip_paren(match["associations"])[0])
@@ -1508,7 +1512,7 @@ class FortranContainer(FortranBase):
                     self.print_error(line, "Unexpected procedure call")
                     continue
 
-                self._add_procedure_calls(line, associations)
+                self._add_procedure_calls(line, associations, line_no=lineno)
 
             else :
                 self._member_access(line)
@@ -1569,7 +1573,7 @@ class FortranContainer(FortranBase):
 
         return ''.join(chars).strip()
 
-    def _parse_io_open(self, line: str) -> None:
+    def _parse_io_open(self, line: str, line_no: int = None) -> None:
         raw = self.restore_strings(line, self.strings)
         low = raw.strip().lower()
 
@@ -1587,14 +1591,14 @@ class FortranContainer(FortranBase):
             unit = unit_m.group('unit') if unit_m else None
 
             # Start a new session for this unit/file
-            self.io_tracker.start(unit, fname)
+            self.io_tracker.start(unit, fname,     line_no=line_no)
 
             # Record record-length metadata if found
             if recl is not None:
-                self.io_tracker.record(unit, "meta", f"Record length: {recl}")
+                self.io_tracker.record(unit, "meta", f"Record length: {recl}",     line_no=line_no)
 
             # Record the open itself
-            self.io_tracker.record(unit, "open", raw)
+            self.io_tracker.record(unit, "open", raw,     line_no=line_no)
             return
 
         if low.startswith('read'):
@@ -1604,9 +1608,9 @@ class FortranContainer(FortranBase):
             # Try to extract format information
             fmt = re.search(r'fmt\s*=\s*([^,)]+)', raw, re.IGNORECASE)
             if fmt:
-                self.io_tracker.record(unit, "meta", f"Format: {fmt.group(1).strip()}")
+                self.io_tracker.record(unit, "meta", f"Format: {fmt.group(1).strip()}",     line_no=line_no)
 
-            self.io_tracker.record(unit, "read", raw)
+            self.io_tracker.record(unit, "read", raw,     line_no=line_no)
             return
 
         if low.startswith('write'):
@@ -1615,45 +1619,46 @@ class FortranContainer(FortranBase):
 
             fmt = re.search(r'fmt\s*=\s*([^,)]+)', raw, re.IGNORECASE)
             if fmt:
-                self.io_tracker.record_or_create(unit, "meta", f"Format: {fmt.group(1).strip()}")
+                self.io_tracker.record_or_create(unit, "meta", f"Format: {fmt.group(1).strip()}",     line_no=line_no)
 
-            self.io_tracker.record_or_create(unit, "write", raw)
+            self.io_tracker.record_or_create(unit, "write", raw,     line_no=line_no)
             return
         
         # record explicit file rewinds
         if low.startswith('rewind'):
             m = self.IO_UNIT_RE.search(raw)
             unit = m.group('unit') if m else None
-            self.io_tracker.record(unit, "rewind", raw)
+            self.io_tracker.record(unit, "rewind", raw,     line_no=line_no)
             return    
         
         if low.startswith('backspace'):
             m = self.IO_UNIT_RE.search(raw)
             unit = m.group('unit') if m else None
-            self.io_tracker.record(unit, "backspace", raw)
+            self.io_tracker.record(unit, "backspace", raw,     line_no=line_no)
             return
 
         if low.startswith('close'):
             m = self.IO_UNIT_RE.search(raw)
             unit = m.group('unit') if m else None
-            self.io_tracker.record(unit, "close", raw)
+            self.io_tracker.record(unit, "close", raw,     line_no=line_no)
             self.io_tracker.close(unit)
             return
 
-    def _add_procedure_calls(
-        self, line: str, associations: Associations = Associations()
-    ) -> None:
+    def _add_procedure_calls(self,
+                        line: str,
+                        associations: Associations = Associations(),
+                        line_no: int = None
+                       ) -> None:
         """Helper to register procedure calls. For FortranProgram,
         FortranProcedure, and FortranModuleProcedureImplementation
         """
 
         # ==== call the new I/O parser ====
-        self._parse_io_open(line)
+        self._parse_io_open(line, line_no)
 
-        # ==== then run your original, unmodified call‐chain logic ====
+        if not hasattr(self, "call_records"):
+            self.call_records = []      # will be list of (chain, line_no)
 
-        if not hasattr(self, "calls"):
-            raise Exception(f"Cannot add procedure calls to {self.__class__.__name__}")
 
         call_chains = []
 
@@ -1688,6 +1693,9 @@ class FortranContainer(FortranBase):
                 continue
             self.calls.append(call_chain)
 
+            # (2) record it alongside its source‐line for JSON later:
+            self.call_records.append((chain, line_no))
+            
     def _member_access(self, line: str) -> None:
         """
             Processes a single line of code to extract member access patterns
@@ -3919,25 +3927,14 @@ class ExternalType(FortranType):
 class ExternalVariable(FortranVariable):
     _project_list = "extVariables"
 
-    def __init__(self, name: str, url: str = "", parent=None, line_number=None):
-        super().__init__(
-            name=name,
-            vartype="",  # Use correct type string if known, or keep empty
-            parent=parent,
-            attribs=[],
-            intent="",
-            optional=False,
-            permission="public",
-            parameter=False,
-            kind=None,
-            strlen=None,
-            proto=None,
-            doc=None,
-            points=False,
-            initial=None,
-            line_number=line_number,
-        )
+    def __init__(self, name: str, url: str = "", parent=None):
+        self.name = name
         self.external_url = url
+        self.parent = parent
+        self.obj = "variable"
+        self.kind = None
+        self.strlen = None
+        self.proto = None
 
 
 class ExternalSubmodule(FortranSubmodule):

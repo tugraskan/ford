@@ -55,6 +55,8 @@ from ford.sourceform import (
     FortranSourceFile,
     GenericSource,
     FortranProgram,
+    FortranSubroutine,        # ← add this
+    FortranFunction,
 )
 from ford.settings import ProjectSettings
 from ford._typing import PathLike
@@ -244,16 +246,71 @@ class Project:
 
         self.files.append(new_file)
 
-    def export_call_graph(self, procedures, out_path="call_graph.json"):
-        graph = {}
-        for proc in procedures:
-            graph[proc.name] = {
-                "calls": [call if isinstance(call, str) else call.name for call in proc.calls],
-                "file": proc.filename
-            }
-        with open(out_path, 'w') as f:
-            json.dump(graph, f, indent=2)    
+    
 
+    def export_call_graph(self, procedures, out_dir=None):
+        """
+        For each procedure:
+        - write <proc>.json (all calls: name, line_number, type) into calls_dir
+        Also write subroutine_calls.json (only subroutine calls per proc)
+        into the parent json_outputs directory.
+        """
+        # 1) determine directories
+        calls_dir = out_dir or os.path.join(os.getcwd(), "json_outputs", "calls_json")
+        os.makedirs(calls_dir, exist_ok=True)
+
+        master_dir = os.path.dirname(calls_dir)
+        os.makedirs(master_dir, exist_ok=True)
+
+        master_subs: dict[str, list[dict]] = {}
+
+        # 2) generate per-proc JSONs
+        for proc in procedures:
+            all_calls = []
+            for call in proc.calls:
+                if isinstance(call, FortranSubroutine):
+                    kind = "subroutine"
+                elif isinstance(call, FortranFunction):
+                    kind = "function"
+                else:
+                    kind = "unresolved"
+
+                all_calls.append({
+                    "name":        getattr(call, "name", str(call)),
+                    "line_number": getattr(call, "line_number", None),
+                    "type":        kind
+                })
+
+            # dump full call graph for this procedure
+            per_proc_path = os.path.join(calls_dir, f"{proc.name}.json")
+            proc_payload = {
+                "file":        proc.filename,
+                "line_number": getattr(proc, "line_number", None),
+                "calls":       all_calls
+            }
+            try:
+                with open(per_proc_path, "w") as fp:
+                    json.dump(proc_payload, fp, indent=2)
+                log.info("Wrote full call graph for %s → %s", proc.name, per_proc_path)
+            except IOError as e:
+                log.error("Failed to write full call graph for %s: %s", proc.name, e)
+
+            # collect only subroutine calls for the master file
+            subs = [c for c in all_calls if c["type"] == "subroutine"]
+            if subs:
+                master_subs[proc.name] = subs
+
+        # 3) write master subroutine-calls.json in json_outputs
+        master_path = os.path.join(master_dir, "subroutine_calls.json")
+        try:
+            with open(master_path, "w") as mf:
+                json.dump(master_subs, mf, indent=2)
+            log.info("Wrote master subroutine-call graph → %s", master_path)
+        except IOError as e:
+            log.error("Failed to write master subroutine-call graph: %s", e)
+
+        return master_subs
+    
     def extract_non_fortran_and_non_integers(self, subroutine):
         """
         Extracts items that are neither Fortran keywords, integers, symbols, nor self-defined variables.
@@ -382,61 +439,54 @@ class Project:
         """
         For each procedure:
         - clean up its `fvar`
-        - dump it to JSON in ./fvar_json
-        - dump local variables list (with name, vartype, initial, doc_list) to ./local_json
+        - collect its local variables
+        - dump both (if non-empty) to a single JSON in ./fvar_json/<proc.name>.json
         """
-        # default into a "fvar_json" sub-folder of cwd
-        out_dir = out_dir or os.path.join(os.getcwd(), "fvar_json")
+        # 1. prepare output directory
+        out_dir = out_dir or os.path.join(os.getcwd(), "json_outputs", "fvar_json")
         os.makedirs(out_dir, exist_ok=True)
 
-        # also prepare a "local_json" folder for var_ug_local dumps
-        local_dir = os.path.join(os.getcwd(), "local_json")
-        os.makedirs(local_dir, exist_ok=True)
-
         for proc in procedures:
-            # 1) clean the existing fvar dict
-            cleaned = self._clean_fvar_recursive(proc.fvar) if hasattr(proc, 'fvar') else {}
+            # 2. clean the existing fvar dict
+            cleaned = {}
+            if hasattr(proc, 'fvar'):
+                cleaned = self._clean_fvar_recursive(proc.fvar) or {}
 
-            # 2) build the local-variable list for this proc
+            # 3. build the local-variable list
             local_list = []
             if hasattr(proc, 'var_ug_local'):
                 for var in proc.var_ug_local:
                     local_list.append({
-                        'name': var.name,
-                        'vartype': getattr(var, 'vartype', getattr(var, 'type', None)),
-                        'initial': getattr(var, 'initial', None),
-                        'doc_list': getattr(var, 'doc_list', []),
-                        'line_number': getattr(var, 'line_number', None)   # <--- NEW LINE
+                        'name':       var.name,
+                        'vartype':    getattr(var, 'vartype', getattr(var, 'type', None)),
+                        'initial':    getattr(var, 'initial', None),
+                        'doc_list':   getattr(var, 'doc_list', []),
+                        'line_number':getattr(var, 'line_number', None),
                     })
 
-            # 3) write out the locals JSON if any
-            if local_list:
+            # 4. only write JSON if there’s any fvar or any locals
+            if cleaned or local_list:
+                payload = {}
+                if cleaned:
+                    payload['fvar']    = cleaned
+                if local_list:
+                    payload['locals']  = local_list
+
+                # top–level line number of the procedure
+                payload['line_number'] = getattr(proc, 'line_number', None)
+
+                # 5. dump to file
+                fname = os.path.join(out_dir, f"{proc.name}.json")
                 try:
-                    local_text = json.dumps(local_list, indent=2)
-                    local_fname = os.path.join(local_dir, f"{proc.name}_local.json")
-                    with open(local_fname, 'w') as lf:
-                        lf.write(local_text)
-                    log.info("Wrote LOCAL JSON for %s → %s", proc.name, local_fname)
+                    with open(fname, 'w') as fp:
+                        json.dump(payload, fp, indent=2)
+                    log.info("Wrote JSON for %s → %s", proc.name, fname)
+                    proc.pjson = json.dumps(payload, indent=2)
                 except IOError as e:
-                    log.error("Failed to write LOCAL JSON for %s: %s", proc.name, e)
+                    log.error("Failed to write JSON for %s: %s", proc.name, e)
+            else:
+                log.debug("No fvar or locals for %s; skipping JSON", proc.name)
 
-            # now do the existing fvar dump
-
-            if isinstance(cleaned, dict):
-                cleaned['line_number'] = getattr(proc, 'line_number', None)
-
-            text = json.dumps(cleaned, indent=2)
-
-            proc.pjson = text
-            if not cleaned:
-                continue
-
-            fname = os.path.join(out_dir, f"{proc.name}_fvar.json")
-            try:
-                with open(fname, 'w') as f:
-                    f.write(text)
-            except IOError as e:
-                log.error(f"Failed to write FVAR JSON for {proc.name} to {fname}: {e}")
 
     def _find_variable_info(self, procedure, var_ref):
         """
@@ -569,11 +619,12 @@ class Project:
         For each procedure:
         - finalize its io_tracker
         - generate summarize_file_io() result including summary and timeline
+        - inject line numbers
         - write to a single <proc>.io.json file in out_dir
 
         Also creates a master io_summary.json.
         """
-        out_dir = out_dir or os.path.join(os.getcwd(), 'io_summary')
+        out_dir = out_dir or os.path.join(os.getcwd(), 'json_outputs', 'io_summary')
         os.makedirs(out_dir, exist_ok=True)
 
         project_summary = {}
@@ -585,6 +636,16 @@ class Project:
             result = tracker.summarize_file_io()
             if not result:
                 continue
+
+            # ——— New: add the procedure's line number
+            result['line_number'] = getattr(proc, 'line_number', None)
+
+            # ——— Optional: if your result has a 'timeline' list of I/O events,
+            #             and each event has its own 'lineno' attribute, copy it in:
+            if 'timeline' in result:
+                for event in result['timeline']:
+                    # adjust 'lineno' to match whatever your tracker uses
+                    event['line_number'] = event.get('lineno', None)
 
             project_summary[proc.name] = result
 
