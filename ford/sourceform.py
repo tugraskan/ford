@@ -1694,7 +1694,7 @@ class FortranContainer(FortranBase):
             self.calls.append(call_chain)
 
             # (2) record it alongside its source‐line for JSON later:
-            self.call_records.append((chain, line_no))
+            self.call_records.append((call_chain, line_no))
             
     def _member_access(self, line: str) -> None:
         """
