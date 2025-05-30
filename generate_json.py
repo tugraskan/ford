@@ -8,11 +8,14 @@ from pathlib import Path
 def main():
     # Specify the source directory for the Fortran files\
     source_dir = r'C:\Users\taci.ugraskan\source\repos\ford\tsrc'
-    # source_dir = r'C:\Users\taci.ugraskan\source\repos\ford\src'
+    source_dir = r'C:\Users\taci.ugraskan\source\repos\ford\src'
+
+    
 
 
     # Create ProjectSettings with the source directory
     project_settings = ProjectSettings(src_dir=[Path(source_dir)])
+    #project_settings.dbg = False
 
     # Create the project instance
     project = Project(project_settings)
@@ -34,7 +37,7 @@ def main():
 
     project.procedures_io_to_json(procedures)
 
-    project.export_call_graph(procedures)
+    project.procedures_call_to_json(procedures)
 
     #output_file = project_settings.output_file if hasattr(project_settings, 'output_file') else "output.json"
     #print(f"Metadata has been written to {output_file}")

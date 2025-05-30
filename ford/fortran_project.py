@@ -248,59 +248,65 @@ class Project:
 
     
 
-    def export_call_graph(self, procedures, out_dir=None):
+    def procedures_call_to_json(self, procedures, out_dir=None):
         """
         For each procedure:
-        - write <proc>.json (all calls: name, line_number, type) into calls_dir
-        Also write subroutine_calls.json (only subroutine calls per proc)
-        into the parent json_outputs directory.
+        - write <proc>.json with all calls (name + line_number)
+        - write <proc>_subs.json with only the subroutine calls
+        Also write a master subroutine_calls.json in the parent 'json_outputs' directory.
         """
-        # 1) determine directories
+        # 1) set up per‐procedure directory
         calls_dir = out_dir or os.path.join(os.getcwd(), "json_outputs", "calls_json")
         os.makedirs(calls_dir, exist_ok=True)
 
-        master_dir = os.path.dirname(calls_dir)
-        os.makedirs(master_dir, exist_ok=True)
-
+        # 2) prepare master dict for subroutine calls
         master_subs: dict[str, list[dict]] = {}
 
-        # 2) generate per-proc JSONs
         for proc in procedures:
-            all_calls = []
-            for call in proc.calls:
-                if isinstance(call, FortranSubroutine):
-                    kind = "subroutine"
-                elif isinstance(call, FortranFunction):
-                    kind = "function"
-                else:
-                    kind = "unresolved"
+            # --- gather all calls from proc.call_records (chain, line_no) ---
+            all_calls = [
+                {"name": chain[-1], "line_number": ln}
+                for chain, ln in getattr(proc, "call_records", [])
+            ]
 
-                all_calls.append({
-                    "name":        getattr(call, "name", str(call)),
-                    "line_number": getattr(call, "line_number", None),
-                    "type":        kind
-                })
+            # --- filter only those whose name appears in proc.calls (subroutines) ---
+            sub_calls = [c for c in all_calls if c["name"] in proc.calls]
 
-            # dump full call graph for this procedure
-            per_proc_path = os.path.join(calls_dir, f"{proc.name}.json")
-            proc_payload = {
+            # --- write full calls JSON ---
+            full_path = os.path.join(calls_dir, f"{proc.name}.json")
+            full_payload = {
                 "file":        proc.filename,
                 "line_number": getattr(proc, "line_number", None),
                 "calls":       all_calls
             }
             try:
-                with open(per_proc_path, "w") as fp:
-                    json.dump(proc_payload, fp, indent=2)
-                log.info("Wrote full call graph for %s → %s", proc.name, per_proc_path)
+                with open(full_path, "w") as fp:
+                    json.dump(full_payload, fp, indent=2)
+                log.info("Wrote full call graph for %s → %s", proc.name, full_path)
             except IOError as e:
                 log.error("Failed to write full call graph for %s: %s", proc.name, e)
 
-            # collect only subroutine calls for the master file
-            subs = [c for c in all_calls if c["type"] == "subroutine"]
-            if subs:
-                master_subs[proc.name] = subs
+            # --- write subroutine‐only JSON ---
+            sub_path = os.path.join(calls_dir, f"{proc.name}_subs.json")
+            sub_payload = {
+                "file":        proc.filename,
+                "line_number": getattr(proc, "line_number", None),
+                "subroutines": sub_calls
+            }
+            try:
+                with open(sub_path, "w") as sp:
+                    json.dump(sub_payload, sp, indent=2)
+                log.info("Wrote subroutine-only graph for %s → %s", proc.name, sub_path)
+            except IOError as e:
+                log.error("Failed to write subroutine-only graph for %s: %s", proc.name, e)
 
-        # 3) write master subroutine-calls.json in json_outputs
+            # collect for master if any subroutine calls exist
+            if sub_calls:
+                master_subs[proc.name] = sub_calls
+
+        # 3) write master subroutine_calls.json in json_outputs
+        master_dir = os.path.dirname(calls_dir)
+        os.makedirs(master_dir, exist_ok=True)
         master_path = os.path.join(master_dir, "subroutine_calls.json")
         try:
             with open(master_path, "w") as mf:
