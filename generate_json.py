@@ -112,6 +112,7 @@ def main() -> None:
         project.procedures_fvar_to_json(procedures, output_dir)
         project.procedures_io_to_json(procedures, output_dir)
         project.procedures_call_to_json(procedures, output_dir)
+        project.procedures_input_analysis_to_json(procedures, output_dir)
         
         log.info("JSON export completed successfully")
         log.info("Output written to: %s", args.output_dir)

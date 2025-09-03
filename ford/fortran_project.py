@@ -697,6 +697,250 @@ class Project:
             log.error("Failed to write master I/O summary: %s", e)
 
         return project_summary
+
+    def procedures_input_analysis_to_json(self, procedures: List[FortranProcedure], out_dir: Optional[str] = None) -> None:
+        """
+        Export detailed input file analysis for procedures to JSON files.
+        
+        For each procedure that reads input files, this method analyzes:
+        - Subroutine name that reads the input
+        - Unit number used for file operations
+        - Whether files are opened via assigned variables vs hardcoded strings
+        - Read structure of the file (title, header, data)
+        - What data is read and to what data types/variables
+        
+        Args:
+            procedures: List of procedures to process
+            out_dir: Output directory path. Defaults to ./json_outputs/input_analysis
+        """
+        out_dir = out_dir or os.path.join(os.getcwd(), 'json_outputs', 'input_analysis')
+        os.makedirs(out_dir, exist_ok=True)
+
+        project_summary = {}
+
+        for proc in procedures:
+            # Only analyze procedures that have I/O operations
+            if not hasattr(proc, 'io_tracker') or not proc.io_tracker.completed:
+                continue
+
+            tracker = proc.io_tracker
+            tracker.finalize()
+
+            # Get I/O summary data
+            io_summary = tracker.summarize_file_io()
+            if not io_summary:
+                continue
+
+            # Analyze input patterns for this procedure
+            input_analysis = self._analyze_input_patterns(proc, tracker, io_summary)
+            if not input_analysis:
+                continue
+
+            project_summary[proc.name] = input_analysis
+
+            # Save individual file
+            path = os.path.join(out_dir, f"{proc.name}.input_analysis.json")
+            try:
+                with open(path, 'w') as f:
+                    json.dump(input_analysis, f, indent=2)
+                log.info("Wrote input analysis for %s → %s", proc.name, path)
+            except IOError as e:
+                log.error("Failed to write input analysis for %s: %s", proc.name, e)
+
+        # Save master summary
+        master_path = os.path.join(out_dir, 'input_analysis_summary.json')
+        try:
+            with open(master_path, 'w') as f:
+                json.dump(project_summary, f, indent=2)
+            log.info("Wrote master input analysis → %s", master_path)
+        except IOError as e:
+            log.error("Failed to write master input analysis: %s", e)
+
+        return project_summary
+
+    def _analyze_input_patterns(self, proc: FortranProcedure, tracker, io_summary: Dict) -> Optional[Dict]:
+        """
+        Analyze input file patterns for a specific procedure.
+        
+        Returns detailed analysis of input operations including:
+        - Unit numbers and file opening methods
+        - Read structure patterns
+        - Variable assignments and data types
+        """
+        import re
+        
+        if not io_summary:
+            return None
+
+        analysis = {
+            'subroutine_name': proc.name,
+            'line_number': getattr(proc, 'line_number', None),
+            'source_file': getattr(proc, 'filename', None),
+            'input_files': []
+        }
+
+        # Analyze each file that has input operations
+        for filename, file_data in io_summary.items():
+            if 'summary' not in file_data:
+                continue
+                
+            summary = file_data['summary']
+            timeline = file_data.get('timeline', [])
+            
+            # Only process files that have read operations
+            if not summary.get('headers') and not summary.get('data_reads'):
+                continue
+
+            file_analysis = {
+                'filename': filename,
+                'unit_number': summary.get('unit'),
+                'opening_method': self._analyze_file_opening(timeline, filename),
+                'read_structure': self._analyze_read_structure(summary, timeline),
+                'data_variables': self._analyze_data_variables(summary, timeline, proc)
+            }
+
+            analysis['input_files'].append(file_analysis)
+
+        return analysis if analysis['input_files'] else None
+
+    def _analyze_file_opening(self, timeline: List[Dict], filename: str) -> Dict:
+        """Analyze how a file is opened (assigned variable vs hardcoded string)."""
+        for op in timeline:
+            if op.get('kind') == 'open':
+                raw = op.get('raw', '')
+                
+                # Extract the file parameter from the open statement
+                file_match = re.search(r'file\s*=\s*([^,)]+)', raw, re.IGNORECASE)
+                if file_match:
+                    file_expr = file_match.group(1).strip()
+                    
+                    # Check if it's a hardcoded string (in quotes)
+                    if (file_expr.startswith('"') and file_expr.endswith('"')) or \
+                       (file_expr.startswith("'") and file_expr.endswith("'")):
+                        return {
+                            'method': 'hardcoded_string',
+                            'expression': file_expr,
+                            'line_number': op.get('lineno')
+                        }
+                    else:
+                        return {
+                            'method': 'assigned_variable',
+                            'expression': file_expr,
+                            'line_number': op.get('lineno')
+                        }
+        
+        return {'method': 'unknown', 'expression': None, 'line_number': None}
+
+    def _analyze_read_structure(self, summary: Dict, timeline: List[Dict]) -> Dict:
+        """Analyze the read structure of the file (title, header, data)."""
+        structure = {
+            'has_title': False,
+            'has_header': False,
+            'has_data': False,
+            'read_sequence': []
+        }
+
+        # Check for title/header reads
+        headers = summary.get('headers', [])
+        if 'titldum' in headers:
+            structure['has_title'] = True
+        if 'header' in headers or any(h for h in headers if h != 'titldum'):
+            structure['has_header'] = True
+
+        # Check for data reads
+        data_reads = summary.get('data_reads', [])
+        if data_reads:
+            structure['has_data'] = True
+
+        # Build read sequence from timeline
+        for op in timeline:
+            if op.get('kind') == 'read':
+                raw = op.get('raw', '')
+                line_no = op.get('lineno')
+                
+                # Extract variables being read
+                read_vars = self._extract_read_variables(raw)
+                structure['read_sequence'].append({
+                    'line_number': line_no,
+                    'variables': read_vars,
+                    'raw_statement': raw
+                })
+
+        return structure
+
+    def _analyze_data_variables(self, summary: Dict, timeline: List[Dict], proc: FortranProcedure) -> List[Dict]:
+        """Analyze what data variables are read and their types."""
+        variables = []
+        
+        # Process data reads from summary
+        data_reads = summary.get('data_reads', [])
+        for read_group in data_reads:
+            columns = read_group.get('columns', [])
+            rows = read_group.get('rows', 1)
+            
+            for var_name in columns:
+                var_info = self._get_variable_type_info(proc, var_name)
+                variables.append({
+                    'name': var_name,
+                    'type': var_info.get('type'),
+                    'kind': var_info.get('kind'),
+                    'dimensions': var_info.get('dimensions'),
+                    'read_count': rows
+                })
+
+        return variables
+
+    def _extract_read_variables(self, raw_statement: str) -> List[str]:
+        """Extract variable names from a read statement."""
+        import re
+        
+        # Match read(...) variable_list pattern
+        match = re.search(r'read\s*\([^)]*\)\s*(.+)', raw_statement, re.IGNORECASE)
+        if not match:
+            return []
+        
+        var_part = match.group(1).strip()
+        
+        # Split on commas, handling nested parentheses
+        variables = []
+        current_var = ""
+        paren_depth = 0
+        
+        for char in var_part:
+            if char == '(':
+                paren_depth += 1
+                current_var += char
+            elif char == ')':
+                paren_depth -= 1
+                current_var += char
+            elif char == ',' and paren_depth == 0:
+                if current_var.strip():
+                    variables.append(current_var.strip())
+                current_var = ""
+            else:
+                current_var += char
+        
+        if current_var.strip():
+            variables.append(current_var.strip())
+        
+        return variables
+
+    def _get_variable_type_info(self, proc: FortranProcedure, var_name: str) -> Dict:
+        """Get type information for a variable from the procedure's fvar."""
+        if not hasattr(proc, 'fvar') or not isinstance(proc.fvar, dict):
+            return {'type': 'unknown', 'kind': None, 'dimensions': None}
+        
+        # Look for the variable in fvar
+        var_info = self._find_variable_info(proc, var_name)
+        if var_info:
+            return {
+                'type': var_info.get('vartype', 'unknown'),
+                'kind': var_info.get('kind'),
+                'dimensions': var_info.get('dimension')
+            }
+        
+        return {'type': 'unknown', 'kind': None, 'dimensions': None}
+
     @property
     def allfiles(self):
         """Instead of duplicating files, it is much more efficient to create the itterator on the fly"""
