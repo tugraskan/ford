@@ -248,31 +248,37 @@ class Project:
 
     
 
-    def procedures_call_to_json(self, procedures, out_dir=None):
+    def procedures_call_to_json(self, procedures: List[FortranProcedure], out_dir: Optional[str] = None) -> None:
         """
-        For each procedure:
-        - write <proc>.json with all calls (name + line_number)
-        - write <proc>_subs.json with only the subroutine calls
-        Also write a master subroutine_calls.json in the parent 'json_outputs' directory.
+        Export procedure call relationships and call chains to JSON files.
+        
+        For each procedure, this method:
+        - Writes <proc>.json with all calls (name + line_number)
+        - Writes <proc>_subs.json with only the subroutine calls
+        - Creates a master subroutine_calls.json in the parent 'json_outputs' directory
+        
+        Args:
+            procedures: List of procedures to process
+            out_dir: Output directory path. Defaults to ./json_outputs/calls_json
         """
-        # 1) set up per‐procedure directory
+        # Set up per-procedure directory
         calls_dir = out_dir or os.path.join(os.getcwd(), "json_outputs", "calls_json")
         os.makedirs(calls_dir, exist_ok=True)
 
-        # 2) prepare master dict for subroutine calls
+        # Prepare master dict for subroutine calls
         master_subs: dict[str, list[dict]] = {}
 
         for proc in procedures:
-            # --- gather all calls from proc.call_records (chain, line_no) ---
+            # Gather all calls from proc.call_records (chain, line_no)
             all_calls = [
                 {"name": chain[-1], "line_number": ln}
                 for chain, ln in getattr(proc, "call_records", [])
             ]
 
-            # --- filter only those whose name appears in proc.calls (subroutines) ---
+            # Filter only those whose name appears in proc.calls (subroutines)
             sub_calls = [c for c in all_calls if c["name"] in proc.calls]
 
-            # --- write full calls JSON ---
+            # Write full calls JSON
             full_path = os.path.join(calls_dir, f"{proc.name}.json")
             full_payload = {
                 "file":        proc.filename,
@@ -441,24 +447,31 @@ class Project:
         else:
             return data
     
-    def procedures_fvar_to_json(self, procedures, out_dir=None):
+    def procedures_fvar_to_json(self, procedures: List[FortranProcedure], out_dir: Optional[str] = None) -> None:
         """
-        For each procedure:
-        - clean up its `fvar`
-        - collect its local variables
-        - dump both (if non-empty) to a single JSON in ./fvar_json/<proc.name>.json
+        Export procedure variable information and local variables to JSON files.
+        
+        For each procedure, this method:
+        - Cleans up its fvar dictionary
+        - Collects local variables
+        - Exports both to a JSON file if non-empty
+        
+        Args:
+            procedures: List of procedures to process
+            out_dir: Output directory path. Defaults to ./json_outputs/fvar_json
         """
-        # 1. prepare output directory
-        out_dir = out_dir or os.path.join(os.getcwd(), "json_outputs", "fvar_json")
+        # Prepare output directory
+        if out_dir is None:
+            out_dir = os.path.join(os.getcwd(), "json_outputs", "fvar_json")
         os.makedirs(out_dir, exist_ok=True)
 
         for proc in procedures:
-            # 2. clean the existing fvar dict
+            # Clean the existing fvar dict
             cleaned = {}
             if hasattr(proc, 'fvar'):
                 cleaned = self._clean_fvar_recursive(proc.fvar) or {}
 
-            # 3. build the local-variable list
+            # Build the local-variable list
             local_list = []
             if hasattr(proc, 'var_ug_local'):
                 for var in proc.var_ug_local:
@@ -474,14 +487,14 @@ class Project:
             if cleaned or local_list:
                 payload = {}
                 if cleaned:
-                    payload['fvar']    = cleaned
+                    payload['fvar'] = cleaned
                 if local_list:
-                    payload['locals']  = local_list
+                    payload['locals'] = local_list
 
-                # top–level line number of the procedure
+                # Add top-level line number of the procedure
                 payload['line_number'] = getattr(proc, 'line_number', None)
 
-                # 5. dump to file
+                                # Write to file
                 fname = os.path.join(out_dir, f"{proc.name}.json")
                 try:
                     with open(fname, 'w') as fp:
@@ -530,25 +543,37 @@ class Project:
                 return None
         # If we exit the loop without returning, no match was found
         return None
-    def get_procedures(self):
-        procedures = []
-
-        for procedure in self.procedures:
-            # If the procedure does not have a module (assuming `procedure.module` is a Boolean or exists)
-            #print('!!!! ' + procedure.name)
-            if procedure.parobj == 'sourcefile':
-                procedures.append(procedure)
-
-
-        # Sort the procedures (assuming you want to sort by procedure name)
+    def get_procedures(self) -> List[FortranProcedure]:
+        """
+        Extract procedures that are defined at the source file level.
+        
+        Returns:
+            List of procedures that have 'sourcefile' as their parent object,
+            sorted alphabetically by name.
+        """
+        procedures = [
+            procedure for procedure in self.procedures
+            if procedure.parobj == 'sourcefile'
+        ]
+        
+        # Sort procedures alphabetically by name
         procedures.sort(key=lambda x: x.name)
+        
+        return procedures
 
-        return procedures   # Return the list of non-procedure variables
 
-
-    def cross_walk_type_dicts(self, procedures):
+    def cross_walk_type_dicts(self, procedures: List[FortranProcedure]) -> None:
+        """
+        Cross-reference type dictionaries with variable definitions to create
+        comprehensive variable metadata for procedures.
+        
+        This method populates the fvar attribute of each procedure with detailed
+        variable information including type, documentation, and nested structures.
+        
+        Args:
+            procedures: List of procedures to process
+        """
         for procedure in procedures:
-            #print('%%%% ' + procedure.name)
             for key, value in procedure.type_results.items():
                 if key in procedure.all_vars:
                     procedure.fvar[key] = {
@@ -561,18 +586,14 @@ class Project:
                         'original': procedure.all_vars[key]
                     }
                     if value:
-                        #print(f"$$$$ {key} nested structure")
+                        # Handle nested structure
                         self.r_check(procedure.fvar[key], value)
-                        # Remove original from the top-level branch after recursion.
+                        # Remove original from the top-level branch after recursion
                         procedure.fvar[key].pop('original', None)
-                        #print('check 1')
                     else:
                         procedure.fvar[key].pop('original', None)
-                        #print('check 2')
                 else:
                     procedure.var_ug_na.append(key)
-                    #print('check 3')
-            #print("wowza")
 
     def r_check(self, parent_rep, value):
         """
@@ -609,26 +630,28 @@ class Project:
                 parent_rep['variables'][nested_key] = new_rep
 
                 if nested_values:
-                    #print(f"Recursively checking nested structure for key: {nested_key}")
                     self.r_check(new_rep, nested_values)
-                    #print("Nested check complete.")
-                #else:
-                    #print(f"No further nested values for key: {nested_key}")
 
                 # Remove the 'original' key from this branch now that recursion is complete.
                 new_rep.pop('original', None)
             else:
-                print(f"Key '{nested_key}' not found in parent's proto variables by name.")
+                log.warning("Key '%s' not found in parent's proto variables by name", nested_key)
         
-    def procedures_io_to_json(self, procedures, out_dir=None):
+    def procedures_io_to_json(self, procedures: List[FortranProcedure], out_dir: Optional[str] = None) -> None:
         """
-        For each procedure:
-        - finalize its io_tracker
-        - generate summarize_file_io() result including summary and timeline
-        - inject line numbers
-        - write to a single <proc>.io.json file in out_dir
-
-        Also creates a master io_summary.json.
+        Export I/O operations and timeline analysis for procedures to JSON files.
+        
+        For each procedure, this method:
+        - Finalizes its io_tracker
+        - Generates summarize_file_io() result including summary and timeline
+        - Adds line number information
+        - Writes to individual .io.json files
+        
+        Also creates a master io_summary.json file.
+        
+        Args:
+            procedures: List of procedures to process
+            out_dir: Output directory path. Defaults to ./json_outputs/io_summary
         """
         out_dir = out_dir or os.path.join(os.getcwd(), 'json_outputs', 'io_summary')
         os.makedirs(out_dir, exist_ok=True)
@@ -916,32 +939,6 @@ def find_used_modules(
         for candidate in chain(modules, external_modules):
             if dependency_name == candidate.name.lower():
                 dependency[0] = candidate
-
-                """
-                matches = []
-                for result in entity.type_results:  # Iterate over each list item
-                    if isinstance(result, dict):  # Process only if it's a dictionary
-                        for key, value in result.items():
-                            # Check if the key matches any candidate variable name
-                            if any(var.name == key for var in candidate.variables):
-                                matches.append(key)
-
-                            # If the value is a nested dictionary, search deeper
-                            if isinstance(value, dict):
-                                matches.extend(search_type_results_in_candidate(value, candidate.variables))
-
-                print(matches)
-
-
-                # Check if dependency variables are used in the entity's subroutines
-                #if hasattr(candidate, "variables"):
-                    #module_vars = {var.name for var in candidate.variables}
-                    #for var in candidate.variables:
-                        #if var.name in entity.type_results:
-                            #print(f"Found variable {var.name} in {entity.name}")
-
-
-                """
 
                 break
     # Find the ancestor of this submodule (if entity is one)

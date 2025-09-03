@@ -9,6 +9,7 @@ from urllib.parse import urljoin
 
 from ford.sourceform import (
     FortranBase,
+    FortranModule,
     FortranType,
     FortranVariable,
     FortranSubroutine,
@@ -192,33 +193,35 @@ def load_external_modules(project):
             dict2obj(project, extModule, url, remote=remote)
 
 
-def get_module_metadata(module):
+def get_module_metadata(module: FortranModule) -> dict:
     """
-    Get metadata for a given Fortran module.
-
-    Parameters:
-    module (FortranModule): The module to get metadata for.
-
+    Extract comprehensive metadata for a given Fortran module.
+    
+    This function processes module variables, derived types, and usage patterns
+    to create a structured metadata representation.
+    
+    Args:
+        module: The Fortran module to extract metadata from.
+        
     Returns:
-    dict: A dictionary containing metadata for the module.
+        Dictionary containing metadata including variables, types, and subroutine usage.
     """
     metadata = {
         "all_vars": [],
         "all_types": [],
-        "subroutine_usage": [],  # Add a new key for subroutine usage
+        "subroutine_usage": [],
     }
 
-    # Extract variables that are not of type FortranType
+    # Extract module variables
     if hasattr(module, "all_vars"):
         for var_name, var in module.all_vars.items():
-            # Use a regular expression to extract the type if it's a derived type
+            # Extract derived type name from full_type if it's a derived type reference
             derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", var.full_type)
             derived_type = derived_type_match.group(1) if derived_type_match else var.full_type
 
-            # Append metadata
             metadata["all_vars"].append({
                 "ident": var.name,
-                "type": derived_type,  # Use the extracted derived type or the original type
+                "type": derived_type,
                 "initial": var.initial,
                 "doc": var.doc_list,
             })
