@@ -758,6 +758,218 @@ class Project:
 
         return project_summary
 
+    def procedures_output_analysis_to_json(self, procedures: List[FortranProcedure], out_dir: Optional[str] = None) -> None:
+        """
+        Export detailed output file analysis for procedures to JSON files.
+        
+        For each procedure that writes output files, this method analyzes:
+        - Subroutine name that writes the output
+        - Unit number used for file operations
+        - Whether files are opened via assigned variables vs hardcoded strings
+        - Write structure of the file (title, header, data)
+        - What data is written and from what data types/variables
+        
+        Args:
+            procedures: List of procedures to process
+            out_dir: Output directory path. Defaults to ./json_outputs/output_analysis
+        """
+        out_dir = out_dir or os.path.join(os.getcwd(), 'json_outputs', 'output_analysis')
+        os.makedirs(out_dir, exist_ok=True)
+
+        project_summary = {}
+
+        for proc in procedures:
+            # Only analyze procedures that have I/O operations
+            if not hasattr(proc, 'io_tracker') or not proc.io_tracker.completed:
+                continue
+
+            tracker = proc.io_tracker
+            tracker.finalize()
+
+            # Get I/O summary data
+            io_summary = tracker.summarize_file_io()
+            if not io_summary:
+                continue
+
+            # Analyze output patterns for this procedure
+            output_analysis = self._analyze_output_patterns(proc, tracker, io_summary)
+            if not output_analysis:
+                continue
+
+            project_summary[proc.name] = output_analysis
+
+            # Save individual file
+            path = os.path.join(out_dir, f"{proc.name}.output_analysis.json")
+            try:
+                with open(path, 'w') as f:
+                    json.dump(output_analysis, f, indent=2)
+                log.info("Wrote output analysis for %s → %s", proc.name, path)
+            except IOError as e:
+                log.error("Failed to write output analysis for %s: %s", proc.name, e)
+
+        # Save master summary
+        master_path = os.path.join(out_dir, 'output_analysis_summary.json')
+        try:
+            with open(master_path, 'w') as f:
+                json.dump(project_summary, f, indent=2)
+            log.info("Wrote master output analysis → %s", master_path)
+        except IOError as e:
+            log.error("Failed to write master output analysis: %s", e)
+
+        return project_summary
+
+    def _analyze_output_patterns(self, proc: FortranProcedure, tracker, io_summary: Dict) -> Optional[Dict]:
+        """
+        Analyze output file patterns for a specific procedure.
+        
+        Returns detailed analysis of output operations including:
+        - Unit numbers and file opening methods
+        - Write structure patterns
+        - Variable assignments and data types
+        """
+        import re
+        
+        if not io_summary:
+            return None
+
+        analysis = {
+            'subroutine_name': proc.name,
+            'line_number': getattr(proc, 'line_number', None),
+            'source_file': getattr(proc, 'filename', None),
+            'output_files': []
+        }
+
+        # Analyze each file that has output operations
+        for filename, file_data in io_summary.items():
+            if 'summary' not in file_data:
+                continue
+                
+            summary = file_data['summary']
+            timeline = file_data.get('timeline', [])
+            
+            # Only process files that have write operations
+            if not self._has_write_operations(summary, timeline):
+                continue
+
+            file_analysis = {
+                'filename': filename,
+                'unit_number': summary.get('unit'),
+                'opening_method': self._analyze_file_opening(timeline, filename),
+                'write_structure': self._analyze_write_structure(summary, timeline),
+                'data_variables': self._analyze_output_variables(summary, timeline, proc)
+            }
+
+            analysis['output_files'].append(file_analysis)
+
+        return analysis if analysis['output_files'] else None
+
+    def _has_write_operations(self, summary: Dict, timeline: List[Dict]) -> bool:
+        """Check if a file has write operations."""
+        # Check for write operations in timeline
+        for op in timeline:
+            if op.get('kind') == 'write':
+                return True
+        
+        # Check for data writes in summary
+        if summary.get('data_writes'):
+            return True
+            
+        return False
+
+    def _analyze_write_structure(self, summary: Dict, timeline: List[Dict]) -> Dict:
+        """Analyze the write structure of the file (title, header, data)."""
+        structure = {
+            'has_title': False,
+            'has_header': False,
+            'has_data': False,
+            'write_sequence': []
+        }
+
+        # Check for header writes
+        headers = summary.get('headers', [])
+        if 'titldum' in headers:
+            structure['has_title'] = True
+        if 'header' in headers or any(h for h in headers if h != 'titldum'):
+            structure['has_header'] = True
+
+        # Check for data writes
+        data_writes = summary.get('data_writes', [])
+        if data_writes:
+            structure['has_data'] = True
+
+        # Build write sequence from timeline
+        for op in timeline:
+            if op.get('kind') == 'write':
+                raw = op.get('raw', '')
+                line_no = op.get('lineno')
+                
+                # Extract variables being written
+                write_vars = self._extract_write_variables(raw)
+                structure['write_sequence'].append({
+                    'line_number': line_no,
+                    'variables': write_vars,
+                    'raw_statement': raw
+                })
+
+        return structure
+
+    def _analyze_output_variables(self, summary: Dict, timeline: List[Dict], proc: FortranProcedure) -> List[Dict]:
+        """Analyze what data variables are written and their types."""
+        variables = []
+        
+        # Process data writes from summary
+        data_writes = summary.get('data_writes', [])
+        for write_group in data_writes:
+            columns = write_group.get('columns', [])
+            rows = write_group.get('rows', 1)
+            
+            for var_name in columns:
+                var_info = self._get_variable_type_info(proc, var_name)
+                variables.append({
+                    'name': var_name,
+                    'type': var_info.get('type'),
+                    'kind': var_info.get('kind'),
+                    'dimensions': var_info.get('dimensions'),
+                    'write_count': rows
+                })
+
+        return variables
+
+    def _extract_write_variables(self, raw_statement: str) -> List[str]:
+        """Extract variable names from a write statement."""
+        import re
+        
+        # Match write(...) variable_list pattern
+        match = re.search(r'write\s*\([^)]*\)\s*(.+)', raw_statement, re.IGNORECASE)
+        if not match:
+            return []
+        
+        var_part = match.group(1).strip()
+        
+        # Split on commas, handling nested parentheses
+        variables = []
+        current_var = ""
+        paren_depth = 0
+        
+        for char in var_part:
+            if char == '(':
+                paren_depth += 1
+                current_var += char
+            elif char == ')':
+                paren_depth -= 1
+                current_var += char
+            elif char == ',' and paren_depth == 0:
+                if current_var.strip():
+                    variables.append(current_var.strip())
+                current_var = ""
+            else:
+                current_var += char
+        
+        if current_var.strip():
+            variables.append(current_var.strip())
+        
+        return variables
+
     def _analyze_input_patterns(self, proc: FortranProcedure, tracker, io_summary: Dict) -> Optional[Dict]:
         """
         Analyze input file patterns for a specific procedure.
