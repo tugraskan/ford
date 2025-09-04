@@ -160,16 +160,16 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/output_landscape_module.html'>output_landscape_module</a></li>
                   <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
-                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/carbon_module.html'>carbon_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
                   <li class="list-inline-item"><a href='../module/landuse_data_module.html'>landuse_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
-                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/output_landscape_module.html'>output_landscape_module</a></li>
               </ul>
             </li>
         </ul>
@@ -218,7 +218,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-ihru~26"></span>
+              <span class="anchor" id="variable-ihru~31"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -236,6 +236,353 @@
 
 
 
+    <section>
+      <h3>Outside Variables and Types Used</h3>
+          <table class="table table-striped varlist">
+      <thead>
+        <tr>
+          <th scope="col">Type</th>
+          <th scope="col">Name</th>
+          <th scope="col">Module</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <td>character(len=40)</td>
+            <td><strong>plts_bsn</strong></td>
+            <td>plant_data_module</td>
+            <td><p>none |plant names simulated in current run</p><a href="../module/plant_data_module.html#variable-plts_bsn" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>character(len=25)</td>
+            <td><strong>pl_class</strong></td>
+            <td>plant_data_module</td>
+            <td><p>none |plant class - row crop, tree, grass, etc</p><a href="../module/plant_data_module.html#variable-pl_class" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/plant_db.html'>plant_db</a>)</td>
+            <td><strong>pldb</strong></td>
+            <td>plant_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/plant_db.html'>plant_db</a>)</td>
+            <td><strong>pl_db</strong></td>
+            <td>plant_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/plant_cp.html'>plant_cp</a>)</td>
+            <td><strong>plcp</strong></td>
+            <td>plant_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/organic_mass.html'>organic_mass</a>)</td>
+            <td><strong>orgz</strong></td>
+            <td>organic_mineral_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/organic_mixing_mass.html'>organic_mixing_mass</a>)</td>
+            <td><strong>mix_org</strong></td>
+            <td>organic_mineral_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/mineral_nitrogen.html'>mineral_nitrogen</a>)</td>
+            <td><strong>mnz</strong></td>
+            <td>organic_mineral_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/mineral_nitrogen.html'>mineral_nitrogen</a>)</td>
+            <td><strong>mix_mn</strong></td>
+            <td>organic_mineral_mass_module</td>
+            <td><p>|mineral n pool used in tillage mixing</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/mineral_phosphorus.html'>mineral_phosphorus</a>)</td>
+            <td><strong>mpz</strong></td>
+            <td>organic_mineral_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>mhyd</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |max number of hydrographs</p><a href="../module/hydrograph_module.html#variable-mhyd" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>mcmd</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>inum2</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |inflow hydrograph storage location number</p><a href="../module/hydrograph_module.html#variable-inum2" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>jrch</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |reach number</p><a href="../module/hydrograph_module.html#variable-jrch~6" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>jrchq</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/carbon_terrestrial_inputs.html'>carbon_terrestrial_inputs</a>)</td>
+            <td><strong>cbn_tes</strong></td>
+            <td>carbon_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/carbon_inputs.html'>carbon_inputs</a>)</td>
+            <td><strong>carbdb</strong></td>
+            <td>carbon_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/carbon_inputs.html'>carbon_inputs</a>)</td>
+            <td><strong>carbz</strong></td>
+            <td>carbon_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>logical</td>
+            <td><strong>carbon_coef_file</strong></td>
+            <td>carbon_module</td>
+            <td><p>!set to true if carbon_coef.cbn file exits.</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/manure_coef.html'>manure_coef</a>)</td>
+            <td><strong>man_coef</strong></td>
+            <td>carbon_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=29)</td>
+            <td><strong>cal_sim</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>cal_adj</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>yrs_print</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ndays</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ndays_leap</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soilayer.html'>soilayer</a>)</td>
+            <td><strong>layer1</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soil_physical_properties.html'>soil_physical_properties</a>)</td>
+            <td><strong>phys1</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soil_carbon_test.html'>soil_carbon_test</a>)</td>
+            <td><strong>sol_cbn_test</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>nmbr_cbn_tests</strong></td>
+            <td>soil_module</td>
+            <td><p>none |number of soil carbon tests </p><a href="../module/soil_module.html#variable-nmbr_cbn_tests" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soil_profile.html'>soil_profile</a>)</td>
+            <td><strong>soil</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>isep</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ilu</strong></td>
+            <td>hru_module</td>
+            <td><p>| </p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ulu</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>iwgen</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>character(len=1)</td>
+            <td><strong>timest</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>character(len=80)</td>
+            <td><strong>prog</strong></td>
+            <td>basin_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>ban_precip_aa</strong></td>
+            <td>basin_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/basin_inputs.html'>basin_inputs</a>)</td>
+            <td><strong>bsn</strong></td>
+            <td>basin_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/basin_control_codes.html'>basin_control_codes</a>)</td>
+            <td><strong>bsn_cc</strong></td>
+            <td>basin_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/basin_parms.html'>basin_parms</a>)</td>
+            <td><strong>bsn_prm</strong></td>
+            <td>basin_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/land_use_management.html'>land_use_management</a>)</td>
+            <td><strong>lum</strong></td>
+            <td>landuse_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/land_use_structures.html'>land_use_structures</a>)</td>
+            <td><strong>lum_str</strong></td>
+            <td>landuse_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/curvenumber_table.html'>curvenumber_table</a>)</td>
+            <td><strong>cn</strong></td>
+            <td>landuse_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/land_use_mgt_groups.html'>land_use_mgt_groups</a>)</td>
+            <td><strong>lum_grp</strong></td>
+            <td>landuse_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/conservation_practice_table.html'>conservation_practice_table</a>)</td>
+            <td><strong>cons_prac</strong></td>
+            <td>landuse_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>basin_plants</strong></td>
+            <td>plant_module</td>
+            <td><p>number of different plants in the basin</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/plant_mass.html'>plant_mass</a>)</td>
+            <td><strong>yld_tbr</strong></td>
+            <td>plant_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/plant_mass.html'>plant_mass</a>)</td>
+            <td><strong>yld_grn</strong></td>
+            <td>plant_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/plant_mass.html'>plant_mass</a>)</td>
+            <td><strong>yld_veg</strong></td>
+            <td>plant_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/plant_mass.html'>plant_mass</a>)</td>
+            <td><strong>yld_rsd</strong></td>
+            <td>plant_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>h</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_d</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_m</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_y</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_a</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+      </tbody>
+    </table>
+
+    </section>
+    <br>
 
     <section>
       <h3>I/O Operations</h3>
@@ -1656,7 +2003,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-ihru~26"></span>
+              <span class="anchor" id="variable-ihru~31"></span>
               integer,
             </td>
               <td>public</td>

@@ -161,14 +161,14 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
-                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/sd_channel_module.html'>sd_channel_module</a></li>
+                  <li class="list-inline-item"><a href='../module/cs_data_module.html'>cs_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
                   <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
                   <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/cs_data_module.html'>cs_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/reservoir_data_module.html'>reservoir_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
               </ul>
             </li>
         </ul>
@@ -183,80 +183,343 @@
     <br>
 
 
+    <section>
+      <h3>Outside Variables and Types Used</h3>
+          <table class="table table-striped varlist">
+      <thead>
+        <tr>
+          <th scope="col">Type</th>
+          <th scope="col">Name</th>
+          <th scope="col">Module</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <td>type(<a href='../type/input_sim.html'>input_sim</a>)</td>
+            <td><strong>in_sim</strong></td>
+            <td>input_file_module</td>
+            <td><p>basin</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/input_basin.html'>input_basin</a>)</td>
+            <td><strong>in_basin</strong></td>
+            <td>input_file_module</td>
+            <td><p>climate</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/input_cli.html'>input_cli</a>)</td>
+            <td><strong>in_cli</strong></td>
+            <td>input_file_module</td>
+            <td><p>connect</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/input_con.html'>input_con</a>)</td>
+            <td><strong>in_con</strong></td>
+            <td>input_file_module</td>
+            <td><p>channel</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/input_cha.html'>input_cha</a>)</td>
+            <td><strong>in_cha</strong></td>
+            <td>input_file_module</td>
+            <td><p>reservoir</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>mhyd</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |max number of hydrographs</p><a href="../module/hydrograph_module.html#variable-mhyd" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>mcmd</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>inum2</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |inflow hydrograph storage location number</p><a href="../module/hydrograph_module.html#variable-inum2" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>jrch</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |reach number</p><a href="../module/hydrograph_module.html#variable-jrch~6" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>jrchq</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>maxint</strong></td>
+            <td>sd_channel_module</td>
+            <td><p>number of intervals in hydrograph for degradation</p></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>wtemp</strong></td>
+            <td>sd_channel_module</td>
+            <td><p>stream water temperature C</p></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>peakrate</strong></td>
+            <td>sd_channel_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>sed_reduc_t</strong></td>
+            <td>sd_channel_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>no3_reduc_kg</strong></td>
+            <td>sd_channel_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/constituent_rct.html'>constituent_rct</a>)</td>
+            <td><strong>cs_rct_soil</strong></td>
+            <td>cs_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/constituent_rct.html'>constituent_rct</a>)</td>
+            <td><strong>cs_rct_aqu</strong></td>
+            <td>cs_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>rct</strong></td>
+            <td>cs_data_module</td>
+            <td><p>reaction parameters</p></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>rct_shale</strong></td>
+            <td>cs_data_module</td>
+            <td><p>reaction parameters for shale</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>num_geol_shale</strong></td>
+            <td>cs_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>isep</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ilu</strong></td>
+            <td>hru_module</td>
+            <td><p>| </p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ulu</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>iwgen</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>character(len=1)</td>
+            <td><strong>timest</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ncell</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!number of gwflow cells</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>num_active</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!number of active cells</p></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>gw_time_step</strong></td>
+            <td>gwflow_module</td>
+            <td><p>days !flow solution time step</p><a href="../module/gwflow_module.html#variable-gw_time_step" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>gwflag_day</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!flag for writing daily mass balance file</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>gwflag_yr</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!flag for writing yearly mass balance file</p></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>pest_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>path_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>hmet_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>salt_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>cs_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td><p>rtb cs</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/data_files_max_elements.html'>data_files_max_elements</a>)</td>
+            <td><strong>db_mx</strong></td>
+            <td>maximum_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/reservoir_data_char_input.html'>reservoir_data_char_input</a>)</td>
+            <td><strong>res_dat_c</strong></td>
+            <td>reservoir_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/reservoir_data_char_input.html'>reservoir_data_char_input</a>)</td>
+            <td><strong>wet_dat_c</strong></td>
+            <td>reservoir_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/reservoir_data_char_input_cs.html'>reservoir_data_char_input_cs</a>)</td>
+            <td><strong>res_dat_c_cs</strong></td>
+            <td>reservoir_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/reservoir_data_char_input_cs.html'>reservoir_data_char_input_cs</a>)</td>
+            <td><strong>wet_dat_c_cs</strong></td>
+            <td>reservoir_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/reservoir_data.html'>reservoir_data</a>)</td>
+            <td><strong>res_dat</strong></td>
+            <td>reservoir_data_module</td>
+            <td></td>
+          </tr>
+      </tbody>
+    </table>
+
+    </section>
+    <br>
 
     <section>
       <h3>I/O Operations</h3>
           <div class="accordion" id="ioAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.input">
+          <h3 class="accordion-header" id="headinggwflow_input">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.input" aria-expanded="true" 
-                    aria-controls="collapsegwflow.input">
+                    data-bs-target="#collapsegwflow_input" aria-expanded="true" 
+                    aria-controls="collapsegwflow_input">
               Unit gwflow.input
             </button>
           </h3>
-          <div id="collapsegwflow.input" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.input" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_input" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_input" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.pumpex">
+          <h3 class="accordion-header" id="headinggwflow_pumpex">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.pumpex" aria-expanded="true" 
-                    aria-controls="collapsegwflow.pumpex">
+                    data-bs-target="#collapsegwflow_pumpex" aria-expanded="true" 
+                    aria-controls="collapsegwflow_pumpex">
               Unit gwflow.pumpex
             </button>
           </h3>
-          <div id="collapsegwflow.pumpex" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.pumpex" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_pumpex" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_pumpex" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.tiles">
+          <h3 class="accordion-header" id="headinggwflow_tiles">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.tiles" aria-expanded="true" 
-                    aria-controls="collapsegwflow.tiles">
+                    data-bs-target="#collapsegwflow_tiles" aria-expanded="true" 
+                    aria-controls="collapsegwflow_tiles">
               Unit gwflow.tiles
             </button>
           </h3>
-          <div id="collapsegwflow.tiles" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.tiles" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_tiles" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_tiles" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.solutes">
+          <h3 class="accordion-header" id="headinggwflow_solutes">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.solutes" aria-expanded="true" 
-                    aria-controls="collapsegwflow.solutes">
+                    data-bs-target="#collapsegwflow_solutes" aria-expanded="true" 
+                    aria-controls="collapsegwflow_solutes">
               Unit gwflow.solutes
             </button>
           </h3>
-          <div id="collapsegwflow.solutes" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.solutes" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_solutes" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_solutes" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingunit_*">
+          <h3 class="accordion-header" id="headingunit__">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseunit_*" aria-expanded="true" 
-                    aria-controls="collapseunit_*">
+                    data-bs-target="#collapseunit__" aria-expanded="true" 
+                    aria-controls="collapseunit__">
               Unit unit_*
             </button>
           </h3>
-          <div id="collapseunit_*" class="accordion-collapse collapse show" 
-               aria-labelledby="headingunit_*" data-bs-parent="#ioAccordion">
+          <div id="collapseunit__" class="accordion-collapse collapse show" 
+               aria-labelledby="headingunit__" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 
                 
@@ -1278,15 +1541,15 @@
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.hru_pump_observe">
+          <h3 class="accordion-header" id="headinggwflow_hru_pump_observe">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.hru_pump_observe" aria-expanded="true" 
-                    aria-controls="collapsegwflow.hru_pump_observe">
+                    data-bs-target="#collapsegwflow_hru_pump_observe" aria-expanded="true" 
+                    aria-controls="collapsegwflow_hru_pump_observe">
               Unit gwflow.hru_pump_observe
             </button>
           </h3>
-          <div id="collapsegwflow.hru_pump_observe" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.hru_pump_observe" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_hru_pump_observe" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_hru_pump_observe" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
@@ -1353,15 +1616,15 @@
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.rescells">
+          <h3 class="accordion-header" id="headinggwflow_rescells">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.rescells" aria-expanded="true" 
-                    aria-controls="collapsegwflow.rescells">
+                    data-bs-target="#collapsegwflow_rescells" aria-expanded="true" 
+                    aria-controls="collapsegwflow_rescells">
               Unit gwflow.rescells
             </button>
           </h3>
-          <div id="collapsegwflow.rescells" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.rescells" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_rescells" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_rescells" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
@@ -1398,15 +1661,15 @@
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.floodplain">
+          <h3 class="accordion-header" id="headinggwflow_floodplain">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.floodplain" aria-expanded="true" 
-                    aria-controls="collapsegwflow.floodplain">
+                    data-bs-target="#collapsegwflow_floodplain" aria-expanded="true" 
+                    aria-controls="collapsegwflow_floodplain">
               Unit gwflow.floodplain
             </button>
           </h3>
-          <div id="collapsegwflow.floodplain" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.floodplain" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_floodplain" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_floodplain" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
@@ -1428,15 +1691,15 @@
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.canals">
+          <h3 class="accordion-header" id="headinggwflow_canals">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.canals" aria-expanded="true" 
-                    aria-controls="collapsegwflow.canals">
+                    data-bs-target="#collapsegwflow_canals" aria-expanded="true" 
+                    aria-controls="collapsegwflow_canals">
               Unit gwflow.canals
             </button>
           </h3>
-          <div id="collapsegwflow.canals" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.canals" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_canals" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_canals" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
@@ -1458,15 +1721,15 @@
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.solutes.minerals">
+          <h3 class="accordion-header" id="headinggwflow_solutes_minerals">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.solutes.minerals" aria-expanded="true" 
-                    aria-controls="collapsegwflow.solutes.minerals">
+                    data-bs-target="#collapsegwflow_solutes_minerals" aria-expanded="true" 
+                    aria-controls="collapsegwflow_solutes_minerals">
               Unit gwflow.solutes.minerals
             </button>
           </h3>
-          <div id="collapsegwflow.solutes.minerals" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.solutes.minerals" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_solutes_minerals" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_solutes_minerals" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
@@ -1668,45 +1931,45 @@
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.lsucell">
+          <h3 class="accordion-header" id="headinggwflow_lsucell">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.lsucell" aria-expanded="true" 
-                    aria-controls="collapsegwflow.lsucell">
+                    data-bs-target="#collapsegwflow_lsucell" aria-expanded="true" 
+                    aria-controls="collapsegwflow_lsucell">
               Unit gwflow.lsucell
             </button>
           </h3>
-          <div id="collapsegwflow.lsucell" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.lsucell" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_lsucell" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_lsucell" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingout.key">
+          <h3 class="accordion-header" id="headingout_key">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseout.key" aria-expanded="true" 
-                    aria-controls="collapseout.key">
+                    data-bs-target="#collapseout_key" aria-expanded="true" 
+                    aria-controls="collapseout_key">
               Unit out.key
             </button>
           </h3>
-          <div id="collapseout.key" class="accordion-collapse collapse show" 
-               aria-labelledby="headingout.key" data-bs-parent="#ioAccordion">
+          <div id="collapseout_key" class="accordion-collapse collapse show" 
+               aria-labelledby="headingout_key" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingin_con%hru_con">
+          <h3 class="accordion-header" id="headingin_con_pct_hru_con">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsein_con%hru_con" aria-expanded="true" 
-                    aria-controls="collapsein_con%hru_con">
+                    data-bs-target="#collapsein_con_pct_hru_con" aria-expanded="true" 
+                    aria-controls="collapsein_con_pct_hru_con">
               Unit in_con%hru_con
             </button>
           </h3>
-          <div id="collapsein_con%hru_con" class="accordion-collapse collapse show" 
-               aria-labelledby="headingin_con%hru_con" data-bs-parent="#ioAccordion">
+          <div id="collapsein_con_pct_hru_con" class="accordion-collapse collapse show" 
+               aria-labelledby="headingin_con_pct_hru_con" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 
                     <div class="condition-section mb-3">
@@ -1774,45 +2037,45 @@
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.hrucell">
+          <h3 class="accordion-header" id="headinggwflow_hrucell">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.hrucell" aria-expanded="true" 
-                    aria-controls="collapsegwflow.hrucell">
+                    data-bs-target="#collapsegwflow_hrucell" aria-expanded="true" 
+                    aria-controls="collapsegwflow_hrucell">
               Unit gwflow.hrucell
             </button>
           </h3>
-          <div id="collapsegwflow.hrucell" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.hrucell" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_hrucell" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_hrucell" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.huc12cell">
+          <h3 class="accordion-header" id="headinggwflow_huc12cell">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.huc12cell" aria-expanded="true" 
-                    aria-controls="collapsegwflow.huc12cell">
+                    data-bs-target="#collapsegwflow_huc12cell" aria-expanded="true" 
+                    aria-controls="collapsegwflow_huc12cell">
               Unit gwflow.huc12cell
             </button>
           </h3>
-          <div id="collapsegwflow.huc12cell" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.huc12cell" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_huc12cell" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_huc12cell" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.cellhru">
+          <h3 class="accordion-header" id="headinggwflow_cellhru">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.cellhru" aria-expanded="true" 
-                    aria-controls="collapsegwflow.cellhru">
+                    data-bs-target="#collapsegwflow_cellhru" aria-expanded="true" 
+                    aria-controls="collapsegwflow_cellhru">
               Unit gwflow.cellhru
             </button>
           </h3>
-          <div id="collapsegwflow.cellhru" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.cellhru" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_cellhru" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_cellhru" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>
@@ -2495,15 +2758,15 @@
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinggwflow.streamobs">
+          <h3 class="accordion-header" id="headinggwflow_streamobs">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsegwflow.streamobs" aria-expanded="true" 
-                    aria-controls="collapsegwflow.streamobs">
+                    data-bs-target="#collapsegwflow_streamobs" aria-expanded="true" 
+                    aria-controls="collapsegwflow_streamobs">
               Unit gwflow.streamobs
             </button>
           </h3>
-          <div id="collapsegwflow.streamobs" class="accordion-collapse collapse show" 
-               aria-labelledby="headinggwflow.streamobs" data-bs-parent="#ioAccordion">
+          <div id="collapsegwflow_streamobs" class="accordion-collapse collapse show" 
+               aria-labelledby="headinggwflow_streamobs" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 <em>No operations recorded</em>
             </div>

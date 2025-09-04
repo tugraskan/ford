@@ -160,15 +160,15 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
+                  <li class="list-inline-item"><a href='../module/calibration_data_module.html'>calibration_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/sd_channel_module.html'>sd_channel_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
-                  <li class="list-inline-item"><a href='../module/sd_channel_module.html'>sd_channel_module</a></li>
+                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
                   <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
                   <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
-                  <li class="list-inline-item"><a href='../module/calibration_data_module.html'>calibration_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
               </ul>
             </li>
         </ul>
@@ -186,6 +186,269 @@ also, computes and write out daily/annual/average annual fluxes and mass balance
     <br>
 
 
+    <section>
+      <h3>Outside Variables and Types Used</h3>
+          <table class="table table-striped varlist">
+      <thead>
+        <tr>
+          <th scope="col">Type</th>
+          <th scope="col">Name</th>
+          <th scope="col">Module</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <td>type(<a href='../type/calibration_parameters.html'>calibration_parameters</a>)</td>
+            <td><strong>cal_parms</strong></td>
+            <td>calibration_data_module</td>
+            <td><p>dimensioned to db_mx%cal_parms_tot</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/update_parameters.html'>update_parameters</a>)</td>
+            <td><strong>cal_upd</strong></td>
+            <td>calibration_data_module</td>
+            <td><p>dimensioned to db_mx%cal_parms</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/update_parameters.html'>update_parameters</a>)</td>
+            <td><strong>chg</strong></td>
+            <td>calibration_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/update_conditional.html'>update_conditional</a>)</td>
+            <td><strong>upd_cond</strong></td>
+            <td>calibration_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soft_calibration_codes.html'>soft_calibration_codes</a>)</td>
+            <td><strong>cal_codes</strong></td>
+            <td>calibration_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>mhyd</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |max number of hydrographs</p><a href="../module/hydrograph_module.html#variable-mhyd" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>mcmd</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>inum2</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |inflow hydrograph storage location number</p><a href="../module/hydrograph_module.html#variable-inum2" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>jrch</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |reach number</p><a href="../module/hydrograph_module.html#variable-jrch~6" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>jrchq</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>maxint</strong></td>
+            <td>sd_channel_module</td>
+            <td><p>number of intervals in hydrograph for degradation</p></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>wtemp</strong></td>
+            <td>sd_channel_module</td>
+            <td><p>stream water temperature C</p></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>peakrate</strong></td>
+            <td>sd_channel_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>sed_reduc_t</strong></td>
+            <td>sd_channel_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>no3_reduc_kg</strong></td>
+            <td>sd_channel_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=29)</td>
+            <td><strong>cal_sim</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>cal_adj</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>yrs_print</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ndays</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ndays_leap</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>isep</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ilu</strong></td>
+            <td>hru_module</td>
+            <td><p>| </p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ulu</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>iwgen</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>character(len=1)</td>
+            <td><strong>timest</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ncell</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!number of gwflow cells</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>num_active</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!number of active cells</p></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>gw_time_step</strong></td>
+            <td>gwflow_module</td>
+            <td><p>days !flow solution time step</p><a href="../module/gwflow_module.html#variable-gw_time_step" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>gwflag_day</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!flag for writing daily mass balance file</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>gwflag_yr</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!flag for writing yearly mass balance file</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/data_files_max_elements.html'>data_files_max_elements</a>)</td>
+            <td><strong>db_mx</strong></td>
+            <td>maximum_data_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/water_body.html'>water_body</a>)</td>
+            <td><strong>wbodz</strong></td>
+            <td>water_body_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/water_body.html'>water_body</a>)</td>
+            <td><strong>res_wat_d</strong></td>
+            <td>water_body_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/water_body.html'>water_body</a>)</td>
+            <td><strong>res_wat_m</strong></td>
+            <td>water_body_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/water_body.html'>water_body</a>)</td>
+            <td><strong>res_wat_y</strong></td>
+            <td>water_body_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/water_body.html'>water_body</a>)</td>
+            <td><strong>res_wat_a</strong></td>
+            <td>water_body_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soilayer.html'>soilayer</a>)</td>
+            <td><strong>layer1</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soil_physical_properties.html'>soil_physical_properties</a>)</td>
+            <td><strong>phys1</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soil_carbon_test.html'>soil_carbon_test</a>)</td>
+            <td><strong>sol_cbn_test</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>nmbr_cbn_tests</strong></td>
+            <td>soil_module</td>
+            <td><p>none |number of soil carbon tests </p><a href="../module/soil_module.html#variable-nmbr_cbn_tests" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soil_profile.html'>soil_profile</a>)</td>
+            <td><strong>soil</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+      </tbody>
+    </table>
+
+    </section>
+    <br>
 
     <section>
       <h3>I/O Operations</h3>
@@ -593,15 +856,15 @@ also, computes and write out daily/annual/average annual fluxes and mass balance
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingunit_out_solbal_dy+s">
+          <h3 class="accordion-header" id="headingunit_out_solbal_dy_s">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseunit_out_solbal_dy+s" aria-expanded="true" 
-                    aria-controls="collapseunit_out_solbal_dy+s">
+                    data-bs-target="#collapseunit_out_solbal_dy_s" aria-expanded="true" 
+                    aria-controls="collapseunit_out_solbal_dy_s">
               Unit unit_out_solbal_dy+s
             </button>
           </h3>
-          <div id="collapseunit_out_solbal_dy+s" class="accordion-collapse collapse show" 
-               aria-labelledby="headingunit_out_solbal_dy+s" data-bs-parent="#ioAccordion">
+          <div id="collapseunit_out_solbal_dy_s" class="accordion-collapse collapse show" 
+               aria-labelledby="headingunit_out_solbal_dy_s" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 
                     <div class="condition-section mb-3">
@@ -3134,15 +3397,15 @@ also, computes and write out daily/annual/average annual fluxes and mass balance
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingunit_out_solbal_yr+s">
+          <h3 class="accordion-header" id="headingunit_out_solbal_yr_s">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseunit_out_solbal_yr+s" aria-expanded="true" 
-                    aria-controls="collapseunit_out_solbal_yr+s">
+                    data-bs-target="#collapseunit_out_solbal_yr_s" aria-expanded="true" 
+                    aria-controls="collapseunit_out_solbal_yr_s">
               Unit unit_out_solbal_yr+s
             </button>
           </h3>
-          <div id="collapseunit_out_solbal_yr+s" class="accordion-collapse collapse show" 
-               aria-labelledby="headingunit_out_solbal_yr+s" data-bs-parent="#ioAccordion">
+          <div id="collapseunit_out_solbal_yr_s" class="accordion-collapse collapse show" 
+               aria-labelledby="headingunit_out_solbal_yr_s" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 
                     <div class="condition-section mb-3">
@@ -3298,15 +3561,15 @@ also, computes and write out daily/annual/average annual fluxes and mass balance
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingunit_out_solbal_aa+s">
+          <h3 class="accordion-header" id="headingunit_out_solbal_aa_s">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseunit_out_solbal_aa+s" aria-expanded="true" 
-                    aria-controls="collapseunit_out_solbal_aa+s">
+                    data-bs-target="#collapseunit_out_solbal_aa_s" aria-expanded="true" 
+                    aria-controls="collapseunit_out_solbal_aa_s">
               Unit unit_out_solbal_aa+s
             </button>
           </h3>
-          <div id="collapseunit_out_solbal_aa+s" class="accordion-collapse collapse show" 
-               aria-labelledby="headingunit_out_solbal_aa+s" data-bs-parent="#ioAccordion">
+          <div id="collapseunit_out_solbal_aa_s" class="accordion-collapse collapse show" 
+               aria-labelledby="headingunit_out_solbal_aa_s" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
                 
                     <div class="condition-section mb-3">

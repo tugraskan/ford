@@ -160,19 +160,19 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
-                  <li class="list-inline-item"><a href='../module/output_landscape_module.html'>output_landscape_module</a></li>
                   <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
-                  <li class="list-inline-item"><a href='../module/salt_module.html'>salt_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
                   <li class="list-inline-item"><a href='../module/aquifer_module.html'>aquifer_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/salt_module.html'>salt_module</a></li>
+                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
                   <li class="list-inline-item"><a href='../module/res_salt_module.html'>res_salt_module</a></li>
                   <li class="list-inline-item"><a href='../module/ch_salt_module.html'>ch_salt_module</a></li>
-                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/salt_aquifer.html'>salt_aquifer</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/output_landscape_module.html'>output_landscape_module</a></li>
               </ul>
             </li>
         </ul>
@@ -190,6 +190,413 @@ a system-wide salt mass balance.</p>
     <br>
 
 
+    <section>
+      <h3>Outside Variables and Types Used</h3>
+          <table class="table table-striped varlist">
+      <thead>
+        <tr>
+          <th scope="col">Type</th>
+          <th scope="col">Name</th>
+          <th scope="col">Module</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <td>type(<a href='../type/organic_mass.html'>organic_mass</a>)</td>
+            <td><strong>orgz</strong></td>
+            <td>organic_mineral_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/organic_mixing_mass.html'>organic_mixing_mass</a>)</td>
+            <td><strong>mix_org</strong></td>
+            <td>organic_mineral_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/mineral_nitrogen.html'>mineral_nitrogen</a>)</td>
+            <td><strong>mnz</strong></td>
+            <td>organic_mineral_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/mineral_nitrogen.html'>mineral_nitrogen</a>)</td>
+            <td><strong>mix_mn</strong></td>
+            <td>organic_mineral_mass_module</td>
+            <td><p>|mineral n pool used in tillage mixing</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/mineral_phosphorus.html'>mineral_phosphorus</a>)</td>
+            <td><strong>mpz</strong></td>
+            <td>organic_mineral_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/aquifer_database.html'>aquifer_database</a>)</td>
+            <td><strong>aqudb</strong></td>
+            <td>aquifer_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/aquifer_database.html'>aquifer_database</a>)</td>
+            <td><strong>aqu_dat</strong></td>
+            <td>aquifer_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/aquifer_data_parameters.html'>aquifer_data_parameters</a>)</td>
+            <td><strong>aqu_prm</strong></td>
+            <td>aquifer_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/aquifer_dynamic.html'>aquifer_dynamic</a>)</td>
+            <td><strong>aqu_om_init</strong></td>
+            <td>aquifer_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/aquifer_dynamic.html'>aquifer_dynamic</a>)</td>
+            <td><strong>aqu_d</strong></td>
+            <td>aquifer_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>mhyd</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |max number of hydrographs</p><a href="../module/hydrograph_module.html#variable-mhyd" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>mcmd</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>inum2</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |inflow hydrograph storage location number</p><a href="../module/hydrograph_module.html#variable-inum2" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>jrch</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |reach number</p><a href="../module/hydrograph_module.html#variable-jrch~6" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>jrchq</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance~2.html'>object_salt_balance</a>)</td>
+            <td><strong>hsaltb_d</strong></td>
+            <td>salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance~2.html'>object_salt_balance</a>)</td>
+            <td><strong>hsaltb_m</strong></td>
+            <td>salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance~2.html'>object_salt_balance</a>)</td>
+            <td><strong>hsaltb_y</strong></td>
+            <td>salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance~2.html'>object_salt_balance</a>)</td>
+            <td><strong>hsaltb_a</strong></td>
+            <td>salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance~2.html'>object_salt_balance</a>)</td>
+            <td><strong>ru_hru_saltb_d</strong></td>
+            <td>salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soilayer.html'>soilayer</a>)</td>
+            <td><strong>layer1</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soil_physical_properties.html'>soil_physical_properties</a>)</td>
+            <td><strong>phys1</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soil_carbon_test.html'>soil_carbon_test</a>)</td>
+            <td><strong>sol_cbn_test</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>nmbr_cbn_tests</strong></td>
+            <td>soil_module</td>
+            <td><p>none |number of soil carbon tests </p><a href="../module/soil_module.html#variable-nmbr_cbn_tests" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/soil_profile.html'>soil_profile</a>)</td>
+            <td><strong>soil</strong></td>
+            <td>soil_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=29)</td>
+            <td><strong>cal_sim</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>cal_adj</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>yrs_print</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ndays</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ndays_leap</strong></td>
+            <td>time_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>isep</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ilu</strong></td>
+            <td>hru_module</td>
+            <td><p>| </p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ulu</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>iwgen</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>character(len=1)</td>
+            <td><strong>timest</strong></td>
+            <td>hru_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>ncell</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!number of gwflow cells</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>num_active</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!number of active cells</p></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>gw_time_step</strong></td>
+            <td>gwflow_module</td>
+            <td><p>days !flow solution time step</p><a href="../module/gwflow_module.html#variable-gw_time_step" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>gwflag_day</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!flag for writing daily mass balance file</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>gwflag_yr</strong></td>
+            <td>gwflow_module</td>
+            <td><p>!flag for writing yearly mass balance file</p></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>pest_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>path_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>hmet_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>salt_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>cs_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td><p>rtb cs</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/res_salt_balance.html'>res_salt_balance</a>)</td>
+            <td><strong>res_saltbz</strong></td>
+            <td>res_salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/res_salt_output.html'>res_salt_output</a>)</td>
+            <td><strong>ressalt_d</strong></td>
+            <td>res_salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/res_salt_output.html'>res_salt_output</a>)</td>
+            <td><strong>ressalt_m</strong></td>
+            <td>res_salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/res_salt_output.html'>res_salt_output</a>)</td>
+            <td><strong>ressalt_y</strong></td>
+            <td>res_salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/res_salt_output.html'>res_salt_output</a>)</td>
+            <td><strong>ressalt_a</strong></td>
+            <td>res_salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/ch_salt_balance.html'>ch_salt_balance</a>)</td>
+            <td><strong>ch_saltbz</strong></td>
+            <td>ch_salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/ch_salt_output.html'>ch_salt_output</a>)</td>
+            <td><strong>chsalt_d</strong></td>
+            <td>ch_salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/ch_salt_output.html'>ch_salt_output</a>)</td>
+            <td><strong>chsalt_m</strong></td>
+            <td>ch_salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/ch_salt_output.html'>ch_salt_output</a>)</td>
+            <td><strong>chsalt_y</strong></td>
+            <td>ch_salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/ch_salt_output.html'>ch_salt_output</a>)</td>
+            <td><strong>chsalt_a</strong></td>
+            <td>ch_salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>real</td>
+            <td><strong>testing_aquifer</strong></td>
+            <td>salt_aquifer</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance_aqu.html'>object_salt_balance_aqu</a>)</td>
+            <td><strong>asaltb_d</strong></td>
+            <td>salt_aquifer</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance_aqu.html'>object_salt_balance_aqu</a>)</td>
+            <td><strong>asaltb_m</strong></td>
+            <td>salt_aquifer</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance_aqu.html'>object_salt_balance_aqu</a>)</td>
+            <td><strong>asaltb_y</strong></td>
+            <td>salt_aquifer</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance_aqu.html'>object_salt_balance_aqu</a>)</td>
+            <td><strong>asaltb_a</strong></td>
+            <td>salt_aquifer</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>h</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_d</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_m</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_y</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_a</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+      </tbody>
+    </table>
+
+    </section>
+    <br>
 
     <section>
       <h3>I/O Operations</h3>

@@ -160,14 +160,14 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/output_ls_pesticide_module.html'>output_ls_pesticide_module</a></li>
-                  <li class="list-inline-item"><a href='../module/cs_module.html'>cs_module</a></li>
-                  <li class="list-inline-item"><a href='../module/output_landscape_module.html'>output_landscape_module</a></li>
-                  <li class="list-inline-item"><a href='../module/output_ls_pathogen_module.html'>output_ls_pathogen_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/salt_module.html'>salt_module</a></li>
                   <li class="list-inline-item"><a href='../module/carbon_module.html'>carbon_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/output_ls_pathogen_module.html'>output_ls_pathogen_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/cs_module.html'>cs_module</a></li>
+                  <li class="list-inline-item"><a href='../module/output_landscape_module.html'>output_landscape_module</a></li>
+                  <li class="list-inline-item"><a href='../module/output_ls_pesticide_module.html'>output_ls_pesticide_module</a></li>
               </ul>
             </li>
         </ul>
@@ -188,6 +188,263 @@ this section sets parameters related to soil and other processes</p>
     <br>
 
 
+    <section>
+      <h3>Outside Variables and Types Used</h3>
+          <table class="table table-striped varlist">
+      <thead>
+        <tr>
+          <th scope="col">Type</th>
+          <th scope="col">Name</th>
+          <th scope="col">Module</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <td>integer</td>
+            <td><strong>mhyd</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |max number of hydrographs</p><a href="../module/hydrograph_module.html#variable-mhyd" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>mcmd</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>inum2</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |inflow hydrograph storage location number</p><a href="../module/hydrograph_module.html#variable-inum2" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>jrch</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>none |reach number</p><a href="../module/hydrograph_module.html#variable-jrch~6" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+          </tr>
+          <tr>
+            <td>integer</td>
+            <td><strong>jrchq</strong></td>
+            <td>hydrograph_module</td>
+            <td><p>|</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance~2.html'>object_salt_balance</a>)</td>
+            <td><strong>hsaltb_d</strong></td>
+            <td>salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance~2.html'>object_salt_balance</a>)</td>
+            <td><strong>hsaltb_m</strong></td>
+            <td>salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance~2.html'>object_salt_balance</a>)</td>
+            <td><strong>hsaltb_y</strong></td>
+            <td>salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance~2.html'>object_salt_balance</a>)</td>
+            <td><strong>hsaltb_a</strong></td>
+            <td>salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_salt_balance~2.html'>object_salt_balance</a>)</td>
+            <td><strong>ru_hru_saltb_d</strong></td>
+            <td>salt_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/carbon_terrestrial_inputs.html'>carbon_terrestrial_inputs</a>)</td>
+            <td><strong>cbn_tes</strong></td>
+            <td>carbon_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/carbon_inputs.html'>carbon_inputs</a>)</td>
+            <td><strong>carbdb</strong></td>
+            <td>carbon_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/carbon_inputs.html'>carbon_inputs</a>)</td>
+            <td><strong>carbz</strong></td>
+            <td>carbon_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>logical</td>
+            <td><strong>carbon_coef_file</strong></td>
+            <td>carbon_module</td>
+            <td><p>!set to true if carbon_coef.cbn file exits.</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/manure_coef.html'>manure_coef</a>)</td>
+            <td><strong>man_coef</strong></td>
+            <td>carbon_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/pathogen_balance.html'>pathogen_balance</a>)</td>
+            <td><strong>pathbz</strong></td>
+            <td>output_ls_pathogen_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_pathogen_balance.html'>object_pathogen_balance</a>)</td>
+            <td><strong>hpath_bal</strong></td>
+            <td>output_ls_pathogen_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_pathogen_balance.html'>object_pathogen_balance</a>)</td>
+            <td><strong>hpathb_m</strong></td>
+            <td>output_ls_pathogen_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_pathogen_balance.html'>object_pathogen_balance</a>)</td>
+            <td><strong>hpathb_y</strong></td>
+            <td>output_ls_pathogen_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_pathogen_balance.html'>object_pathogen_balance</a>)</td>
+            <td><strong>hpathb_a</strong></td>
+            <td>output_ls_pathogen_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>pest_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>path_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>hmet_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>salt_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>character(len=16)</td>
+            <td><strong>cs_init_name</strong></td>
+            <td>constituent_mass_module</td>
+            <td><p>rtb cs</p></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_cs_balance.html'>object_cs_balance</a>)</td>
+            <td><strong>hcsb_d</strong></td>
+            <td>cs_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_cs_balance.html'>object_cs_balance</a>)</td>
+            <td><strong>hcsb_m</strong></td>
+            <td>cs_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_cs_balance.html'>object_cs_balance</a>)</td>
+            <td><strong>hcsb_y</strong></td>
+            <td>cs_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_cs_balance.html'>object_cs_balance</a>)</td>
+            <td><strong>hcsb_a</strong></td>
+            <td>cs_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_cs_balance.html'>object_cs_balance</a>)</td>
+            <td><strong>ru_hru_csb_d</strong></td>
+            <td>cs_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>h</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_d</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_m</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_y</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/output_waterbal.html'>output_waterbal</a>)</td>
+            <td><strong>hwb_a</strong></td>
+            <td>output_landscape_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/pesticide_balance.html'>pesticide_balance</a>)</td>
+            <td><strong>pestbz</strong></td>
+            <td>output_ls_pesticide_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_pesticide_balance.html'>object_pesticide_balance</a>)</td>
+            <td><strong>hpestb_d</strong></td>
+            <td>output_ls_pesticide_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_pesticide_balance.html'>object_pesticide_balance</a>)</td>
+            <td><strong>hpestb_m</strong></td>
+            <td>output_ls_pesticide_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_pesticide_balance.html'>object_pesticide_balance</a>)</td>
+            <td><strong>hpestb_y</strong></td>
+            <td>output_ls_pesticide_module</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>type(<a href='../type/object_pesticide_balance.html'>object_pesticide_balance</a>)</td>
+            <td><strong>hpestb_a</strong></td>
+            <td>output_ls_pesticide_module</td>
+            <td></td>
+          </tr>
+      </tbody>
+    </table>
+
+    </section>
+    <br>
 
 
     <br>
