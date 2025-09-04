@@ -3488,7 +3488,8 @@ class FortranBlockData(FortranContainer):
                     var.initial = self.param_dict[var.name.lower()]
                 else:
                     var.attribs.append(attr)
-        del self.attr_dict
+        if hasattr(self, 'attr_dict'):
+            del self.attr_dict
 
 
 class FortranCommon(FortranBase):
