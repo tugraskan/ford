@@ -2,90 +2,90 @@
     
       implicit none
     
-      integer :: jhyd = 0  !units         |description    
-      integer :: jsed = 0  !units         |description 
-      integer :: jnut = 0  !units         |description
-      real :: rttime = 0.  !hr            |reach travel time
-      real :: ben_area = 0.!m2            |benthic area (bottom sediments)
-      real :: rchdep = 0.  !m             |depth of flow on day
-      real :: rtevp = 0. !m^3 H2O       |evaporation from reach on day
-      real :: rttlc = 0. !m^3 H2O       |transmission losses from reach on day
-      real :: pet_ch = 0.  ! mm           |potential evaporation from reach on day
-      real, dimension (:), allocatable :: hrtwtr     !m^3 H2O       |water leaving reach
-      real, dimension (:), allocatable :: hharea     !m^2           |cross-sectional area of flow
-      real, dimension (:), allocatable :: hdepth     !m             |depth of flow
-      real, dimension (:), allocatable :: rhy        !m H2O         |main channel hydraulic radius
-      real, dimension (:), allocatable :: hsdti      !m^3/s         |flow rate in reach for hour
-      real, dimension (:), allocatable :: hhtime     !hr            |flow travel time for hour
-      real, dimension (:), allocatable :: hrttlc     !m^3 H2O       |transmission losses from reach during time step
-      real, dimension (:), allocatable :: hrtevp     !m^3 H2O       |evaporation from reach during time step
-      real, dimension (:), allocatable :: hhstor     !m^3 H2O       |water stored in reach at end of hour
-      real, dimension (:), allocatable :: hrchwtr    !m^3 H2O       |water stored at beginning of day
-      real, dimension (:), allocatable :: halgae     !mg alg/L      |algal biomass concentration in reach
-      real, dimension (:), allocatable :: hbactlp    !# cfu/100mL   |less persistent bacteria in reach/outflow during hour
-      real, dimension (:), allocatable :: hbactp     !# cfu/100mL   |persistent bacteria in reach/outflow during hour
-      real, dimension (:), allocatable :: hbod       !mg O2/L       |carbonaceous biochemical oxygen demand inreach at end of hour
-      real, dimension (:), allocatable :: hchla      !mg chl-a/L    |chlorophyll-a concentration in reach at end of hour
-      real, dimension (:), allocatable :: hdisox     !mg O2/L       |dissolved oxygen concentration in reach at end of hour
-      real, dimension (:), allocatable :: hnh4       !mg N/L        |ammonia concentration in reach at end of hour
-      real, dimension (:), allocatable :: hno2       !mg N/L        |nitrite concentration in reach at end of hour
-      real, dimension (:), allocatable :: hno3       !mg N/L        |nitrate concentration in reach at end of hour 
-      real, dimension (:), allocatable :: horgn      !mg N/L        |organic nitrogen concentration in reach at end of hour
-      real, dimension (:), allocatable :: horgp      !mg P/L        |organic phosphorus concentration in reach at end of hour
-      real, dimension (:), allocatable :: hsedst     !metric tons   |amount of sediment stored in reach at the end of hour    
-      real, dimension (:), allocatable :: hsedyld    !metric tons   |sediment transported out of reach during hour
-      real, dimension (:), allocatable :: hsolp      !mg P/L        |dissolved phosphorus concentration in reach at end of hour
-      real, dimension (:), allocatable :: hsolpst    !mg pst/m^3    |soluble pesticide concentration in outflow on day
-      real, dimension (:), allocatable :: hsorpst    !mg pst/m^3    |sorbed pesticide concentration in outflow on day
-      real, dimension (:), allocatable :: rchsep     !
+      integer :: jhyd = 0  !!units         |description    
+      integer :: jsed = 0  !!units         |description 
+      integer :: jnut = 0  !!units         |description
+      real :: rttime = 0.  !!hr            |reach travel time
+      real :: ben_area = 0.!!m2            |benthic area (bottom sediments)
+      real :: rchdep = 0.  !!m             |depth of flow on day
+      real :: rtevp = 0. !!m^3 H2O       |evaporation from reach on day
+      real :: rttlc = 0. !!m^3 H2O       |transmission losses from reach on day
+      real :: pet_ch = 0.  !! mm           |potential evaporation from reach on day
+      real, dimension (:), allocatable :: hrtwtr     !!m^3 H2O       |water leaving reach
+      real, dimension (:), allocatable :: hharea     !!m^2           |cross-sectional area of flow
+      real, dimension (:), allocatable :: hdepth     !!m             |depth of flow
+      real, dimension (:), allocatable :: rhy        !!m H2O         |main channel hydraulic radius
+      real, dimension (:), allocatable :: hsdti      !!m^3/s         |flow rate in reach for hour
+      real, dimension (:), allocatable :: hhtime     !!hr            |flow travel time for hour
+      real, dimension (:), allocatable :: hrttlc     !!m^3 H2O       |transmission losses from reach during time step
+      real, dimension (:), allocatable :: hrtevp     !!m^3 H2O       |evaporation from reach during time step
+      real, dimension (:), allocatable :: hhstor     !!m^3 H2O       |water stored in reach at end of hour
+      real, dimension (:), allocatable :: hrchwtr    !!m^3 H2O       |water stored at beginning of day
+      real, dimension (:), allocatable :: halgae     !!mg alg/L      |algal biomass concentration in reach
+      real, dimension (:), allocatable :: hbactlp    !!# cfu/100mL   |less persistent bacteria in reach/outflow during hour
+      real, dimension (:), allocatable :: hbactp     !!# cfu/100mL   |persistent bacteria in reach/outflow during hour
+      real, dimension (:), allocatable :: hbod       !!mg O2/L       |carbonaceous biochemical oxygen demand inreach at end of hour
+      real, dimension (:), allocatable :: hchla      !!mg chl-a/L    |chlorophyll-a concentration in reach at end of hour
+      real, dimension (:), allocatable :: hdisox     !!mg O2/L       |dissolved oxygen concentration in reach at end of hour
+      real, dimension (:), allocatable :: hnh4       !!mg N/L        |ammonia concentration in reach at end of hour
+      real, dimension (:), allocatable :: hno2       !!mg N/L        |nitrite concentration in reach at end of hour
+      real, dimension (:), allocatable :: hno3       !!mg N/L        |nitrate concentration in reach at end of hour 
+      real, dimension (:), allocatable :: horgn      !!mg N/L        |organic nitrogen concentration in reach at end of hour
+      real, dimension (:), allocatable :: horgp      !!mg P/L        |organic phosphorus concentration in reach at end of hour
+      real, dimension (:), allocatable :: hsedst     !!metric tons   |amount of sediment stored in reach at the end of hour    
+      real, dimension (:), allocatable :: hsedyld    !!metric tons   |sediment transported out of reach during hour
+      real, dimension (:), allocatable :: hsolp      !!mg P/L        |dissolved phosphorus concentration in reach at end of hour
+      real, dimension (:), allocatable :: hsolpst    !!mg pst/m^3    |soluble pesticide concentration in outflow on day
+      real, dimension (:), allocatable :: hsorpst    !!mg pst/m^3    |sorbed pesticide concentration in outflow on day
+      real, dimension (:), allocatable :: rchsep     !!
       
       real :: peakr = 0.
       real :: rcharea = 0.
       real :: sdti = 0.
       real :: bnkrte = 0.
       real :: degrte = 0.
-      real :: sedrch = 0.         !metric tons       |sediment transported out of reach on day
-      real :: rch_san = 0.        !
-      real :: rch_sil = 0.        !
-      real :: rch_cla = 0.        !
+      real :: sedrch = 0.         !!metric tons       |sediment transported out of reach on day
+      real :: rch_san = 0.        !!
+      real :: rch_sil = 0.        !!
+      real :: rch_cla = 0.        !!
       real :: rch_sag = 0.
-      real :: rtwtr_d = 0.        !m^3 H2O           |water leaving reach during day
-      real :: rt_delt = 0.        ! calculation time step in days
-      real :: rch_lag = 0.        !
-      real :: rch_gra = 0.        !
-      real :: rtwtr = 0.          !m^3 H2O           |water leaving reach on day
-      real :: wtrin = 0.          !m^3               |water entering reach during day
+      real :: rtwtr_d = 0.        !!m^3 H2O           |water leaving reach during day
+      real :: rt_delt = 0.        !! calculation time step in days
+      real :: rch_lag = 0.        !!
+      real :: rch_gra = 0.        !!
+      real :: rtwtr = 0.          !!m^3 H2O           |water leaving reach on day
+      real :: wtrin = 0.          !!m^3               |water entering reach during day
       integer:: sed_ch = 0
       
       
       type channel
-          real :: algae = 0.     ! mg alg/L      |algal biomass concentration in reach
-          real :: ammonian = 0.  ! mg N/L        |ammonia concentration in reach
-          real :: bankst = 0.    ! m^3 H2O       |bank storage 
-          real :: li = 0.        ! km            |initial length of main channel
-          real :: orgn = 0.      !               |organic nitrogen contribution from channel erosion 
-          real :: orgp = 0.      !               |organic phosphorus contribution from channel erosion 
-          real :: si = 0.        !(m/n)          |slope of main channel
-          real :: wi = 0.        !(m)            |width of main channel at top of bank
-          real :: di = 0.        !(m)            |depth of main channel from top of bank to bottom
-          real :: chlora = 0.    ! mg chl-a/L    |chlorophyll-a concentration in reach
-          real :: pst_conc =0.   ! mg/(m**3)     |initial pesticide concentration in reach
-          real :: dep_chan =0.   ! m             |average daily water depth in channel
-          real :: disolvp = 0.   ! mg P/L        |dissolved P concentration in reach
-          real :: drift = 0.     ! kg            |amount of pesticide drifting onto main channel in subbasin
-          real :: flwin = 0.     ! m^3 H2O       |flow into reach on previous day
-          real :: flwout = 0.    ! m^3 H2O       |flow out of reach on previous day
-          real :: nitraten = 0.  ! mg N/L        |nitrate concentration in reach
-          real :: nitriten = 0.  ! mg N/L        |nitrite concentration in reach
-          real :: organicn = 0.  ! mg N/L        |organic nitrogen concentration in reach
-          real :: organicp = 0.  ! mg P/L        |organic phosphorus concentration in reach
-          real :: rch_bactlp= 0. ! # cfu/100ml   |less persistent bacteria stored in reach
-          real :: rch_bactp = 0. ! # cfu/100ml   |persistent bacteria stored in reach
-          real :: rch_cbod = 0.  ! mg O2/L       |carbonaceous biochemical oxygen demand in reach 
-          real :: rch_dox = 0.   ! mg O2/L       |dissolved oxygen concentration in reach
-          real :: rchstor = 0.   ! m^3 H2O       |water stored in reach
-          real :: sedst = 0.     ! metric tons   |amount of sediment stored in reach
-          real :: vel_chan = 0.  ! m/s           |average flow velocity in channel
+          real :: algae = 0.     !! mg alg/L      |algal biomass concentration in reach
+          real :: ammonian = 0.  !! mg N/L        |ammonia concentration in reach
+          real :: bankst = 0.    !! m^3 H2O       |bank storage 
+          real :: li = 0.        !! km            |initial length of main channel
+          real :: orgn = 0.      !!               |organic nitrogen contribution from channel erosion 
+          real :: orgp = 0.      !!               |organic phosphorus contribution from channel erosion 
+          real :: si = 0.        !!(m/n)          |slope of main channel
+          real :: wi = 0.        !!(m)            |width of main channel at top of bank
+          real :: di = 0.        !!(m)            |depth of main channel from top of bank to bottom
+          real :: chlora = 0.    !! mg chl-a/L    |chlorophyll-a concentration in reach
+          real :: pst_conc =0.   !! mg/(m**3)     |initial pesticide concentration in reach
+          real :: dep_chan =0.   !! m             |average daily water depth in channel
+          real :: disolvp = 0.   !! mg P/L        |dissolved P concentration in reach
+          real :: drift = 0.     !! kg            |amount of pesticide drifting onto main channel in subbasin
+          real :: flwin = 0.     !! m^3 H2O       |flow into reach on previous day
+          real :: flwout = 0.    !! m^3 H2O       |flow out of reach on previous day
+          real :: nitraten = 0.  !! mg N/L        |nitrate concentration in reach
+          real :: nitriten = 0.  !! mg N/L        |nitrite concentration in reach
+          real :: organicn = 0.  !! mg N/L        |organic nitrogen concentration in reach
+          real :: organicp = 0.  !! mg P/L        |organic phosphorus concentration in reach
+          real :: rch_bactlp= 0. !! # cfu/100ml   |less persistent bacteria stored in reach
+          real :: rch_bactp = 0. !! # cfu/100ml   |persistent bacteria stored in reach
+          real :: rch_cbod = 0.  !! mg O2/L       |carbonaceous biochemical oxygen demand in reach 
+          real :: rch_dox = 0.   !! mg O2/L       |dissolved oxygen concentration in reach
+          real :: rchstor = 0.   !! m^3 H2O       |water stored in reach
+          real :: sedst = 0.     !! metric tons   |amount of sediment stored in reach
+          real :: vel_chan = 0.  !! m/s           |average flow velocity in channel
           real :: bed_san = 0.
           real :: bed_sil = 0.
           real :: bed_cla = 0.
@@ -120,65 +120,65 @@
       type (channel), dimension(:), allocatable :: ch 
 
       type ch_output
-          real :: flo_in = 0.                  ! (ha-m)     |streamflow into reach during time step 
-          real :: flo_out = 0.                 ! (ha-m)     |streamflow out of reach during time step
-          real :: evap = 0.                    ! (m^3/s)    |daily rate of water loss from reach by evaporation
-          real :: tloss = 0.                   ! (m^3/s)    |rate of water loss from reach by transmission through the streambed   
-          real :: sed_in = 0.                  ! (tons)     |sediment transported with water into reach 
-          real :: sed_out = 0.                 ! (tons)     |sediment transported with water out of reach
-          real :: sed_conc = 0.                ! (mg/L)     |concentration of sediment in reach
-          real :: orgn_in = 0.                 ! (kg N)     |organic nitrogen transported with water into reach
-          real :: orgn_out = 0.                ! (kg N)     |organic nitrogen transported with water out of reach
-          real :: orgp_in = 0.                 ! (kg P)     |organic phosphorus transported with water into reach
-          real :: orgp_out = 0.                ! (kg P)     |organic phosphorus transported with water out of reach
-          real :: no3_in = 0.                  ! (kg N)     |nitrate transported with water into reach   
-          real :: no3_out = 0.                 ! (kg N)     |nitrate transported with water out of reach
-          real :: nh4_in = 0.                  ! (kg)       |ammonium transported with water into reach
-          real :: nh4_out = 0.                 ! (kg)       |ammonium transported with water out of reach
-          real :: no2_in = 0.                  ! (kg)       |nitrite transported with water into reach
-          real :: no2_out = 0.                 ! (kg)       |nitrite transported with water out of reach
-          real :: solp_in = 0.                 ! (kg P)     |soluble pesticide transported with water into reach
-          real :: solp_out = 0.                ! (kg P)     |soluble pesticide transported with water out of reach
-          real :: chla_in = 0.                 ! (kg)       |amount of chlorophyll a transported into reach      
-          real :: chla_out = 0.                ! (kg)       |amount of chlorophyll a transported out of reach      
-          real :: cbod_in = 0.                 ! (kg)       |carbonaceous biochemical oxygen demand of material transported into reach
-          real :: cbod_out = 0.                ! (kg)       |carbonaceous biochemical oxygen demand of material transported out of reach
-          real :: dis_in = 0.                  ! (kg)       |amount of dissolved oxygen transported into reach
-          real :: dis_out = 0.                 ! (kg)       |amount of dissolved oxygen transported out of reach
-          real :: solpst_in = 0.               ! (mg pst)   |soluble pesticide transported with water into reach  
-          real :: solpst_out = 0.              ! (mg pst)   |soluble pesticide transported with water out of reach
-          real :: sorbpst_in = 0.              ! (mg pst)   |pesticide sorbed to sediment transported with water into reach
-          real :: sorbpst_out = 0.             ! (mg pst)   |pesticide sorbed to sediment transported with water out of reach
-          real :: react = 0.                   ! (mg pst)   |loss of pesticide from water from reaction 
-          real :: volat = 0.                   ! (mg)       |loss of pesticide from water by volatilization 
-          real :: setlpst = 0.                 ! (mg pst)   |transfer of pesticide from water to river bed sediment by settling
-          real :: resuspst = 0.                ! (mg)       |transfer of pesticide from river bed sediment to water by resuspension
-          real :: difus = 0.                   ! mg         |transfer of pesticide from water to river bed sediment by diffusion                               
-          real :: reactb = 0.                  ! (mg)       |loss of pesticide from river bed sediment by reaction
-          real :: bury = 0.                    ! (mg)       |loss of pesticide from river bed sediment by burial
-          real :: sedpest = 0.                 ! mg         |pesticide in river bed sediment 
-          real :: bacp = 0.                    ! # cfu/100mL  |number of persistent bacteria transported out of reach
-          real :: baclp = 0.                   ! # cfu/100mL  |number of less persistent bacteria transported out of reach
-          real :: met1 = 0.                    ! kg         |conservative metal #1 transported out of reach  
-          real :: met2 = 0.                    ! kg         |conservative metal #2 transported out of reach  
-          real :: met3 = 0.                    ! kg         |conservative metal #3 transported out of reach  
-          real :: sand_in = 0.                 ! tons       |sand in 
-          real :: sand_out = 0.                ! tons       |sand out
-          real :: silt_in = 0.                 ! tons       |silt_in
-          real :: silt_out = 0.                ! tons       |silt_out
-          real :: clay_in = 0.                 ! tons       |clay_in
-          real :: clay_out = 0.                ! tons       |clay_out
-          real :: smag_in = 0.                 ! tons       |small aggregates transported into reach  
-          real :: smag_out = 0.                ! tons       |small aggregates transported out of reach
-          real :: lag_in = 0.                  ! tons       |large aggregates transported into reachlg ag in
-          real :: lag_out = 0.                 ! tons       |large aggregates transported out of reach
-          real :: grvl_in = 0.                 ! tons       |gravel in
-          real :: grvl_out = 0.                ! tons       |gravel out           
-          real :: bnk_ero = 0.                 ! tons       |bank erosion
-          real :: ch_deg = 0.                  ! tons       |channel degradation
-          real :: ch_dep = 0.                  ! tons       |channel deposition
-          real :: fp_dep = 0.                  ! tons       |flood deposition
-          real :: tot_ssed = 0.                ! mg/L       |total suspended sediments
+          real :: flo_in = 0.                  !! (ha-m)     |streamflow into reach during time step 
+          real :: flo_out = 0.                 !! (ha-m)     |streamflow out of reach during time step
+          real :: evap = 0.                    !! (m^3/s)    |daily rate of water loss from reach by evaporation
+          real :: tloss = 0.                   !! (m^3/s)    |rate of water loss from reach by transmission through the streambed   
+          real :: sed_in = 0.                  !! (tons)     |sediment transported with water into reach 
+          real :: sed_out = 0.                 !! (tons)     |sediment transported with water out of reach
+          real :: sed_conc = 0.                !! (mg/L)     |concentration of sediment in reach
+          real :: orgn_in = 0.                 !! (kg N)     |organic nitrogen transported with water into reach
+          real :: orgn_out = 0.                !! (kg N)     |organic nitrogen transported with water out of reach
+          real :: orgp_in = 0.                 !! (kg P)     |organic phosphorus transported with water into reach
+          real :: orgp_out = 0.                !! (kg P)     |organic phosphorus transported with water out of reach
+          real :: no3_in = 0.                  !! (kg N)     |nitrate transported with water into reach   
+          real :: no3_out = 0.                 !! (kg N)     |nitrate transported with water out of reach
+          real :: nh4_in = 0.                  !! (kg)       |ammonium transported with water into reach
+          real :: nh4_out = 0.                 !! (kg)       |ammonium transported with water out of reach
+          real :: no2_in = 0.                  !! (kg)       |nitrite transported with water into reach
+          real :: no2_out = 0.                 !! (kg)       |nitrite transported with water out of reach
+          real :: solp_in = 0.                 !! (kg P)     |soluble pesticide transported with water into reach
+          real :: solp_out = 0.                !! (kg P)     |soluble pesticide transported with water out of reach
+          real :: chla_in = 0.                 !! (kg)       |amount of chlorophyll a transported into reach      
+          real :: chla_out = 0.                !! (kg)       |amount of chlorophyll a transported out of reach      
+          real :: cbod_in = 0.                 !! (kg)       |carbonaceous biochemical oxygen demand of material transported into reach
+          real :: cbod_out = 0.                !! (kg)       |carbonaceous biochemical oxygen demand of material transported out of reach
+          real :: dis_in = 0.                  !! (kg)       |amount of dissolved oxygen transported into reach
+          real :: dis_out = 0.                 !! (kg)       |amount of dissolved oxygen transported out of reach
+          real :: solpst_in = 0.               !! (mg pst)   |soluble pesticide transported with water into reach  
+          real :: solpst_out = 0.              !! (mg pst)   |soluble pesticide transported with water out of reach
+          real :: sorbpst_in = 0.              !! (mg pst)   |pesticide sorbed to sediment transported with water into reach
+          real :: sorbpst_out = 0.             !! (mg pst)   |pesticide sorbed to sediment transported with water out of reach
+          real :: react = 0.                   !! (mg pst)   |loss of pesticide from water from reaction 
+          real :: volat = 0.                   !! (mg)       |loss of pesticide from water by volatilization 
+          real :: setlpst = 0.                 !! (mg pst)   |transfer of pesticide from water to river bed sediment by settling
+          real :: resuspst = 0.                !! (mg)       |transfer of pesticide from river bed sediment to water by resuspension
+          real :: difus = 0.                   !! mg         |transfer of pesticide from water to river bed sediment by diffusion                               
+          real :: reactb = 0.                  !! (mg)       |loss of pesticide from river bed sediment by reaction
+          real :: bury = 0.                    !! (mg)       |loss of pesticide from river bed sediment by burial
+          real :: sedpest = 0.                 !! mg         |pesticide in river bed sediment 
+          real :: bacp = 0.                    !! # cfu/100mL  |number of persistent bacteria transported out of reach
+          real :: baclp = 0.                   !! # cfu/100mL  |number of less persistent bacteria transported out of reach
+          real :: met1 = 0.                    !! kg         |conservative metal #1 transported out of reach  
+          real :: met2 = 0.                    !! kg         |conservative metal #2 transported out of reach  
+          real :: met3 = 0.                    !! kg         |conservative metal #3 transported out of reach  
+          real :: sand_in = 0.                 !! tons       |sand in 
+          real :: sand_out = 0.                !! tons       |sand out
+          real :: silt_in = 0.                 !! tons       |silt_in
+          real :: silt_out = 0.                !! tons       |silt_out
+          real :: clay_in = 0.                 !! tons       |clay_in
+          real :: clay_out = 0.                !! tons       |clay_out
+          real :: smag_in = 0.                 !! tons       |small aggregates transported into reach  
+          real :: smag_out = 0.                !! tons       |small aggregates transported out of reach
+          real :: lag_in = 0.                  !! tons       |large aggregates transported into reachlg ag in
+          real :: lag_out = 0.                 !! tons       |large aggregates transported out of reach
+          real :: grvl_in = 0.                 !! tons       |gravel in
+          real :: grvl_out = 0.                !! tons       |gravel out           
+          real :: bnk_ero = 0.                 !! tons       |bank erosion
+          real :: ch_deg = 0.                  !! tons       |channel degradation
+          real :: ch_dep = 0.                  !! tons       |channel deposition
+          real :: fp_dep = 0.                  !! tons       |flood deposition
+          real :: tot_ssed = 0.                !! mg/L       |total suspended sediments
       end type ch_output
       
       type regional_output_channel
@@ -207,65 +207,65 @@
           character (len=9) :: isd =          "    unit "
           character (len=8) :: id =           " gis_id "
           character (len=16) :: name =        " name          "
-          character(len=16) :: flo_in =       "      flo_in   "        ! (ha-m)
-          character(len=15) :: flo_out =      "    flo_out    "         ! (ha-m)
-          character(len=15) :: evap =         "        evap   "       ! (ha-m)
-          character(len=15) :: tloss =        "     tloss     "         ! (ha-m)
-          character(len=15) :: sed_in =       "      sed_in   "        ! (tons)
-          character(len=15) :: sed_out=       "     sed_out   "        ! (tons)
-          character(len=15) :: sed_conc =     "    sed_conc   "        ! (mg/L)
-          character(len=15) :: orgn_in =      "    orgn_in   "          ! (kg N)
-          character(len=15) :: orgn_out =     "    orgn_out   "        ! (kg N)
-          character(len=15) :: orgp_in =      "      orgp_in  "     ! (kg P)
-          character(len=15) :: orgp_out =     "      orgp_out "        ! (kg P)
-          character(len=15) :: no3_in =       "       no3_in  "        ! (kg N)
-          character(len=15) :: no3_out =      "      no3_out  "        ! (kg N)
-          character(len=15) :: nh4_in =       "        nh4_in "        ! (kg)
-          character(len=15) :: nh4_out=       "       nh4_out "        ! (kg)
-          character(len=15) :: no2_in =       "        no2_in "        ! (kg)
-          character(len=15) :: no2_out =      "       no2_out "        ! (kg)
-          character(len=15) :: solp_in =      "      solp_in  "        ! (kg P)
-          character(len=15) :: solp_out =     "     solp_out  "        ! (kg P)
-          character(len=15) :: chla_in =      "       chla_in "        ! (kg)
-          character(len=15) :: chla_out =     "      chla_out "        ! (kg)
-          character(len=15) :: cbod_in =      "       cbod_in "        ! (kg)
-          character(len=15) :: cbod_out =     "      cbod_out "        ! (kg)
-          character(len=15) :: dis_in =       "        dis_in "        ! (kg)
-          character(len=15) :: dis_out =      "       dis_out "        ! (kg)
-          character(len=15) :: solpst_in =    "   solpst_in   "        ! (mg pst)
-          character(len=15) :: solpst_out =   "   solpst_out  "        ! (mg pst)
-          character(len=15) :: sorbpst_in =   "  sorbpst_in   "        ! (mg pst)
-          character(len=15) :: sorbpst_out=   "  sorbpst_out  "        ! (mg pst)
-          character(len=15) :: react =        "     react     "        ! (mg pst)
-          character(len=15) :: volat =        "        volat  "        ! (mg)
-          character(len=15) :: setlpst =      "   setlpst     "        ! (mg pst)
-          character(len=15) :: resuspst =     "     resuspst  "        ! (mg)
-          character(len=15) :: difus =        "     difus     "        ! (mg pst)              
-          character(len=15) :: reactb =       "    reactb     "        ! pst/sed (mg)
-          character(len=15) :: bury =         "     bury      "        ! pst bury (mg)
-          character(len=15) :: sedpest =      "      sedpest  "        ! pst in rivbed sed mg
-          character(len=15) :: bacp =         "           bacp"        ! persistent bact out
-          character(len=15) :: baclp =        "          baclp"        ! lpersistent bact out
-          character(len=15) :: met1 =         "           met1"        ! cmetal #1  
-          character(len=15) :: met2 =         "           met2"        ! cmetal #2
-          character(len=15) :: met3 =         "           met3"        ! cmetal #3
-          character(len=15) :: sand_in =      "        sand_in"        ! sand in 
-          character(len=15) :: sand_out =     "       sand_out"        ! sand out
-          character(len=15) :: silt_in =      "        silt_in"        ! silt_in
-          character(len=15) :: silt_out =     "       silt_out"        ! silt_out
-          character(len=15) :: clay_in =      "        clay_in"        ! clay_in
-          character(len=15) :: clay_out =     "       clay_out"        ! clay_out
-          character(len=15) :: smag_in =      "        smag_in"        ! sm ag in  
-          character(len=15) :: smag_out =     "       smag_out"        ! sm ag out
-          character(len=15) :: lag_in =       "         lag_in"        ! lg ag in
-          character(len=15) :: lag_out =      "        lag_out"        ! lg ag out
-          character(len=15) :: grvl_in =      "        grvl_in"        ! gravel in
-          character(len=15) :: grvl_out =     "       grvl_out"        ! gravel out
-          character(len=15) :: bnk_ero =      "        bnk_ero"        ! bank erosion
-          character(len=15) :: ch_deg =       "         ch_deg"        ! channel degradation
-          character(len=15) :: ch_dep =       "         ch_dep"        ! channel deposition
-          character(len=15) :: fp_dep =       "         fp_dep"        ! flood deposition         
-          character(len=15) :: tot_ssed =     "       tot_ssed"        ! total suspended sediments       
+          character(len=16) :: flo_in =       "      flo_in   "        !! (ha-m)
+          character(len=15) :: flo_out =      "    flo_out    "         !! (ha-m)
+          character(len=15) :: evap =         "        evap   "       !! (ha-m)
+          character(len=15) :: tloss =        "     tloss     "         !! (ha-m)
+          character(len=15) :: sed_in =       "      sed_in   "        !! (tons)
+          character(len=15) :: sed_out=       "     sed_out   "        !! (tons)
+          character(len=15) :: sed_conc =     "    sed_conc   "        !! (mg/L)
+          character(len=15) :: orgn_in =      "    orgn_in   "          !! (kg N)
+          character(len=15) :: orgn_out =     "    orgn_out   "        !! (kg N)
+          character(len=15) :: orgp_in =      "      orgp_in  "     !! (kg P)
+          character(len=15) :: orgp_out =     "      orgp_out "        !! (kg P)
+          character(len=15) :: no3_in =       "       no3_in  "        !! (kg N)
+          character(len=15) :: no3_out =      "      no3_out  "        !! (kg N)
+          character(len=15) :: nh4_in =       "        nh4_in "        !! (kg)
+          character(len=15) :: nh4_out=       "       nh4_out "        !! (kg)
+          character(len=15) :: no2_in =       "        no2_in "        !! (kg)
+          character(len=15) :: no2_out =      "       no2_out "        !! (kg)
+          character(len=15) :: solp_in =      "      solp_in  "        !! (kg P)
+          character(len=15) :: solp_out =     "     solp_out  "        !! (kg P)
+          character(len=15) :: chla_in =      "       chla_in "        !! (kg)
+          character(len=15) :: chla_out =     "      chla_out "        !! (kg)
+          character(len=15) :: cbod_in =      "       cbod_in "        !! (kg)
+          character(len=15) :: cbod_out =     "      cbod_out "        !! (kg)
+          character(len=15) :: dis_in =       "        dis_in "        !! (kg)
+          character(len=15) :: dis_out =      "       dis_out "        !! (kg)
+          character(len=15) :: solpst_in =    "   solpst_in   "        !! (mg pst)
+          character(len=15) :: solpst_out =   "   solpst_out  "        !! (mg pst)
+          character(len=15) :: sorbpst_in =   "  sorbpst_in   "        !! (mg pst)
+          character(len=15) :: sorbpst_out=   "  sorbpst_out  "        !! (mg pst)
+          character(len=15) :: react =        "     react     "        !! (mg pst)
+          character(len=15) :: volat =        "        volat  "        !! (mg)
+          character(len=15) :: setlpst =      "   setlpst     "        !! (mg pst)
+          character(len=15) :: resuspst =     "     resuspst  "        !! (mg)
+          character(len=15) :: difus =        "     difus     "        !! (mg pst)              
+          character(len=15) :: reactb =       "    reactb     "        !! pst/sed (mg)
+          character(len=15) :: bury =         "     bury      "        !! pst bury (mg)
+          character(len=15) :: sedpest =      "      sedpest  "        !! pst in rivbed sed mg
+          character(len=15) :: bacp =         "           bacp"        !! persistent bact out
+          character(len=15) :: baclp =        "          baclp"        !! lpersistent bact out
+          character(len=15) :: met1 =         "           met1"        !! cmetal #1  
+          character(len=15) :: met2 =         "           met2"        !! cmetal #2
+          character(len=15) :: met3 =         "           met3"        !! cmetal #3
+          character(len=15) :: sand_in =      "        sand_in"        !! sand in 
+          character(len=15) :: sand_out =     "       sand_out"        !! sand out
+          character(len=15) :: silt_in =      "        silt_in"        !! silt_in
+          character(len=15) :: silt_out =     "       silt_out"        !! silt_out
+          character(len=15) :: clay_in =      "        clay_in"        !! clay_in
+          character(len=15) :: clay_out =     "       clay_out"        !! clay_out
+          character(len=15) :: smag_in =      "        smag_in"        !! sm ag in  
+          character(len=15) :: smag_out =     "       smag_out"        !! sm ag out
+          character(len=15) :: lag_in =       "         lag_in"        !! lg ag in
+          character(len=15) :: lag_out =      "        lag_out"        !! lg ag out
+          character(len=15) :: grvl_in =      "        grvl_in"        !! gravel in
+          character(len=15) :: grvl_out =     "       grvl_out"        !! gravel out
+          character(len=15) :: bnk_ero =      "        bnk_ero"        !! bank erosion
+          character(len=15) :: ch_deg =       "         ch_deg"        !! channel degradation
+          character(len=15) :: ch_dep =       "         ch_dep"        !! channel deposition
+          character(len=15) :: fp_dep =       "         fp_dep"        !! flood deposition         
+          character(len=15) :: tot_ssed =     "       tot_ssed"        !! total suspended sediments       
       end type ch_header
       type (ch_header) :: ch_hdr
       
@@ -277,65 +277,65 @@
           character (len=9) :: isd         =   "         "
           character (len=8) :: id          =   "        "
           character (len=16) :: name       =   "               "
-          character(len=16) :: flo_in      =   "        ha-m"            ! (ha-m)
-          character(len=15) :: flo_out     =   "       ha-m"             ! (ha-m)
-          character(len=15) :: evap        =   "        ha-m"            ! (ha-m)
-          character(len=15) :: tloss       =   "      ha-m"              ! (ha-m)
-          character(len=15) :: sed_in      =   "        tons"            ! (tons)
-          character(len=15) :: sed_out     =   "        tons"            ! (tons)
-          character(len=15) :: sed_conc    =   "        mg/L"            ! (mg/L)
-          character(len=15) :: orgn_in     =   "        kgN"             ! (kg N)
-          character(len=15) :: orgn_out    =   "         kgN"            ! (kg N)
-          character(len=15) :: orgp_in     =   "          kgP"           ! (kg P)
-          character(len=15) :: orgp_out    =   "           kgP"          ! (kg P)
-          character(len=15) :: no3_in      =   "          kgN"           ! (kg N)
-          character(len=15) :: no3_out     =   "          kgN"           ! (kg N)
-          character(len=15) :: nh4_in      =   "            kg"          ! (kg)
-          character(len=15) :: nh4_out     =   "            kg"          ! (kg)
-          character(len=15) :: no2_in      =   "            kg"          ! (kg)
-          character(len=15) :: no2_out     =   "            kg"          ! (kg)
-          character(len=15) :: solp_in     =   "          kgP"           ! (kg P)
-          character(len=15) :: solp_out    =   "          kgP"           ! (kg P)
-          character(len=15) :: chla_in     =   "            kg"          ! (kg)
-          character(len=15) :: chla_out    =   "            kg"          ! (kg)
-          character(len=15) :: cbod_in     =   "            kg"           ! (kg)
-          character(len=15) :: cbod_out    =   "            kg"           ! (kg)
-          character(len=15) :: dis_in      =   "            kg"           ! (kg)
-          character(len=15) :: dis_out     =   "            kg"           ! (kg)
-          character(len=15) :: solpst_in   =   "      mg_pst"           ! (mg pst)
-          character(len=15) :: solpst_out  =   "       mg_pst"           ! (mg pst)
-          character(len=15) :: sorbpst_in  =   "      mg_pst"           ! (mg pst)
-          character(len=15) :: sorbpst_out =   "       mg_pst"           ! (mg pst)
-          character(len=15) :: react       =   "    mg_pst"           ! (mg pst)
-          character(len=15) :: volat       =   "           mg"           ! (mg)
-          character(len=15) :: setlpst     =   "    mg_pst"           ! (mg pst)
-          character(len=15) :: resuspst    =   "           mg"           ! (mg)
-          character(len=15) :: difus       =   "    mg_pst"           ! (mg pst)              
-          character(len=15) :: reactb      =   "        mg"           ! pst/sed (mg)
-          character(len=15) :: bury        =   "       mg"           ! pst bury (mg)
-          character(len=15) :: sedpest     =   "           mg"           ! pst in rivbed sed mg
-          character(len=15) :: bacp        =   "           ----"        ! persistent bact out
-          character(len=15) :: baclp       =   "           ----"        ! lpersistent bact out
-          character(len=15) :: met1        =   "           ----"        ! cmetal #1  
-          character(len=15) :: met2        =   "           ----"        ! cmetal #2
-          character(len=15) :: met3        =   "           ----"        ! cmetal #3
-          character(len=15) :: sand_in     =   "           ----"        ! sand in 
-          character(len=15) :: sand_out    =   "           ----"        ! sand out
-          character(len=15) :: silt_in     =   "           ----"        ! silt_in
-          character(len=15) :: silt_out    =   "           ----"        ! silt_out
-          character(len=15) :: clay_in     =   "           ----"        ! clay_in
-          character(len=15) :: clay_out    =   "           ----"        ! clay_out
-          character(len=15) :: smag_in     =   "           ----"        ! sm ag in  
-          character(len=15) :: smag_out    =   "           ----"        ! sm ag out
-          character(len=15) :: lag_in      =   "           ----"        ! lg ag in
-          character(len=15) :: lag_out     =   "           ----"        ! lg ag out
-          character(len=15) :: grvl_in     =   "           ----"        ! gravel in
-          character(len=15) :: grvl_out    =   "           ----"        ! gravel out
-          character(len=15) :: bnk_ero     =   "           ----"        ! bank erosion
-          character(len=15) :: ch_deg      =   "           ----"        ! channel degradation
-          character(len=15) :: ch_dep      =   "           ----"        ! channel deposition
-          character(len=15) :: fp_dep      =   "           ----"        ! flood deposition         
-          character(len=15) :: tot_ssed    =   "           ----"        ! total suspended sediments       
+          character(len=16) :: flo_in      =   "        ha-m"            !! (ha-m)
+          character(len=15) :: flo_out     =   "       ha-m"             !! (ha-m)
+          character(len=15) :: evap        =   "        ha-m"            !! (ha-m)
+          character(len=15) :: tloss       =   "      ha-m"              !! (ha-m)
+          character(len=15) :: sed_in      =   "        tons"            !! (tons)
+          character(len=15) :: sed_out     =   "        tons"            !! (tons)
+          character(len=15) :: sed_conc    =   "        mg/L"            !! (mg/L)
+          character(len=15) :: orgn_in     =   "        kgN"             !! (kg N)
+          character(len=15) :: orgn_out    =   "         kgN"            !! (kg N)
+          character(len=15) :: orgp_in     =   "          kgP"           !! (kg P)
+          character(len=15) :: orgp_out    =   "           kgP"          !! (kg P)
+          character(len=15) :: no3_in      =   "          kgN"           !! (kg N)
+          character(len=15) :: no3_out     =   "          kgN"           !! (kg N)
+          character(len=15) :: nh4_in      =   "            kg"          !! (kg)
+          character(len=15) :: nh4_out     =   "            kg"          !! (kg)
+          character(len=15) :: no2_in      =   "            kg"          !! (kg)
+          character(len=15) :: no2_out     =   "            kg"          !! (kg)
+          character(len=15) :: solp_in     =   "          kgP"           !! (kg P)
+          character(len=15) :: solp_out    =   "          kgP"           !! (kg P)
+          character(len=15) :: chla_in     =   "            kg"          !! (kg)
+          character(len=15) :: chla_out    =   "            kg"          !! (kg)
+          character(len=15) :: cbod_in     =   "            kg"           !! (kg)
+          character(len=15) :: cbod_out    =   "            kg"           !! (kg)
+          character(len=15) :: dis_in      =   "            kg"           !! (kg)
+          character(len=15) :: dis_out     =   "            kg"           !! (kg)
+          character(len=15) :: solpst_in   =   "      mg_pst"           !! (mg pst)
+          character(len=15) :: solpst_out  =   "       mg_pst"           !! (mg pst)
+          character(len=15) :: sorbpst_in  =   "      mg_pst"           !! (mg pst)
+          character(len=15) :: sorbpst_out =   "       mg_pst"           !! (mg pst)
+          character(len=15) :: react       =   "    mg_pst"           !! (mg pst)
+          character(len=15) :: volat       =   "           mg"           !! (mg)
+          character(len=15) :: setlpst     =   "    mg_pst"           !! (mg pst)
+          character(len=15) :: resuspst    =   "           mg"           !! (mg)
+          character(len=15) :: difus       =   "    mg_pst"           !! (mg pst)              
+          character(len=15) :: reactb      =   "        mg"           !! pst/sed (mg)
+          character(len=15) :: bury        =   "       mg"           !! pst bury (mg)
+          character(len=15) :: sedpest     =   "           mg"           !! pst in rivbed sed mg
+          character(len=15) :: bacp        =   "           ----"        !! persistent bact out
+          character(len=15) :: baclp       =   "           ----"        !! lpersistent bact out
+          character(len=15) :: met1        =   "           ----"        !! cmetal #1  
+          character(len=15) :: met2        =   "           ----"        !! cmetal #2
+          character(len=15) :: met3        =   "           ----"        !! cmetal #3
+          character(len=15) :: sand_in     =   "           ----"        !! sand in 
+          character(len=15) :: sand_out    =   "           ----"        !! sand out
+          character(len=15) :: silt_in     =   "           ----"        !! silt_in
+          character(len=15) :: silt_out    =   "           ----"        !! silt_out
+          character(len=15) :: clay_in     =   "           ----"        !! clay_in
+          character(len=15) :: clay_out    =   "           ----"        !! clay_out
+          character(len=15) :: smag_in     =   "           ----"        !! sm ag in  
+          character(len=15) :: smag_out    =   "           ----"        !! sm ag out
+          character(len=15) :: lag_in      =   "           ----"        !! lg ag in
+          character(len=15) :: lag_out     =   "           ----"        !! lg ag out
+          character(len=15) :: grvl_in     =   "           ----"        !! gravel in
+          character(len=15) :: grvl_out    =   "           ----"        !! gravel out
+          character(len=15) :: bnk_ero     =   "           ----"        !! bank erosion
+          character(len=15) :: ch_deg      =   "           ----"        !! channel degradation
+          character(len=15) :: ch_dep      =   "           ----"        !! channel deposition
+          character(len=15) :: fp_dep      =   "           ----"        !! flood deposition         
+          character(len=15) :: tot_ssed    =   "           ----"        !! total suspended sediments       
       end type ch_header_units
       type (ch_header_units) :: ch_hdr_units
       

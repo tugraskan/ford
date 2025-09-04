@@ -3,19 +3,19 @@
       implicit none
               
       type res_salt_balance
-        real :: inflow = 0.             ! kg        !salt entering the reservoir via streamflow
-        real :: outflow = 0.            ! kg        !salt leaving the reservoir via streamflow
-        real :: seep = 0.               ! kg        !salt leaving the reservoir via seepage to aquifer
-        real :: fert = 0.                ! kg        !salt added to reservoir (wetland) via fertilizer
-        real :: irrig = 0.              ! kg        !salt removed from the reservoir via irrigation diversion
-        real :: div = 0.                ! kg        !salt mass removed or added via diversion
-        real :: mass = 0.               ! kg        !salt in reservoir water at end of day
-        real :: conc = 0.               ! g/m3      !salt concentration in reservoir at end of day
-        real :: volm = 0.               ! m3        !volume of water in the reservoir
+        real :: inflow = 0.             !! kg        !salt entering the reservoir via streamflow
+        real :: outflow = 0.            !! kg        !salt leaving the reservoir via streamflow
+        real :: seep = 0.               !! kg        !salt leaving the reservoir via seepage to aquifer
+        real :: fert = 0.                !! kg        !salt added to reservoir (wetland) via fertilizer
+        real :: irrig = 0.              !! kg        !salt removed from the reservoir via irrigation diversion
+        real :: div = 0.                !! kg        !salt mass removed or added via diversion
+        real :: mass = 0.               !! kg        !salt in reservoir water at end of day
+        real :: conc = 0.               !! g/m3      !salt concentration in reservoir at end of day
+        real :: volm = 0.               !! m3        !volume of water in the reservoir
       end type res_salt_balance
       
       type res_salt_output
-        type (res_salt_balance), dimension (:), allocatable :: salt         !salt hydrographs
+        type (res_salt_balance), dimension (:), allocatable :: salt         !!salt hydrographs
       end type res_salt_output
       type (res_salt_balance) :: res_saltbz
            
@@ -34,7 +34,7 @@
       !reservoir constituent parameters
       type reservoir_salt_data
         character(len=25) :: name = ""
-        real, dimension (:), allocatable :: c_init    !g/m3       |initial concentration of each salt ion
+        real, dimension (:), allocatable :: c_init    !!g/m3       |initial concentration of each salt ion
       end type reservoir_salt_data
       type (reservoir_salt_data), dimension(:), allocatable :: res_salt_data
       

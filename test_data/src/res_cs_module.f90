@@ -4,22 +4,22 @@
         
       !reservoir balance components
       type res_cs_balance
-        real :: inflow = 0.             ! kg        !constituent entering the reservoir
-        real :: outflow = 0.            ! kg        !constituent leaving the reservoir via streamflow
-        real :: seep = 0.               ! kg        !constituent leaving the reservoir via seepage to aquifer 
-        real :: settle = 0.             ! kg        !constituent settling to bottom of reservoir
-        real :: rctn = 0.               ! kg        !constituent removal due to chemical reaction
-        real :: prod = 0.               ! kg        !constituent produced due to chemical reaction
-        real :: fert = 0.               ! kg        !constituent added in fertilizer (to wetland)
-        real :: irrig = 0.              ! kg        !constituent removed from the reservoir via irrigation diversion
-        real :: div = 0.                ! kg        !constituent removed or added via diversion
-        real :: mass = 0.               ! kg        !constituent in reservoir water at end of day
-        real :: conc = 0.               ! g/m3      !constituent concentration in reservoir at end of day
-        real :: volm = 0.               ! m3        !volume of water in the reservoir
+        real :: inflow = 0.             !! kg        !constituent entering the reservoir
+        real :: outflow = 0.            !! kg        !constituent leaving the reservoir via streamflow
+        real :: seep = 0.               !! kg        !constituent leaving the reservoir via seepage to aquifer 
+        real :: settle = 0.             !! kg        !constituent settling to bottom of reservoir
+        real :: rctn = 0.               !! kg        !constituent removal due to chemical reaction
+        real :: prod = 0.               !! kg        !constituent produced due to chemical reaction
+        real :: fert = 0.               !! kg        !constituent added in fertilizer (to wetland)
+        real :: irrig = 0.              !! kg        !constituent removed from the reservoir via irrigation diversion
+        real :: div = 0.                !! kg        !constituent removed or added via diversion
+        real :: mass = 0.               !! kg        !constituent in reservoir water at end of day
+        real :: conc = 0.               !! g/m3      !constituent concentration in reservoir at end of day
+        real :: volm = 0.               !! m3        !volume of water in the reservoir
       end type res_cs_balance
       
       type res_cs_output
-        type (res_cs_balance), dimension (:), allocatable :: cs         !constituents hydrographs
+        type (res_cs_balance), dimension (:), allocatable :: cs         !!constituents hydrographs
       end type res_cs_output
       type (res_cs_balance) :: res_csbz
       
@@ -38,18 +38,18 @@
       !reservoir constituent parameters
       type reservoir_cs_data
         character(len=25) :: name = ""
-        real :: v_seo4 = 0.001            !m/day      |settling rate for selenate
-        real :: v_seo3 = 0.001            !m/day      |settling rate for selinite
-        real :: v_born = 0.001            !m/day      |settling rate for boron
-        real :: k_seo4 = 0.05             !1/day      |first-order degradation constant for selenate
-        real :: k_seo3 = 0.03             !1/day      |first-order degradation constant for selenite
-        real :: k_born = 0.00             !1/day      |first-order degradation constant for boron
-        real :: theta_seo4 = 1.08         !none       |temperature adjustment for selenate degradation
-        real :: theta_seo3 = 1.08         !none       |temperature adjustment for selenite degradation
-        real :: theta_born = 1.08         !none       |temperature adjustment for boron degradation
-        real :: c_seo4 = 0.               !g/m3       |initial concentration of selenate
-        real :: c_seo3 = 0.               !g/m3       |initial concentration of selenite
-        real :: c_born = 0.               !g/m3       |initial concentration of boron
+        real :: v_seo4 = 0.001            !!m/day      |settling rate for selenate
+        real :: v_seo3 = 0.001            !!m/day      |settling rate for selinite
+        real :: v_born = 0.001            !!m/day      |settling rate for boron
+        real :: k_seo4 = 0.05             !!1/day      |first-order degradation constant for selenate
+        real :: k_seo3 = 0.03             !!1/day      |first-order degradation constant for selenite
+        real :: k_born = 0.00             !!1/day      |first-order degradation constant for boron
+        real :: theta_seo4 = 1.08         !!none       |temperature adjustment for selenate degradation
+        real :: theta_seo3 = 1.08         !!none       |temperature adjustment for selenite degradation
+        real :: theta_born = 1.08         !!none       |temperature adjustment for boron degradation
+        real :: c_seo4 = 0.               !!g/m3       |initial concentration of selenate
+        real :: c_seo3 = 0.               !!g/m3       |initial concentration of selenite
+        real :: c_born = 0.               !!g/m3       |initial concentration of boron
       end type reservoir_cs_data
       type (reservoir_cs_data), dimension(:), allocatable :: res_cs_data
       

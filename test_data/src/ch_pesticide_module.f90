@@ -4,28 +4,28 @@
       
       implicit none
               
-      real :: frsol = 0.        !none          |fraction of pesticide in reach that is soluble
-      real :: frsrb = 0.        !none          |fraction of pesticide in reach that is sorbed
+      real :: frsol = 0.        !!none          |fraction of pesticide in reach that is soluble
+      real :: frsrb = 0.        !!none          |fraction of pesticide in reach that is sorbed
       
       type ch_pesticide_processes
-        real :: tot_in = 0.             ! kg        !total pesticide into reservoir
-        real :: sol_out = 0.            ! kg        !soluble pesticide out of reservoir
-        real :: sor_out = 0.            ! kg        !sorbed pesticide out of reservoir
-        real :: react = 0.              ! kg        !pesticide lost through reactions in water layer
-        real :: metab = 0.              ! kg        !pesticide metabolized from parent in water layer
-        real :: volat = 0.              ! kg        !pesticide lost through volatilization
-        real :: settle = 0.             ! kg        !pesticide settling to sediment layer
-        real :: resus = 0.              ! kg        !pesticide resuspended into lake water
-        real :: difus = 0.              ! kg        !pesticide diffusing from sediment to water
-        real :: react_bot = 0.          ! kg        !pesticide lost from benthic sediment by reactions
-        real :: metab_bot = 0.          ! kg        !pesticide metabolized from parent in water layer
-        real :: bury = 0.               ! kg        !pesticide lost from benthic sediment by burial
-        real :: water = 0.              ! kg        !pesticide in water at end of day
-        real :: benthic = 0.            ! kg        !pesticide in benthic sediment at tend of day
+        real :: tot_in = 0.             !! kg        !total pesticide into reservoir
+        real :: sol_out = 0.            !! kg        !soluble pesticide out of reservoir
+        real :: sor_out = 0.            !! kg        !sorbed pesticide out of reservoir
+        real :: react = 0.              !! kg        !pesticide lost through reactions in water layer
+        real :: metab = 0.              !! kg        !pesticide metabolized from parent in water layer
+        real :: volat = 0.              !! kg        !pesticide lost through volatilization
+        real :: settle = 0.             !! kg        !pesticide settling to sediment layer
+        real :: resus = 0.              !! kg        !pesticide resuspended into lake water
+        real :: difus = 0.              !! kg        !pesticide diffusing from sediment to water
+        real :: react_bot = 0.          !! kg        !pesticide lost from benthic sediment by reactions
+        real :: metab_bot = 0.          !! kg        !pesticide metabolized from parent in water layer
+        real :: bury = 0.               !! kg        !pesticide lost from benthic sediment by burial
+        real :: water = 0.              !! kg        !pesticide in water at end of day
+        real :: benthic = 0.            !! kg        !pesticide in benthic sediment at tend of day
       end type ch_pesticide_processes
       
       type ch_pesticide_output
-        type (ch_pesticide_processes), dimension (:), allocatable :: pest         !pesticide hydrographs
+        type (ch_pesticide_processes), dimension (:), allocatable :: pest         !!pesticide hydrographs
       end type ch_pesticide_output
       type (ch_pesticide_processes) :: ch_pestbz
            
@@ -48,20 +48,20 @@
           character (len=8) :: id =         " gis_id "
           character (len=16) :: name =      " name           "
           character (len=16) :: pest =      " pesticide"
-          character(len=13) :: tot_in =     "tot_in_kg "            ! (kg)
-          character(len=13) :: sol_out =    "sol_out_kg "           ! (kg)
-          character(len=14) :: sor_out =    "sor_out_kg "           ! (kg)
-          character(len=13) :: react =      "react_h2o_kg "         ! (kg)
-          character(len=13) :: metab =      "metab_h2o_kg "         ! (kg)
-          character(len=12) :: volat =      "volat_kg "             ! (kg)
-          character(len=12) :: settle =     "settle_kg "            ! (kg)
-          character(len=13) :: resus =      "resuspend_kg "         ! (kg)
-          character(len=12) :: difus =      "diffuse_kg "           ! (kg)
-          character(len=15) :: react_bot =  "react_benth_kg "       ! (kg)
-          character(len=15) :: metab_bot =  "metab_benth_kg "       ! (kg)
-          character(len=14) :: bury =       "bury_benth_kg "        ! (kg)
-          character(len=14) :: water =      "water_stor_kg "        ! (kg)
-          character(len=12) :: benthic =    "benthic_kg "           ! (kg)
+          character(len=13) :: tot_in =     "tot_in_kg "            !! (kg)
+          character(len=13) :: sol_out =    "sol_out_kg "           !! (kg)
+          character(len=14) :: sor_out =    "sor_out_kg "           !! (kg)
+          character(len=13) :: react =      "react_h2o_kg "         !! (kg)
+          character(len=13) :: metab =      "metab_h2o_kg "         !! (kg)
+          character(len=12) :: volat =      "volat_kg "             !! (kg)
+          character(len=12) :: settle =     "settle_kg "            !! (kg)
+          character(len=13) :: resus =      "resuspend_kg "         !! (kg)
+          character(len=12) :: difus =      "diffuse_kg "           !! (kg)
+          character(len=15) :: react_bot =  "react_benth_kg "       !! (kg)
+          character(len=15) :: metab_bot =  "metab_benth_kg "       !! (kg)
+          character(len=14) :: bury =       "bury_benth_kg "        !! (kg)
+          character(len=14) :: water =      "water_stor_kg "        !! (kg)
+          character(len=12) :: benthic =    "benthic_kg "           !! (kg)
       end type ch_pesticide_header
       type (ch_pesticide_header) :: chpest_hdr
      

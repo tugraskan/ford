@@ -3,12 +3,12 @@
       implicit none
       
       type ch_pathogen_output
-        real :: pth_in = 0.             ! # cfu/100ml       !pathogens into channel
-        real :: pth_out = 0.            ! # cfu/100ml       |pathogens out of channel
-        real :: dre_off = 0.            ! # cfu/100ml       !die_off
-        real :: regrow = 0.             ! # cfu/100ml       !regrowth
-        real :: water = 0.              ! # cfu/100ml       !pathogens in water column
-        real :: benthic = 0.            ! # cfu/100ml       !pathogens in bottom sediments
+        real :: pth_in = 0.             !! # cfu/100ml       !pathogens into channel
+        real :: pth_out = 0.            !! # cfu/100ml       |pathogens out of channel
+        real :: dre_off = 0.            !! # cfu/100ml       !die_off
+        real :: regrow = 0.             !! # cfu/100ml       !regrowth
+        real :: water = 0.              !! # cfu/100ml       !pathogens in water column
+        real :: benthic = 0.            !! # cfu/100ml       !pathogens in bottom sediments
       end type ch_pathogen_output
       
       type (ch_pathogen_output), dimension(:), allocatable, save :: chpth_d
@@ -29,12 +29,12 @@
           character (len=8) :: isd =        "   unit "
           character (len=8) :: id =         " gis_id "
           character (len=16) :: name =      " name           "
-          character(len=19) :: pth_in =     " path_in_#cfu/100ml"         ! # cfu/100ml
-          character(len=20) :: pth_out =    " path_out_#cfu/100ml"        ! # cfu/100ml
-          character(len=21) :: dre_off =    "  dre_off_#cfu/100ml "         ! # cfu/100ml
-          character(len=21) :: regrow =     "    regrow_#cfu/100ml"         ! # cfu/100ml
-          character(len=22) :: water =      " water_stor_#cfu/100ml"        ! # cfu/100ml
-          character(len=21) :: benthic =    "   benthic_#cfu/100ml"         ! # cfu/100ml
+          character(len=19) :: pth_in =     " path_in_#cfu/100ml"         !! # cfu/100ml
+          character(len=20) :: pth_out =    " path_out_#cfu/100ml"        !! # cfu/100ml
+          character(len=21) :: dre_off =    "  dre_off_#cfu/100ml "         !! # cfu/100ml
+          character(len=21) :: regrow =     "    regrow_#cfu/100ml"         !! # cfu/100ml
+          character(len=22) :: water =      " water_stor_#cfu/100ml"        !! # cfu/100ml
+          character(len=21) :: benthic =    "   benthic_#cfu/100ml"         !! # cfu/100ml
       end type ch_pathogen_header
       type (ch_pathogen_header) :: chpath_hdr
      

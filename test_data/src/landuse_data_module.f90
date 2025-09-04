@@ -36,29 +36,29 @@
       type (land_use_structures), dimension (:), allocatable :: lum_str
            
       type curvenumber_table
-        character(len=40) :: name = ""                 !name includes abbrev for lu/treatment/condition 
-        real, dimension(4) :: cn = (/30.,55.,70.,77./) !curve number
+        character(len=40) :: name = ""                 !!name includes abbrev for lu/treatment/condition 
+        real, dimension(4) :: cn = (/30.,55.,70.,77./) !!curve number
       end type curvenumber_table
       type (curvenumber_table), dimension (:), allocatable :: cn
       
       type land_use_mgt_groups
         integer :: num = 0
-        character(len=40), dimension(:), allocatable :: name    !land use groups
+        character(len=40), dimension(:), allocatable :: name    !!land use groups
       end type
       type (land_use_mgt_groups) :: lum_grp
       
       type conservation_practice_table
-        character(len=40) :: name = ""              !name of conservation practice
-        real :: pfac = 1.0                          !usle p factor
-        real :: sl_len_mx = 1.0             !m      !maximum slope length
+        character(len=40) :: name = ""              !!name of conservation practice
+        real :: pfac = 1.0                          !!usle p factor
+        real :: sl_len_mx = 1.0             !!m      !maximum slope length
       end type conservation_practice_table
       type (conservation_practice_table), dimension (:), allocatable :: cons_prac
                        
       type overlandflow_n_table
-        character(len=40) :: name = ""              !name of conservation practice
-        real :: ovn = 0.5                           !overland flow mannings n - mean
-        real :: ovn_min = 0.5                       !overland flow mannings n - min
-        real :: ovn_max = 0.5                       !overland flow mannings n - max
+        character(len=40) :: name = ""              !!name of conservation practice
+        real :: ovn = 0.5                           !!overland flow mannings n - mean
+        real :: ovn_min = 0.5                       !!overland flow mannings n - min
+        real :: ovn_max = 0.5                       !!overland flow mannings n - max
       end type overlandflow_n_table
       type (overlandflow_n_table), dimension (:), allocatable :: overland_n
     

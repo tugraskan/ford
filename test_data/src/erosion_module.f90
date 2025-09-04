@@ -3,30 +3,30 @@
       implicit none 
 
       type erosion_output_variables
-        real :: sedyld = 0.         !t/ha       |sediment yield
-        real :: precip = 0.         !mm         |precipitation
-        real :: surfq = 0.          !mm         |surface runoff
-        real :: peak = 0.           !m3/s       |peak rate
-        real :: k = 0.              !           |usle k factor
-        real :: s = 0.              !m/m        |slope
-        real :: l = 0.              !m          |slope length
-        real :: ls = 0.             !           |usle ls factor
-        real :: p = 0.              !           |usle p factor
-        real :: c = 0.              !           |usle c factor
-        real :: rsd_m = 0.          !kg/ha      |surface residue mass
-        real :: rsd_pctcov = 0.     !%          |surface residue percent ground cover
-        real :: rsd_cfac = 0.       !           |residue c subfactor
-        real :: can_lai3 = 0.       !           |canopy cover - lai/3.
-        real :: canhgt = 0.         !m          |canopy height
-        real :: can_cfac = 0.       !           |canopy c subfactor
+        real :: sedyld = 0.         !!t/ha       |sediment yield
+        real :: precip = 0.         !!mm         |precipitation
+        real :: surfq = 0.          !!mm         |surface runoff
+        real :: peak = 0.           !!m3/s       |peak rate
+        real :: k = 0.              !!           |usle k factor
+        real :: s = 0.              !!m/m        |slope
+        real :: l = 0.              !!m          |slope length
+        real :: ls = 0.             !!           |usle ls factor
+        real :: p = 0.              !!           |usle p factor
+        real :: c = 0.              !!           |usle c factor
+        real :: rsd_m = 0.          !!kg/ha      |surface residue mass
+        real :: rsd_pctcov = 0.     !!%          |surface residue percent ground cover
+        real :: rsd_cfac = 0.       !!           |residue c subfactor
+        real :: can_lai3 = 0.       !!           |canopy cover - lai/3.
+        real :: canhgt = 0.         !!m          |canopy height
+        real :: can_cfac = 0.       !!           |canopy c subfactor
       end type erosion_output_variables
 
       type erosion_output
-        integer :: n_events = 0.                        !number of erosion events
-        type (erosion_output_variables) :: ero_d        !ersion variables at each erosion event
-        type (erosion_output_variables) :: ero_ave      !erosion variables averaged by number of events
+        integer :: n_events = 0.                        !!number of erosion events
+        type (erosion_output_variables) :: ero_d        !!ersion variables at each erosion event
+        type (erosion_output_variables) :: ero_ave      !!erosion variables averaged by number of events
       end type erosion_output
-      type (erosion_output), dimension(:), allocatable  :: ero_output   !dimensioned by hru
+      type (erosion_output), dimension(:), allocatable  :: ero_output   !!dimensioned by hru
       
       type erosion_output_header
         character (len=6) :: hru          =  "   hru"

@@ -2,11 +2,11 @@
     
       implicit none 
 
-      integer :: iru = 0                           !none            |counter
-      integer :: mru_db = 0                        !                |
-      real, dimension (:), allocatable :: ru_tc    !                |    
-      real, dimension (:), allocatable :: ru_n     !                |
-      integer, dimension (:), allocatable :: itsb  !none            |end of loop
+      integer :: iru = 0                           !!none            |counter
+      integer :: mru_db = 0                        !!                |
+      real, dimension (:), allocatable :: ru_tc    !!                |    
+      real, dimension (:), allocatable :: ru_n     !!                |
+      integer, dimension (:), allocatable :: itsb  !!none            |end of loop
    
       type ru_databases_char
         character(len=16) :: elem_def = ""

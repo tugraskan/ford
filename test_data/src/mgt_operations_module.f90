@@ -29,91 +29,91 @@
 
       type filtstrip_operation
         character (len=40) :: name = ""
-        integer :: vfsi = 0             !       |on/off flag for vegetative filter strip
-        real :: vfsratio = 0.           !       |contouring USLE P factor
-        real :: vfscon = 0.             !       |fraction of the total runoff from the entire field
-        real :: vfsch = 0.              !       |fraction of flow entering the most concentrated 10% of the VFS.
+        integer :: vfsi = 0             !!       |on/off flag for vegetative filter strip
+        real :: vfsratio = 0.           !!       |contouring USLE P factor
+        real :: vfscon = 0.             !!       |fraction of the total runoff from the entire field
+        real :: vfsch = 0.              !!       |fraction of flow entering the most concentrated 10% of the VFS.
                                         !          which is fully channelized
       end type filtstrip_operation
       type (filtstrip_operation), dimension(:), allocatable :: filtstrip_db
 
       type fire_operation
         character (len=40) :: name = ""
-        real :: cn2_upd = 0.            !       |change in SCS curve number II value
-        real :: fr_burn = 0.            !       |fraction burned
+        real :: cn2_upd = 0.            !!       |change in SCS curve number II value
+        real :: fr_burn = 0.            !!       |fraction burned
       end type fire_operation
       type (fire_operation),dimension(:), allocatable :: fire_db
       
       type grwaterway_operation
         character (len=40) :: name = ""
-        integer :: grwat_i = 0.     !none          |On/off Flag for waterway simulation
-        real :: grwat_n = 0.        !none          |Mannings"s n for grassed waterway
-        real :: grwat_spcon = 0.    !none          |sediment transport coefficant defined by user
-        real :: grwat_d = 0.        !m             |depth of Grassed waterway
-        real :: grwat_w = 0.        !none          |width of grass waterway
-        real :: grwat_l = 0.        !km            |length of Grass Waterway
-        real :: grwat_s = 0.        !m/m           |slope of grass waterway
+        integer :: grwat_i = 0.     !!none          |On/off Flag for waterway simulation
+        real :: grwat_n = 0.        !!none          |Mannings"s n for grassed waterway
+        real :: grwat_spcon = 0.    !!none          |sediment transport coefficant defined by user
+        real :: grwat_d = 0.        !!m             |depth of Grassed waterway
+        real :: grwat_w = 0.        !!none          |width of grass waterway
+        real :: grwat_l = 0.        !!km            |length of Grass Waterway
+        real :: grwat_s = 0.        !!m/m           |slope of grass waterway
       end type grwaterway_operation
       type (grwaterway_operation),dimension(:), allocatable :: grwaterway_db
 
       type bmpuser_operation  
         character (len=40) :: name = ""
         integer :: bmp_flag = 0
-        real :: bmp_sed = 0.       !%              | Sediment removal by BMP       
-        real :: bmp_pp = 0.        !%              | Particulate P removal by BMP
-        real :: bmp_sp = 0.        !%              | Soluble P removal by BMP
-        real :: bmp_pn = 0.        !%              | Particulate N removal by BMP 
-        real :: bmp_sn = 0.        !%              | Soluble N removal by BMP  
-        real :: bmp_bac = 0.       !%              | Bacteria removal by BMP
+        real :: bmp_sed = 0.       !!%              | Sediment removal by BMP       
+        real :: bmp_pp = 0.        !!%              | Particulate P removal by BMP
+        real :: bmp_sp = 0.        !!%              | Soluble P removal by BMP
+        real :: bmp_pn = 0.        !!%              | Particulate N removal by BMP 
+        real :: bmp_sn = 0.        !!%              | Soluble N removal by BMP  
+        real :: bmp_bac = 0.       !!%              | Bacteria removal by BMP
       end type bmpuser_operation 
       
       type bmpuser_operation1  
         character (len=40) :: name = ""
         integer :: bmp_flag = 0
-        real :: surf_flo = 0.       !%              | Surface Flow removal by BMP  
-        real :: surf_sed = 0.       !%              | Surface Sediment removal by BMP       
-        real :: surf_pp = 0.        !%              | Surface Particulate P removal by BMP
-        real :: surf_sp = 0.        !%              | Surface Soluble P removal by BMP
-        real :: surf_pn = 0.        !%              | Surface Particulate N removal by BMP 
-        real :: surf_sn = 0.        !%              | Surface Soluble N removal by BMP  
-        real :: surf_bac = 0.       !%              | Surface Bacteria removal by BMP
-        real :: sub_flo = 0.        !%              | Subsurface Flow removal by BMP  
-        real :: sub_sed = 0.        !%              | Subsurface Sediment removal by BMP       
-        real :: sub_pp = 0.         !%              | Subsurface Particulate P removal by BMP
-        real :: sub_sp = 0.         !%              | Subsurface Soluble P removal by BMP
-        real :: sub_pn = 0.         !%              | Subsurface Particulate N removal by BMP 
-        real :: sub_sn = 0.         !%              | Subsurface Soluble N removal by BMP  
-        real :: sub_bac = 0.        !%              | Subsurface Bacteria removal by BMP 
-        real :: tile_flo = 0.       !%              | Tile Flow removal by BMP 
-        real :: tile_sed = 0.       !%              | Tile Sediment removal by BMP       
-        real :: tile_pp = 0.        !%              | Tile Particulate P removal by BMP
-        real :: tile_sp = 0.        !%              | Tile Soluble P removal by BMP
-        real :: tile_pn = 0.        !%              | Tile Particulate N removal by BMP 
-        real :: tile_sn = 0.        !%              | Tile Soluble N removal by BMP  
-        real :: tile_bac = 0.       !%              | Tile Bacteria removal by BMP 
+        real :: surf_flo = 0.       !!%              | Surface Flow removal by BMP  
+        real :: surf_sed = 0.       !!%              | Surface Sediment removal by BMP       
+        real :: surf_pp = 0.        !!%              | Surface Particulate P removal by BMP
+        real :: surf_sp = 0.        !!%              | Surface Soluble P removal by BMP
+        real :: surf_pn = 0.        !!%              | Surface Particulate N removal by BMP 
+        real :: surf_sn = 0.        !!%              | Surface Soluble N removal by BMP  
+        real :: surf_bac = 0.       !!%              | Surface Bacteria removal by BMP
+        real :: sub_flo = 0.        !!%              | Subsurface Flow removal by BMP  
+        real :: sub_sed = 0.        !!%              | Subsurface Sediment removal by BMP       
+        real :: sub_pp = 0.         !!%              | Subsurface Particulate P removal by BMP
+        real :: sub_sp = 0.         !!%              | Subsurface Soluble P removal by BMP
+        real :: sub_pn = 0.         !!%              | Subsurface Particulate N removal by BMP 
+        real :: sub_sn = 0.         !!%              | Subsurface Soluble N removal by BMP  
+        real :: sub_bac = 0.        !!%              | Subsurface Bacteria removal by BMP 
+        real :: tile_flo = 0.       !!%              | Tile Flow removal by BMP 
+        real :: tile_sed = 0.       !!%              | Tile Sediment removal by BMP       
+        real :: tile_pp = 0.        !!%              | Tile Particulate P removal by BMP
+        real :: tile_sp = 0.        !!%              | Tile Soluble P removal by BMP
+        real :: tile_pn = 0.        !!%              | Tile Particulate N removal by BMP 
+        real :: tile_sn = 0.        !!%              | Tile Soluble N removal by BMP  
+        real :: tile_bac = 0.       !!%              | Tile Bacteria removal by BMP 
       end type bmpuser_operation1
       type (bmpuser_operation),dimension(:), allocatable :: bmpuser_db
       
       type chemical_application_operation
         character (len=40) :: name = ""
-        character (len=40) :: form = " "        !           |solid; liquid
-        character (len=40) :: op_typ = " "      !           |operation type-spread; spray; inject; direct
-        real :: app_eff = 0.                    !           |application efficiency
-        real :: foliar_eff = 0.                 !           |foliar efficiency
-        real :: inject_dep = 0.                 !mm         |injection depth
-        real :: surf_frac = 0.                  !           |surface fraction-amount in upper 10 mm
-        real :: drift_pot = 0.                  !           |drift potential
-        real :: aerial_unif = 0.                !           |aerial uniformity
+        character (len=40) :: form = " "        !!           |solid; liquid
+        character (len=40) :: op_typ = " "      !!           |operation type-spread; spray; inject; direct
+        real :: app_eff = 0.                    !!           |application efficiency
+        real :: foliar_eff = 0.                 !!           |foliar efficiency
+        real :: inject_dep = 0.                 !!mm         |injection depth
+        real :: surf_frac = 0.                  !!           |surface fraction-amount in upper 10 mm
+        real :: drift_pot = 0.                  !!           |drift potential
+        real :: aerial_unif = 0.                !!           |aerial uniformity
       end type chemical_application_operation
       type (chemical_application_operation),dimension(:), allocatable :: chemapp_db
 
       type harvest_operation
         character (len=40) :: name = ""
-        character (len=40) :: typ = ""!none              |grain;biomass;residue;tree;tuber
-        real :: hi_ovr = 0.         !(kg/ha)/(kg/ha)   |harvest index target specified at harvest
-        real :: eff = 0.            !none              |harvest efficiency: fraction of harvested yield that is removed 
+        character (len=40) :: typ = ""!!none              |grain;biomass;residue;tree;tuber
+        real :: hi_ovr = 0.         !!(kg/ha)/(kg/ha)   |harvest index target specified at harvest
+        real :: eff = 0.            !!none              |harvest efficiency: fraction of harvested yield that is removed 
                                                        !the remainder becomes residue on the soil surface
-        real :: bm_min = 0          !kg/ha             |minimum biomass to allow harvest
+        real :: bm_min = 0          !!kg/ha             |minimum biomass to allow harvest
       end type harvest_operation
       type (harvest_operation), dimension(:), allocatable :: harvop_db
       type (harvest_operation) :: harvop
@@ -122,7 +122,7 @@
       type grazing_operation
         character (len=40) :: name = ""
         character (len=40) :: fertnm = " "
-        integer :: manure_id = 0                         !fertilizer number from fertilizer.frt
+        integer :: manure_id = 0                         !!fertilizer number from fertilizer.frt
         real :: eat = 0.              !!(kg/ha)/day      |dry weight of biomass removed by grazing daily
         real :: tramp = 0.            !!(kg/ha)/day      |dry weight of biomass removed by trampling daily
         real :: manure = 0.           !!(kg/ha)/day      |dry weight of manure deposited

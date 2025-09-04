@@ -3,100 +3,100 @@
       implicit none
       
       type carbon_terrestrial_inputs
-        real :: er_POC_para = 1.5       !           |POC enrichment ratio ! 0-10 ! 0.0-5.0  MOST SENSITIVE  
-        real :: CFB_para = 0.42         !           |Carbon fraction of residue (0.42; from data of Pinck et al., 1950) 
-        real :: Sf_para_sur = 0.05      !           |Fraction of mineral N sorbed to litter: 0.05 for surface litter, 0.1 for below ground litter
-        real :: Sf_para_sub = 0.10      !           |Fraction of mineral N sorbed to litter: 0.05 for surface litter, 0.1 for belowg round litter
+        real :: er_POC_para = 1.5       !!           |POC enrichment ratio ! 0-10 ! 0.0-5.0  MOST SENSITIVE  
+        real :: CFB_para = 0.42         !!           |Carbon fraction of residue (0.42; from data of Pinck et al., 1950) 
+        real :: Sf_para_sur = 0.05      !!           |Fraction of mineral N sorbed to litter: 0.05 for surface litter, 0.1 for below ground litter
+        real :: Sf_para_sub = 0.10      !!           |Fraction of mineral N sorbed to litter: 0.05 for surface litter, 0.1 for belowg round litter
         !Dissovled carbon
-        real :: ABL_para = 0.0          !           |Calculated - Carbon allocation from Microbial Biomass to Leaching          
-        real :: peroc_DIC_para = 0.95   !0-1        |DIC percolation coefficient  
-        real :: peroc_DOC_para  = 0.70  !0-1        |DOC percolation coefficient
-        real :: part_DOC_para = 4000.   !           |organic carbon partition coefficient 1000 to 1200 ! 500-2000 !replacing KOC=Liquid-solid partition coefficient for Microbial Biomass (10^3 m3 Mg-1)
-        real :: hlife_doc_para = 50. !days       |DOC half life in groundwater, calculating DOC decay in groundwater ! 0-100
+        real :: ABL_para = 0.0          !!           |Calculated - Carbon allocation from Microbial Biomass to Leaching          
+        real :: peroc_DIC_para = 0.95   !!0-1        |DIC percolation coefficient  
+        real :: peroc_DOC_para  = 0.70  !!0-1        |DOC percolation coefficient
+        real :: part_DOC_para = 4000.   !!           |organic carbon partition coefficient 1000 to 1200 ! 500-2000 !replacing KOC=Liquid-solid partition coefficient for Microbial Biomass (10^3 m3 Mg-1)
+        real :: hlife_doc_para = 50. !!days       |DOC half life in groundwater, calculating DOC decay in groundwater ! 0-100
         !Allocation of CO2 and Carbon transformation
-        real :: ABCO2_para_sur = 0.6    !           |Allocation from Microbial Biomass C pool to CO2; 0.6 (surface Litter), 0.85 - 0.68 x (CLAY+SILT) (all other layers) (Parton et al., 1993, 1994)
-        real :: ABCO2_para_sub = 0. !           |Calculated -Allocation from Microbial Biomass C pool to CO2; 0.6 (surface Litter), 0.85 - 0.68 x (CLAY+SILT) (all other layers) (Parton et al., 1993, 1994)
-        real :: ABP_para_sur = 0.0      !           |Allocation from Biomass to passive Humus; 0 (surface Litter), 0.003 + 0.032 x SOL_CLAY (all other layers) (Parton et al., 1993, 1994)
-        real :: ABP_para_sub = 0.0      !           |Calculated - Allocation from Biomass to passive Humus; 0 (surface Litter), 0.003 + 0.032 x SOL_CLAY (all other layers) (Parton et al., 1993, 1994)
-        real :: ALMCO2_para_sur = 0.6 !           |Allocation from metabolic Litter to CO2; 0.6 (surface Litter), 0.55 (all other layers) (Parton et al., 1993, 1994)
-        real :: ALMCO2_para_sub = 0.55 !           |Allocation from metabolic Litter to CO2; 0.6 (surface Litter), 0.55 (all other layers) (Parton et al., 1993, 1994)
-        real :: ALSLNCO2_para_sur = 0.6 !           |Allocation from non-lignin of structural Litter to CO2; 0.6 (surface Litter), 0.55 (all other layers) (Parton et al., 1993, 1994)
-        real :: ALSLNCO2_para_sub =0.55 !           |Allocation from non-lignin of structural Litter to CO2; 0.6 (surface Litter), 0.55 (all other layers) (Parton et al., 1993, 1994)
-        real :: ASP_para_sur = 0.0     !           |Allocation from slow Humus to passive; 0 (surface Litter), 0.003 + 0.00009 x CLAF (all other layers) (Parton et al., 1993, 1994)
-        real :: ASP_para_sub = 0.0     !           |Calculated - Allocation from slow Humus to passive; 0 (surface Litter), 0.003 + 0.00009 x CLAF (all other layers) (Parton et al., 1993, 1994)
-        real :: ALSLCO2_para = 0.3     !           |Allocation from lignin of structural Litter to CO2; 0.3 (Parton et al., 1993, 1994)
-        real :: APCO2_para = 0.55     !           |Allocation from passive Humus to CO2; 0.55 (Parton et al., 1993, 1994)
-        real :: ASCO2_para = 0.55     !           |Allocation from slow Humus to CO2; 0.55 (Parton et al., 1993, 1994)
+        real :: ABCO2_para_sur = 0.6    !!           |Allocation from Microbial Biomass C pool to CO2; 0.6 (surface Litter), 0.85 - 0.68 x (CLAY+SILT) (all other layers) (Parton et al., 1993, 1994)
+        real :: ABCO2_para_sub = 0. !!           |Calculated -Allocation from Microbial Biomass C pool to CO2; 0.6 (surface Litter), 0.85 - 0.68 x (CLAY+SILT) (all other layers) (Parton et al., 1993, 1994)
+        real :: ABP_para_sur = 0.0      !!           |Allocation from Biomass to passive Humus; 0 (surface Litter), 0.003 + 0.032 x SOL_CLAY (all other layers) (Parton et al., 1993, 1994)
+        real :: ABP_para_sub = 0.0      !!           |Calculated - Allocation from Biomass to passive Humus; 0 (surface Litter), 0.003 + 0.032 x SOL_CLAY (all other layers) (Parton et al., 1993, 1994)
+        real :: ALMCO2_para_sur = 0.6 !!           |Allocation from metabolic Litter to CO2; 0.6 (surface Litter), 0.55 (all other layers) (Parton et al., 1993, 1994)
+        real :: ALMCO2_para_sub = 0.55 !!           |Allocation from metabolic Litter to CO2; 0.6 (surface Litter), 0.55 (all other layers) (Parton et al., 1993, 1994)
+        real :: ALSLNCO2_para_sur = 0.6 !!           |Allocation from non-lignin of structural Litter to CO2; 0.6 (surface Litter), 0.55 (all other layers) (Parton et al., 1993, 1994)
+        real :: ALSLNCO2_para_sub =0.55 !!           |Allocation from non-lignin of structural Litter to CO2; 0.6 (surface Litter), 0.55 (all other layers) (Parton et al., 1993, 1994)
+        real :: ASP_para_sur = 0.0     !!           |Allocation from slow Humus to passive; 0 (surface Litter), 0.003 + 0.00009 x CLAF (all other layers) (Parton et al., 1993, 1994)
+        real :: ASP_para_sub = 0.0     !!           |Calculated - Allocation from slow Humus to passive; 0 (surface Litter), 0.003 + 0.00009 x CLAF (all other layers) (Parton et al., 1993, 1994)
+        real :: ALSLCO2_para = 0.3     !!           |Allocation from lignin of structural Litter to CO2; 0.3 (Parton et al., 1993, 1994)
+        real :: APCO2_para = 0.55     !!           |Allocation from passive Humus to CO2; 0.55 (Parton et al., 1993, 1994)
+        real :: ASCO2_para = 0.55     !!           |Allocation from slow Humus to CO2; 0.55 (Parton et al., 1993, 1994)
         !decomposition rates
-        real :: PRMT_51_para = 1.0     !           |COEF ADJUSTS MICROBIAL ACTIVITY FUNCTION IN TOP SOIL LAYER (0.1_1.),
-        real :: PRMT_45_para = 0.003 !           |COEF IN CENTURY EQ ALLOCATING SLOW TO PASSIVE HUMUS(0.001_0.05) ORIGINAL VALUE = 0.003, ASP=MAX(.001,PRMT_45-.00009*sol_clay(k,j)), ASP=MAX(.001,PRMT_45+.009*sol_clay(k,j)/100)
-        real :: BMR_para_sur = 0.0164 !           |Rate of transformation of microbial Biomass and associated products under optimal conditions (surface = 0.0164 d-1; all other layers = 0.02 d-1) (Parton et al., 1993, 1994)
-        real :: BMR_para_sub = 0.02     !           |Rate of transformation of microbial Biomass and associated products under optimal conditions (surface = 0.0164 d-1; all other layers = 0.02 d-1) (Parton et al., 1993, 1994)
-        real :: HPR_para = 0.000012     !           |Rate of transformation of passive Humus under optimal conditions (subsurface layers = 0.000012 d-1) (Parton et al., 1993, 1994)
-        real :: HSR_para = 0.000548     !           |Rate of transformation of slow Humus under optimal conditions (all layers = 0.0005 d-1) (Parton et al., 1993, 1994; Vitousek et al., 1993)
-        real :: LMR_para_sur = 0.0405 !           |Rate of transformation of metabolic Litter under optimal conditions (surface = 0.0405 d-1; all other layers = 0.0507 d-1) (Parton et al., 1994)
-        real :: LMR_para_sub = 0.0507 !           |Rate of transformation of metabolic Litter under optimal conditions (surface = 0.0405 d-1; all other layers = 0.0507 d-1) (Parton et al., 1994)
-        real :: LSR_para_sur = 0.0107 !           |Rate of potential transformation of structural Litter under optimal conditions (surface = 0.0107 d-1; all other layers = 0.0132 d-1) (Parton et al., 1994)
-        real :: LSR_para_sub = 0.0132 !           |Rate of potential transformation of structural Litter under optimal conditions (surface = 0.0107 d-1; all other layers = 0.0132 d-1) (Parton et al., 1994)
+        real :: PRMT_51_para = 1.0     !!           |COEF ADJUSTS MICROBIAL ACTIVITY FUNCTION IN TOP SOIL LAYER (0.1_1.),
+        real :: PRMT_45_para = 0.003 !!           |COEF IN CENTURY EQ ALLOCATING SLOW TO PASSIVE HUMUS(0.001_0.05) ORIGINAL VALUE = 0.003, ASP=MAX(.001,PRMT_45-.00009*sol_clay(k,j)), ASP=MAX(.001,PRMT_45+.009*sol_clay(k,j)/100)
+        real :: BMR_para_sur = 0.0164 !!           |Rate of transformation of microbial Biomass and associated products under optimal conditions (surface = 0.0164 d-1; all other layers = 0.02 d-1) (Parton et al., 1993, 1994)
+        real :: BMR_para_sub = 0.02     !!           |Rate of transformation of microbial Biomass and associated products under optimal conditions (surface = 0.0164 d-1; all other layers = 0.02 d-1) (Parton et al., 1993, 1994)
+        real :: HPR_para = 0.000012     !!           |Rate of transformation of passive Humus under optimal conditions (subsurface layers = 0.000012 d-1) (Parton et al., 1993, 1994)
+        real :: HSR_para = 0.000548     !!           |Rate of transformation of slow Humus under optimal conditions (all layers = 0.0005 d-1) (Parton et al., 1993, 1994; Vitousek et al., 1993)
+        real :: LMR_para_sur = 0.0405 !!           |Rate of transformation of metabolic Litter under optimal conditions (surface = 0.0405 d-1; all other layers = 0.0507 d-1) (Parton et al., 1994)
+        real :: LMR_para_sub = 0.0507 !!           |Rate of transformation of metabolic Litter under optimal conditions (surface = 0.0405 d-1; all other layers = 0.0507 d-1) (Parton et al., 1994)
+        real :: LSR_para_sur = 0.0107 !!           |Rate of potential transformation of structural Litter under optimal conditions (surface = 0.0107 d-1; all other layers = 0.0132 d-1) (Parton et al., 1994)
+        real :: LSR_para_sub = 0.0132 !!           |Rate of potential transformation of structural Litter under optimal conditions (surface = 0.0107 d-1; all other layers = 0.0132 d-1) (Parton et al., 1994)
         !Soil texture controls of microbial activity
-        real :: XBM_para_sur = 1.0     !           |Control on transformation of microbial Biomass by soil texture and structure. Its values: surface Litter layer = 1; all other layers = 1  0.75 x (SILT + CLAY) (Parton et al., 1993, 1994)
-        real :: XBM_para_sub = 0.0     !           |Calculated - Control on transformation of microbial Biomass by soil texture and structure. Its values: surface Litter layer = 1; all other layers = 1  0.75 x (SILT + CLAY) (Parton et al., 1993, 1994)
-        real :: XLSLF_para = 0.0     !           |Calculated - Control on potential transformation of structural Litter by lignin fraction of structural Litter [XLSLF = exp(-3 x LSLF) (Parton et al., 1993, 1994)]
+        real :: XBM_para_sur = 1.0     !!           |Control on transformation of microbial Biomass by soil texture and structure. Its values: surface Litter layer = 1; all other layers = 1  0.75 x (SILT + CLAY) (Parton et al., 1993, 1994)
+        real :: XBM_para_sub = 0.0     !!           |Calculated - Control on transformation of microbial Biomass by soil texture and structure. Its values: surface Litter layer = 1; all other layers = 1  0.75 x (SILT + CLAY) (Parton et al., 1993, 1994)
+        real :: XLSLF_para = 0.0     !!           |Calculated - Control on potential transformation of structural Litter by lignin fraction of structural Litter [XLSLF = exp(-3 x LSLF) (Parton et al., 1993, 1994)]
         !Oxygen factor control parameters
-        real :: OX_aa_para = 10.0     !           !Coefficient in calculating oxygen factor 
-        real :: OX_bb_para = 0.035     !           |Coefficient in calculating oxygen factor 
+        real :: OX_aa_para = 10.0     !!           !Coefficient in calculating oxygen factor 
+        real :: OX_bb_para = 0.035     !!           |Coefficient in calculating oxygen factor 
       end type carbon_terrestrial_inputs
       type (carbon_terrestrial_inputs) :: cbn_tes
 
       type carbon_inputs
-          real :: hp_rate = 0.          !               |rate of transformation of passive humus under optimal conditions
-          real :: hs_rate = 0.          !               |rate of transformation of slow humus under optimal conditions
-          real :: microb_rate = 0.      !               |rate of transformation of microbial biomass and associated products under optimal conditions
-          real :: meta_rate = 0.        !               |rate of transformation of metabolic litter under optimal conditions
-          real :: str_rate = 0.         !               |rate of potential transformation of structural litter under optimal conditions
-          real :: microb_top_rate = 0.  !               |coef adjusts mocribial activity function in top soil layer
-          real :: hs_hp = 0.            !               |coef in century eq allocating slow to passive humus
-          real :: microb_koc = 0.       !10^3 m^3 Mg-1  |liquid-solid partition coefficient for microbial biomass
-          real :: min_n_frac = 0.       !               |fraction of mineral n sorbed to litter
-          real :: c_org_frac = 0.       !               |carbon fraction of organic materials      
+          real :: hp_rate = 0.          !!               |rate of transformation of passive humus under optimal conditions
+          real :: hs_rate = 0.          !!               |rate of transformation of slow humus under optimal conditions
+          real :: microb_rate = 0.      !!               |rate of transformation of microbial biomass and associated products under optimal conditions
+          real :: meta_rate = 0.        !!               |rate of transformation of metabolic litter under optimal conditions
+          real :: str_rate = 0.         !!               |rate of potential transformation of structural litter under optimal conditions
+          real :: microb_top_rate = 0.  !!               |coef adjusts mocribial activity function in top soil layer
+          real :: hs_hp = 0.            !!               |coef in century eq allocating slow to passive humus
+          real :: microb_koc = 0.       !!10^3 m^3 Mg-1  |liquid-solid partition coefficient for microbial biomass
+          real :: min_n_frac = 0.       !!               |fraction of mineral n sorbed to litter
+          real :: c_org_frac = 0.       !!               |carbon fraction of organic materials      
       end type carbon_inputs
       type (carbon_inputs), dimension(2) :: carbdb 
       type (carbon_inputs) :: carbz  
-      logical :: carbon_coef_file = .false. !           !set to true if carbon_coef.cbn file exits.
+      logical :: carbon_coef_file = .false. !!           !set to true if carbon_coef.cbn file exits.
 
       type manure_coef
-          real :: rtof = 0.5            !none          |weighting factor used to partition the 
+          real :: rtof = 0.5            !!none          |weighting factor used to partition the 
                                         !              |organic N & P concentration of septic effluent
                                         !              |between the fresh organic and the stable organic pools
-          real :: man_to_c = 0.42       !              |conversion of manure solids to carbon
+          real :: man_to_c = 0.42       !!              |conversion of manure solids to carbon
       end type manure_coef
       type (manure_coef) :: man_coef
       
       type organic_allocations
           ! real :: abl = 0.        !               |Fraction of microbial biomass loss due to leaching
-          real :: abp = 0.        !               |Fraction of decomposed microbial biomass allocated to passive humus
-          real :: asp = 0.        !               |Fraction of decomposed slow humus allocated to passive
+          real :: abp = 0.        !!               |Fraction of decomposed microbial biomass allocated to passive humus
+          real :: asp = 0.        !!               |Fraction of decomposed slow humus allocated to passive
           ! real :: almco2 = 0.     !               |Fraction of decomposed metabolic litter allocated to CO2
           ! real :: alslco2 = 0.    !               |Fraction of decomposed lignin of structural litter allocated to CO2
           ! real :: alslnco2 = 0.   !               |Fraction of decomposed lignin of structural litter allocated to CO2
-          real :: a1co2 =  0.     !               |Fraction of decomposed metabolic and passive pools to CO2
-          real :: asco2 = 0.      !               |Fraction of decomposed slow humus allocated to CO2
-          real :: apco2 = 0.      !               |Fraction of decomposed  passive humus allocated to CO2
-          real :: abco2 = 0.      !               |Fraction of decomposed microbial biomass allocated to CO2
+          real :: a1co2 =  0.     !!               |Fraction of decomposed metabolic and passive pools to CO2
+          real :: asco2 = 0.      !!               |Fraction of decomposed slow humus allocated to CO2
+          real :: apco2 = 0.      !!               |Fraction of decomposed  passive humus allocated to CO2
+          real :: abco2 = 0.      !!               |Fraction of decomposed microbial biomass allocated to CO2
       end type organic_allocations
       type (organic_allocations), dimension(2) :: org_allo 
       type (organic_allocations) :: org_alloz
         
       type organic_controls
-          real :: sut = 0.           !                 |soil water control on biological processes
-          real :: cdg = 0.           !                 |soil temperature control on biological processes
-          real :: cs = 0.            !                 |combined factor controlling biological processes
-          real :: ox = 0.            !                 |oxygen control on biological processes 
-          real :: till_eff           !                 |tillage effect
-          real :: x1 = 0.            !                 |tillage control on residue decomposition
-          real :: no3 = 0.           !                 |no3 as adjusted in cbn_zhang2
-          real :: nh4 = 0.           !                 |nh4 as adjusted in cbn_zhang2
-          real :: resp               !                 |co2 respiration
+          real :: sut = 0.           !!                 |soil water control on biological processes
+          real :: cdg = 0.           !!                 |soil temperature control on biological processes
+          real :: cs = 0.            !!                 |combined factor controlling biological processes
+          real :: ox = 0.            !!                 |oxygen control on biological processes 
+          real :: till_eff           !!                 |tillage effect
+          real :: x1 = 0.            !!                 |tillage control on residue decomposition
+          real :: no3 = 0.           !!                 |no3 as adjusted in cbn_zhang2
+          real :: nh4 = 0.           !!                 |nh4 as adjusted in cbn_zhang2
+          real :: resp               !!                 |co2 respiration
           ! real :: xbmt = 0.          !               |control on transformation of microbial biomass by soil texture and structure
           ! real :: xlslf = 0.         !               |control on potential transformation of structural litter by lignin fraction
       end type organic_controls
@@ -104,102 +104,102 @@
       type (organic_controls) :: org_con_zero
         
       type organic_fractions
-          real :: lmf = 0.      !frac               |fraction of the litter that is metabolic
-          real :: lmnf = 0.     !kg kg-1            |fraction of metabolic litter that is N
-          real :: lsf = 0.      !frac               |fraction of the litter that is structural
-          real :: lslf = 0.     !kg kg-1            |fraction of structural litter that is lignin 
-          real :: lsnf = 0.     !kg kg-1            |fraction of structural litter that is N      
+          real :: lmf = 0.      !!frac               |fraction of the litter that is metabolic
+          real :: lmnf = 0.     !!kg kg-1            |fraction of metabolic litter that is N
+          real :: lsf = 0.      !!frac               |fraction of the litter that is structural
+          real :: lslf = 0.     !!kg kg-1            |fraction of structural litter that is lignin 
+          real :: lsnf = 0.     !!kg kg-1            |fraction of structural litter that is N      
       end type organic_fractions
       type (organic_fractions) :: org_frac                    
       
       type organic_ratio
           ! real :: cnr = 0.         !                  |c/n ratio of standing dead
-          real :: ncbm = 0.        !                  |n/c ratio of biomass           
-          real :: nchp = 0.        !                  |n/c ratio of passive humus
-          real :: nchs = 0.        !                  |n/c ration of slow humus
+          real :: ncbm = 0.        !!                  |n/c ratio of biomass           
+          real :: nchp = 0.        !!                  |n/c ratio of passive humus
+          real :: nchs = 0.        !!                  |n/c ration of slow humus
       end type organic_ratio
       type (organic_ratio) :: org_ratio                   
       type (organic_ratio) :: org_ratio_zero                   
       
       type carbon_water_coef
-          real :: prmt_21 = 1000.   !   |KOC FOR CARBON LOSS IN WATER AND SEDIMENT(500._1500.) KD = KOC * C          
-          real :: prmt_44 = 0.5     !   |RATIO OF SOLUBLE C CONCENTRATION IN RUNOFF TO PERCOLATE(0.1_1.)
+          real :: prmt_21 = 1000.   !!   |KOC FOR CARBON LOSS IN WATER AND SEDIMENT(500._1500.) KD = KOC * C          
+          real :: prmt_44 = 0.5     !!   |RATIO OF SOLUBLE C CONCENTRATION IN RUNOFF TO PERCOLATE(0.1_1.)
       end type carbon_water_coef
       type (carbon_water_coef) :: cb_wtr_coef                  
 
       type organic_transformations
-          real :: bmctp = 0.       !kg ha-1 day-1        |potential transformation of C in microbial biomass
-          real :: bmntp = 0.       !kg ha-1 day-1        |potential transformation of N in microbial biomass
-          real :: hsctp = 0.       !kg ha-1 day-1        |potential transformation of C in slow humus
-          real :: hsntp = 0.       !kg ha-1 day-1        |potential transformation of N in slow humus
-          real :: hpctp = 0.       !kg ha-1 day-1        |potential transformation of C in passive humus 
-          real :: hpntp = 0.       !kg ha-1 day-1        |potential transformation of N in passive humus
-          real :: lmctp = 0.       !kg ha-1 day-1        |potential transformation of C in metabolic litter
-          real :: lmntp = 0.       !kg ha-1 day-1        |potential transformation of N in metabolic litter 
-          real :: lsctp = 0.       !kg ha-1 day-1        |potential transformation of C in structural litter
-          real :: lslctp = 0.      !kg ha-1 day-1        |potential transformation of C in lignin of structural litter
-          real :: lslnctp = 0.     !kg ha-1 day-1        |potential transformation of C in nonlignin structural litter
-          real :: lsntp = 0.       !kg ha-1 day-1        |potential transformation of N in structural litter              
+          real :: bmctp = 0.       !!kg ha-1 day-1        |potential transformation of C in microbial biomass
+          real :: bmntp = 0.       !!kg ha-1 day-1        |potential transformation of N in microbial biomass
+          real :: hsctp = 0.       !!kg ha-1 day-1        |potential transformation of C in slow humus
+          real :: hsntp = 0.       !!kg ha-1 day-1        |potential transformation of N in slow humus
+          real :: hpctp = 0.       !!kg ha-1 day-1        |potential transformation of C in passive humus 
+          real :: hpntp = 0.       !!kg ha-1 day-1        |potential transformation of N in passive humus
+          real :: lmctp = 0.       !!kg ha-1 day-1        |potential transformation of C in metabolic litter
+          real :: lmntp = 0.       !!kg ha-1 day-1        |potential transformation of N in metabolic litter 
+          real :: lsctp = 0.       !!kg ha-1 day-1        |potential transformation of C in structural litter
+          real :: lslctp = 0.      !!kg ha-1 day-1        |potential transformation of C in lignin of structural litter
+          real :: lslnctp = 0.     !!kg ha-1 day-1        |potential transformation of C in nonlignin structural litter
+          real :: lsntp = 0.       !!kg ha-1 day-1        |potential transformation of N in structural litter              
       end type organic_transformations
       type (organic_transformations) :: org_tran
       type (organic_transformations) :: org_tran_zero
       
       type organic_flux
-          real :: cfmets1 = 0.           !(kg C ha-1 day-1) |C transformed from Metabolic Litter to S1 (Microbial Biomass) 
-          real :: cfstrs1 = 0.           !(kg C ha-1 day-1) |C transformed from Structural Litter to S1 (Microbial Biomass)  
-          real :: cfstrs2 = 0.           !(kg C ha-1 day-1) |C transformed from Structural Litter to S2 (Slow Humus) 
-          real :: efmets1 = 0.           !(kg N ha-1 day-1) |N transformed from Metabolic Litter to S1 (Microbial Biomass) 
-          real :: efstrs1 = 0.           !(kg N ha-1 day-1) |N transformed from Structural Litter to S1 (Microbial Biomass) 
-          real :: efstrs2 = 0.           !(kg N ha-1 day-1) |N transformed from Structural Litter to S2 (Slow Humus)  
-          real :: immmets1 = 0.          !(kg N ha-1 day-1) |N immibolization resulting from transforming Metabolic Litter to S1 (Microbial Biomass)   
-          real :: immstrs1 = 0.          !(kg N ha-1 day-1) |N immibolization resulting from transforming Structural Litter to S1 (Microbial Biomass) 
-          real :: immstrs2 = 0.          !(kg N ha-1 day-1) |N immibolization resulting from transforming Structural Litter to S2 (Slow Humus)  
-          real :: mnrmets1 = 0.          !(kg N ha-1 day-1) |N mineralization resulting from transforming Metabolic Litter to S1 (Microbial Biomass)   
-          real :: mnrstrs1 = 0.          !(kg N ha-1 day-1) |N mineralization resulting from transforming Structural Litter to S1 (Microbial Biomass) 
-          real :: mnrstrs2 = 0.          !(kg N ha-1 day-1) |N mineralization resulting from transforming Structural Litter to S2 (Slow Humus)  
-          real :: co2fmet = 0.           !(kg C ha-1 day-1) |CO2 production resulting from metabolic litter transformaitons               
-          real :: co2fstr = 0.           !(kg C ha-1 day-1) |CO2 production resulting from lignin structural litter transformaitons  
-          real :: cfs1s2 = 0.            !(kg C ha-1 day-1) |C transformed from S1 (Microbial Biomass) to S2 (Slow Humus)    
-          real :: cfs1s3 = 0.            !(kg C ha-1 day-1) |C transformed from S1 (Microbial Biomass) to S3 (Passive Humus)  
-          real :: cfs2s1 = 0.            !(kg C ha-1 day-1) |C transformed from S2 (Slow Humus) to S1 (Microbial Biomass)  
-          real :: cfs2s3 = 0.            !(kg C ha-1 day-1) |C transformed from S2 (Slow Humus) to S3 (Passive Humus)  
-          real :: cfs3s1 = 0.            !(kg C ha-1 day-1) |C transformed from  S3 (Passive Humus) to S1 (Microbial Biomass) 
-          real :: efs1s2 = 0.            !(kg N ha-1 day-1) |N transformed from from S1 (Microbial Biomass) to S2 (Slow Humus)  
-          real :: efs1s3 = 0.            !(kg N ha-1 day-1) |N transformed from from S1 (Microbial Biomass) to S3 (Passive Humus) 
-          real :: efs2s1 = 0.            !(kg N ha-1 day-1) |N transformed from from S2 (Slow Humus) to S1 (Microbial Biomass) 
-          real :: efs2s3 = 0.            !(kg N ha-1 day-1) |N transformed from from S2 (Slow Humus) to S3 (Passive Humus) 
-          real :: efs3s1 = 0.            !(kg N ha-1 day-1) |N transformed from from  S3 (Passive Humus) to S1 (Microbial Biomass) 
-          real :: imms1s2 = 0.           !(kg N ha-1 day-1) |N immibolization resulting from transforming S1 (Microbial Biomass) to S2 (Slow Humus)   
-          real :: imms1s3 = 0.           !(kg N ha-1 day-1) |N immibolization resulting from transforming S1 (Microbial Biomass) to S3 (Passive Humus)  
-          real :: imms2s1 = 0.           !(kg N ha-1 day-1) |N immibolization resulting from transforming S2 (Slow Humus) to S1 (Microbial Biomass) 
-          real :: imms2s3 = 0.           !(kg N ha-1 day-1) |N immibolization resulting from transforming S2 (Slow Humus) to S3 (Passive Humus)  
-          real :: imms3s1 = 0.           !(kg N ha-1 day-1) |N immibolization resulting from transforming  S3 (Passive Humus) to S1 (Microbial Biomass)  
-          real :: mnrs1s2 = 0.           !(kg N ha-1 day-1) |N mineralization resulting from transforming S1 (Microbial Biomass) to S2 (Slow Humus)  
-          real :: mnrs1s3 = 0.           !(kg N ha-1 day-1) |N mineralization resulting from transforming S1 (Microbial Biomass) to S3 (Passive Humus) 
-          real :: mnrs2s1 = 0.           !(kg N ha-1 day-1) |N mineralization resulting from transforming S2 (Slow Humus) to S1 (Microbial Biomass)  
-          real :: mnrs2s3 = 0.           !(kg N ha-1 day-1) |N mineralization resulting from transforming S2 (Slow Humus) to S3 (Passive Humus)  
-          real :: mnrs3s1 = 0.           !(kg N ha-1 day-1) |N mineralization resulting from transforming  S3 (Passive Humus) to S1 (Microbial Biomass)  
-          real :: co2fs1 = 0.            !(kg C ha-1 day-1) |CO2 production resulting from S1 (Microbial Biomass) transformations  
-          real :: co2fs2 = 0.            !(kg C ha-1 day-1) |CO2 production resulting from S2 (Slow Humus)  transformations  
-          real :: co2fs3 = 0.            !(kg C ha-1 day-1) |CO2 production resulting from S3 (Passive Humus) transformations  
+          real :: cfmets1 = 0.           !!(kg C ha-1 day-1) |C transformed from Metabolic Litter to S1 (Microbial Biomass) 
+          real :: cfstrs1 = 0.           !!(kg C ha-1 day-1) |C transformed from Structural Litter to S1 (Microbial Biomass)  
+          real :: cfstrs2 = 0.           !!(kg C ha-1 day-1) |C transformed from Structural Litter to S2 (Slow Humus) 
+          real :: efmets1 = 0.           !!(kg N ha-1 day-1) |N transformed from Metabolic Litter to S1 (Microbial Biomass) 
+          real :: efstrs1 = 0.           !!(kg N ha-1 day-1) |N transformed from Structural Litter to S1 (Microbial Biomass) 
+          real :: efstrs2 = 0.           !!(kg N ha-1 day-1) |N transformed from Structural Litter to S2 (Slow Humus)  
+          real :: immmets1 = 0.          !!(kg N ha-1 day-1) |N immibolization resulting from transforming Metabolic Litter to S1 (Microbial Biomass)   
+          real :: immstrs1 = 0.          !!(kg N ha-1 day-1) |N immibolization resulting from transforming Structural Litter to S1 (Microbial Biomass) 
+          real :: immstrs2 = 0.          !!(kg N ha-1 day-1) |N immibolization resulting from transforming Structural Litter to S2 (Slow Humus)  
+          real :: mnrmets1 = 0.          !!(kg N ha-1 day-1) |N mineralization resulting from transforming Metabolic Litter to S1 (Microbial Biomass)   
+          real :: mnrstrs1 = 0.          !!(kg N ha-1 day-1) |N mineralization resulting from transforming Structural Litter to S1 (Microbial Biomass) 
+          real :: mnrstrs2 = 0.          !!(kg N ha-1 day-1) |N mineralization resulting from transforming Structural Litter to S2 (Slow Humus)  
+          real :: co2fmet = 0.           !!(kg C ha-1 day-1) |CO2 production resulting from metabolic litter transformaitons               
+          real :: co2fstr = 0.           !!(kg C ha-1 day-1) |CO2 production resulting from lignin structural litter transformaitons  
+          real :: cfs1s2 = 0.            !!(kg C ha-1 day-1) |C transformed from S1 (Microbial Biomass) to S2 (Slow Humus)    
+          real :: cfs1s3 = 0.            !!(kg C ha-1 day-1) |C transformed from S1 (Microbial Biomass) to S3 (Passive Humus)  
+          real :: cfs2s1 = 0.            !!(kg C ha-1 day-1) |C transformed from S2 (Slow Humus) to S1 (Microbial Biomass)  
+          real :: cfs2s3 = 0.            !!(kg C ha-1 day-1) |C transformed from S2 (Slow Humus) to S3 (Passive Humus)  
+          real :: cfs3s1 = 0.            !!(kg C ha-1 day-1) |C transformed from  S3 (Passive Humus) to S1 (Microbial Biomass) 
+          real :: efs1s2 = 0.            !!(kg N ha-1 day-1) |N transformed from from S1 (Microbial Biomass) to S2 (Slow Humus)  
+          real :: efs1s3 = 0.            !!(kg N ha-1 day-1) |N transformed from from S1 (Microbial Biomass) to S3 (Passive Humus) 
+          real :: efs2s1 = 0.            !!(kg N ha-1 day-1) |N transformed from from S2 (Slow Humus) to S1 (Microbial Biomass) 
+          real :: efs2s3 = 0.            !!(kg N ha-1 day-1) |N transformed from from S2 (Slow Humus) to S3 (Passive Humus) 
+          real :: efs3s1 = 0.            !!(kg N ha-1 day-1) |N transformed from from  S3 (Passive Humus) to S1 (Microbial Biomass) 
+          real :: imms1s2 = 0.           !!(kg N ha-1 day-1) |N immibolization resulting from transforming S1 (Microbial Biomass) to S2 (Slow Humus)   
+          real :: imms1s3 = 0.           !!(kg N ha-1 day-1) |N immibolization resulting from transforming S1 (Microbial Biomass) to S3 (Passive Humus)  
+          real :: imms2s1 = 0.           !!(kg N ha-1 day-1) |N immibolization resulting from transforming S2 (Slow Humus) to S1 (Microbial Biomass) 
+          real :: imms2s3 = 0.           !!(kg N ha-1 day-1) |N immibolization resulting from transforming S2 (Slow Humus) to S3 (Passive Humus)  
+          real :: imms3s1 = 0.           !!(kg N ha-1 day-1) |N immibolization resulting from transforming  S3 (Passive Humus) to S1 (Microbial Biomass)  
+          real :: mnrs1s2 = 0.           !!(kg N ha-1 day-1) |N mineralization resulting from transforming S1 (Microbial Biomass) to S2 (Slow Humus)  
+          real :: mnrs1s3 = 0.           !!(kg N ha-1 day-1) |N mineralization resulting from transforming S1 (Microbial Biomass) to S3 (Passive Humus) 
+          real :: mnrs2s1 = 0.           !!(kg N ha-1 day-1) |N mineralization resulting from transforming S2 (Slow Humus) to S1 (Microbial Biomass)  
+          real :: mnrs2s3 = 0.           !!(kg N ha-1 day-1) |N mineralization resulting from transforming S2 (Slow Humus) to S3 (Passive Humus)  
+          real :: mnrs3s1 = 0.           !!(kg N ha-1 day-1) |N mineralization resulting from transforming  S3 (Passive Humus) to S1 (Microbial Biomass)  
+          real :: co2fs1 = 0.            !!(kg C ha-1 day-1) |CO2 production resulting from S1 (Microbial Biomass) transformations  
+          real :: co2fs2 = 0.            !!(kg C ha-1 day-1) |CO2 production resulting from S2 (Slow Humus)  transformations  
+          real :: co2fs3 = 0.            !!(kg C ha-1 day-1) |CO2 production resulting from S3 (Passive Humus) transformations  
       end type organic_flux
       type (organic_flux) :: org_flux
 	    type (organic_flux) :: org_flux_zero
       
       type carbon_soil_transformations
-          real :: meta_micr = 0.        !(kg C ha-1 day-1) |C transformed from Metabolic Litter to S1 (Microbial Biomass) 
-          real :: str_micr = 0.         !(kg C ha-1 day-1) |C transformed from Structural Litter to S1 (Microbial Biomass)  
-          real :: str_hs = 0.           !(kg C ha-1 day-1) |C transformed from Structural Litter to S2 (Slow Humus)
-          real :: co2_meta = 0.         !(kg C ha-1 day-1) |CO2 production resulting from metabolic litter transformations               
-          real :: co2_str = 0.          !(kg C ha-1 day-1) |CO2 production resulting from lignin structural litter transformations  
-          real :: micr_hs = 0.          !(kg C ha-1 day-1) |C transformed from S1 (Microbial Biomass) to S2 (Slow Humus)    
-          real :: micr_hp = 0.          !(kg C ha-1 day-1) |C transformed from S1 (Microbial Biomass) to S3 (Passive Humus)  
-          real :: hs_micr = 0.          !(kg C ha-1 day-1) |C transformed from S2 (Slow Humus) to S1 (Microbial Biomass)  
-          real :: hs_hp = 0.            !(kg C ha-1 day-1) |C transformed from S2 (Slow Humus) to S3 (Passive Humus)  
-          real :: hp_micr = 0.          !(kg C ha-1 day-1) |C transformed from  S3 (Passive Humus) to S1 (Microbial Biomass) 
-          real :: co2_micr = 0.         !(kg C ha-1 day-1) |CO2 production resulting from S1 (Microbial Biomass) transformations  
-          real :: co2_hs = 0.           !(kg C ha-1 day-1) |CO2 production resulting from S2 (Slow Humus)  transformations  
-          real :: co2_hp = 0.           !(kg C ha-1 day-1) |CO2 production resulting from S3 (Passive Humus) transformations  
+          real :: meta_micr = 0.        !!(kg C ha-1 day-1) |C transformed from Metabolic Litter to S1 (Microbial Biomass) 
+          real :: str_micr = 0.         !!(kg C ha-1 day-1) |C transformed from Structural Litter to S1 (Microbial Biomass)  
+          real :: str_hs = 0.           !!(kg C ha-1 day-1) |C transformed from Structural Litter to S2 (Slow Humus)
+          real :: co2_meta = 0.         !!(kg C ha-1 day-1) |CO2 production resulting from metabolic litter transformations               
+          real :: co2_str = 0.          !!(kg C ha-1 day-1) |CO2 production resulting from lignin structural litter transformations  
+          real :: micr_hs = 0.          !!(kg C ha-1 day-1) |C transformed from S1 (Microbial Biomass) to S2 (Slow Humus)    
+          real :: micr_hp = 0.          !!(kg C ha-1 day-1) |C transformed from S1 (Microbial Biomass) to S3 (Passive Humus)  
+          real :: hs_micr = 0.          !!(kg C ha-1 day-1) |C transformed from S2 (Slow Humus) to S1 (Microbial Biomass)  
+          real :: hs_hp = 0.            !!(kg C ha-1 day-1) |C transformed from S2 (Slow Humus) to S3 (Passive Humus)  
+          real :: hp_micr = 0.          !!(kg C ha-1 day-1) |C transformed from  S3 (Passive Humus) to S1 (Microbial Biomass) 
+          real :: co2_micr = 0.         !!(kg C ha-1 day-1) |CO2 production resulting from S1 (Microbial Biomass) transformations  
+          real :: co2_hs = 0.           !!(kg C ha-1 day-1) |CO2 production resulting from S2 (Slow Humus)  transformations  
+          real :: co2_hp = 0.           !!(kg C ha-1 day-1) |CO2 production resulting from S3 (Passive Humus) transformations  
       end type carbon_soil_transformations
       type (carbon_soil_transformations) :: hscfz
       
@@ -220,21 +220,21 @@
       type (carbon_soil_transformations) :: bscf_a
       
       type carbon_soil_gain_losses
-        real :: sed_c = 0.              !kg C/ha            |C transported with sediment yield
-        real :: surq_c = 0.             !kg C/ha            |total dissolved C transported with surface runoff
-        real :: surq_doc = 0.           !kg C/ha            |dissolved organic C transported with surface runoff
-        real :: surq_dic = 0.           !kg C/ha            |dissolved inorganic C transported with surface runoff
-        real :: latq_c = 0.             !kg C/ha            |dissolved organic C transported with lateral flow (all layers)
-        real :: latq_doc= 0.            !kg C/ha            |total dissolved C transported with lateral flow (all layers)
-        real :: latq_dic = 0.           !kg C/ha            |dissolved inorganic C transported with lateral flow (all layers)
-        real :: perc_c = 0.             !kg C/ha            |total dissolved C transported with percolate
-        real :: perc_doc = 0.           !kg C/ha            |dissolved organic C transported with percolate
-        real :: perc_dic = 0.           !kg C/ha            |dissolved inorganic C transported with percolate
-        real :: rsd_decay_c = 0.        !kg C/ha            |carbon added to soil from residue decay
-        real :: man_app_c = 0.          !kg C/ha            |amount of carbon applied to soil from manure
-        real :: man_graz_c = 0.         !kg C/ha            |amount of carbon manure from grazing animals
-        real :: rsp_c = 0.              !kg C/ha            |CO2 production from soil respiration summarized for the profile  
-        real :: emit_c = 0.             !kg C/ha            |CO2 production from burning soil carbon
+        real :: sed_c = 0.              !!kg C/ha            |C transported with sediment yield
+        real :: surq_c = 0.             !!kg C/ha            |total dissolved C transported with surface runoff
+        real :: surq_doc = 0.           !!kg C/ha            |dissolved organic C transported with surface runoff
+        real :: surq_dic = 0.           !!kg C/ha            |dissolved inorganic C transported with surface runoff
+        real :: latq_c = 0.             !!kg C/ha            |dissolved organic C transported with lateral flow (all layers)
+        real :: latq_doc= 0.            !!kg C/ha            |total dissolved C transported with lateral flow (all layers)
+        real :: latq_dic = 0.           !!kg C/ha            |dissolved inorganic C transported with lateral flow (all layers)
+        real :: perc_c = 0.             !!kg C/ha            |total dissolved C transported with percolate
+        real :: perc_doc = 0.           !!kg C/ha            |dissolved organic C transported with percolate
+        real :: perc_dic = 0.           !!kg C/ha            |dissolved inorganic C transported with percolate
+        real :: rsd_decay_c = 0.        !!kg C/ha            |carbon added to soil from residue decay
+        real :: man_app_c = 0.          !!kg C/ha            |amount of carbon applied to soil from manure
+        real :: man_graz_c = 0.         !!kg C/ha            |amount of carbon manure from grazing animals
+        real :: rsp_c = 0.              !!kg C/ha            |CO2 production from soil respiration summarized for the profile  
+        real :: emit_c = 0.             !!kg C/ha            |CO2 production from burning soil carbon
       end type carbon_soil_gain_losses
       type (carbon_soil_gain_losses) :: hscz 
       
@@ -255,12 +255,12 @@
       type (carbon_soil_gain_losses) :: bsc_a
       
       type carbon_residue_gain_losses
-        real :: plant_surf_c = 0.       !kg C/ha            |carbon added to surface residue from leaf drop and kill
-        real :: plant_root_c = 0.       !kg C/ha            |carbon added to soil residue from root kill
-        real :: rsd_surfdecay_c = 0.    !kg C/ha            |carbon lost to soil from surface residue decay
-        real :: rsd_rootdecay_c = 0.    !kg C/ha            |carbon lost to soil from soil/root and incorporated residue decay
-        real :: harv_stov_c = 0.        !kg C/ha            |carbon removed during surface residue harvest  
-        real :: emit_c = 0.             !kg C/ha            |CO2 production from burning surface residue carbon
+        real :: plant_surf_c = 0.       !!kg C/ha            |carbon added to surface residue from leaf drop and kill
+        real :: plant_root_c = 0.       !!kg C/ha            |carbon added to soil residue from root kill
+        real :: rsd_surfdecay_c = 0.    !!kg C/ha            |carbon lost to soil from surface residue decay
+        real :: rsd_rootdecay_c = 0.    !!kg C/ha            |carbon lost to soil from soil/root and incorporated residue decay
+        real :: harv_stov_c = 0.        !!kg C/ha            |carbon removed during surface residue harvest  
+        real :: emit_c = 0.             !!kg C/ha            |CO2 production from burning surface residue carbon
       end type carbon_residue_gain_losses
       type (carbon_residue_gain_losses) :: hrcz
       
@@ -281,12 +281,12 @@
       type (carbon_residue_gain_losses) :: brc_a
       
       type carbon_plant_gain_losses
-        real :: npp_c = 0.              !kg C/ha            |plant carbon growth from photosynthesis
-        real :: harv_abgr_c = 0.        !kg C/ha            |carbon removed during grain/biomass harvest
-        real :: harv_root_c = 0.        !kg C/ha            |carbon removed during tuber (root) harvest
-        real :: drop_c = 0.             !kg C/ha            |carbon added to residue from leaf drop and kill
-        real :: grazeat_c = 0.          !kg C/ha            |amount of carbon ate by animals in grazing
-        real :: emit_c = 0.             !kg C/ha            |CO2 production from burning residue carbon
+        real :: npp_c = 0.              !!kg C/ha            |plant carbon growth from photosynthesis
+        real :: harv_abgr_c = 0.        !!kg C/ha            |carbon removed during grain/biomass harvest
+        real :: harv_root_c = 0.        !!kg C/ha            |carbon removed during tuber (root) harvest
+        real :: drop_c = 0.             !!kg C/ha            |carbon added to residue from leaf drop and kill
+        real :: grazeat_c = 0.          !!kg C/ha            |amount of carbon ate by animals in grazing
+        real :: emit_c = 0.             !!kg C/ha            |CO2 production from burning residue carbon
       end type carbon_plant_gain_losses
       type (carbon_plant_gain_losses) :: hpcz
       

@@ -69,11 +69,11 @@
       integer :: fert_cs_flag = 0
       
       !cs uptake
-      real, dimension(:,:), allocatable :: cs_uptake_kg         !specified daily constituent mass taken up by crop roots (kg/ha)
-      integer :: cs_uptake_on = 0                               !flag for simulating constituent uptake
+      real, dimension(:,:), allocatable :: cs_uptake_kg         !!specified daily constituent mass taken up by crop roots (kg/ha)
+      integer :: cs_uptake_on = 0                               !!flag for simulating constituent uptake
       
       !urban constituent concentrations
-      real, dimension(:,:), allocatable :: cs_urban_conc    !constituent conc in suspended solid load from imp areas (mg cs / kg sed)
+      real, dimension(:,:), allocatable :: cs_urban_conc    !!constituent conc in suspended solid load from imp areas (mg cs / kg sed)
       
       !header for daily (basin-wide) cs balance output
       type output_csbal_header
@@ -81,98 +81,98 @@
          character (len=8) :: mon =            "      mo"
          character (len=8) :: day =            "    jday"
          !soil profile balance - seo4
-         character(len=16) :: latseo4 =        "    latq_seo4" !1
-         character(len=16) :: surseo4 =        "    surq_seo4" !2
-         character(len=16) :: sedseo4 =        "    sedm_seo4" !3
-         character(len=16) :: urbseo4 =        "    urbq_seo4" !4
-         character(len=16) :: wetseo4 =        "    wetq_seo4" !5
-         character(len=16) :: tileseo4 =       "    tile_seo4" !6
-         character(len=16) :: percseo4 =       "    perc_seo4" !7
-         character(len=16) :: gwupseo4 =       "    gwup_seo4" !8
-         character(len=16) :: wtspseo4 =       "    wtsp_seo4" !9
-         character(len=16) :: irswseo4 =       "    irsw_seo4" !10
-         character(len=16) :: irgwseo4 =       "    irgw_seo4" !11
-         character(len=16) :: irwoseo4 =       "    irwo_seo4" !12
-         character(len=16) :: rainseo4 =       "    rain_seo4" !13
-         character(len=16) :: drydseo4 =       "    dryd_seo4" !14
-         character(len=16) :: fertseo4 =       "    fert_seo4" !15
-         character(len=16) :: uptkseo4 =       "    uptk_seo4" !16
-         character(len=16) :: rctnseo4 =       "  rct_sl_seo4" !17
-         character(len=16) :: sorbseo4 =       "  srb_sl_seo4" !18
-         character(len=16) :: ptsoseo4 =       "    ptso_seo4" !19
-         character(len=16) :: poutseo4 =       "   ptout_seo4" !20
-         character(len=16) :: sldsseo4 =       "  dis_sl_seo4" !21
-         character(len=16) :: srbdseo4 =       "  sbd_sl_seo4" !22
+         character(len=16) :: latseo4 =        "    latq_seo4" !!1
+         character(len=16) :: surseo4 =        "    surq_seo4" !!2
+         character(len=16) :: sedseo4 =        "    sedm_seo4" !!3
+         character(len=16) :: urbseo4 =        "    urbq_seo4" !!4
+         character(len=16) :: wetseo4 =        "    wetq_seo4" !!5
+         character(len=16) :: tileseo4 =       "    tile_seo4" !!6
+         character(len=16) :: percseo4 =       "    perc_seo4" !!7
+         character(len=16) :: gwupseo4 =       "    gwup_seo4" !!8
+         character(len=16) :: wtspseo4 =       "    wtsp_seo4" !!9
+         character(len=16) :: irswseo4 =       "    irsw_seo4" !!10
+         character(len=16) :: irgwseo4 =       "    irgw_seo4" !!11
+         character(len=16) :: irwoseo4 =       "    irwo_seo4" !!12
+         character(len=16) :: rainseo4 =       "    rain_seo4" !!13
+         character(len=16) :: drydseo4 =       "    dryd_seo4" !!14
+         character(len=16) :: fertseo4 =       "    fert_seo4" !!15
+         character(len=16) :: uptkseo4 =       "    uptk_seo4" !!16
+         character(len=16) :: rctnseo4 =       "  rct_sl_seo4" !!17
+         character(len=16) :: sorbseo4 =       "  srb_sl_seo4" !!18
+         character(len=16) :: ptsoseo4 =       "    ptso_seo4" !!19
+         character(len=16) :: poutseo4 =       "   ptout_seo4" !!20
+         character(len=16) :: sldsseo4 =       "  dis_sl_seo4" !!21
+         character(len=16) :: srbdseo4 =       "  sbd_sl_seo4" !!22
          !aquifer balance - seo4
-         character(len=16) :: gwseo4 =         "      gw_seo4" !23
-         character(len=16) :: rchgseo4 =       "    rchg_seo4" !24
-         character(len=16) :: seepseo4 =       "    seep_seo4" !25
-         character(len=16) :: rctaseo4 =       "  rct_aq_seo4" !26
-         character(len=16) :: srbaseo4 =       "  srb_aq_seo4" !27
-         character(len=16) :: aqdsseo4 =       "  dis_aq_seo4" !28
-         character(len=16) :: srdaseo4 =       "  sbd_aq_seo4" !29
+         character(len=16) :: gwseo4 =         "      gw_seo4" !!23
+         character(len=16) :: rchgseo4 =       "    rchg_seo4" !!24
+         character(len=16) :: seepseo4 =       "    seep_seo4" !!25
+         character(len=16) :: rctaseo4 =       "  rct_aq_seo4" !!26
+         character(len=16) :: srbaseo4 =       "  srb_aq_seo4" !!27
+         character(len=16) :: aqdsseo4 =       "  dis_aq_seo4" !!28
+         character(len=16) :: srdaseo4 =       "  sbd_aq_seo4" !!29
          !soil profile balance - seo3
-         character(len=16) :: latseo3 =        "    latq_seo3" !30
-         character(len=16) :: surseo3 =        "    surq_seo3" !31
-         character(len=16) :: sedseo3 =        "    sedm_seo3" !32
-         character(len=16) :: urbseo3 =        "    urbq_seo3" !33
-         character(len=16) :: wetseo3 =        "    wetq_seo3" !34
-         character(len=16) :: tileseo3 =       "    tile_seo3" !35
-         character(len=16) :: percseo3 =       "    perc_seo3" !36
-         character(len=16) :: gwupseo3 =       "    gwup_seo3" !37
-         character(len=16) :: wtspseo3 =       "    wtsp_seo3" !38
-         character(len=16) :: irswseo3 =       "    irsw_seo3" !39
-         character(len=16) :: irgwseo3 =       "    irgw_seo3" !40
-         character(len=16) :: irwoseo3 =       "    irwo_seo3" !41
-         character(len=16) :: rainseo3 =       "    rain_seo3" !42
-         character(len=16) :: drydseo3 =       "    dryd_seo3" !43
-         character(len=16) :: fertseo3 =       "    fert_seo3" !44
-         character(len=16) :: uptkseo3 =       "    uptk_seo3" !45
-         character(len=16) :: rctnseo3 =       "  rct_sl_seo3" !46
-         character(len=16) :: sorbseo3 =       "  srb_sl_seo3" !47
-         character(len=16) :: ptsoseo3 =       "    ptso_seo3" !48
-         character(len=16) :: poutseo3 =       "   ptout_seo3" !49
-         character(len=16) :: sldsseo3 =       "  dis_sl_seo3" !50
-         character(len=16) :: srbdseo3 =       "  sbd_sl_seo3" !51
+         character(len=16) :: latseo3 =        "    latq_seo3" !!30
+         character(len=16) :: surseo3 =        "    surq_seo3" !!31
+         character(len=16) :: sedseo3 =        "    sedm_seo3" !!32
+         character(len=16) :: urbseo3 =        "    urbq_seo3" !!33
+         character(len=16) :: wetseo3 =        "    wetq_seo3" !!34
+         character(len=16) :: tileseo3 =       "    tile_seo3" !!35
+         character(len=16) :: percseo3 =       "    perc_seo3" !!36
+         character(len=16) :: gwupseo3 =       "    gwup_seo3" !!37
+         character(len=16) :: wtspseo3 =       "    wtsp_seo3" !!38
+         character(len=16) :: irswseo3 =       "    irsw_seo3" !!39
+         character(len=16) :: irgwseo3 =       "    irgw_seo3" !!40
+         character(len=16) :: irwoseo3 =       "    irwo_seo3" !!41
+         character(len=16) :: rainseo3 =       "    rain_seo3" !!42
+         character(len=16) :: drydseo3 =       "    dryd_seo3" !!43
+         character(len=16) :: fertseo3 =       "    fert_seo3" !!44
+         character(len=16) :: uptkseo3 =       "    uptk_seo3" !!45
+         character(len=16) :: rctnseo3 =       "  rct_sl_seo3" !!46
+         character(len=16) :: sorbseo3 =       "  srb_sl_seo3" !!47
+         character(len=16) :: ptsoseo3 =       "    ptso_seo3" !!48
+         character(len=16) :: poutseo3 =       "   ptout_seo3" !!49
+         character(len=16) :: sldsseo3 =       "  dis_sl_seo3" !!50
+         character(len=16) :: srbdseo3 =       "  sbd_sl_seo3" !!51
          !aquifer balance - seo3
-         character(len=16) :: gwseo3 =         "      gw_seo3" !52
-         character(len=16) :: rchgseo3 =       "    rchg_seo3" !53 
-         character(len=16) :: seepseo3 =       "    seep_seo3" !54
-         character(len=16) :: rctaseo3 =       "  rct_aq_seo3" !55
-         character(len=16) :: srbaseo3 =       "  srb_aq_seo3" !56
-         character(len=16) :: aqdsseo3 =       "  dis_aq_seo3" !57
-         character(len=16) :: srdaseo3 =       "  sbd_aq_seo3" !58
+         character(len=16) :: gwseo3 =         "      gw_seo3" !!52
+         character(len=16) :: rchgseo3 =       "    rchg_seo3" !!53 
+         character(len=16) :: seepseo3 =       "    seep_seo3" !!54
+         character(len=16) :: rctaseo3 =       "  rct_aq_seo3" !!55
+         character(len=16) :: srbaseo3 =       "  srb_aq_seo3" !!56
+         character(len=16) :: aqdsseo3 =       "  dis_aq_seo3" !!57
+         character(len=16) :: srdaseo3 =       "  sbd_aq_seo3" !!58
          !soil profile balance - boron
-         character(len=16) :: latborn =        "    latq_born" !59
-         character(len=16) :: surborn =        "    surq_born" !60
-         character(len=16) :: sedborn =        "    sedm_born" !61
-         character(len=16) :: urbborn =        "    urbq_born" !62
-         character(len=16) :: wetborn =        "    wetq_born" !63
-         character(len=16) :: tileborn =       "    tile_born" !64
-         character(len=16) :: percborn =       "    perc_born" !65
-         character(len=16) :: gwupborn =       "    gwup_born" !66
-         character(len=16) :: wtspborn =       "    wtsp_born" !67
-         character(len=16) :: irswborn =       "    irsw_born" !68
-         character(len=16) :: irgwborn =       "    irgw_born" !69
-         character(len=16) :: irwoborn =       "    irwo_born" !70
-         character(len=16) :: rainborn =       "    rain_born" !71
-         character(len=16) :: drydborn =       "    dryd_born" !72
-         character(len=16) :: fertborn =       "    fert_born" !73
-         character(len=16) :: uptkborn =       "    uptk_born" !74
-         character(len=16) :: rctnborn =       "  rct_sl_born" !75
-         character(len=16) :: sorbborn =       "  srb_sl_born" !76
-         character(len=16) :: ptsoborn =       "    ptso_born" !77
-         character(len=16) :: poutborn =       "   ptout_born" !78
-         character(len=16) :: sldsborn =       "  dis_sl_born" !79
-         character(len=16) :: srbdborn =       "  sbd_sl_born" !80
+         character(len=16) :: latborn =        "    latq_born" !!59
+         character(len=16) :: surborn =        "    surq_born" !!60
+         character(len=16) :: sedborn =        "    sedm_born" !!61
+         character(len=16) :: urbborn =        "    urbq_born" !!62
+         character(len=16) :: wetborn =        "    wetq_born" !!63
+         character(len=16) :: tileborn =       "    tile_born" !!64
+         character(len=16) :: percborn =       "    perc_born" !!65
+         character(len=16) :: gwupborn =       "    gwup_born" !!66
+         character(len=16) :: wtspborn =       "    wtsp_born" !!67
+         character(len=16) :: irswborn =       "    irsw_born" !!68
+         character(len=16) :: irgwborn =       "    irgw_born" !!69
+         character(len=16) :: irwoborn =       "    irwo_born" !!70
+         character(len=16) :: rainborn =       "    rain_born" !!71
+         character(len=16) :: drydborn =       "    dryd_born" !!72
+         character(len=16) :: fertborn =       "    fert_born" !!73
+         character(len=16) :: uptkborn =       "    uptk_born" !!74
+         character(len=16) :: rctnborn =       "  rct_sl_born" !!75
+         character(len=16) :: sorbborn =       "  srb_sl_born" !!76
+         character(len=16) :: ptsoborn =       "    ptso_born" !!77
+         character(len=16) :: poutborn =       "   ptout_born" !!78
+         character(len=16) :: sldsborn =       "  dis_sl_born" !!79
+         character(len=16) :: srbdborn =       "  sbd_sl_born" !!80
          !aquifer balance - boron
-         character(len=16) :: gwborn =         "      gw_born" !81
-         character(len=16) :: rchgborn =       "    rchg_born" !82 
-         character(len=16) :: seepborn =       "    seep_born" !83
-         character(len=16) :: rctaborn =       "  rct_aq_born" !84
-         character(len=16) :: srbaborn =       "  srb_aq_born" !85
-         character(len=16) :: aqdsborn =       "  dis_aq_born" !86
-         character(len=16) :: srdaborn =       "  sbd_aq_born" !87
+         character(len=16) :: gwborn =         "      gw_born" !!81
+         character(len=16) :: rchgborn =       "    rchg_born" !!82 
+         character(len=16) :: seepborn =       "    seep_born" !!83
+         character(len=16) :: rctaborn =       "  rct_aq_born" !!84
+         character(len=16) :: srbaborn =       "  srb_aq_born" !!85
+         character(len=16) :: aqdsborn =       "  dis_aq_born" !!86
+         character(len=16) :: srdaborn =       "  sbd_aq_born" !!87
       end type output_csbal_header      
       type (output_csbal_header) :: csb_hdr
       

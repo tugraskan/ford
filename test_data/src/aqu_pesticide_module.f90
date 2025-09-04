@@ -3,19 +3,19 @@
       implicit none
               
       type aqu_pesticide_processes
-        real :: tot_in = 0.             ! kg        !total pesticide into aquifer
-        real :: sol_flo = 0.            ! kg        !soluble pesticide out of aquifer
-        real :: sor_flo = 0.            ! kg        !sorbed pesticide out of aquifer
-        real :: sol_perc = 0.           ! kg        !sorbed pesticide out of aquifer
-        real :: react = 0.              ! kg        !pesticide lost through reactions
-        real :: metab = 0.              ! kg        !amount of pesticide metabolized from parent
-        real :: stor_ave = 0.           ! kg        !average end of day pesticide in aquifer during the time period 
-        real :: stor_init = 0.          ! kg        !pesticide in aquifer at the start of the day 
-        real :: stor_final = 0.         ! kg        !pesticide in aquifer at the end of the day 
+        real :: tot_in = 0.             !! kg        !total pesticide into aquifer
+        real :: sol_flo = 0.            !! kg        !soluble pesticide out of aquifer
+        real :: sor_flo = 0.            !! kg        !sorbed pesticide out of aquifer
+        real :: sol_perc = 0.           !! kg        !sorbed pesticide out of aquifer
+        real :: react = 0.              !! kg        !pesticide lost through reactions
+        real :: metab = 0.              !! kg        !amount of pesticide metabolized from parent
+        real :: stor_ave = 0.           !! kg        !average end of day pesticide in aquifer during the time period 
+        real :: stor_init = 0.          !! kg        !pesticide in aquifer at the start of the day 
+        real :: stor_final = 0.         !! kg        !pesticide in aquifer at the end of the day 
       end type aqu_pesticide_processes
       
       type aqu_pesticide_output
-        type (aqu_pesticide_processes), dimension (:), allocatable :: pest         !pesticide hydrographs
+        type (aqu_pesticide_processes), dimension (:), allocatable :: pest         !!pesticide hydrographs
       end type aqu_pesticide_output
       type (aqu_pesticide_processes) :: aqu_pestbz
            
@@ -38,15 +38,15 @@
           character (len=8) :: id =         " gis_id "
           character (len=16) :: name =      " name           "
           character (len=16) :: pest =      " pesticide      "
-          character(len=13) :: tot_in =     "  tot_in_kg "          ! (mg)
-          character(len=13) :: sol_out =    "  sol_flo_kg"          ! (mg)
-          character(len=13) :: sor_out =    "  sor_flo_kg"          ! (mg)
-          character(len=13) :: sol_perc =   "sol_perc_kg"           ! (mg)
-          character(len=13) :: react =      "react_kg"             ! (mg)
-          character(len=13) :: metab =      "metab_kg"             ! (mg)
-          character(len=13) :: stor_ave  =  "stor_ave_kg"           ! (mg)
-          character(len=13) :: stor_init =  "stor_init_kg"          ! (mg)
-          character(len=13) :: stor_final=  "stor_final_kg"         ! (mg)
+          character(len=13) :: tot_in =     "  tot_in_kg "          !! (mg)
+          character(len=13) :: sol_out =    "  sol_flo_kg"          !! (mg)
+          character(len=13) :: sor_out =    "  sor_flo_kg"          !! (mg)
+          character(len=13) :: sol_perc =   "sol_perc_kg"           !! (mg)
+          character(len=13) :: react =      "react_kg"             !! (mg)
+          character(len=13) :: metab =      "metab_kg"             !! (mg)
+          character(len=13) :: stor_ave  =  "stor_ave_kg"           !! (mg)
+          character(len=13) :: stor_init =  "stor_init_kg"          !! (mg)
+          character(len=13) :: stor_final=  "stor_final_kg"         !! (mg)
       end type aqu_pesticide_header
       type (aqu_pesticide_header) :: aqupest_hdr
      

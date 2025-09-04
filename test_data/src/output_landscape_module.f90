@@ -3,48 +3,48 @@
       implicit none 
       
       type output_waterbal
-        real :: precip = 0.           !mm H2O        |precipitation falling as rain and snow
-        real :: snofall = 0.          !mm H2O        |precipitation falling as snow, sleet or freezing rain
-        real :: snomlt = 0.           !mm H2O        |snow or melting ice
-        real :: surq_gen = 0.         !mm H2O        |surface runoff generated from the landscape
-        real :: latq = 0.             !mm H2O        |lateral soil flow
-        real :: wateryld = 0.         !mm H2O        |water yield - sum of surface runoff, lateral soil flow and tile flow
-        real :: perc = 0.             !mm H2O        |amt of water perc out of the soil profile & into the vadose zone
-        real :: et = 0.               !mm H2O        |actual evapotranspiration from the soil
-        real :: ecanopy = 0.          !mm H2O        |not reported
-        real :: eplant = 0.           !mm H2O        |plant transpiration
-        real :: esoil = 0.            !mm H2O        |soil evaporation
-        real :: surq_cont = 0.        !mm H2O        |surface runoff leaving the landscape
-        real :: cn = 0.               !none          |average curve number value for timestep
-        real :: sw_init = 0.          !mm H2O        |initial soil water content of soil profile at start of time step
-        real :: sw_final = 0.         !mm H2O        |final soil water content of soil profile at end of time step
-        real :: sw = 0.               !mm H2O        |average soil water content of soil profile
-        real :: sw_300 = 0.           !mm H2O        |final soil water content of upper 300 mm at end of time step
-        real :: sno_init = 0.         !mm H2O        |initial soil water content of snow pack
-        real :: sno_final = 0.        !mm H2O        |final soil water content of snow pack
-        real :: snopack = 0.          !mm            |water equivalent in snow pack
-        real :: pet = 0.              !mm H2O        |potential evapotranspiration
-        real :: qtile = 0.            !mm H2O        |subsurface tile flow leaving the landscape
-        real :: irr = 0.              !mm H2O        |irrigation water applied
-        real :: surq_runon = 0.       !mm H2O        |surface runoff from upland landscape
-        real :: latq_runon = 0.       !mm H2O        |lateral soil flow from upland landscape
-        real :: overbank = 0.         !mm H2O        |overbank flooding from channels
-        real :: surq_cha = 0.         !mm H2O        |surface runoff flowing into channels
-        real :: surq_res = 0.         !mm H2O        |surface runoff flowing into reservoirs
-        real :: surq_ls = 0.          !mm H2O        |surface runoff flowing onto the landscape
-        real :: latq_cha = 0.         !mm H2O        |lateral soil flow into channels
-        real :: latq_res = 0.         !mm H2O        |lateral soil flow into reservoirs
-        real :: latq_ls = 0.          !mm H2O        |lateral soil flow into a landscape element
-        real :: gwsoil = 0.           !mm H2O        |groundwater transferred to soil profile (when water table is in soil profile) !rtb gwflow
-        real :: satex = 0.            !mm H2O        |saturation excess flow developed from high water table !rtb gwflow
-        real :: satex_chan = 0.       !mm H2O        |saturation excess flow reaching main channel !rtb gwflow
-        real :: delsw = 0.            !mm H2O        |change in soil water volume !rtb gwflow
-        real :: lagsurf = 0.		  !mm H2O        |surface runoff in transit to channel
-        real :: laglatq = 0.          !mm H2O	     |lateral flow in transit to channel
-        real :: lagsatex = 0.         !mm H2O	     |saturation excess flow in transit to channel
-        real :: wet_evap = 0.         !mm H2O	     |evaporation from wetland surface
-        real :: wet_out = 0.          !mm H2O	     |outflow (spill) from wetland
-        real :: wet_stor = 0.         !mm H2O	     |volume stored in wetland at end of time period
+        real :: precip = 0.           !!mm H2O        |precipitation falling as rain and snow
+        real :: snofall = 0.          !!mm H2O        |precipitation falling as snow, sleet or freezing rain
+        real :: snomlt = 0.           !!mm H2O        |snow or melting ice
+        real :: surq_gen = 0.         !!mm H2O        |surface runoff generated from the landscape
+        real :: latq = 0.             !!mm H2O        |lateral soil flow
+        real :: wateryld = 0.         !!mm H2O        |water yield - sum of surface runoff, lateral soil flow and tile flow
+        real :: perc = 0.             !!mm H2O        |amt of water perc out of the soil profile & into the vadose zone
+        real :: et = 0.               !!mm H2O        |actual evapotranspiration from the soil
+        real :: ecanopy = 0.          !!mm H2O        |not reported
+        real :: eplant = 0.           !!mm H2O        |plant transpiration
+        real :: esoil = 0.            !!mm H2O        |soil evaporation
+        real :: surq_cont = 0.        !!mm H2O        |surface runoff leaving the landscape
+        real :: cn = 0.               !!none          |average curve number value for timestep
+        real :: sw_init = 0.          !!mm H2O        |initial soil water content of soil profile at start of time step
+        real :: sw_final = 0.         !!mm H2O        |final soil water content of soil profile at end of time step
+        real :: sw = 0.               !!mm H2O        |average soil water content of soil profile
+        real :: sw_300 = 0.           !!mm H2O        |final soil water content of upper 300 mm at end of time step
+        real :: sno_init = 0.         !!mm H2O        |initial soil water content of snow pack
+        real :: sno_final = 0.        !!mm H2O        |final soil water content of snow pack
+        real :: snopack = 0.          !!mm            |water equivalent in snow pack
+        real :: pet = 0.              !!mm H2O        |potential evapotranspiration
+        real :: qtile = 0.            !!mm H2O        |subsurface tile flow leaving the landscape
+        real :: irr = 0.              !!mm H2O        |irrigation water applied
+        real :: surq_runon = 0.       !!mm H2O        |surface runoff from upland landscape
+        real :: latq_runon = 0.       !!mm H2O        |lateral soil flow from upland landscape
+        real :: overbank = 0.         !!mm H2O        |overbank flooding from channels
+        real :: surq_cha = 0.         !!mm H2O        |surface runoff flowing into channels
+        real :: surq_res = 0.         !!mm H2O        |surface runoff flowing into reservoirs
+        real :: surq_ls = 0.          !!mm H2O        |surface runoff flowing onto the landscape
+        real :: latq_cha = 0.         !!mm H2O        |lateral soil flow into channels
+        real :: latq_res = 0.         !!mm H2O        |lateral soil flow into reservoirs
+        real :: latq_ls = 0.          !!mm H2O        |lateral soil flow into a landscape element
+        real :: gwsoil = 0.           !!mm H2O        |groundwater transferred to soil profile (when water table is in soil profile) !rtb gwflow
+        real :: satex = 0.            !!mm H2O        |saturation excess flow developed from high water table !rtb gwflow
+        real :: satex_chan = 0.       !!mm H2O        |saturation excess flow reaching main channel !rtb gwflow
+        real :: delsw = 0.            !!mm H2O        |change in soil water volume !rtb gwflow
+        real :: lagsurf = 0.		  !!mm H2O        |surface runoff in transit to channel
+        real :: laglatq = 0.          !!mm H2O	     |lateral flow in transit to channel
+        real :: lagsatex = 0.         !!mm H2O	     |saturation excess flow in transit to channel
+        real :: wet_evap = 0.         !!mm H2O	     |evaporation from wetland surface
+        real :: wet_out = 0.          !!mm H2O	     |outflow (spill) from wetland
+        real :: wet_stor = 0.         !!mm H2O	     |volume stored in wetland at end of time period
       end type output_waterbal
        
       type (output_waterbal), pointer :: h
@@ -79,27 +79,27 @@
       
             
       type output_nutbal
-        real :: grazn = 0.              !kg N/ha        |total nitrogen added to soil from grazing
-        real :: grazp = 0.              !kg P/ha        |total phophorous added to soil from grazing
-        real :: lab_min_p = 0.          !kg P/ha        |phosphoros moving from the labile mineral pool to the active mineral pool
-        real :: act_sta_p = 0.          !kg P/ha        |phosphorus moving from the active mineral pool to the stable mineral pool
-        real :: fertn = 0.              !kg N/ha        |total nitrogen applied to soil
-        real :: fertp = 0.              !kg P/ha        |total phosphorus applied to soil
-        real :: fixn = 0.               !kg N/ha        |nitrogen added to plant biomass via fixation
-        real :: denit = 0.              !kg N/ha        |nitrogen lost from nitrate pool by denitrification
-        real :: act_nit_n = 0.          !kg N/ha        |nitrogen moving from active organic pool to nitrate pool
-        real :: act_sta_n = 0.          !kg N/ha        |nitrogen moving from active organic pool to stable pool
-        real :: org_lab_p = 0.          !kg P/ha        |phosphorus moving from the organic pool to labile pool
-        real :: rsd_nitorg_n = 0.       !kg N/ha        |nitrogen moving from the fresh organic pool (residue) to the nitrate (80%)
+        real :: grazn = 0.              !!kg N/ha        |total nitrogen added to soil from grazing
+        real :: grazp = 0.              !!kg P/ha        |total phophorous added to soil from grazing
+        real :: lab_min_p = 0.          !!kg P/ha        |phosphoros moving from the labile mineral pool to the active mineral pool
+        real :: act_sta_p = 0.          !!kg P/ha        |phosphorus moving from the active mineral pool to the stable mineral pool
+        real :: fertn = 0.              !!kg N/ha        |total nitrogen applied to soil
+        real :: fertp = 0.              !!kg P/ha        |total phosphorus applied to soil
+        real :: fixn = 0.               !!kg N/ha        |nitrogen added to plant biomass via fixation
+        real :: denit = 0.              !!kg N/ha        |nitrogen lost from nitrate pool by denitrification
+        real :: act_nit_n = 0.          !!kg N/ha        |nitrogen moving from active organic pool to nitrate pool
+        real :: act_sta_n = 0.          !!kg N/ha        |nitrogen moving from active organic pool to stable pool
+        real :: org_lab_p = 0.          !!kg P/ha        |phosphorus moving from the organic pool to labile pool
+        real :: rsd_nitorg_n = 0.       !!kg N/ha        |nitrogen moving from the fresh organic pool (residue) to the nitrate (80%)
                                         !                   and active org (20%) pools
-        real :: rsd_laborg_p = 0.       !kg P/ha        |phosphorus moving from the fresh organic pool (residue) to the labile (80%)
+        real :: rsd_laborg_p = 0.       !!kg P/ha        |phosphorus moving from the fresh organic pool (residue) to the labile (80%)
                                         !                   and org (20%) pools
-        real :: no3atmo = 0.            !kg N/ha        |nitrate added to the soil from atmospheric deposition
-        real :: nh4atmo = 0.            !kg N/ha        |ammonia added to the soil from atmospheric deposition
-        real :: nuptake = 0.            !kg N/ha        |plant nitrogen uptake
-        real :: puptake = 0.            !kg N/ha        |plant phosphorus uptake
-        real :: gwsoiln = 0.            !kg N/ha        |nitrate added to the soil from the aquifer (rtb gwflow)
-        real :: gwsoilp = 0.            !kg P/ha        |Phos added to the soil from the aquifer (rtb gwflow)
+        real :: no3atmo = 0.            !!kg N/ha        |nitrate added to the soil from atmospheric deposition
+        real :: nh4atmo = 0.            !!kg N/ha        |ammonia added to the soil from atmospheric deposition
+        real :: nuptake = 0.            !!kg N/ha        |plant nitrogen uptake
+        real :: puptake = 0.            !!kg N/ha        |plant phosphorus uptake
+        real :: gwsoiln = 0.            !!kg N/ha        |nitrate added to the soil from the aquifer (rtb gwflow)
+        real :: gwsoilp = 0.            !!kg P/ha        |Phos added to the soil from the aquifer (rtb gwflow)
       end type output_nutbal
 
       type (output_nutbal), dimension (:), allocatable :: hnb_d
@@ -132,14 +132,14 @@
       type (regional_output_nutbal), dimension (:), allocatable :: rnb_a
                  
       type output_nutcarb_cycling
-        real :: lab_min_p = 0.          !kg P/ha        |phosphorus moving from the labile mineral pool to the active mineral pool
-        real :: act_sta_p = 0.          !kg P/ha        |phosphorus moving from the active mineral pool to the stable mineral pool
-        real :: act_nit_n = 0.          !kg N/ha        |nitrogen moving from active organic pool to nitrate pool
-        real :: act_sta_n = 0.          !kg N/ha        |nitrogen moving from active organic pool to stable pool
-        real :: org_lab_p = 0.          !kg P/ha        |phosphorus moving from the organic pool to labile pool
-        real :: rsd_hs_c = 0.           !kg C/ha        |amt of carbon moving from the fresh org (residue) to soil slow humus 
-        real :: rsd_nitorg_n = 0.       !kg P/ha        |nitrogen moving from the fresh organic pool (residue) to nitrate
-        real :: rsd_laborg_p = 0.       !kg P/ha        |phosphorus moving from the fresh organic pool (residue) to the labile (80%)
+        real :: lab_min_p = 0.          !!kg P/ha        |phosphorus moving from the labile mineral pool to the active mineral pool
+        real :: act_sta_p = 0.          !!kg P/ha        |phosphorus moving from the active mineral pool to the stable mineral pool
+        real :: act_nit_n = 0.          !!kg N/ha        |nitrogen moving from active organic pool to nitrate pool
+        real :: act_sta_n = 0.          !!kg N/ha        |nitrogen moving from active organic pool to stable pool
+        real :: org_lab_p = 0.          !!kg P/ha        |phosphorus moving from the organic pool to labile pool
+        real :: rsd_hs_c = 0.           !!kg C/ha        |amt of carbon moving from the fresh org (residue) to soil slow humus 
+        real :: rsd_nitorg_n = 0.       !!kg P/ha        |nitrogen moving from the fresh organic pool (residue) to nitrate
+        real :: rsd_laborg_p = 0.       !!kg P/ha        |phosphorus moving from the fresh organic pool (residue) to the labile (80%)
                                                         !   and org (20%) pools
       end type output_nutcarb_cycling
       type (output_nutcarb_cycling), dimension (:), allocatable :: hcyl_d
@@ -149,35 +149,35 @@
       type (output_nutcarb_cycling) :: hycl_z
       
       type output_nutcarb_gain_loss
-        real :: sedyld = 0.             !metric tons/ha |sediment yield leaving the landscape caused by water erosion
-        real :: usle = 0.               !metric tons/ha |sediment erosion predicted with the USLE equation
-        real :: sedorgc = 0.            !kg C/ha        |organic carbon in sediment
-        real :: sedorgn = 0.            !kg N/ha        |organic nitrogen transported in sediment
-        real :: sedorgp = 0.            !kg P/ha        |organic phosphorus transported in sediment
-        real :: surqno3 = 0.            !kg N/ha        |nitrate NO3-N transported in surface runoff
-        real :: latno3 = 0.             !kg N/ha        |nitrate NO3-N transported in lateral runoff
-        real :: surqsolp = 0.           !kg P/ha        |soluble phosphorus transported in surface runoff
-        real :: sedmin = 0.             !kg P/ha        |mineral phosphorus leaving the landscape transported in sediment
-        real :: tileno3 = 0.            !kg N/ha        |nitrate NO3 in tile flow
-        real :: no3atmo = 0.            !kg N/ha        |nitrate added to the soil from atmospheric deposition (rainfall+dry)
-        real :: nh4atmo = 0.            !kg N/ha        |ammonia added to the soil from atmospheric deposition (rainfall+dry)
-        real :: manurec = 0.            !kg C/ha        |amount of carbon applied to soil from manure
-        real :: manuren = 0.            !kg N/ha        |amount of nitrogen applied to soil from manure
-        real :: manurep = 0.            !kg P/ha        |amount of phosphrus applied to soil from manure
-        real :: fertc = 0.              !kg C/ha        |amount of carbon applied to soil
-        real :: fertn = 0.              !kg N/ha        |amount of nitrogen applied to soil
-        real :: fertp = 0.              !kg P/ha        |amount of phophorus applied to soil
-        real :: grazc_eat = 0.          !kg C/ha        |amount of carbon ate by animals in grazing
-        real :: grazn_eat = 0.          !kg N/ha        |amount of nitrogen ate by animals in grazing
-        real :: grazp_eat = 0.          !kg P/ha        |amount of phosphrus ate by animals in grazing
-        real :: grazc_man = 0.          !kg C/ha        |amount of carbon in manure during grazing
-        real :: grazn_man = 0.          !kg N/ha        |amount of nitrogen in manure during manually
-        real :: grazp_man = 0.          !kg P/ha        |amount of phosphorus in manure during manually
-        real :: fixn = 0.               !kg N/ha        |amount of nitrogen added to plant biomass via fixation
-        real :: denit = 0.              !kg N/ha        |amount of nitrogen lost from nitrate pool by denit in soil profile
-        real :: yieldc = 0.             !kg C/ha        |amount of carbon removed in yield
-        real :: yieldn = 0.             !kg N/ha        |amount of nitrogen removed in yield
-        real :: yieldp = 0.             !kg P/ha        |amount of phosphorus removed in yield
+        real :: sedyld = 0.             !!metric tons/ha |sediment yield leaving the landscape caused by water erosion
+        real :: usle = 0.               !!metric tons/ha |sediment erosion predicted with the USLE equation
+        real :: sedorgc = 0.            !!kg C/ha        |organic carbon in sediment
+        real :: sedorgn = 0.            !!kg N/ha        |organic nitrogen transported in sediment
+        real :: sedorgp = 0.            !!kg P/ha        |organic phosphorus transported in sediment
+        real :: surqno3 = 0.            !!kg N/ha        |nitrate NO3-N transported in surface runoff
+        real :: latno3 = 0.             !!kg N/ha        |nitrate NO3-N transported in lateral runoff
+        real :: surqsolp = 0.           !!kg P/ha        |soluble phosphorus transported in surface runoff
+        real :: sedmin = 0.             !!kg P/ha        |mineral phosphorus leaving the landscape transported in sediment
+        real :: tileno3 = 0.            !!kg N/ha        |nitrate NO3 in tile flow
+        real :: no3atmo = 0.            !!kg N/ha        |nitrate added to the soil from atmospheric deposition (rainfall+dry)
+        real :: nh4atmo = 0.            !!kg N/ha        |ammonia added to the soil from atmospheric deposition (rainfall+dry)
+        real :: manurec = 0.            !!kg C/ha        |amount of carbon applied to soil from manure
+        real :: manuren = 0.            !!kg N/ha        |amount of nitrogen applied to soil from manure
+        real :: manurep = 0.            !!kg P/ha        |amount of phosphrus applied to soil from manure
+        real :: fertc = 0.              !!kg C/ha        |amount of carbon applied to soil
+        real :: fertn = 0.              !!kg N/ha        |amount of nitrogen applied to soil
+        real :: fertp = 0.              !!kg P/ha        |amount of phophorus applied to soil
+        real :: grazc_eat = 0.          !!kg C/ha        |amount of carbon ate by animals in grazing
+        real :: grazn_eat = 0.          !!kg N/ha        |amount of nitrogen ate by animals in grazing
+        real :: grazp_eat = 0.          !!kg P/ha        |amount of phosphrus ate by animals in grazing
+        real :: grazc_man = 0.          !!kg C/ha        |amount of carbon in manure during grazing
+        real :: grazn_man = 0.          !!kg N/ha        |amount of nitrogen in manure during manually
+        real :: grazp_man = 0.          !!kg P/ha        |amount of phosphorus in manure during manually
+        real :: fixn = 0.               !!kg N/ha        |amount of nitrogen added to plant biomass via fixation
+        real :: denit = 0.              !!kg N/ha        |amount of nitrogen lost from nitrate pool by denit in soil profile
+        real :: yieldc = 0.             !!kg C/ha        |amount of carbon removed in yield
+        real :: yieldn = 0.             !!kg N/ha        |amount of nitrogen removed in yield
+        real :: yieldp = 0.             !!kg P/ha        |amount of phosphorus removed in yield
       end type output_nutcarb_gain_loss
       type (output_nutcarb_gain_loss), dimension (:), allocatable :: hgl_d
       type (output_nutcarb_gain_loss), dimension (:), allocatable :: hgl_m
@@ -186,18 +186,18 @@
       type (output_nutcarb_gain_loss) :: hgl_z
 
       type output_losses
-        real :: sedyld = 0.         !metric tons/ha |sediment yield leaving the landscape caused by water erosion
-        real :: sedorgn = 0.        !kg N/ha        |organic nitrogen transported in surface runoff
-        real :: sedorgp = 0.        !kg P/ha        |organic phosphorus transported in surface runoff
-        real :: surqno3 = 0.        !kg N/ha        |nitrate NO3-N transported in surface runoff
-        real :: latno3 = 0.         !kg N/ha        |nitrate NO3-N transported in lateral runoff
-        real :: surqsolp = 0.       !kg P/ha        |soluble phosphorus transported in surface runoff
-        real :: usle = 0.           !metric tons/ha |sediment erosion predicted with the USLE equation
-        real :: sedminp = 0.        !kg P/ha        |mineral phosphorus leaving the landscape transported in sediment
-        real :: tileno3 = 0.        !kg N/ha        |nitrate NO3 in tile flow
-        real :: lchlabp = 0.        !kg P/ha        |soluble P (labile) leaching past bottom soil layer
-        real :: tilelabp = 0.       !kg N/ha        |soluble P (labile) NO3 in tile flow
-        real :: satexn = 0.         !kg N/ha        | amt of NO3-N in saturation excess surface runoff in HRU for the day
+        real :: sedyld = 0.         !!metric tons/ha |sediment yield leaving the landscape caused by water erosion
+        real :: sedorgn = 0.        !!kg N/ha        |organic nitrogen transported in surface runoff
+        real :: sedorgp = 0.        !!kg P/ha        |organic phosphorus transported in surface runoff
+        real :: surqno3 = 0.        !!kg N/ha        |nitrate NO3-N transported in surface runoff
+        real :: latno3 = 0.         !!kg N/ha        |nitrate NO3-N transported in lateral runoff
+        real :: surqsolp = 0.       !!kg P/ha        |soluble phosphorus transported in surface runoff
+        real :: usle = 0.           !!metric tons/ha |sediment erosion predicted with the USLE equation
+        real :: sedminp = 0.        !!kg P/ha        |mineral phosphorus leaving the landscape transported in sediment
+        real :: tileno3 = 0.        !!kg N/ha        |nitrate NO3 in tile flow
+        real :: lchlabp = 0.        !!kg P/ha        |soluble P (labile) leaching past bottom soil layer
+        real :: tilelabp = 0.       !!kg N/ha        |soluble P (labile) NO3 in tile flow
+        real :: satexn = 0.         !!kg N/ha        | amt of NO3-N in saturation excess surface runoff in HRU for the day
       end type output_losses
       
       type (output_losses), dimension (:), allocatable :: hls_d
@@ -230,31 +230,31 @@
       type (regional_output_losses), dimension (:), allocatable :: rls_a
          
       type output_plantweather
-        real :: lai = 0.                   !m**2/m**2     |average leaf area index during timestep
-        real :: bioms = 0.                 !kg/ha         |average total plant biomass during timestep 
-        real :: yield = 0.                 !kg/ha         |harvested biomass yield (dry weight) during timestep
-        real :: residue = 0.               !kg/ha         |average surface residue cover during timestep
-        real :: sol_tmp = 0.               !deg C         |average temperature of soil layer 2 during timestep
-        real :: strsw = 0.                 !days          |limiting water (drought) stress
-        real :: strsa = 0.                 !days          |excess water (aeration) stress
-        real :: strstmp = 0.               !days          |temperature stress      
-        real :: strsn = 0.                 !days          |nitrogen stress
-        real :: strsp = 0.                 !days          |phosphorus stress
-        real :: strss = 0.                 !days          |salinity stress
-        real :: nplnt = 0.                 !kg N/ha       |plant uptake of nitrogen
-        real :: percn = 0.                 !kg N/ha       |nitrate NO3-N leached from bottom of soil profile
-        real :: pplnt = 0.                 !kg P/ha       |plant uptake of phosphorus
-        real :: tmx = 0.                   !deg C         |average maximum temperature during timestep
-        real :: tmn = 0.                   !deg C         |average minimum temperature during timestep
-        real :: tmpav = 0.                 !deg C         |average of daily air temperature during timestep
-        real :: solrad = 0.                !MJ/m^2        |average solar radiation during timestep
-        real :: wndspd = 0.                !m/s           |average windspeed during timestep
-        real :: rhum = 0.                  !none          |average relative humidity during timestep
-        real :: phubase0 = 0.              !deg c/deg c   |base zero potential heat units
-        real :: lai_max = 0.               !m**2/m**2     |maximum leaf area index during timestep
-        real :: bm_max = 0.                !kg/ha         |maximum total plant biomass during timestep
-        real :: bm_grow = 0.               !kg/ha         |total plant biomass growth during timestep
-        real :: c_gro = 0.                 !kg/ha         |total plant carbon growth during timestep
+        real :: lai = 0.                   !!m**2/m**2     |average leaf area index during timestep
+        real :: bioms = 0.                 !!kg/ha         |average total plant biomass during timestep 
+        real :: yield = 0.                 !!kg/ha         |harvested biomass yield (dry weight) during timestep
+        real :: residue = 0.               !!kg/ha         |average surface residue cover during timestep
+        real :: sol_tmp = 0.               !!deg C         |average temperature of soil layer 2 during timestep
+        real :: strsw = 0.                 !!days          |limiting water (drought) stress
+        real :: strsa = 0.                 !!days          |excess water (aeration) stress
+        real :: strstmp = 0.               !!days          |temperature stress      
+        real :: strsn = 0.                 !!days          |nitrogen stress
+        real :: strsp = 0.                 !!days          |phosphorus stress
+        real :: strss = 0.                 !!days          |salinity stress
+        real :: nplnt = 0.                 !!kg N/ha       |plant uptake of nitrogen
+        real :: percn = 0.                 !!kg N/ha       |nitrate NO3-N leached from bottom of soil profile
+        real :: pplnt = 0.                 !!kg P/ha       |plant uptake of phosphorus
+        real :: tmx = 0.                   !!deg C         |average maximum temperature during timestep
+        real :: tmn = 0.                   !!deg C         |average minimum temperature during timestep
+        real :: tmpav = 0.                 !!deg C         |average of daily air temperature during timestep
+        real :: solrad = 0.                !!MJ/m^2        |average solar radiation during timestep
+        real :: wndspd = 0.                !!m/s           |average windspeed during timestep
+        real :: rhum = 0.                  !!none          |average relative humidity during timestep
+        real :: phubase0 = 0.              !!deg c/deg c   |base zero potential heat units
+        real :: lai_max = 0.               !!m**2/m**2     |maximum leaf area index during timestep
+        real :: bm_max = 0.                !!kg/ha         |maximum total plant biomass during timestep
+        real :: bm_grow = 0.               !!kg/ha         |total plant biomass growth during timestep
+        real :: c_gro = 0.                 !!kg/ha         |total plant carbon growth during timestep
       end type output_plantweather
       
       type (output_plantweather), dimension (:), allocatable :: hpw_d

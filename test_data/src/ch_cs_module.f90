@@ -5,18 +5,18 @@
       implicit none
                    
       type ch_cs_balance
-        real :: tot_in = 0.             ! kg        !total constituent entering the channel
-        real :: gw_in = 0.              ! kg        !total constituent entering the channel from groundwater
-        real :: tot_out = 0.            ! kg        !total constituent leaving the channel
-        real :: seep = 0.               ! kg        !constituent mass leaving the channel via seepage
-        real :: irr = 0.                ! kg        !constituent mass leaving the channel via irrigation
-        real :: div = 0.                ! kg        !constituent mass added to or removed from the channel via diversion
-        real :: water = 0.              ! kg        !total constituent in water at end of day
-        real :: conc = 0.               ! mg/L      !constituent concentration in channel water at end of day
+        real :: tot_in = 0.             !! kg        !total constituent entering the channel
+        real :: gw_in = 0.              !! kg        !total constituent entering the channel from groundwater
+        real :: tot_out = 0.            !! kg        !total constituent leaving the channel
+        real :: seep = 0.               !! kg        !constituent mass leaving the channel via seepage
+        real :: irr = 0.                !! kg        !constituent mass leaving the channel via irrigation
+        real :: div = 0.                !! kg        !constituent mass added to or removed from the channel via diversion
+        real :: water = 0.              !! kg        !total constituent in water at end of day
+        real :: conc = 0.               !! mg/L      !constituent concentration in channel water at end of day
       end type ch_cs_balance
       
       type ch_cs_output
-        type (ch_cs_balance), dimension (:), allocatable :: cs         !cs hydrographs
+        type (ch_cs_balance), dimension (:), allocatable :: cs         !!cs hydrographs
       end type ch_cs_output
       type (ch_cs_balance) :: ch_csbz
            

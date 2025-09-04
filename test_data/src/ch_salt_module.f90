@@ -5,18 +5,18 @@
       implicit none
                    
       type ch_salt_balance
-        real :: tot_in = 0.             ! kg        !total salt ion entering the channel
-        real :: gw_in = 0.              ! kg        !total salt ion entering the channel from groundwater
-        real :: tot_out = 0.            ! kg        !total salt ion leaving the channel
-        real :: seep = 0.               ! kg        !total salt ion leaving the channel via seepage
-        real :: irr = 0.                ! kg        !salt ion mass leaving the channel via irrigation
-        real :: div = 0.                ! kg        !salt ion mass added to or removed from the channel via diversion
-        real :: water = 0.              ! kg        !total salt ion in water at end of day
-        real :: conc = 0.               ! mg/L      !salt ion concentration in channel water at end of day
+        real :: tot_in = 0.             !! kg        !total salt ion entering the channel
+        real :: gw_in = 0.              !! kg        !total salt ion entering the channel from groundwater
+        real :: tot_out = 0.            !! kg        !total salt ion leaving the channel
+        real :: seep = 0.               !! kg        !total salt ion leaving the channel via seepage
+        real :: irr = 0.                !! kg        !salt ion mass leaving the channel via irrigation
+        real :: div = 0.                !! kg        !salt ion mass added to or removed from the channel via diversion
+        real :: water = 0.              !! kg        !total salt ion in water at end of day
+        real :: conc = 0.               !! mg/L      !salt ion concentration in channel water at end of day
       end type ch_salt_balance
       
       type ch_salt_output
-        type (ch_salt_balance), dimension (:), allocatable :: salt         !salt hydrographs
+        type (ch_salt_balance), dimension (:), allocatable :: salt         !!salt hydrographs
       end type ch_salt_output
       type (ch_salt_balance) :: ch_saltbz
            

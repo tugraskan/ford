@@ -24,15 +24,15 @@
       type (constituent_rct), dimension (:), allocatable :: cs_rct_aqu
       
       !arrays to hold reaction parameters
-      real, dimension(:,:), allocatable :: rct       !reaction parameters
-      real, dimension(:,:), allocatable :: rct_shale !reaction parameters for shale
+      real, dimension(:,:), allocatable :: rct       !!reaction parameters
+      real, dimension(:,:), allocatable :: rct_shale !!reaction parameters for shale
       
       !number of geologic formations with shale
       integer :: num_geol_shale = 0
       
       !plant boron tolerance parameters
-      integer :: bor_tol_sim = 0                                       !      |flag to simulate boron effect on plant growth
-      real, dimension (:), allocatable :: bor_stress_a                 !      |a and b parameters in boron relative yield equations
-      real, dimension (:), allocatable :: bor_stress_b                 !      |a and b parameters in boron relative yield equations
+      integer :: bor_tol_sim = 0                                       !!      |flag to simulate boron effect on plant growth
+      real, dimension (:), allocatable :: bor_stress_a                 !!      |a and b parameters in boron relative yield equations
+      real, dimension (:), allocatable :: bor_stress_b                 !!      |a and b parameters in boron relative yield equations
       
       end module cs_data_module 

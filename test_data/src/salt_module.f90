@@ -65,11 +65,11 @@
       integer :: fert_salt_flag = 0
       
       !salt uptake
-      real, dimension(:,:), allocatable :: salt_uptake_kg       !specified daily salt mass taken up by crop roots (kg/ha)
-      integer :: salt_uptake_on = 0                             !flag for simulating salt uptake
+      real, dimension(:,:), allocatable :: salt_uptake_kg       !!specified daily salt mass taken up by crop roots (kg/ha)
+      integer :: salt_uptake_on = 0                             !!flag for simulating salt uptake
       
       !urban salt concentrations
-      real, dimension(:,:), allocatable :: salt_urban_conc      !salt ion conc in suspended solid load from imp areas (mg salt / kg sed)
+      real, dimension(:,:), allocatable :: salt_urban_conc      !!salt ion conc in suspended solid load from imp areas (mg salt / kg sed)
       
       !header for daily (basin-wide) salt balance output
       type output_saltbal_header

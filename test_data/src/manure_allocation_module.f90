@@ -15,55 +15,55 @@
       
       !manure source balance - storage, produced, withdrawan of the allocation object
       type source_manure_output
-        real :: stor = 0.               !current manure stored - tons
-        real :: prod = 0.               !mannure produced - tons
-        real :: withdr = 0.             !manure withdrawal from all demand objects - tons
+        real :: stor = 0.               !!current manure stored - tons
+        real :: prod = 0.               !!mannure produced - tons
+        real :: withdr = 0.             !!manure withdrawal from all demand objects - tons
       end type source_manure_output
       type (source_manure_output) :: malloz
 
       !manure source objects
       type manure_source_objects
-        integer :: num = 0                      !source object number
-        character (len=3) :: mois_typ = ""      !wet or dry
-        character (len=25) :: manure_typ = ""   !points to fertilizer.frt
-        real :: lat = 0.                        !latitude
-        real :: long = 0.                       !longitude
-        real :: stor_init = 0.                  !initial storage - tons
-        real :: stor_max = 0.                   !maximum storage - tons
-        real, dimension (12) :: prod_mon = 0.   !average monthly manure produced - tons/month
-        integer :: fertdb = 0                   !fertilizer database number (fertilizer.frt)
-        type (source_manure_output) :: bal_d    !daily amount - storage, produced, withdrawn from the source - tons
-        type (source_manure_output) :: bal_m    !monthly amount - storage, produced, withdrawn from the source - tons
-        type (source_manure_output) :: bal_y    !yearly amount - storage, produced, withdrawn from the source - tons
-        type (source_manure_output) :: bal_a    !ave annual amount - storage, produced, withdrawn from the source - tons
+        integer :: num = 0                      !!source object number
+        character (len=3) :: mois_typ = ""      !!wet or dry
+        character (len=25) :: manure_typ = ""   !!points to fertilizer.frt
+        real :: lat = 0.                        !!latitude
+        real :: long = 0.                       !!longitude
+        real :: stor_init = 0.                  !!initial storage - tons
+        real :: stor_max = 0.                   !!maximum storage - tons
+        real, dimension (12) :: prod_mon = 0.   !!average monthly manure produced - tons/month
+        integer :: fertdb = 0                   !!fertilizer database number (fertilizer.frt)
+        type (source_manure_output) :: bal_d    !!daily amount - storage, produced, withdrawn from the source - tons
+        type (source_manure_output) :: bal_m    !!monthly amount - storage, produced, withdrawn from the source - tons
+        type (source_manure_output) :: bal_y    !!yearly amount - storage, produced, withdrawn from the source - tons
+        type (source_manure_output) :: bal_a    !!ave annual amount - storage, produced, withdrawn from the source - tons
       end type manure_source_objects
 
       !manure demand objects
       type manure_demand_objects
-        integer :: num = 0                      !demand object number
-        character (len=10) :: ob_typ = ""       !hru (for application) or muni (treatmentb) or divert (interbasin diversion)
-        integer :: ob_num = 0                   !number of the object type
-        character (len=25) :: dtbl = ""         !decision table name for manure/fert application
-        character (len=2) :: right = ""         !manure right (sr -senior or jr - junior right
+        integer :: num = 0                      !!demand object number
+        character (len=10) :: ob_typ = ""       !!hru (for application) or muni (treatmentb) or divert (interbasin diversion)
+        integer :: ob_num = 0                   !!number of the object type
+        character (len=25) :: dtbl = ""         !!decision table name for manure/fert application
+        character (len=2) :: right = ""         !!manure right (sr -senior or jr - junior right
         integer :: dtbl_num = 0
         type (manure_demand_amount) :: manure_amt
-        real, dimension(:), allocatable :: withdr       !daily amount withdrawn from each source
-        real, dimension(:), allocatable :: withdr_m     !amount withdrawn from each source
-        real, dimension(:), allocatable :: withdr_y     !amount withdrawn from each source
-        real, dimension(:), allocatable :: withdr_a     !amount withdrawn from each source
+        real, dimension(:), allocatable :: withdr       !!daily amount withdrawn from each source
+        real, dimension(:), allocatable :: withdr_m     !!amount withdrawn from each source
+        real, dimension(:), allocatable :: withdr_y     !!amount withdrawn from each source
+        real, dimension(:), allocatable :: withdr_a     !!amount withdrawn from each source
       end type manure_demand_objects
 
       !manure allocation object
       type manure_allocation
-        character (len=25) :: name = ""         !name of the water allocation object
-        character (len=25) :: rule_typ = ""     !rule type to allocate water
-        integer :: src_obs = 0                  !number of source objects
-        integer :: dmd_obs = 0                  !number of demand objects
-        type (source_manure_output) :: tot            !total demand, withdrawal and unmet for entire allocation object
-        type (manure_source_objects), dimension(:), allocatable :: src        !dimension by source objects
-        type (manure_demand_objects), dimension(:), allocatable :: dmd        !dimension by demand objects
+        character (len=25) :: name = ""         !!name of the water allocation object
+        character (len=25) :: rule_typ = ""     !!rule type to allocate water
+        integer :: src_obs = 0                  !!number of source objects
+        integer :: dmd_obs = 0                  !!number of demand objects
+        type (source_manure_output) :: tot            !!total demand, withdrawal and unmet for entire allocation object
+        type (manure_source_objects), dimension(:), allocatable :: src        !!dimension by source objects
+        type (manure_demand_objects), dimension(:), allocatable :: dmd        !!dimension by demand objects
       end type manure_allocation
-      type (manure_allocation), dimension(:), allocatable :: mallo            !dimension by water allocation objects
+      type (manure_allocation), dimension(:), allocatable :: mallo            !!dimension by water allocation objects
 
       type mallo_header            
         character(len=6) :: day      =   "  jday"

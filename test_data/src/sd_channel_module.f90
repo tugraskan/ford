@@ -2,123 +2,123 @@
     
       implicit none
 
-      integer :: maxint = 0                       !number of intervals in hydrograph for degradation
-      real :: wtemp = 0.                        !stream water temperature C
+      integer :: maxint = 0                       !!number of intervals in hydrograph for degradation
+      real :: wtemp = 0.                        !!stream water temperature C
       real :: peakrate = 0.
       real :: sed_reduc_t = 0.
       real :: no3_reduc_kg = 0.
       real :: tp_reduc_kg = 0.
       real :: tp_reduc = 0.
       real :: srp_reduc_kg = 0.
-      real, dimension(:), allocatable :: hyd_rad    !m^2        |hydraulic radius for each hydrograph time step
-      real, dimension(:), allocatable :: trav_time  !days       |time spent in each hydrograph time step
-      real, dimension(:), allocatable :: flo_dep    !m^2        |hydraulic radius for each hydrograph time step
-      real, dimension(:), allocatable :: timeint    !days       |time spent in each hydrograph time step
+      real, dimension(:), allocatable :: hyd_rad    !!m^2        |hydraulic radius for each hydrograph time step
+      real, dimension(:), allocatable :: trav_time  !!days       |time spent in each hydrograph time step
+      real, dimension(:), allocatable :: flo_dep    !!m^2        |hydraulic radius for each hydrograph time step
+      real, dimension(:), allocatable :: timeint    !!days       |time spent in each hydrograph time step
       
       type swatdeg_hydsed_data
         character(len=25) :: name = ""
         character(len=16) :: order = ""
-        real :: chw = 0.            !m          |channel width
-        real :: chd = 0.            !m          |channel depth
-        real :: chs = 0.            !m/m        |channel slope
-        real :: chl = 0.            !km         |channel length
-        real :: chn = 0.            !           |channel Manning's n
-        real :: chk = 0.            !mm/h       |channel bottom conductivity
-        real :: bank_exp = 0.       !           |bank erosion exponent
-        real :: cov = 0.            !0-1        |channel cover factor
-        real :: sinu = 0.           !none       |sinuousity - ratio of channel length and straight line length
-        real :: vcr_coef = 0.       !           |critical velocity coefficient
-        real :: d50 = 0.            !mm         |channel median sediment size
-        real :: ch_clay = 0.        !%          |clay percent of bank and bed
-        real :: carbon = 0.         !%          |carbon percent of bank and bed
-        real :: ch_bd = 0.          !t/m3       |dry bulk density
-        real :: chss = 0.           !           |channel side slope
-        real :: bankfull_flo = 0.   !           |bank full flow rate
-        real :: fps = 0.000001      !m/m        |flood plain slope
-        real :: fpn = 0.1           !           |flood plain Manning's n
-        real :: n_conc = 0.         !mg/kg      |nitrogen concentration in channel bank
-        real :: p_conc = 0.         !mg/kg      |phosphorus concentration in channel bank
-        real :: p_bio = 0.          !frac       |fraction of p in bank that is bioavailable
+        real :: chw = 0.            !!m          |channel width
+        real :: chd = 0.            !!m          |channel depth
+        real :: chs = 0.            !!m/m        |channel slope
+        real :: chl = 0.            !!km         |channel length
+        real :: chn = 0.            !!           |channel Manning's n
+        real :: chk = 0.            !!mm/h       |channel bottom conductivity
+        real :: bank_exp = 0.       !!           |bank erosion exponent
+        real :: cov = 0.            !!0-1        |channel cover factor
+        real :: sinu = 0.           !!none       |sinuousity - ratio of channel length and straight line length
+        real :: vcr_coef = 0.       !!           |critical velocity coefficient
+        real :: d50 = 0.            !!mm         |channel median sediment size
+        real :: ch_clay = 0.        !!%          |clay percent of bank and bed
+        real :: carbon = 0.         !!%          |carbon percent of bank and bed
+        real :: ch_bd = 0.          !!t/m3       |dry bulk density
+        real :: chss = 0.           !!           |channel side slope
+        real :: bankfull_flo = 0.   !!           |bank full flow rate
+        real :: fps = 0.000001      !!m/m        |flood plain slope
+        real :: fpn = 0.1           !!           |flood plain Manning's n
+        real :: n_conc = 0.         !!mg/kg      |nitrogen concentration in channel bank
+        real :: p_conc = 0.         !!mg/kg      |phosphorus concentration in channel bank
+        real :: p_bio = 0.          !!frac       |fraction of p in bank that is bioavailable
       end type swatdeg_hydsed_data
       type (swatdeg_hydsed_data), dimension (:), allocatable :: sd_chd
       
       type swatdeg_sednut_data
         character(len=25) :: name = ""
         character(len=16) :: order = ""
-        real :: pk_rto = 1.         !ratio      |ratio of peak to mean daily flow in channel
-        real :: fp_inun_days = 5.   !days       |number of days fllod plain is inundated after flood
-        real :: n_setl = 0.5        !ratio      |ratio of amount of N settling and sediment settling
-        real :: p_setl = 0.5        !ratio      |ratio of amount of P settling and sediment settling
-        real :: n_sol_part = 0.01   !           |instream nitrogen soluble to particulate transformation coefficient
-        real :: p_sol_part = 0.01   !           |instream phosphorus soluble to particulate transformation coefficient
-        real :: n_dep_enr = 0.5     !           |enrichment of N in remaining water - deposition = 1/enrichment ratio
-        real :: p_dep_enr = 0.5     !           |enrichment of P in remaining water - deposition = 1/enrichment ratio
-        real :: arc_len_fr = 1.2    !frac       |fraction of arc length where bank erosion occurs
-        real :: bed_exp = 1.5       !           |bed erosion exponential coefficient
-        real :: wash_bed_fr = 0.1   !frac       |fraction of bank erosion that is washload
+        real :: pk_rto = 1.         !!ratio      |ratio of peak to mean daily flow in channel
+        real :: fp_inun_days = 5.   !!days       |number of days fllod plain is inundated after flood
+        real :: n_setl = 0.5        !!ratio      |ratio of amount of N settling and sediment settling
+        real :: p_setl = 0.5        !!ratio      |ratio of amount of P settling and sediment settling
+        real :: n_sol_part = 0.01   !!           |instream nitrogen soluble to particulate transformation coefficient
+        real :: p_sol_part = 0.01   !!           |instream phosphorus soluble to particulate transformation coefficient
+        real :: n_dep_enr = 0.5     !!           |enrichment of N in remaining water - deposition = 1/enrichment ratio
+        real :: p_dep_enr = 0.5     !!           |enrichment of P in remaining water - deposition = 1/enrichment ratio
+        real :: arc_len_fr = 1.2    !!frac       |fraction of arc length where bank erosion occurs
+        real :: bed_exp = 1.5       !!           |bed erosion exponential coefficient
+        real :: wash_bed_fr = 0.1   !!frac       |fraction of bank erosion that is washload
       end type swatdeg_sednut_data
       type (swatdeg_sednut_data), dimension (:), allocatable :: sd_chd1
       
       !! channel sediment budget for output
       type channel_sediment_budget_output
-        real :: in_sed = 0.         !t          |incoming sediment to channel
-        real :: out_sed = 0.        !t          |outgoing sediment from channel
-        real :: fp_dep = 0.         !t          |flood plain deposition
-        real :: ch_dep = 0.         !t          |channel deposition
-        real :: bank_ero = 0.       !t          |channel bank erosion
-        real :: bed_ero = 0.        !t          |channel bed erosion
-        real :: in_no3 = 0.         !t          |incoming no3 to channel
-        real :: in_orgn = 0.        !t          |incoming organic n to channel
-        real :: out_no3 =  0.       !t          |outgoing no3 from channel
-        real :: out_orgn =  0.      !t          |outgoing organic n from channel
-        real :: fp_no3 = 0.         !t          |flood plain no3 lost
-        real :: bank_no3 = 0.       !t          |bank no3 gain
-        real :: bed_no3 = 0.        !t          |bed no3 gain
-        real :: fp_orgn = 0.        !t          |flood plain organic n deposited
-        real :: ch_orgn = 0.        !t          |channel organic n deposited
-        real :: bank_orgn = 0.      !t          |bank organic n gain from erosion
-        real :: bed_orgn = 0.       !t          |bed organic n gain from erosion
-        real :: in_solp = 0.        !t          |incoming soluble p to channel
-        real :: in_orgp = 0.        !t          |incoming organic p to channel
-        real :: out_solp =  0.      !t          |outgoing soluble p from channel
-        real :: out_orgp =  0.      !t          |outgoing organic p from channel
-        real :: fp_solp = 0.        !t          |flood plain soluble p lost
-        real :: bank_solp = 0.      !t          |bank no3 gain
-        real :: bed_solp = 0.       !t          |bed no3 gain
-        real :: fp_orgp =  0.       !t          |flood plain organic p deposited
-        real :: ch_orgp = 0.        !t          |channel organic p deposited
-        real :: bank_orgp = 0.      !t          |bank organic p gain from erosion
-        real :: bed_orgp = 0.       !t          |bed organic n gain from erosion
-        real :: no3_orgn = 0.       !t          |in channel transformation from no3 to organic n
-        real :: solp_orgp = 0.      !t          |in channel transformation from no3 to organic n
+        real :: in_sed = 0.         !!t          |incoming sediment to channel
+        real :: out_sed = 0.        !!t          |outgoing sediment from channel
+        real :: fp_dep = 0.         !!t          |flood plain deposition
+        real :: ch_dep = 0.         !!t          |channel deposition
+        real :: bank_ero = 0.       !!t          |channel bank erosion
+        real :: bed_ero = 0.        !!t          |channel bed erosion
+        real :: in_no3 = 0.         !!t          |incoming no3 to channel
+        real :: in_orgn = 0.        !!t          |incoming organic n to channel
+        real :: out_no3 =  0.       !!t          |outgoing no3 from channel
+        real :: out_orgn =  0.      !!t          |outgoing organic n from channel
+        real :: fp_no3 = 0.         !!t          |flood plain no3 lost
+        real :: bank_no3 = 0.       !!t          |bank no3 gain
+        real :: bed_no3 = 0.        !!t          |bed no3 gain
+        real :: fp_orgn = 0.        !!t          |flood plain organic n deposited
+        real :: ch_orgn = 0.        !!t          |channel organic n deposited
+        real :: bank_orgn = 0.      !!t          |bank organic n gain from erosion
+        real :: bed_orgn = 0.       !!t          |bed organic n gain from erosion
+        real :: in_solp = 0.        !!t          |incoming soluble p to channel
+        real :: in_orgp = 0.        !!t          |incoming organic p to channel
+        real :: out_solp =  0.      !!t          |outgoing soluble p from channel
+        real :: out_orgp =  0.      !!t          |outgoing organic p from channel
+        real :: fp_solp = 0.        !!t          |flood plain soluble p lost
+        real :: bank_solp = 0.      !!t          |bank no3 gain
+        real :: bed_solp = 0.       !!t          |bed no3 gain
+        real :: fp_orgp =  0.       !!t          |flood plain organic p deposited
+        real :: ch_orgp = 0.        !!t          |channel organic p deposited
+        real :: bank_orgp = 0.      !!t          |bank organic p gain from erosion
+        real :: bed_orgp = 0.       !!t          |bed organic n gain from erosion
+        real :: no3_orgn = 0.       !!t          |in channel transformation from no3 to organic n
+        real :: solp_orgp = 0.      !!t          |in channel transformation from no3 to organic n
       end type channel_sediment_budget_output
       type (channel_sediment_budget_output), dimension (:), allocatable :: ch_sed_bud
       type (channel_sediment_budget_output), dimension (:), allocatable :: ch_sed_bud_m, ch_sed_bud_y, ch_sed_bud_a
       type (channel_sediment_budget_output) :: ch_sed_budz, bch_sed_bud_d, bch_sed_bud_m, bch_sed_bud_y, bch_sed_bud_a
 
       type channel_morphology_output
-        real :: w_yr = 0.           !ratio      |bank cutting - widths per year 
-        real :: d_yr = 0.           !ratio      |bed down cutting - depths per year
-        real :: fp_mm = 0.          !mm/yr      |flood plain deposition - uniform across the flood plain
+        real :: w_yr = 0.           !!ratio      |bank cutting - widths per year 
+        real :: d_yr = 0.           !!ratio      |bed down cutting - depths per year
+        real :: fp_mm = 0.          !!mm/yr      |flood plain deposition - uniform across the flood plain
       end type channel_morphology_output
       type (channel_morphology_output), dimension (:), allocatable :: ch_morph
       
       type gully_data
         character(len=16) :: name = ""
-        real :: hc_kh = 0.      !           |headcut erodibility
-        real :: hc_hgt = 0.     !m          |headcut height
-        real :: hc_ini = 0.     !km         |initial channel length for gullies
+        real :: hc_kh = 0.      !!           |headcut erodibility
+        real :: hc_hgt = 0.     !!m          |headcut height
+        real :: hc_ini = 0.     !!km         |initial channel length for gullies
       end type gully_data
       type (gully_data), dimension (:), allocatable :: gully
 
       type swatdeg_init_datafiles
-        integer :: init = 1                 !initial data-points to initial.cha
-        integer :: org_min = 1              !points to initial organic-mineral input file
-        integer :: pest = 1                 !points to initial pesticide input file
-        integer :: path = 1                 !points to initial pathogen input file
-        integer :: hmet = 1                 !points to initial heavy metals input file
-        integer :: salt = 1                 !points to initial salt input file (salt_channel.ini) (rtb salt)
-        integer :: cs = 1                   !points to initial constituent input file (cs_channel.ini) (rtb cs)
+        integer :: init = 1                 !!initial data-points to initial.cha
+        integer :: org_min = 1              !!points to initial organic-mineral input file
+        integer :: pest = 1                 !!points to initial pesticide input file
+        integer :: path = 1                 !!points to initial pathogen input file
+        integer :: hmet = 1                 !!points to initial heavy metals input file
+        integer :: salt = 1                 !!points to initial salt input file (salt_channel.ini) (rtb salt)
+        integer :: cs = 1                   !!points to initial constituent input file (cs_channel.ini) (rtb cs)
       end type swatdeg_init_datafiles
       type (swatdeg_init_datafiles), dimension(:), allocatable :: sd_init
             
@@ -137,19 +137,19 @@
       type (swatdeg_datafiles), dimension(:),allocatable :: sd_dat
       
       type floodplain_parameters
-        character(len=25) :: name = "floodplain"    !           |name of flood plain
-        integer :: obj_tot = 0                      !           |number of objects (hru and/or ru) in the flood plain
-        integer :: hru_tot = 0                      !           |number of hru in the flood plain
-        real :: ha = 0                              !ha         |sum of area of all hru in flood plain
-        character (len=3), dimension(:), allocatable :: obtyp   !object type- 1=hru, 2=hru_lte, 11=export coef, etc
-        integer, dimension(:), allocatable :: obtypno           !2-number of hru_lte"s or 1st hru_lte command
-        integer, dimension (:), allocatable :: hru  !           |flood plain hru number
-        real, dimension (:), allocatable :: hru_fr  !           |hru area fraction of the flood plain
+        character(len=25) :: name = "floodplain"    !!           |name of flood plain
+        integer :: obj_tot = 0                      !!           |number of objects (hru and/or ru) in the flood plain
+        integer :: hru_tot = 0                      !!           |number of hru in the flood plain
+        real :: ha = 0                              !!ha         |sum of area of all hru in flood plain
+        character (len=3), dimension(:), allocatable :: obtyp   !!object type- 1=hru, 2=hru_lte, 11=export coef, etc
+        integer, dimension(:), allocatable :: obtypno           !!2-number of hru_lte"s or 1st hru_lte command
+        integer, dimension (:), allocatable :: hru  !!           |flood plain hru number
+        real, dimension (:), allocatable :: hru_fr  !!           |hru area fraction of the flood plain
       end type floodplain_parameters
         
       type muskingum_parameters
-        integer :: nsteps = 1       !none       |number of daily time steps required for stability
-        integer :: substeps = 1     !none       |number of time substeps required for stability
+        integer :: nsteps = 1       !!none       |number of daily time steps required for stability
+        integer :: substeps = 1     !!none       |number of time substeps required for stability
         real :: c1 = 0.
         real :: c2 = 0.
         real :: c3 = 0.
@@ -159,20 +159,20 @@
         character(len=25) :: name = "default"
         integer :: props = 0
         integer :: obj_no = 0
-        integer :: wallo = 0                !water allocation object number
-        integer :: aqu_link = 0             !aquifer the channel is linked to
-        integer :: aqu_link_ch = 0          !sequential channel number in the aquifer
+        integer :: wallo = 0                !!water allocation object number
+        integer :: aqu_link = 0             !!aquifer the channel is linked to
+        integer :: aqu_link_ch = 0          !!sequential channel number in the aquifer
         character(len=25) :: region = ""
         character(len=25) :: order = ""
-        real :: chw = 3.        !m          |channel width
-        real :: chd = .5        !m          |channel depth
-        real :: chs = .01       !m/m        |channel slope
-        real :: chl = .1        !km         |channel length
-        real :: chn = 0.        !           |channel Manning's n
-        real :: chk = 0.        !mm/h       |channel bottom conductivity
-        real :: cov = 0.        !0-1        |channel cover factor
-        real :: sinu = 0.       !none       |sinuousity - ratio of channel length and straight line length
-        real :: vcr_coef = 0.        !m/m        |critical velocity coefficient
+        real :: chw = 3.        !!m          |channel width
+        real :: chd = .5        !!m          |channel depth
+        real :: chs = .01       !!m/m        |channel slope
+        real :: chl = .1        !!km         |channel length
+        real :: chn = 0.        !!           |channel Manning's n
+        real :: chk = 0.        !!mm/h       |channel bottom conductivity
+        real :: cov = 0.        !!0-1        |channel cover factor
+        real :: sinu = 0.       !!none       |sinuousity - ratio of channel length and straight line length
+        real :: vcr_coef = 0.        !!m/m        |critical velocity coefficient
         real :: d50 = 0.
         real :: ch_clay = 0.
         real :: carbon = 0.
@@ -181,95 +181,95 @@
         real :: bankfull_flo = 0.
         real :: fps = 0.
         real :: fpn = 0.
-        real :: n_conc = 0.         !mg/kg      |nitrogen concentration in channel bank
-        real :: p_conc = 0.         !mg/kg      |phosphorus concentration in channel bank
-        real :: p_bio = 0.          !frac       |fraction of p in bank that is bioavailable
-        real :: pk_rto = 1.         !ratio      |ratio of peak to mean daily flow in channel
-        real :: fp_inun_days = 5.   !days       |number of days fllod plain is inundated after flood
-        real :: n_setl = 0.5        !ratio      |ratio of amount of N settling and sediment settling
-        real :: p_setl = 0.5        !ratio      |ratio of amount of P settling and sediment settling
-        real :: n_sol_part = 0.01   !frac       |instream nitrogen soluble to particulate transformation coefficient
-        real :: p_sol_part = 0.01   !frac       |instream phosphorus soluble to particulate transformation coefficient
-        real :: n_dep_enr = 0.5     !           |enrichment of N in remaining water - deposition = 1/enrichment ratio
-        real :: p_dep_enr = 0.5     !           |enrichment of P in remaining water - deposition = 1/enrichment ratio
-        real :: arc_len_fr = 1.2    !frac       |fraction of arc length where bank erosion occurs
-        real :: bed_exp = 1.5       !mm         |bed erosion exponent
-        real :: wash_bed_fr = 0.2   !frac       |fraction of bank erosion that is washload
+        real :: n_conc = 0.         !!mg/kg      |nitrogen concentration in channel bank
+        real :: p_conc = 0.         !!mg/kg      |phosphorus concentration in channel bank
+        real :: p_bio = 0.          !!frac       |fraction of p in bank that is bioavailable
+        real :: pk_rto = 1.         !!ratio      |ratio of peak to mean daily flow in channel
+        real :: fp_inun_days = 5.   !!days       |number of days fllod plain is inundated after flood
+        real :: n_setl = 0.5        !!ratio      |ratio of amount of N settling and sediment settling
+        real :: p_setl = 0.5        !!ratio      |ratio of amount of P settling and sediment settling
+        real :: n_sol_part = 0.01   !!frac       |instream nitrogen soluble to particulate transformation coefficient
+        real :: p_sol_part = 0.01   !!frac       |instream phosphorus soluble to particulate transformation coefficient
+        real :: n_dep_enr = 0.5     !!           |enrichment of N in remaining water - deposition = 1/enrichment ratio
+        real :: p_dep_enr = 0.5     !!           |enrichment of P in remaining water - deposition = 1/enrichment ratio
+        real :: arc_len_fr = 1.2    !!frac       |fraction of arc length where bank erosion occurs
+        real :: bed_exp = 1.5       !!mm         |bed erosion exponent
+        real :: wash_bed_fr = 0.2   !!frac       |fraction of bank erosion that is washload
         real :: hc_kh = 0.
-        real :: hc_hgt = 0.     !m          |headcut height
+        real :: hc_hgt = 0.     !!m          |headcut height
         real :: hc_ini = 0.
-        real :: bank_exp = 0.       !           |bank erosion exponent
-        real :: shear_bnk = 0.  !0-1        |bank shear coefficient - fraction of bottom shear
-        real :: hc_erod = 0.    !           |headcut erodibility
-        real :: hc_co = 0.      !m/m        |proportionality coefficient for head cut
-        real :: hc_len = 0.     !m          |length of head cut
-        real :: in1_vol = 0.    !m3         |inflow during previous time step for Muskingum
-        real :: out1_vol = 0.   !m3         |outflow during previous time step for Muskingum
-        real :: stor_dis_01bf = 0.      !hr         |storage time constant at 0.1*bankfull
-        real :: stor_dis_bf = 0.        !hr         |storage time constant at bankfull
+        real :: bank_exp = 0.       !!           |bank erosion exponent
+        real :: shear_bnk = 0.  !!0-1        |bank shear coefficient - fraction of bottom shear
+        real :: hc_erod = 0.    !!           |headcut erodibility
+        real :: hc_co = 0.      !!m/m        |proportionality coefficient for head cut
+        real :: hc_len = 0.     !!m          |length of head cut
+        real :: in1_vol = 0.    !!m3         |inflow during previous time step for Muskingum
+        real :: out1_vol = 0.   !!m3         |outflow during previous time step for Muskingum
+        real :: stor_dis_01bf = 0.      !!hr         |storage time constant at 0.1*bankfull
+        real :: stor_dis_bf = 0.        !!hr         |storage time constant at bankfull
         type (muskingum_parameters) :: msk
         type (floodplain_parameters) :: fp
-        real, dimension (:), allocatable :: kd      !           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
-        real, dimension (:), allocatable :: aq_mix  ! m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
-        character (len=2) :: overbank = ""          !           |"ib"=in bank; "ob"=overbank flood
+        real, dimension (:), allocatable :: kd      !!           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
+        real, dimension (:), allocatable :: aq_mix  !! m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
+        character (len=2) :: overbank = ""          !!           |"ib"=in bank; "ob"=overbank flood
       end type swatdeg_channel_dynamic
       type (swatdeg_channel_dynamic), dimension (:), allocatable :: sd_ch
       type (swatdeg_channel_dynamic), dimension (:), allocatable :: sdch_init  
             
       type channel_rating_curve_parameters
-        real :: flo_rate = 0.           !m^3/s      |flow rate
-        real :: xsec_area = 0.          !m^2        |cross sectional area of flow
-        real :: surf_area = 0.          !m^2        |total surface area
-        real :: dep = 0.                !m          |depth of water
-        real :: top_wid = 0.            !m          |depth of water
-        real :: vol = 0.                !m^3        |total volume of water in reach and flood plain
-        real :: vol_fp = 0.             !m^3        |volume of water in flood plain
-        real :: vol_ch = 0.             !m^3        |volume of water in and above channel
-        real :: wet_perim = 0.          !m          |wetted perimeter
-        real :: ttime = 0.              !hr         |travel time
+        real :: flo_rate = 0.           !!m^3/s      |flow rate
+        real :: xsec_area = 0.          !!m^2        |cross sectional area of flow
+        real :: surf_area = 0.          !!m^2        |total surface area
+        real :: dep = 0.                !!m          |depth of water
+        real :: top_wid = 0.            !!m          |depth of water
+        real :: vol = 0.                !!m^3        |total volume of water in reach and flood plain
+        real :: vol_fp = 0.             !!m^3        |volume of water in flood plain
+        real :: vol_ch = 0.             !!m^3        |volume of water in and above channel
+        real :: wet_perim = 0.          !!m          |wetted perimeter
+        real :: ttime = 0.              !!hr         |travel time
       end type channel_rating_curve_parameters
-      type (channel_rating_curve_parameters) :: rcurv   !rating curve at each time step
-      type (channel_rating_curve_parameters) :: rcz     !zero rating curve
+      type (channel_rating_curve_parameters) :: rcurv   !!rating curve at each time step
+      type (channel_rating_curve_parameters) :: rcz     !!zero rating curve
       
       type channel_rating_curve
-        integer :: npts = 4         !none       |number of points on the rating curve
-        real :: wid_btm = 0.        !m          |bottom width of main channel
+        integer :: npts = 4         !!none       |number of points on the rating curve
+        real :: wid_btm = 0.        !!m          |bottom width of main channel
         !! elev - 1=.1 bf dep; 2=bf dep; 3=1.2*bf dep; 4=2*bf dep
-        type (channel_rating_curve_parameters) :: in1                   !rating curve - inflow previous time step
-        type (channel_rating_curve_parameters) :: in2                   !rating curve - inflow current time step
-        type (channel_rating_curve_parameters) :: out1                  !rating curve - outflow previous time step
-        type (channel_rating_curve_parameters) :: out2                  !rating curve - outflow current time step
-        type (channel_rating_curve_parameters), dimension(4) :: elev    !rating curve at each depth
+        type (channel_rating_curve_parameters) :: in1                   !!rating curve - inflow previous time step
+        type (channel_rating_curve_parameters) :: in2                   !!rating curve - inflow current time step
+        type (channel_rating_curve_parameters) :: out1                  !!rating curve - outflow previous time step
+        type (channel_rating_curve_parameters) :: out2                  !!rating curve - outflow current time step
+        type (channel_rating_curve_parameters), dimension(4) :: elev    !!rating curve at each depth
       end type channel_rating_curve
       type (channel_rating_curve), dimension(:), allocatable :: ch_rcurv
            
       type sd_ch_output
-        real :: flo_in = 0.             !(m^3/s)       |average daily inflow rate during time step
-        real :: aqu_in = 0.             !(m^3/s)       |geomorphic aquifer flow into channel/aquifer inflow using geomorphic baseflow method
-        real :: flo = 0.                !(m^3/s)       |average daily outflow rate during timestep
-        real :: peakr = 0.              !(m^3/s)       |average peak runoff rate during timestep
-        real :: sed_in = 0.             !(tons)        |sediment in
-        real :: sed_out = 0.            !(tons)        |sediment out
-        real :: washld = 0.             !(tons)        |wash load (suspended) out
-        real :: bedld = 0.              !(tons)        |bed load out
-        real :: dep = 0.                !(tons)        |deposition in channel and flood plain
-        real :: deg_btm = 0.            !(tons)        |erosion of channel bottom 
-        real :: deg_bank = 0.           !(tons)        |erosion of channel bank
-        real :: hc_sed = 0.             !(tons)        |erosion from gully head cut
-        real :: width = 0.              !m             |channel bank full top width at end of time step
-        real :: depth = 0.              !m             |channel bank full depth at end of time step
-        real :: slope = 0.              !m/m           |channel slope
-        real :: deg_btm_m = 0.          !(m)           !downcutting of channel bottom
-        real :: deg_bank_m = 0.         !(m)           |widening of channel banks
-        real :: hc_m = 0.               !(m)           |headcut retreat
-        real :: flo_in_mm = 0.          !(mm)          |inflow rate total sum for each time step
-        real :: aqu_in_mm = 0.          !(mm)          |aquifer inflow rate total sum for each time step
-        real :: flo_mm = 0.             !(mm)          |outflow rate total sum for each time step
-        real :: sed_stor = 0.           !(tons)        |sed storage at end of timestep 
-        real :: n_tot = 0.              !(kg N)        |total nitrogen leaving the reach 
-        real :: p_tot = 0.              !(kg N)        |total phosphorus leaving the reach
-        real :: dep_bf = 0.             !m             |depth of water when reach is at bankfull depth
-        real :: velav_bf = 0.           !m/s           |average velocity when reach is at bankfull depth
+        real :: flo_in = 0.             !!(m^3/s)       |average daily inflow rate during time step
+        real :: aqu_in = 0.             !!(m^3/s)       |geomorphic aquifer flow into channel/aquifer inflow using geomorphic baseflow method
+        real :: flo = 0.                !!(m^3/s)       |average daily outflow rate during timestep
+        real :: peakr = 0.              !!(m^3/s)       |average peak runoff rate during timestep
+        real :: sed_in = 0.             !!(tons)        |sediment in
+        real :: sed_out = 0.            !!(tons)        |sediment out
+        real :: washld = 0.             !!(tons)        |wash load (suspended) out
+        real :: bedld = 0.              !!(tons)        |bed load out
+        real :: dep = 0.                !!(tons)        |deposition in channel and flood plain
+        real :: deg_btm = 0.            !!(tons)        |erosion of channel bottom 
+        real :: deg_bank = 0.           !!(tons)        |erosion of channel bank
+        real :: hc_sed = 0.             !!(tons)        |erosion from gully head cut
+        real :: width = 0.              !!m             |channel bank full top width at end of time step
+        real :: depth = 0.              !!m             |channel bank full depth at end of time step
+        real :: slope = 0.              !!m/m           |channel slope
+        real :: deg_btm_m = 0.          !!(m)           !downcutting of channel bottom
+        real :: deg_bank_m = 0.         !!(m)           |widening of channel banks
+        real :: hc_m = 0.               !!(m)           |headcut retreat
+        real :: flo_in_mm = 0.          !!(mm)          |inflow rate total sum for each time step
+        real :: aqu_in_mm = 0.          !!(mm)          |aquifer inflow rate total sum for each time step
+        real :: flo_mm = 0.             !!(mm)          |outflow rate total sum for each time step
+        real :: sed_stor = 0.           !!(tons)        |sed storage at end of timestep 
+        real :: n_tot = 0.              !!(kg N)        |total nitrogen leaving the reach 
+        real :: p_tot = 0.              !!(kg N)        |total phosphorus leaving the reach
+        real :: dep_bf = 0.             !!m             |depth of water when reach is at bankfull depth
+        real :: velav_bf = 0.           !!m/s           |average velocity when reach is at bankfull depth
       end type sd_ch_output
       
       type (sd_ch_output), dimension(:), allocatable, save :: chsd_d
@@ -294,32 +294,32 @@
           character (len=8) :: isd        =  "   unit "
           character (len=8) :: id         =  " gis_id "
           character (len=16) :: name      =  " name          "
-          character(len=16) :: flo_in     =  "         flo_in"        ! (m^3/s)
-          character(len=16) :: aqu_in     =  "         geo_bf"        ! (m^3/s)
-          character(len=16) :: flo        =  "        flo_out"        ! (m^3/s)
-          character(len=15) :: peakr      =  "          peakr"        ! (m^3/s)
-          character(len=15) :: sed_in     =  "         sed_in"        ! (tons)
-          character(len=15) :: sed_out    =  "        sed_out"        ! (tons)
-          character(len=15) :: washld     =  "         washld"        ! (tons)
-          character(len=15) :: bedld      =  "          bedld"        ! (tons)
-          character(len=15) :: dep        =  "            dep"        ! (tons)
-          character(len=15) :: deg_btm    =  "        deg_btm"        ! (tons)
-          character(len=15) :: deg_bank   =  "       deg_bank"        ! (tons)
-          character(len=15) :: hc_sed     =  "         hc_sed"        ! (tons)
-          character(len=15) :: width      =  "          width"        ! (m)
-          character(len=15) :: depth      =  "          depth"        ! (m)
-          character(len=15) :: slope      =  "          slope"        ! (m/m)
-          character(len=15) :: deg_btm_m  =  "        deg_btm"        ! (m)
-          character(len=15) :: deg_bank_m =  "       deg_bank"        ! (m)
-          character(len=15) :: hc_len     =  "         hc_len"        ! (m)
-          character(len=16) :: flo_in_mm  =  "      flo_in_mm"        ! (mm)
-          character(len=16) :: aqu_in_mm  =  "      aqu_in_mm"        ! (mm)
-          character(len=16) :: flo_mm     =  "     flo_out_mm"        ! (mm)
-          character(len=16) :: sed_stor   =  "       sed_stor"        ! (tons)
-          character(len=16) :: n_tot      =  "     n_tot     "        ! (kg_N)
-          character(len=16) :: p_tot      =  "    p_tot      "        ! (kg_N)
-          character(len=16) :: dep_bf     =  "  dep_bf       "        ! (m/s)
-          character(len=16) :: velav_bf   =  "velav_bf       "        ! (m/s)
+          character(len=16) :: flo_in     =  "         flo_in"        !! (m^3/s)
+          character(len=16) :: aqu_in     =  "         geo_bf"        !! (m^3/s)
+          character(len=16) :: flo        =  "        flo_out"        !! (m^3/s)
+          character(len=15) :: peakr      =  "          peakr"        !! (m^3/s)
+          character(len=15) :: sed_in     =  "         sed_in"        !! (tons)
+          character(len=15) :: sed_out    =  "        sed_out"        !! (tons)
+          character(len=15) :: washld     =  "         washld"        !! (tons)
+          character(len=15) :: bedld      =  "          bedld"        !! (tons)
+          character(len=15) :: dep        =  "            dep"        !! (tons)
+          character(len=15) :: deg_btm    =  "        deg_btm"        !! (tons)
+          character(len=15) :: deg_bank   =  "       deg_bank"        !! (tons)
+          character(len=15) :: hc_sed     =  "         hc_sed"        !! (tons)
+          character(len=15) :: width      =  "          width"        !! (m)
+          character(len=15) :: depth      =  "          depth"        !! (m)
+          character(len=15) :: slope      =  "          slope"        !! (m/m)
+          character(len=15) :: deg_btm_m  =  "        deg_btm"        !! (m)
+          character(len=15) :: deg_bank_m =  "       deg_bank"        !! (m)
+          character(len=15) :: hc_len     =  "         hc_len"        !! (m)
+          character(len=16) :: flo_in_mm  =  "      flo_in_mm"        !! (mm)
+          character(len=16) :: aqu_in_mm  =  "      aqu_in_mm"        !! (mm)
+          character(len=16) :: flo_mm     =  "     flo_out_mm"        !! (mm)
+          character(len=16) :: sed_stor   =  "       sed_stor"        !! (tons)
+          character(len=16) :: n_tot      =  "     n_tot     "        !! (kg_N)
+          character(len=16) :: p_tot      =  "    p_tot      "        !! (kg_N)
+          character(len=16) :: dep_bf     =  "  dep_bf       "        !! (m/s)
+          character(len=16) :: velav_bf   =  "velav_bf       "        !! (m/s)
       end type sdch_header
       type (sdch_header) :: sdch_hdr
       
@@ -331,32 +331,32 @@
           character (len=8) :: isd        =  "        "
           character (len=8) :: id         =  "        "
           character (len=16) :: name      =  "              "
-          character(len=16) :: flo_in     =  "          m^3/s"       ! (m^3/s)
-          character(len=16) :: aqu_in     =  "          m^3/s"       ! (m^3/s)      
-          character(len=16) :: flo        =  "          m^3/s"       ! (m^3/s) 
-          character(len=15) :: peakr      =  "          m^3/s"        ! (m^3/s)
-          character(len=15) :: sed_in     =  "           tons"        ! (tons)
-          character(len=15) :: sed_out    =  "           tons"        ! (tons)
-          character(len=15) :: washld     =  "           tons"        ! (tons)
-          character(len=15) :: bedld      =  "           tons"        ! (tons)
-          character(len=15) :: dep        =  "           tons"        ! (tons)
-          character(len=15) :: deg_btm    =  "           tons"        ! (tons)
-          character(len=15) :: deg_bank   =  "           tons"        ! (tons)
-          character(len=15) :: hc_sed     =  "           tons"        ! (tons)
-          character(len=15) :: width      =  "              m"        ! (m)
-          character(len=15) :: depth      =  "              m"        ! (m)
-          character(len=15) :: slope      =  "            m/m"        ! (m/m)
-          character(len=15) :: deg_btm_m  =  "              m"        ! (m)
-          character(len=15) :: deg_bank_m =  "              m"        ! (m)
-          character(len=15) :: hc_len     =  "              m"        ! (m)
-          character(len=16) :: flo_in_mm  =  "             mm"        ! (mm)
-          character(len=16) :: aqu_in_mm  =  "             mm"        ! (mm)      
-          character(len=16) :: flo_mm     =  "             mm"        ! (mm) 
-          character(len=16) :: sed_stor   =  "           tons"        ! (tons)
-          character(len=16) :: n_tot      =  "      kg_N     "        ! (kg_N)
-          character(len=16) :: p_tot      =  "     kg_P      "        ! (kg_P)
-          character(len=16) :: dep_bf     =  "     m/s       "        ! (m/s)
-          character(len=16) :: velav_bf   =  "     m/s       "        ! (m/s)
+          character(len=16) :: flo_in     =  "          m^3/s"       !! (m^3/s)
+          character(len=16) :: aqu_in     =  "          m^3/s"       !! (m^3/s)      
+          character(len=16) :: flo        =  "          m^3/s"       !! (m^3/s) 
+          character(len=15) :: peakr      =  "          m^3/s"        !! (m^3/s)
+          character(len=15) :: sed_in     =  "           tons"        !! (tons)
+          character(len=15) :: sed_out    =  "           tons"        !! (tons)
+          character(len=15) :: washld     =  "           tons"        !! (tons)
+          character(len=15) :: bedld      =  "           tons"        !! (tons)
+          character(len=15) :: dep        =  "           tons"        !! (tons)
+          character(len=15) :: deg_btm    =  "           tons"        !! (tons)
+          character(len=15) :: deg_bank   =  "           tons"        !! (tons)
+          character(len=15) :: hc_sed     =  "           tons"        !! (tons)
+          character(len=15) :: width      =  "              m"        !! (m)
+          character(len=15) :: depth      =  "              m"        !! (m)
+          character(len=15) :: slope      =  "            m/m"        !! (m/m)
+          character(len=15) :: deg_btm_m  =  "              m"        !! (m)
+          character(len=15) :: deg_bank_m =  "              m"        !! (m)
+          character(len=15) :: hc_len     =  "              m"        !! (m)
+          character(len=16) :: flo_in_mm  =  "             mm"        !! (mm)
+          character(len=16) :: aqu_in_mm  =  "             mm"        !! (mm)      
+          character(len=16) :: flo_mm     =  "             mm"        !! (mm) 
+          character(len=16) :: sed_stor   =  "           tons"        !! (tons)
+          character(len=16) :: n_tot      =  "      kg_N     "        !! (kg_N)
+          character(len=16) :: p_tot      =  "     kg_P      "        !! (kg_P)
+          character(len=16) :: dep_bf     =  "     m/s       "        !! (m/s)
+          character(len=16) :: velav_bf   =  "     m/s       "        !! (m/s)
       end type sdch_header_units
       type (sdch_header_units) :: sdch_hdr_units  
       
@@ -370,36 +370,36 @@
           character (len=8) :: isd        =  "   unit "
           character (len=8) :: id         =  " gis_id "
           character (len=16) :: name      =  " name          "
-          character(len=16) :: in_sed     =  "         in_sed"        ! (tons)
-          character(len=16) :: out_sed    =  "        out_sed"        ! (tons)
-          character(len=16) :: fp_dep     =  "       fp_dep  "        ! (tons)
-          character(len=16) :: ch_dep     =  "      ch_dep   "        ! (tons)
-          character(len=16) :: bank_ero   =  "    bank_ero   "        ! (tons)
-          character(len=16) :: bed_ero    =  "    bed_ero    "        ! (tons)
-          character(len=16) :: in_no3     =  "    in_no3     "        ! (tons)
-          character(len=16) :: in_orgn    =  "  in_orgn      "        ! (tons)
-          character(len=15) :: out_no3    =  " out_no3      "         ! (tons)
-          character(len=16) :: out_orgn   =  "out_orgn       "        ! (tons)
-          character(len=15) :: fp_no3     =  " fp_no3       "        ! (tons)
-          character(len=15) :: bank_no3   =  "bank_no3      "        ! (tons)
-          character(len=15) :: bed_no3    =  "bed_no3       "        ! (tons)
-          character(len=15) :: fp_orgn    =  "fp_orgn       "        ! (tons)
-          character(len=15) :: ch_orgn    =  "ch_orgn       "        ! (tons)
-          character(len=15) :: bank_orgn  =  "bank_orgn     "        ! (tons)
-          character(len=15) :: bed_orgn   =  "bed_orgn      "        ! (tons)
-          character(len=15) :: in_solp    =  "in_solp       "        ! (tons)
-          character(len=15) :: in_orgp    =  "in_orgp       "        ! (tons)
-          character(len=15) :: out_solp   =  "out_solp      "        ! (tons)
-          character(len=15) :: out_orgp   =  "out_orgp      "        ! (tons)
-          character(len=15) :: fp_solp    =  "fp_solp       "        ! (tons)
-          character(len=15) :: bank_solp  =  "bank_solp     "        ! (tons)
-          character(len=15) :: bed_solp   =  "bed_solp      "        ! (tons)
-          character(len=15) :: fp_orgp    =  "fp_orgp       "        ! (tons)
-          character(len=15) :: ch_orgp    =  "ch_orgp       "        ! (tons)
-          character(len=15) :: bank_orgp  =  "bank_orgp     "        ! (tons)
-          character(len=15) :: bed_orgp   =  "bed_orgp      "        ! (tons)
-          character(len=15) :: no3_orgn   =  "no3_orgn      "        ! (tons)
-          character(len=15) :: solp_orgp  =  "solp_orgp     "        ! (tons)
+          character(len=16) :: in_sed     =  "         in_sed"        !! (tons)
+          character(len=16) :: out_sed    =  "        out_sed"        !! (tons)
+          character(len=16) :: fp_dep     =  "       fp_dep  "        !! (tons)
+          character(len=16) :: ch_dep     =  "      ch_dep   "        !! (tons)
+          character(len=16) :: bank_ero   =  "    bank_ero   "        !! (tons)
+          character(len=16) :: bed_ero    =  "    bed_ero    "        !! (tons)
+          character(len=16) :: in_no3     =  "    in_no3     "        !! (tons)
+          character(len=16) :: in_orgn    =  "  in_orgn      "        !! (tons)
+          character(len=15) :: out_no3    =  " out_no3      "         !! (tons)
+          character(len=16) :: out_orgn   =  "out_orgn       "        !! (tons)
+          character(len=15) :: fp_no3     =  " fp_no3       "        !! (tons)
+          character(len=15) :: bank_no3   =  "bank_no3      "        !! (tons)
+          character(len=15) :: bed_no3    =  "bed_no3       "        !! (tons)
+          character(len=15) :: fp_orgn    =  "fp_orgn       "        !! (tons)
+          character(len=15) :: ch_orgn    =  "ch_orgn       "        !! (tons)
+          character(len=15) :: bank_orgn  =  "bank_orgn     "        !! (tons)
+          character(len=15) :: bed_orgn   =  "bed_orgn      "        !! (tons)
+          character(len=15) :: in_solp    =  "in_solp       "        !! (tons)
+          character(len=15) :: in_orgp    =  "in_orgp       "        !! (tons)
+          character(len=15) :: out_solp   =  "out_solp      "        !! (tons)
+          character(len=15) :: out_orgp   =  "out_orgp      "        !! (tons)
+          character(len=15) :: fp_solp    =  "fp_solp       "        !! (tons)
+          character(len=15) :: bank_solp  =  "bank_solp     "        !! (tons)
+          character(len=15) :: bed_solp   =  "bed_solp      "        !! (tons)
+          character(len=15) :: fp_orgp    =  "fp_orgp       "        !! (tons)
+          character(len=15) :: ch_orgp    =  "ch_orgp       "        !! (tons)
+          character(len=15) :: bank_orgp  =  "bank_orgp     "        !! (tons)
+          character(len=15) :: bed_orgp   =  "bed_orgp      "        !! (tons)
+          character(len=15) :: no3_orgn   =  "no3_orgn      "        !! (tons)
+          character(len=15) :: solp_orgp  =  "solp_orgp     "        !! (tons)
       end type sdch_bud
       type (sdch_bud) :: sdch_bud_hdr
       
@@ -411,36 +411,36 @@
           character (len=8) :: isd        =  "        "
           character (len=8) :: id         =  "        "
           character (len=16) :: name      =  "              "
-          character(len=16) :: in_sed     =  "           tons"       ! (tons)
-          character(len=16) :: out_sed    =  "           tons"       ! (tons)      
-          character(len=16) :: fp_dep     =  "         tons  "       ! (tons) 
-          character(len=16) :: ch_dep     =  "        tons   "       ! (tons)
-          character(len=16) :: bank_ero   =  "        tons   "       ! (tons)
-          character(len=16) :: bed_ero    =  "       tons    "       ! (tons)
-          character(len=16) :: in_no3     =  "      tons     "       ! (tons)
-          character(len=16) :: in_orgn    =  "     tons      "       ! (tons)
-          character(len=15) :: out_no3    =  "    tons       "       ! (tons)
-          character(len=16) :: out_orgn   =  "   tons        "       ! (tons)
-          character(len=15) :: fp_no3     =  "  tons        "       ! (tons)
-          character(len=15) :: bank_no3   =  "  tons        "       ! (tons)
-          character(len=15) :: bed_no3    =  "  tons        "       ! (tons)
-          character(len=16) :: fp_orgn    =  "  tons        "       ! (tons)
-          character(len=15) :: ch_orgn    =  "  tons        "       ! (tons)
-          character(len=15) :: bank_orgn  =  "  tons        "       ! (tons)
-          character(len=15) :: bed_orgn   =  "  tons        "       ! (tons)
-          character(len=15) :: in_solp    =  "  tons        "       ! (tons)
-          character(len=15) :: in_orgp    =  "  tons        "       ! (tons)
-          character(len=15) :: out_solp   =  "  tons        "       ! (tons)      
-          character(len=15) :: out_orgp   =  "  tons        "       ! (tons) 
-          character(len=15) :: fp_solp    =  "  tons        "       ! (tons)
-          character(len=15) :: bank_solp  =  "  tons        "       ! (tons)
-          character(len=15) :: bed_solp   =  "  tons        "       ! (tons)
-          character(len=15) :: fp_orgp    =  "  tons        "       ! (tons)
-          character(len=15) :: ch_orgp    =  "  tons        "       ! (tons)
-          character(len=15) :: bank_orgp  =  "  tons        "       ! (tons)
-          character(len=15) :: bed_orgp   =  "  tons        "       ! (tons)
-          character(len=15) :: no3_orgp   =  "  tons        "       ! (tons)
-          character(len=15) :: solp_orgp  =  "  tons        "       ! (tons)
+          character(len=16) :: in_sed     =  "           tons"       !! (tons)
+          character(len=16) :: out_sed    =  "           tons"       !! (tons)      
+          character(len=16) :: fp_dep     =  "         tons  "       !! (tons) 
+          character(len=16) :: ch_dep     =  "        tons   "       !! (tons)
+          character(len=16) :: bank_ero   =  "        tons   "       !! (tons)
+          character(len=16) :: bed_ero    =  "       tons    "       !! (tons)
+          character(len=16) :: in_no3     =  "      tons     "       !! (tons)
+          character(len=16) :: in_orgn    =  "     tons      "       !! (tons)
+          character(len=15) :: out_no3    =  "    tons       "       !! (tons)
+          character(len=16) :: out_orgn   =  "   tons        "       !! (tons)
+          character(len=15) :: fp_no3     =  "  tons        "       !! (tons)
+          character(len=15) :: bank_no3   =  "  tons        "       !! (tons)
+          character(len=15) :: bed_no3    =  "  tons        "       !! (tons)
+          character(len=16) :: fp_orgn    =  "  tons        "       !! (tons)
+          character(len=15) :: ch_orgn    =  "  tons        "       !! (tons)
+          character(len=15) :: bank_orgn  =  "  tons        "       !! (tons)
+          character(len=15) :: bed_orgn   =  "  tons        "       !! (tons)
+          character(len=15) :: in_solp    =  "  tons        "       !! (tons)
+          character(len=15) :: in_orgp    =  "  tons        "       !! (tons)
+          character(len=15) :: out_solp   =  "  tons        "       !! (tons)      
+          character(len=15) :: out_orgp   =  "  tons        "       !! (tons) 
+          character(len=15) :: fp_solp    =  "  tons        "       !! (tons)
+          character(len=15) :: bank_solp  =  "  tons        "       !! (tons)
+          character(len=15) :: bed_solp   =  "  tons        "       !! (tons)
+          character(len=15) :: fp_orgp    =  "  tons        "       !! (tons)
+          character(len=15) :: ch_orgp    =  "  tons        "       !! (tons)
+          character(len=15) :: bank_orgp  =  "  tons        "       !! (tons)
+          character(len=15) :: bed_orgp   =  "  tons        "       !! (tons)
+          character(len=15) :: no3_orgp   =  "  tons        "       !! (tons)
+          character(len=15) :: solp_orgp  =  "  tons        "       !! (tons)
       end type sdch_bud_units
       type (sdch_bud_units) :: sdch_bud_hdr_units   
 !!    SD_CHAN_BUD_HEADERS      
@@ -454,7 +454,7 @@
           character (len=8) :: id         =  " gis_id "
           character (len=8) :: ii         =  "  tstep "
           character (len=16) :: name      =  " name          "
-          character(len=16) :: hyd_flo    =  "        flo_out"        ! (m^3/s)
+          character(len=16) :: hyd_flo    =  "        flo_out"        !! (m^3/s)
       end type sdch_header_sub
       type (sdch_header_sub) :: sdch_hdr_subday
   
@@ -467,34 +467,34 @@
           character (len=8) :: id         =  "        "
           character (len=8) :: ii         =  "        "
           character (len=16) :: name      =  "              "
-          character (len=16) :: hyd_flo   =  "        m^3/s   "        ! (m^3/s)
+          character (len=16) :: hyd_flo   =  "        m^3/s   "        !! (m^3/s)
       end type sdch_header_units_sub
       type (sdch_header_units) :: sdch_hdr_units_sub
      
       type sd_chd_header
         character (len=16)  :: name         = "name"
         character(len=16)   :: order        = "order"
-        character (len=16)  :: chw          = 'chw'             !m          |channel width
-        character (len=16)  :: chd          = 'chd'             !m          |channel depth
-        character (len=16)  :: chs          = 'chs'             !m/m        |channel slope
-        character (len=16)  :: chl          = 'chl'             !m          |channel length
-        character (len=16)  :: chn          = 'chn'             !           |channel Manning's n
-        character (len=16)  :: chk          = 'chk'             !mm/h       |channel bottom conductivity
-        character (len=16)  :: cherod       = 'cherod'          !           |channel erodibility
-        character (len=16)  :: cov          = 'cov'             !0-1        |channel cover factor
-        character (len=16)  :: sinu         = 'sinu'            !           |sinuousity - ratio of channel length and straight line length
-        character (len=16)  :: chseq        = 'chseq'           !m/m        |equilibrium channel slope
-        character (len=16)  :: d50          = 'd50'             !           |median particle size
-        character (len=16)  :: ch_clay      = 'ch_clay'         !%          |clay percent of bank and bed
-        character (len=16)  :: carbon       = 'carbon'          !%          |carbon percent of bank and bed
-        character (len=16)  :: ch_bd        = 'ch_bd'           !g/cm^3     |channel bank density
-        character (len=16)  :: chss         = 'chss'            !           |channel sediment supply
-        character (len=16)  :: bankfull_flo = 'bankfull_flo'    !m^3/s |bankfull flow
-        character (len=16)  :: fps          = 'fps'             !           |flood plain slope
-        character (len=16)  :: fpn          = 'fpn'             !           |flood plain Manning's n
-        character (len=16)  :: n_conc       = 'n_conc'          !mg/kg      |nitrogen concentration in channel bank
-        character (len=16)  :: p_conc       = 'p_conc'          !mg/kg      |phosphorus concentration in channel bank
-        character (len=16)  :: p_bio        = 'p_bio'           !frac       |fraction of p in bank that is bioavailable
+        character (len=16)  :: chw          = 'chw'             !!m          |channel width
+        character (len=16)  :: chd          = 'chd'             !!m          |channel depth
+        character (len=16)  :: chs          = 'chs'             !!m/m        |channel slope
+        character (len=16)  :: chl          = 'chl'             !!m          |channel length
+        character (len=16)  :: chn          = 'chn'             !!           |channel Manning's n
+        character (len=16)  :: chk          = 'chk'             !!mm/h       |channel bottom conductivity
+        character (len=16)  :: cherod       = 'cherod'          !!           |channel erodibility
+        character (len=16)  :: cov          = 'cov'             !!0-1        |channel cover factor
+        character (len=16)  :: sinu         = 'sinu'            !!           |sinuousity - ratio of channel length and straight line length
+        character (len=16)  :: chseq        = 'chseq'           !!m/m        |equilibrium channel slope
+        character (len=16)  :: d50          = 'd50'             !!           |median particle size
+        character (len=16)  :: ch_clay      = 'ch_clay'         !!%          |clay percent of bank and bed
+        character (len=16)  :: carbon       = 'carbon'          !!%          |carbon percent of bank and bed
+        character (len=16)  :: ch_bd        = 'ch_bd'           !!g/cm^3     |channel bank density
+        character (len=16)  :: chss         = 'chss'            !!           |channel sediment supply
+        character (len=16)  :: bankfull_flo = 'bankfull_flo'    !!m^3/s |bankfull flow
+        character (len=16)  :: fps          = 'fps'             !!           |flood plain slope
+        character (len=16)  :: fpn          = 'fpn'             !!           |flood plain Manning's n
+        character (len=16)  :: n_conc       = 'n_conc'          !!mg/kg      |nitrogen concentration in channel bank
+        character (len=16)  :: p_conc       = 'p_conc'          !!mg/kg      |phosphorus concentration in channel bank
+        character (len=16)  :: p_bio        = 'p_bio'           !!frac       |fraction of p in bank that is bioavailable
       end type sd_chd_header
       type (sd_chd_header) :: sd_chd_hdr
       

@@ -5,10 +5,10 @@
       !! water body (reservoir, wetland, and channel) output not included in hyd_output object
 
       type water_body
-        real :: area_ha = 0.            !ha         |water body surface area
-        real :: precip = 0.             !m3         |precip on the water body
-        real :: evap = 0.               !m3         |evaporation from the water surface
-        real :: seep = 0.               !m3         |seepage from bottom of water body
+        real :: area_ha = 0.            !!ha         |water body surface area
+        real :: precip = 0.             !!m3         |precip on the water body
+        real :: evap = 0.               !!m3         |evaporation from the water surface
+        real :: seep = 0.               !!m3         |seepage from bottom of water body
         !real :: chla = 0.               !ppm        |ave chlorophyll-a concentration during time period
         !real :: temp = 0.              !deg C      |ave temperature over time period
         !real :: chla = 0.              !ppm        |ave chlorophyll-a concentration during time period

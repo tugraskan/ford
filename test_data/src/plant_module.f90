@@ -41,7 +41,7 @@
       type plant_status
         integer :: idplt = 0            !! none         land cover code from plants.plt
         integer :: bsn_num = 0          !!none              |basin plant number
-        character(len=1) :: gro = "y"   !               |land cover status; 'n' = no land cover growing; 'y' = land cover growing
+        character(len=1) :: gro = "y"   !!               |land cover status; 'n' = no land cover growing; 'y' = land cover growing
         character(len=1) :: idorm = "n" !! none         |dormancy status; 'n'=land cover growing; 'y'=land cover dormant
         character(len=1) :: mseas = "n" !! none         |monsoon status;  'n'= not in monsoon season; 'y'= in monsoon season
         real :: phumat = 0.             !! C            |heat units to maturity - annual
@@ -121,7 +121,7 @@
        type (plant_growth), dimension(:), allocatable :: plg    !!plant growth variables
        type (plant_stress), dimension(:), allocatable :: plstr  !!plant stress variables
        type (plant_status), dimension(:), allocatable :: plcur  !!plant status variables
-       type (plant_mass), dimension(:), allocatable :: plm      !kg/ha            |total biomass for individual plant in community
+       type (plant_mass), dimension(:), allocatable :: plm      !!kg/ha            |total biomass for individual plant in community
       end type plant_community
       type (plant_community), dimension (:), allocatable :: pcom
       type (plant_community), dimension (:), allocatable :: pcom_init
@@ -131,18 +131,18 @@
       type (plant_stress) :: plstrz
 
       type basin_crop_yields
-        real :: area_ha = 0.        !ha         |area of crop harvested
-        real :: yield = 0.          !t          |yield mass removed in harvest
+        real :: area_ha = 0.        !!ha         |area of crop harvested
+        real :: yield = 0.          !!t          |yield mass removed in harvest
       end type basin_crop_yields
       type (basin_crop_yields), dimension(:), allocatable :: bsn_crop_yld
       type (basin_crop_yields), dimension(:), allocatable :: bsn_crop_yld_aa
       type (basin_crop_yields) :: bsn_crop_yld_z
         
       type plant_carbon
-        real :: leaf = .41      !none   |carbon fraction in leaves
-        real :: stem = .46      !none   |carbon fraction in stem
-        real :: seed = .45      !none   |carbon fraction in seeds
-        real :: root = .46      !none   |carbon fraction in roots
+        real :: leaf = .41      !!none   |carbon fraction in leaves
+        real :: stem = .46      !!none   |carbon fraction in stem
+        real :: seed = .45      !!none   |carbon fraction in seeds
+        real :: root = .46      !!none   |carbon fraction in roots
       end type plant_carbon
       type (plant_carbon) :: c_frac
             

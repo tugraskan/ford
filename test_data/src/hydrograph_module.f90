@@ -5,28 +5,28 @@
       
       implicit none
       
-      integer :: mhyd = 0                                                !none          |max number of hydrographs
-      integer :: mcmd = 0                                                !              |
-      integer :: inum2 = 0                                               !none          |inflow hydrograph storage location number
-      integer :: jrch = 0                                                !none          |reach number
-      integer :: jrchq = 0                                               !              |
-      integer :: mrte = 0                                                !              |
-      integer :: ihout = 0                                               !none          |outflow hydrograph storage location number
-      integer :: iwst = 0                                                !              | 
-      integer :: isdch = 0                                               !              |
-      integer :: icmd = 0                                                !              |
-      integer :: ich = 0                                                 !none          |object number 
-      integer :: mobj_out = 0                                            !none          |end of loop
-      integer :: isd_chsur = 0                                           !              | 
-      integer, dimension (:), allocatable :: rcv_sum                     !              |
-      integer, dimension (:), allocatable :: dfn_sum                     !              |
-      integer, dimension (:), allocatable :: elem_cnt                    !              |
-      integer, dimension (:), allocatable :: defunit_num                 !              |
-      integer, dimension (:), allocatable :: ru_seq                      !              |
-      real, dimension (:), allocatable :: hyd_km2                        !              |  
-      integer, dimension (:), allocatable :: ob_order                    !              |
-      real, dimension(:,:,:), allocatable:: rchhr                        !              |
-      real, allocatable :: wyld_rto(:)                                   !mm=m3/(10*ha) |output runoff/precip ratio 
+      integer :: mhyd = 0                                                !!none          |max number of hydrographs
+      integer :: mcmd = 0                                                !!              |
+      integer :: inum2 = 0                                               !!none          |inflow hydrograph storage location number
+      integer :: jrch = 0                                                !!none          |reach number
+      integer :: jrchq = 0                                               !!              |
+      integer :: mrte = 0                                                !!              |
+      integer :: ihout = 0                                               !!none          |outflow hydrograph storage location number
+      integer :: iwst = 0                                                !!              | 
+      integer :: isdch = 0                                               !!              |
+      integer :: icmd = 0                                                !!              |
+      integer :: ich = 0                                                 !!none          |object number 
+      integer :: mobj_out = 0                                            !!none          |end of loop
+      integer :: isd_chsur = 0                                           !!              | 
+      integer, dimension (:), allocatable :: rcv_sum                     !!              |
+      integer, dimension (:), allocatable :: dfn_sum                     !!              |
+      integer, dimension (:), allocatable :: elem_cnt                    !!              |
+      integer, dimension (:), allocatable :: defunit_num                 !!              |
+      integer, dimension (:), allocatable :: ru_seq                      !!              |
+      real, dimension (:), allocatable :: hyd_km2                        !!              |  
+      integer, dimension (:), allocatable :: ob_order                    !!              |
+      real, dimension(:,:,:), allocatable:: rchhr                        !!              |
+      real, allocatable :: wyld_rto(:)                                   !!mm=m3/(10*ha) |output runoff/precip ratio 
       
       type hyd_output
         real :: flo = 0.               !! m^3           |volume of water
@@ -95,17 +95,17 @@
       type (hyd_output), dimension(:),allocatable, target :: wet
       type (hyd_output), dimension(:),allocatable :: res_om_init
       type (hyd_output), dimension(:),allocatable :: wet_om_init
-      type (hyd_output), dimension(:),allocatable :: wet_seep_day !Jaehak 2022 wetland seepage volume
+      type (hyd_output), dimension(:),allocatable :: wet_seep_day !!Jaehak 2022 wetland seepage volume
       type (hyd_output) :: resz
       type (hyd_output), pointer :: wbody       !! used for reservoir and wetlands
       
       type (hyd_output), dimension(:),allocatable :: om_init_water
       type (hyd_output), dimension(:),allocatable :: ch_om_water_init
       type (hyd_output), dimension(:),allocatable :: fp_om_water_init
-      type (hyd_output), dimension(:),allocatable :: ch_stor            !channel storage - max bankfull
-      type (hyd_output), dimension(:),allocatable :: fp_stor            !flood plain storage above wetland emergency
-      type (hyd_output), dimension(:),allocatable :: tot_stor           !total - channel + flood plain storage
-      type (hyd_output), dimension(:),allocatable :: wet_stor           !wetland storage in flood plain
+      type (hyd_output), dimension(:),allocatable :: ch_stor            !!channel storage - max bankfull
+      type (hyd_output), dimension(:),allocatable :: fp_stor            !!flood plain storage above wetland emergency
+      type (hyd_output), dimension(:),allocatable :: tot_stor           !!total - channel + flood plain storage
+      type (hyd_output), dimension(:),allocatable :: wet_stor           !!wetland storage in flood plain
       type (hyd_output), dimension(:),allocatable :: ch_stor_m
       type (hyd_output), dimension(:),allocatable :: ch_stor_y
       type (hyd_output), dimension(:),allocatable :: ch_stor_a
@@ -213,119 +213,119 @@
         real :: min = 1.e10
         real :: max = 0.
         real :: mean = 0
-        real, dimension (27) :: p = 0.   !probabilities for all points on the fdc
+        real, dimension (27) :: p = 0.   !!probabilities for all points on the fdc
       end type duration_curve_points
 
       type water_temperature_data
         character(len=16) :: name = ""
-        real :: sno_mlt = 1.        ! none          |coefficient influencing snowmelt temperature contributions
-        real :: gw = .97            ! none          |coefficient influencing groundwater temperature contributions
-        real :: sur_lat = 1.        ! none          |coefficient influencing surface and lateral flow temperature contributions
-        integer :: airlag_d = 6     ! days          |average air temperature lag
-        real :: hex_coef1 = .67     ! 1/hour        |heat transfer coefficient 1
-        real :: hex_coef2 = 1.16    ! 1/hour        |heat transfer coefficient 2
+        real :: sno_mlt = 1.        !! none          |coefficient influencing snowmelt temperature contributions
+        real :: gw = .97            !! none          |coefficient influencing groundwater temperature contributions
+        real :: sur_lat = 1.        !! none          |coefficient influencing surface and lateral flow temperature contributions
+        integer :: airlag_d = 6     !! days          |average air temperature lag
+        real :: hex_coef1 = .67     !! 1/hour        |heat transfer coefficient 1
+        real :: hex_coef2 = 1.16    !! 1/hour        |heat transfer coefficient 2
       end type water_temperature_data
       type (water_temperature_data) :: w_temp
 
       integer :: fdc_npts = 27
-      real, dimension (27) :: fdc_p = (/.1,.5,1.,2.,3.,5.,10.,15.,20.,25.,30.,35.,40.,45.,50.,55.,60.,65.,70.,75.,80.,85.,90.,95.,97.,98.,99./) !percent        |output percent on the fdc (input)
+      real, dimension (27) :: fdc_p = (/.1,.5,1.,2.,3.,5.,10.,15.,20.,25.,30.,35.,40.,45.,50.,55.,60.,65.,70.,75.,80.,85.,90.,95.,97.,98.,99./) !!percent        |output percent on the fdc (input)
       integer, dimension (27) :: fdc_days = (/1,2,4,7,11,18,37,55,73,91,110,128,146,164,182,201,219,237,256,274,292,310,329,347,354,358,361/)
-      real, dimension (27) :: fdc_n = 0.        !               |flow on the fdc at given percents
-      real, dimension (27) :: fdc_norm_mean = 0.  !               |normalized flow on the fdc at given percents
+      real, dimension (27) :: fdc_n = 0.        !!               |flow on the fdc at given percents
+      real, dimension (27) :: fdc_norm_mean = 0.  !!               |normalized flow on the fdc at given percents
       
       type flow_duration_curve
         integer :: mfe = 1
         integer :: mle = 1
-        type (duration_curve_points) :: p_md                                !median of all years
-        type (duration_curve_points), dimension (:), allocatable :: yr      !flow on the fdc at given percents for each year
+        type (duration_curve_points) :: p_md                                !!median of all years
+        type (duration_curve_points), dimension (:), allocatable :: yr      !!flow on the fdc at given percents for each year
       end type flow_duration_curve
                
       type inflow_unit_hyds
         !need for incoming hru or ru that are a fraction of the hru or ru
-        real, dimension (:,:), allocatable :: uh                  !unit hydrograph
-        real, dimension (:,:), allocatable :: hyd_flo             !flow hydrograph
+        real, dimension (:,:), allocatable :: uh                  !!unit hydrograph
+        real, dimension (:,:), allocatable :: hyd_flo             !!flow hydrograph
       end type inflow_unit_hyds
                
       type flashiness_index
         !flashiness index sum ((qi)-q(i-1)) / sum (qi)
-        real :: sum_q_q1 = 0.       !sum of difference in current day flow minus previous day flow
-        real :: sum_q = 0.          !sum of daily flow over simulation period
-        real :: q_prev = 0.         !previous day flow
-        real :: index = 0.          !index
+        real :: sum_q_q1 = 0.       !!sum of difference in current day flow minus previous day flow
+        real :: sum_q = 0.          !!sum of daily flow over simulation period
+        real :: q_prev = 0.         !!previous day flow
+        real :: index = 0.          !!index
       end type flashiness_index
                
       type object_connectivity
         character(len=16) :: name = "default"
-        character(len=8) :: typ = " "   !object type - ie hru, hru_lte, sub, chan, res, recall
-        integer :: nhyds = 0            !hru=5, chan=3 - see type hd_tot for each object
-        real :: lat = 0.                !latitude (degrees)
-        real :: long = 0.               !longitude (degrees)
-        real :: elev = 100.             !elevation (m)
-        real :: plaps = 0.              !precipitation lapse applied to object precip
-        real :: tlaps = 0.              !temperature lapse applied to object precip
-        real :: area_ha = 80.           !input drainag area - ha
-        integer :: sp_ob_no = 1         !spatial object number - ie: hru number, channel number, etc
-        real :: area_ha_calc = 80.      !calculated drainage area-ha. only for checking - doesn't work if routing across landscape
-        integer :: props = 1            !properties number from data base (ie hru.dat, sub.dat) - change props to data
-        character (len=50) :: wst_c = ""  !weather station name
-        integer :: wst = 1              !weather station number
-        integer :: constit = 0          !constituent data pointer to pesticides, pathogens, metals, salts
-        integer :: props2 = 0           !overbank connectivity pointer to landscape units - change props2 to overbank
-        character(len=16) :: ruleset = "" !points to the name of the dtbl in flo_con.dtl for out flow control
-        integer :: flo_dtbl = 0         !dtbl pointer for flow fraction of hydrograph
-        integer :: num = 1              !spatial object number- ie hru number corresponding to sequential command number
+        character(len=8) :: typ = " "   !!object type - ie hru, hru_lte, sub, chan, res, recall
+        integer :: nhyds = 0            !!hru=5, chan=3 - see type hd_tot for each object
+        real :: lat = 0.                !!latitude (degrees)
+        real :: long = 0.               !!longitude (degrees)
+        real :: elev = 100.             !!elevation (m)
+        real :: plaps = 0.              !!precipitation lapse applied to object precip
+        real :: tlaps = 0.              !!temperature lapse applied to object precip
+        real :: area_ha = 80.           !!input drainag area - ha
+        integer :: sp_ob_no = 1         !!spatial object number - ie: hru number, channel number, etc
+        real :: area_ha_calc = 80.      !!calculated drainage area-ha. only for checking - doesn't work if routing across landscape
+        integer :: props = 1            !!properties number from data base (ie hru.dat, sub.dat) - change props to data
+        character (len=50) :: wst_c = ""  !!weather station name
+        integer :: wst = 1              !!weather station number
+        integer :: constit = 0          !!constituent data pointer to pesticides, pathogens, metals, salts
+        integer :: props2 = 0           !!overbank connectivity pointer to landscape units - change props2 to overbank
+        character(len=16) :: ruleset = "" !!points to the name of the dtbl in flo_con.dtl for out flow control
+        integer :: flo_dtbl = 0         !!dtbl pointer for flow fraction of hydrograph
+        integer :: num = 1              !!spatial object number- ie hru number corresponding to sequential command number
                                         !this is the first column in hru_dat (doesn"t have to be sequential)
-        integer*8 :: gis_id = 0         !gis number for database purposes
-        integer :: fired = 0            !0=not fired; 1=fired off as a command
-        integer :: cmd_next = 0         !next command (object) number
-        integer :: cmd_prev = 0         !previous command (object) number
-        integer :: cmd_order = 0        !1=headwater,2=2nd order,etc
-        integer :: src_tot = 0          !total number of outgoing (source) objects
-        integer :: rcv_tot = 0          !total number of incoming (receiving) hydrographs
-        integer :: dfn_tot = 0          !total number of defining objects (ie hru"s within a subbasin)
-        integer :: ru_tot = 0           !number of routing units that contain this object
-        integer,  dimension (:), allocatable :: ru                  !subbasin the element is in
-        integer :: elem = 0             !subbasins element number for this object- used for routing over (can only have one)
-        integer :: flood_ch_lnk = 0     !channel the landscape unit is linked to
-        integer :: flood_ch_elem = 0    !landscape unit number - 1 is nearest to stream
-        integer :: flood_frac = 0       !fraction of flood flow assigned to the object
-        character (len=3), dimension (:), allocatable :: obtyp_out  !outflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
-        integer, dimension(:), allocatable :: obtypno_out           !outflow object type name
-        integer, dimension(:), allocatable :: obj_out               !outflow object
-        character (len=3), dimension (:), allocatable :: htyp_out   !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
-        integer, dimension (:), allocatable :: ihtyp_out            !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
-        real, dimension (:), allocatable :: frac_out                !fraction of hydrograph
-        character(len=8), dimension(:), allocatable :: obtyp_in     !inflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
-        integer, dimension(:), allocatable :: obtypno_in            !inflow object type number
+        integer*8 :: gis_id = 0         !!gis number for database purposes
+        integer :: fired = 0            !!0=not fired; 1=fired off as a command
+        integer :: cmd_next = 0         !!next command (object) number
+        integer :: cmd_prev = 0         !!previous command (object) number
+        integer :: cmd_order = 0        !!1=headwater,2=2nd order,etc
+        integer :: src_tot = 0          !!total number of outgoing (source) objects
+        integer :: rcv_tot = 0          !!total number of incoming (receiving) hydrographs
+        integer :: dfn_tot = 0          !!total number of defining objects (ie hru"s within a subbasin)
+        integer :: ru_tot = 0           !!number of routing units that contain this object
+        integer,  dimension (:), allocatable :: ru                  !!subbasin the element is in
+        integer :: elem = 0             !!subbasins element number for this object- used for routing over (can only have one)
+        integer :: flood_ch_lnk = 0     !!channel the landscape unit is linked to
+        integer :: flood_ch_elem = 0    !!landscape unit number - 1 is nearest to stream
+        integer :: flood_frac = 0       !!fraction of flood flow assigned to the object
+        character (len=3), dimension (:), allocatable :: obtyp_out  !!outflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
+        integer, dimension(:), allocatable :: obtypno_out           !!outflow object type name
+        integer, dimension(:), allocatable :: obj_out               !!outflow object
+        character (len=3), dimension (:), allocatable :: htyp_out   !!outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
+        integer, dimension (:), allocatable :: ihtyp_out            !!outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
+        real, dimension (:), allocatable :: frac_out                !!fraction of hydrograph
+        character(len=8), dimension(:), allocatable :: obtyp_in     !!inflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
+        integer, dimension(:), allocatable :: obtypno_in            !!inflow object type number
         integer, dimension(:), allocatable :: obj_in
-        character (len=3), dimension(:), allocatable :: htyp_in     !inflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
+        character (len=3), dimension(:), allocatable :: htyp_in     !!inflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
         integer, dimension(:), allocatable :: ihtyp_in
         real, dimension(:), allocatable :: frac_in
-        integer, dimension(:), allocatable :: rcvob_inhyd           !inflow hydrograph number of receiving object - used for dtbl flow fractions
-        type (flow_duration_curve) :: fdc                                   !use for daily flows and then use to get median of annual fdc"s
-        type (sorted_duration_curve), dimension(:),allocatable :: fdc_ll    !linked list of daily flow for year - dimensioned to 366
-        type (sorted_duration_curve), dimension(:),allocatable :: fdc_lla   !linked list of annual flow for simulation - dimensioned to nbyr
-        type (flashiness_index) :: flash_idx                                !flashiness index object
-        type (hyd_output) :: hin                                            !inflow hydrograph for surface runon - sum of all inflow hyds
-        type (hyd_output) :: hin_sur                                        !inflow hydrograph for surface runoff - sum of all surface inflow hyds
-        type (hyd_output) :: hin_lat                                        !inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
-        type (hyd_output) :: hin_til                                        !inflow hydrograph for tile flow - sum of all tile inflow hyds
-        type (hyd_output) :: hin_aqu                                        !inflow hydrograph for aquifer flow - sum of all aquifer inflow hyds
-        type (hyd_output), dimension(:), allocatable :: hd                  !daily hydrograph (ie 1=tot, 2= recharge, 3=surf, etc)
-        type (hyd_output), dimension(:), allocatable :: hd_aa               !ave annual hydrograph for hru for swift (ie 1=tot, 2= recharge, 3=surf, etc)
-        type (hyd_output), dimension(:,:), allocatable :: ts                !subdaily hydrographs
-        type (inflow_unit_hyds), dimension(:), allocatable :: hin_uh        !inflow unit hydrographs
-        real, dimension(:,:), allocatable :: uh                             !subdaily surface runoff unit hydrograph
-        real, dimension(:,:), allocatable :: hyd_flo                        !subdaily surface runoff hydrograph
-        real, dimension(:),allocatable :: tsin                              !inflow subdaily flow hydrograph
-        type (hyd_output) :: trans                                          !water transfer in water allocation
-        type (hyd_output) :: hin_tot                                        !total inflow hydrograph to the object
-        type (hyd_output) :: hout_tot                                       !total outflow hydrograph to the object
-        type (hyd_output) :: conc_prev                                      !concentration of previous timestep for watqual2e routine
-        real :: demand = 0.                                                 !water irrigation demand (ha-m)
-        integer :: day_cur = 0                                              !current hydrograph day in ts
-        integer :: day_max = 0                                              !maximum number of days to store the hydrograph
-        real :: peakrate = 0.                                               !peak flow rate during time step - m3/s
+        integer, dimension(:), allocatable :: rcvob_inhyd           !!inflow hydrograph number of receiving object - used for dtbl flow fractions
+        type (flow_duration_curve) :: fdc                                   !!use for daily flows and then use to get median of annual fdc"s
+        type (sorted_duration_curve), dimension(:),allocatable :: fdc_ll    !!linked list of daily flow for year - dimensioned to 366
+        type (sorted_duration_curve), dimension(:),allocatable :: fdc_lla   !!linked list of annual flow for simulation - dimensioned to nbyr
+        type (flashiness_index) :: flash_idx                                !!flashiness index object
+        type (hyd_output) :: hin                                            !!inflow hydrograph for surface runon - sum of all inflow hyds
+        type (hyd_output) :: hin_sur                                        !!inflow hydrograph for surface runoff - sum of all surface inflow hyds
+        type (hyd_output) :: hin_lat                                        !!inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
+        type (hyd_output) :: hin_til                                        !!inflow hydrograph for tile flow - sum of all tile inflow hyds
+        type (hyd_output) :: hin_aqu                                        !!inflow hydrograph for aquifer flow - sum of all aquifer inflow hyds
+        type (hyd_output), dimension(:), allocatable :: hd                  !!daily hydrograph (ie 1=tot, 2= recharge, 3=surf, etc)
+        type (hyd_output), dimension(:), allocatable :: hd_aa               !!ave annual hydrograph for hru for swift (ie 1=tot, 2= recharge, 3=surf, etc)
+        type (hyd_output), dimension(:,:), allocatable :: ts                !!subdaily hydrographs
+        type (inflow_unit_hyds), dimension(:), allocatable :: hin_uh        !!inflow unit hydrographs
+        real, dimension(:,:), allocatable :: uh                             !!subdaily surface runoff unit hydrograph
+        real, dimension(:,:), allocatable :: hyd_flo                        !!subdaily surface runoff hydrograph
+        real, dimension(:),allocatable :: tsin                              !!inflow subdaily flow hydrograph
+        type (hyd_output) :: trans                                          !!water transfer in water allocation
+        type (hyd_output) :: hin_tot                                        !!total inflow hydrograph to the object
+        type (hyd_output) :: hout_tot                                       !!total outflow hydrograph to the object
+        type (hyd_output) :: conc_prev                                      !!concentration of previous timestep for watqual2e routine
+        real :: demand = 0.                                                 !!water irrigation demand (ha-m)
+        integer :: day_cur = 0                                              !!current hydrograph day in ts
+        integer :: day_max = 0                                              !!maximum number of days to store the hydrograph
+        real :: peakrate = 0.                                               !!peak flow rate during time step - m3/s
         
         type (hyd_output), dimension(:),allocatable :: hin_d
         type (hyd_output), dimension(:),allocatable :: hin_m
@@ -341,88 +341,88 @@
         !rtb gwflow
         type (hyd_sep) :: hdsep,hdsep_in
         
-        integer, dimension(:), allocatable :: obj_subs                      !subbasins object number that contain this object
+        integer, dimension(:), allocatable :: obj_subs                      !!subbasins object number that contain this object
       end type object_connectivity
       type (object_connectivity), dimension(:), allocatable, save :: ob
       
       !water rights elements (objects) within the water rights object
       type water_rights_elements
         integer :: num = 0
-        character (len=16) :: ob_typ = ""       !object type - hru, channel, reservoir, etc
-        integer :: ob_num = 0                   !object number
-        character (len=16) :: irr_typ = ""      !character from irr.ops - was irr demand, minimum flow, flow fraction, etc
-        integer :: irr_no = 0                   !irrigation number from irr.ops - walk irr_typ
-        real :: amount = 0.                     !0 for irr demand; ha-m for min_flo; frac for min_frac
-        integer :: rights = 0                   !0-100 scale
+        character (len=16) :: ob_typ = ""       !!object type - hru, channel, reservoir, etc
+        integer :: ob_num = 0                   !!object number
+        character (len=16) :: irr_typ = ""      !!character from irr.ops - was irr demand, minimum flow, flow fraction, etc
+        integer :: irr_no = 0                   !!irrigation number from irr.ops - walk irr_typ
+        real :: amount = 0.                     !!0 for irr demand; ha-m for min_flo; frac for min_frac
+        integer :: rights = 0                   !!0-100 scale
       end type water_rights_elements
 
       !water allocation
       type irrigation_water_transfer
-        real :: demand = 0.                     !irrigation demand          |m3
-        real :: applied = 0.                    !irrigation applied         |mm
-        real :: runoff = 0.                     !irrigation surface runoff  |mm
-        real :: eff = 1.                        !irrigation efficiency as a fraction of irrigation. Jaehak 2022
-        real :: frac_surq = 0.                  !fraction of irrigation lost in runoff flow. Jaehak 2022
-        real :: no3 = 0.                        !nitrate concentration in irrigation water  |kg   Jaehak 2023
-        real :: salt = 0.                       !salt concentration in irrigation water  |ppm       
+        real :: demand = 0.                     !!irrigation demand          |m3
+        real :: applied = 0.                    !!irrigation applied         |mm
+        real :: runoff = 0.                     !!irrigation surface runoff  |mm
+        real :: eff = 1.                        !!irrigation efficiency as a fraction of irrigation. Jaehak 2022
+        real :: frac_surq = 0.                  !!fraction of irrigation lost in runoff flow. Jaehak 2022
+        real :: no3 = 0.                        !!nitrate concentration in irrigation water  |kg   Jaehak 2023
+        real :: salt = 0.                       !!salt concentration in irrigation water  |ppm       
         !hyd_output units are in mm and mg/L
-        type (hyd_output) :: water              !irrigation water
+        type (hyd_output) :: water              !!irrigation water
       end type irrigation_water_transfer
-      type (irrigation_water_transfer),dimension(:),allocatable:: irrig         !dimension by hru
+      type (irrigation_water_transfer),dimension(:),allocatable:: irrig         !!dimension by hru
       
       !recall hydrograph inputs
       type recall_hydrograph_inputs
         character (len=25) :: name = ""
-        integer :: num = 0                    !number of elements
-        integer :: typ = -1                   !recall type - 0=subdaily, 1=day, 2=mon, 3=year
-        character(len=25) :: filename = ""    !filename
+        integer :: num = 0                    !!number of elements
+        integer :: typ = -1                   !!recall type - 0=subdaily, 1=day, 2=mon, 3=year
+        character(len=25) :: filename = ""    !!filename
         !hd and hyd_flo units are in cms and mg/L
-        type (hyd_output), dimension (:,:), allocatable :: hd   !m3/s for flow  |input total hyd for daily, monthly, annual and exco
-        real, dimension (:,:), allocatable :: hyd_flo           !m3/s           |input total flow hyd only for subdaily recall
+        type (hyd_output), dimension (:,:), allocatable :: hd   !!m3/s for flow  |input total hyd for daily, monthly, annual and exco
+        real, dimension (:,:), allocatable :: hyd_flo           !!m3/s           |input total flow hyd only for subdaily recall
         integer :: start_yr = 0         !! start year of point source file
         integer :: end_yr = 0           !! end year of point source file
       end type recall_hydrograph_inputs
       type (recall_hydrograph_inputs),dimension(:),allocatable:: recall
 
       type spatial_objects
-        integer :: objs = 0      !number of objects or 1st object command
-        integer :: hru = 0       !1-number of hru"s or 1st hru command
-        integer :: hru_lte = 0   !2-number of hru_lte"s or 1st hru_lte command
+        integer :: objs = 0      !!number of objects or 1st object command
+        integer :: hru = 0       !!1-number of hru"s or 1st hru command
+        integer :: hru_lte = 0   !!2-number of hru_lte"s or 1st hru_lte command
         
-        integer :: ru = 0        !3-number of ru"s or 1st ru command
-        integer :: gwflow = 0    !4-number of gwflow"s or 1st gwflow command !rtb gwflow
-        integer :: aqu = 0       !5-number of aquifer"s or 1st aquifer command
-        integer :: chan = 0      !6-number of chan"s or 1st chan command
-        integer :: res = 0       !7-number of res"s or 1st res command
-        integer :: recall = 0    !8-number of recdays"s or 1st recday command
-        integer :: exco = 0      !11-number of exco"s or 1st export coeff command
-        integer :: dr = 0        !12-number of dr"s or 1st del ratio command
-        integer :: canal = 0     !13-number of canal"s or 1st canal command
-        integer :: pump = 0      !14-number of pump"s or 1st pump command
-        integer :: outlet = 0    !15-number of outlet"s or 1st outlet command
-        integer :: chandeg = 0   !16-number of swat-deg channel"s or 1st swat-deg channel command
-        integer :: aqu2d = 0     !17-not currently used (number of 2D aquifer"s or 1st 2D aquifer command)
-        integer :: herd = 0      !18-not currently used (number of herds)
-        integer :: wro = 0       !19-not currently used (number of water rights)
+        integer :: ru = 0        !!3-number of ru"s or 1st ru command
+        integer :: gwflow = 0    !!4-number of gwflow"s or 1st gwflow command !rtb gwflow
+        integer :: aqu = 0       !!5-number of aquifer"s or 1st aquifer command
+        integer :: chan = 0      !!6-number of chan"s or 1st chan command
+        integer :: res = 0       !!7-number of res"s or 1st res command
+        integer :: recall = 0    !!8-number of recdays"s or 1st recday command
+        integer :: exco = 0      !!11-number of exco"s or 1st export coeff command
+        integer :: dr = 0        !!12-number of dr"s or 1st del ratio command
+        integer :: canal = 0     !!13-number of canal"s or 1st canal command
+        integer :: pump = 0      !!14-number of pump"s or 1st pump command
+        integer :: outlet = 0    !!15-number of outlet"s or 1st outlet command
+        integer :: chandeg = 0   !!16-number of swat-deg channel"s or 1st swat-deg channel command
+        integer :: aqu2d = 0     !!17-not currently used (number of 2D aquifer"s or 1st 2D aquifer command)
+        integer :: herd = 0      !!18-not currently used (number of herds)
+        integer :: wro = 0       !!19-not currently used (number of water rights)
       end type spatial_objects
-      type (spatial_objects) :: sp_ob       !total number of the object
-      type (spatial_objects) :: sp_ob1      !first sequential number of the object
+      type (spatial_objects) :: sp_ob       !!total number of the object
+      type (spatial_objects) :: sp_ob1      !!first sequential number of the object
             
       type object_total_hydrographs
-        integer :: hru = 5          !1=total 2=recharge 3=surface 4=lateral 5= tile
-        integer :: hru_lte = 5      !1=total 2=recharge 3=surface 4=lateral 5= tile
-        integer :: ru = 5           !1=total 2=recharge 3=surface 4=lateral 5= tile
-        integer :: gwflow = 1       !1=total
-        integer :: aqu = 2          !1=return flow 2=deep perc
-        integer :: chan = 3         !1=total 2=recharge 3=overbank
-        integer :: res = 2          !1=total 2=recharge 
-        integer :: recall = 1       !1=total
-        integer :: exco = 2         !1=surface 2=groundwater
-        integer :: dr = 2           !1=surface 2=groundwater
-        integer :: pump = 1         !1=total
-        integer :: outlet = 1       !1=total
-        integer :: chandeg = 3      !1=total 2=recharge 3=overbank
-        integer :: aqu2d = 2        !1=return flow 3=deep perc
+        integer :: hru = 5          !!1=total 2=recharge 3=surface 4=lateral 5= tile
+        integer :: hru_lte = 5      !!1=total 2=recharge 3=surface 4=lateral 5= tile
+        integer :: ru = 5           !!1=total 2=recharge 3=surface 4=lateral 5= tile
+        integer :: gwflow = 1       !!1=total
+        integer :: aqu = 2          !!1=return flow 2=deep perc
+        integer :: chan = 3         !!1=total 2=recharge 3=overbank
+        integer :: res = 2          !!1=total 2=recharge 
+        integer :: recall = 1       !!1=total
+        integer :: exco = 2         !!1=surface 2=groundwater
+        integer :: dr = 2           !!1=surface 2=groundwater
+        integer :: pump = 1         !!1=total
+        integer :: outlet = 1       !!1=total
+        integer :: chandeg = 3      !!1=total 2=recharge 3=overbank
+        integer :: aqu2d = 2        !!1=return flow 3=deep perc
         integer :: herd = 1
         integer :: wro = 1
       end type object_total_hydrographs
@@ -431,68 +431,68 @@
       type routing_unit_data
         character(len=16) :: name = ""
         integer :: num_tot = 0
-        integer, dimension (:), allocatable :: num             !points to subbasin element (sub_elem)
+        integer, dimension (:), allocatable :: num             !!points to subbasin element (sub_elem)
       end type routing_unit_data
       type (routing_unit_data),dimension(:), allocatable:: ru_def
       
       type routing_unit_elements
         character(len=16) :: name = ""
-        integer :: obj = 1              !object number
-        character (len=3) :: obtyp = "" !object type- 1=hru, 2=hru_lte, 11=export coef, etc
-        integer :: obtypno = 0          !2-number of hru_lte"s or 1st hru_lte command
-        real :: frac = 0                !fraction of element in ru (expansion factor)
-        character(len=16) :: dr_name = "" !name of dr in delratio.del
-        type (hyd_output) :: dr         !calculated (or input in delratio.del) dr's for element
+        integer :: obj = 1              !!object number
+        character (len=3) :: obtyp = "" !!object type- 1=hru, 2=hru_lte, 11=export coef, etc
+        integer :: obtypno = 0          !!2-number of hru_lte"s or 1st hru_lte command
+        real :: frac = 0                !!fraction of element in ru (expansion factor)
+        character(len=16) :: dr_name = "" !!name of dr in delratio.del
+        type (hyd_output) :: dr         !!calculated (or input in delratio.del) dr's for element
       end type routing_unit_elements
       type (routing_unit_elements), dimension(:), allocatable :: ru_elem
       
-      integer,  dimension(:), allocatable :: ielem_ru   !sequential counter for ru the hru is in
+      integer,  dimension(:), allocatable :: ielem_ru   !!sequential counter for ru the hru is in
             
       !channel-surface element linkage for overbank flooding
       type channel_surface_elements
         character(len=16) :: name = ""
-        integer :: num = 0                                      !number of elements
-        integer :: chnum = 0                                    !channel number
+        integer :: num = 0                                      !!number of elements
+        integer :: chnum = 0                                    !!channel number
         integer :: resnum = 0
-        character (len=3), dimension(:), allocatable :: obtyp   !object type- 1=hru, 2=hru_lte, 11=export coef, etc
-        integer, dimension(:), allocatable :: obtypno           !2-number of hru_lte"s or 1st hru_lte command
+        character (len=3), dimension(:), allocatable :: obtyp   !!object type- 1=hru, 2=hru_lte, 11=export coef, etc
+        integer, dimension(:), allocatable :: obtypno           !!2-number of hru_lte"s or 1st hru_lte command
         
-        real, dimension(:), allocatable :: wid                  !maxflood plain width for each element
-        real, dimension(:), allocatable :: dep                  !max flood depth for each element
-        real, dimension(:), allocatable :: flood_volmx          !max flood volume for each landscape unit
-        type (hyd_output), dimension (:), allocatable :: hd     !flood water for each element
+        real, dimension(:), allocatable :: wid                  !!maxflood plain width for each element
+        real, dimension(:), allocatable :: dep                  !!max flood depth for each element
+        real, dimension(:), allocatable :: flood_volmx          !!max flood volume for each landscape unit
+        type (hyd_output), dimension (:), allocatable :: hd     !!flood water for each element
       end type channel_surface_elements
       type (channel_surface_elements),dimension(:),allocatable :: ch_sur
       
       !channel data for channel-aquifer linkage for geomorphic base flow model
       type geomorphic_baseflow_channel_data
         !linked list to sort the flow duration curves
-        real :: area = 0.           !drainage area of the channel
-        real :: len = 0.            !length of the channel
-        real :: len_left = 0.       !fraction of chan length left when channel becomes non-contributing
-        real :: flo_fr = 0.         !fraction of aquifer baseflow for each channel
+        real :: area = 0.           !!drainage area of the channel
+        real :: len = 0.            !!length of the channel
+        real :: len_left = 0.       !!fraction of chan length left when channel becomes non-contributing
+        real :: flo_fr = 0.         !!fraction of aquifer baseflow for each channel
       end type geomorphic_baseflow_channel_data
-      type (geomorphic_baseflow_channel_data),dimension(:),allocatable :: aqu_cha       !unsorted
+      type (geomorphic_baseflow_channel_data),dimension(:),allocatable :: aqu_cha       !!unsorted
       
       !channel-aquifer linkage for geomorphic base flow model
       type channel_aquifer_elements
         character(len=16) :: name = ""
-        integer :: num_tot = 0                          !number of elements
-        integer, dimension(:), allocatable :: num       !channel numbers
-        real :: len_tot = 0.                            !total length of channels in aquifer (km)
-        type (hyd_output) :: hd                         !baseflow hydrograph for the aquifer
+        integer :: num_tot = 0                          !!number of elements
+        integer, dimension(:), allocatable :: num       !!channel numbers
+        real :: len_tot = 0.                            !!total length of channels in aquifer (km)
+        type (hyd_output) :: hd                         !!baseflow hydrograph for the aquifer
         type (geomorphic_baseflow_channel_data), dimension(:),allocatable :: ch
       end type channel_aquifer_elements
-      type (channel_aquifer_elements),dimension(:),allocatable :: aq_ch         !sorted by drainage area (smallest first)
+      type (channel_aquifer_elements),dimension(:),allocatable :: aq_ch         !!sorted by drainage area (smallest first)
       
       !delivery ratio - all fractions 
-      type (hyd_output), dimension(:), allocatable :: dr          !delivery ratio for objects- chan, res, lu
+      type (hyd_output), dimension(:), allocatable :: dr          !!delivery ratio for objects- chan, res, lu
 
       !treatment - fraction of flow and ppm 
-      type (hyd_output), dimension(:), allocatable :: trt         !wastewater treatment plants
+      type (hyd_output), dimension(:), allocatable :: trt         !!wastewater treatment plants
 
       !export coefficient - m3, t, kg
-      type (hyd_output), dimension(:), allocatable :: exco        !export coefficient
+      type (hyd_output), dimension(:), allocatable :: exco        !!export coefficient
 
       type hyd_header                                       
         character (len=17) :: flo  =    "              flo"      !! ha-m         |volume of water
@@ -850,7 +850,7 @@
       end type wtmp_header_units
       type (wtmp_header_units) :: wtmp_units 
       
-       type hyd_header_units  !pts (point source)/deposition/ru (routing_unit) files output uses this units header
+       type hyd_header_units  !!pts (point source)/deposition/ru (routing_unit) files output uses this units header
         character (len=11) :: day    =  "           "
         character (len=12) :: mo     =  "            "
         character (len=12) :: day_mo =  "            "
@@ -878,7 +878,7 @@
       end type hyd_header_units
       type (hyd_header_units) :: hyd_hdr_units
       
-      type hyd_header_units2  !hydin/hydout files uses this units header 
+      type hyd_header_units2  !!hydin/hydout files uses this units header 
         character (len=11) :: day    =  "           "
         character (len=12) :: mo     =  "            "
         character (len=12) :: day_mo =  "            "

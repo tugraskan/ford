@@ -2,23 +2,23 @@
     
       implicit none
       
-      integer :: ppet_ndays = 30                                !none          |number of days for precip/pet sum
-      integer :: ppet_mce = 0                                   !none          |current element in precip/pet linked list
-      real, dimension (:,:), allocatable :: frad                !none          |fraction of solar radiation occurring 
+      integer :: ppet_ndays = 30                                !!none          |number of days for precip/pet sum
+      integer :: ppet_mce = 0                                   !!none          |current element in precip/pet linked list
+      real, dimension (:,:), allocatable :: frad                !!none          |fraction of solar radiation occurring 
                                                                 !              |during hour in day in HRU
-      real, dimension (:,:), allocatable :: wgncur              !none          |parameter to predict the impact of precip on
+      real, dimension (:,:), allocatable :: wgncur              !!none          |parameter to predict the impact of precip on
                                                                 !              |other weather attributes
-      real, dimension (:,:), allocatable :: wgnold              !none          |previous value of wgncur(:,:)
-      integer, dimension (:), allocatable :: elevp              !m             |elevation of precipitation gage station
-      integer, dimension (:), allocatable :: elevt              !m             |elevation of temperature gage station
-      integer, dimension (:), allocatable :: idg                !none          |array location of random number seed
+      real, dimension (:,:), allocatable :: wgnold              !!none          |previous value of wgncur(:,:)
+      integer, dimension (:), allocatable :: elevp              !!m             |elevation of precipitation gage station
+      integer, dimension (:), allocatable :: elevt              !!m             |elevation of temperature gage station
+      integer, dimension (:), allocatable :: idg                !!none          |array location of random number seed
                                                                 !              |used for a given process
-      integer, dimension (:,:), allocatable :: rndseed          !none          |random number generator seeds
-      real, dimension (:), allocatable :: rnd2                  !none          |random number between 0.0 and 1.0
-      real, dimension (:), allocatable :: rnd3                  !none          |random number between 0.0 and 1.0
-      real, dimension (:), allocatable :: rnd8                  !none          |random number between 0.0 and 1.0
-      real, dimension (:), allocatable :: rnd9                  !none          |random number between 0.0 and 1.0
-      integer :: rndseed_cond = 748932582   ! random number seed for dtbl conditional
+      integer, dimension (:,:), allocatable :: rndseed          !!none          |random number generator seeds
+      real, dimension (:), allocatable :: rnd2                  !!none          |random number between 0.0 and 1.0
+      real, dimension (:), allocatable :: rnd3                  !!none          |random number between 0.0 and 1.0
+      real, dimension (:), allocatable :: rnd8                  !!none          |random number between 0.0 and 1.0
+      real, dimension (:), allocatable :: rnd9                  !!none          |random number between 0.0 and 1.0
+      integer :: rndseed_cond = 748932582   !! random number seed for dtbl conditional
       real, dimension(:), allocatable :: co2y
 
       type weather_generator_db      
@@ -126,36 +126,36 @@
 
       type weather_station
         character(len=50) :: name = "Farmer Branch IL"
-        real :: lat = 0.                    ! degrees    |latitude
+        real :: lat = 0.                    !! degrees    |latitude
         type (weather_codes_station_char) :: wco_c
         type (weather_codes_station) :: wco 
         type (weather_daily) :: weat
-        real :: precip_aa = 0.              ! mm         |average annual precipitation
-        real :: pet_aa = 0.                 ! mm         |average annual potential ET
-        integer :: pcp_ts = 0               ! 1/day      |precipitation time steps per day (0 or 1 = daily)
-        real, dimension(12) :: rfinc = 0    ! deg C      |monthly precipitation adjustment
-        real, dimension(12) :: tmpinc = 0   ! deg C      |monthly temperature adjustment
-        real, dimension(12) :: radinc = 0   ! MJ/m^2     |monthly solar radiation adjustment
-        real, dimension(12) :: huminc = 0   ! none       |monthly humidity adjustment
-        real, dimension(:), allocatable :: tlag     ! deg C      |daily average temperature for channel temp lag
-        real :: airlag_temp = 0.            ! deg C      |average temperature w_temp%airlag_d days ago
-        integer :: tlag_mne = 1             !            |next element (day) for the air temp linked list
+        real :: precip_aa = 0.              !! mm         |average annual precipitation
+        real :: pet_aa = 0.                 !! mm         |average annual potential ET
+        integer :: pcp_ts = 0               !! 1/day      |precipitation time steps per day (0 or 1 = daily)
+        real, dimension(12) :: rfinc = 0    !! deg C      |monthly precipitation adjustment
+        real, dimension(12) :: tmpinc = 0   !! deg C      |monthly temperature adjustment
+        real, dimension(12) :: radinc = 0   !! MJ/m^2     |monthly solar radiation adjustment
+        real, dimension(12) :: huminc = 0   !! none       |monthly humidity adjustment
+        real, dimension(:), allocatable :: tlag     !! deg C      |daily average temperature for channel temp lag
+        real :: airlag_temp = 0.            !! deg C      |average temperature w_temp%airlag_d days ago
+        integer :: tlag_mne = 1             !!            |next element (day) for the air temp linked list
       end type weather_station
       type (weather_station), dimension(:),allocatable :: wst
          
       type climate_change_variables
         character(len=50) :: name = "Increment or Scenario"
-        integer :: ref_yr = 0               ! none       |reference year to begin incremental adjustments
-        real :: co2inc = 0                  ! ppm        |annual CO2 increment
-        real, dimension(12) :: rfinc = 0    ! deg C      |monthly precipitation annual increment
-        real, dimension(12) :: tmpinc = 0   ! deg C      |monthly temperature annual increment
-        real, dimension(12) :: radinc = 0   ! MJ/m^2     |monthly solar radiation annual increment
-        real, dimension(12) :: huminc = 0   ! none       |monthly humidity annual increment
-        real :: co2scen = 0                 ! ppm        |annual CO2 scenario adjustment
-        real, dimension(12) :: rfscen = 0   ! deg C      |monthly precipitation scenario adjustment
-        real, dimension(12) :: tmpscen = 0  ! deg C      |monthly temperature scenario adjustment
-        real, dimension(12) :: radscen = 0  ! MJ/m^2     |monthly solar radiation scenario adjustment
-        real, dimension(12) :: humscen = 0  ! none       |monthly humidity scenario adjustment
+        integer :: ref_yr = 0               !! none       |reference year to begin incremental adjustments
+        real :: co2inc = 0                  !! ppm        |annual CO2 increment
+        real, dimension(12) :: rfinc = 0    !! deg C      |monthly precipitation annual increment
+        real, dimension(12) :: tmpinc = 0   !! deg C      |monthly temperature annual increment
+        real, dimension(12) :: radinc = 0   !! MJ/m^2     |monthly solar radiation annual increment
+        real, dimension(12) :: huminc = 0   !! none       |monthly humidity annual increment
+        real :: co2scen = 0                 !! ppm        |annual CO2 scenario adjustment
+        real, dimension(12) :: rfscen = 0   !! deg C      |monthly precipitation scenario adjustment
+        real, dimension(12) :: tmpscen = 0  !! deg C      |monthly temperature scenario adjustment
+        real, dimension(12) :: radscen = 0  !! MJ/m^2     |monthly solar radiation scenario adjustment
+        real, dimension(12) :: humscen = 0  !! none       |monthly humidity scenario adjustment
       end type climate_change_variables
          
       type climate_measured_data
@@ -245,7 +245,7 @@
       type object_road_salt
         type (road_salt), dimension (:), allocatable :: salt
       end type object_road_salt
-      type (object_road_salt), dimension (:), allocatable :: rdapp_salt !applied road salt
+      type (object_road_salt), dimension (:), allocatable :: rdapp_salt !!applied road salt
       
       character(len=50), dimension(:), allocatable :: wst_n
       character(len=50), dimension(:), allocatable :: wgn_n

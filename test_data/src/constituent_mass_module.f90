@@ -6,87 +6,87 @@
       character(len=16), dimension(:), allocatable :: path_init_name
       character(len=16), dimension(:), allocatable :: hmet_init_name
       character(len=16), dimension(:), allocatable :: salt_init_name
-      character(len=16), dimension(:), allocatable :: cs_init_name !rtb cs
+      character(len=16), dimension(:), allocatable :: cs_init_name !!rtb cs
 
       
       type constituents
-        integer :: num_tot = 0                                      !number of total constituents simulated
-        integer :: num_pests = 0                                    !number of pesticides simulated
-        character (len=16), dimension(:), allocatable :: pests      !name of the pesticides- points to pesticide database
+        integer :: num_tot = 0                                      !!number of total constituents simulated
+        integer :: num_pests = 0                                    !!number of pesticides simulated
+        character (len=16), dimension(:), allocatable :: pests      !!name of the pesticides- points to pesticide database
         !!need to crosswalk pests to get pest_num for database - use sequential for object
-        integer, dimension(:), allocatable :: pest_num              !number of the pesticides- points to pesticide database
-        integer :: num_paths = 0                                    !number of pathogens simulated
-        character (len=16), dimension(:), allocatable :: paths      !name of the pathogens- points to pathogens database
-        integer, dimension(:), allocatable :: path_num              !number of the pathogens- points to pathogens database
-        integer :: num_metals = 0                                   !number of heavy metals simulated
-        character (len=16), dimension(:), allocatable :: metals     !name of the heavy metals- points to heavy metals database
-        integer, dimension(:), allocatable :: metals_num            !number of the heavy metals- points to heavy metals database
-        integer :: num_salts = 0                                    !number of salt ions simulated
-        character (len=16), dimension(:), allocatable :: salts      !name of the salts - points to salts database
-        integer, dimension(:), allocatable :: salts_num             !number of the salts - points to salts database
-        integer :: num_cs = 0                                       !number of other constituents simulated
-        character (len=16), dimension(:), allocatable :: cs         !name of the constituents - points to cs database
-        integer, dimension(:), allocatable :: cs_num                !number of the constituents - points to salts database
+        integer, dimension(:), allocatable :: pest_num              !!number of the pesticides- points to pesticide database
+        integer :: num_paths = 0                                    !!number of pathogens simulated
+        character (len=16), dimension(:), allocatable :: paths      !!name of the pathogens- points to pathogens database
+        integer, dimension(:), allocatable :: path_num              !!number of the pathogens- points to pathogens database
+        integer :: num_metals = 0                                   !!number of heavy metals simulated
+        character (len=16), dimension(:), allocatable :: metals     !!name of the heavy metals- points to heavy metals database
+        integer, dimension(:), allocatable :: metals_num            !!number of the heavy metals- points to heavy metals database
+        integer :: num_salts = 0                                    !!number of salt ions simulated
+        character (len=16), dimension(:), allocatable :: salts      !!name of the salts - points to salts database
+        integer, dimension(:), allocatable :: salts_num             !!number of the salts - points to salts database
+        integer :: num_cs = 0                                       !!number of other constituents simulated
+        character (len=16), dimension(:), allocatable :: cs         !!name of the constituents - points to cs database
+        integer, dimension(:), allocatable :: cs_num                !!number of the constituents - points to salts database
       end type constituents
       type (constituents) :: cs_db
 
       type exco_pesticide
-        real, dimension (:), allocatable :: pest         !pesticide hydrographs
+        real, dimension (:), allocatable :: pest         !!pesticide hydrographs
       end type exco_pesticide
-      type (exco_pesticide), dimension (:), allocatable :: exco_pest        !export coefficients
+      type (exco_pesticide), dimension (:), allocatable :: exco_pest        !!export coefficients
       
       type dr_pesticide
-        real, dimension (:), allocatable :: pest         !pesticide delivery
+        real, dimension (:), allocatable :: pest         !!pesticide delivery
       end type dr_pesticide
-      type (dr_pesticide), dimension (:), allocatable :: dr_pest            !delivery ratios
+      type (dr_pesticide), dimension (:), allocatable :: dr_pest            !!delivery ratios
       
       type exco_pathogens
-        real, dimension (:), allocatable :: path         !pesticide hydrographs
+        real, dimension (:), allocatable :: path         !!pesticide hydrographs
       end type exco_pathogens
-      type (exco_pathogens), dimension (:), allocatable :: exco_path        !export coefficients
+      type (exco_pathogens), dimension (:), allocatable :: exco_path        !!export coefficients
       
       type dr_pathogens
-        real, dimension (:), allocatable :: path         !pathogen delivery
+        real, dimension (:), allocatable :: path         !!pathogen delivery
       end type dr_pathogens
-      type (dr_pathogens), dimension (:), allocatable :: dr_path            !delivery ratios
+      type (dr_pathogens), dimension (:), allocatable :: dr_path            !!delivery ratios
       
       type exco_heavy_metals
-        real, dimension (:), allocatable :: hmet                            !heavy metals hydrographs
+        real, dimension (:), allocatable :: hmet                            !!heavy metals hydrographs
       end type exco_heavy_metals
-      type (exco_heavy_metals), dimension (:), allocatable :: exco_hmet     !export coefficients
+      type (exco_heavy_metals), dimension (:), allocatable :: exco_hmet     !!export coefficients
       
       type dr_heavy_metals
-        real, dimension (:), allocatable :: hmet                            !heavy metals delivery
+        real, dimension (:), allocatable :: hmet                            !!heavy metals delivery
       end type dr_heavy_metals
-      type (dr_heavy_metals), dimension (:), allocatable :: dr_hmet         !delivery ratios
+      type (dr_heavy_metals), dimension (:), allocatable :: dr_hmet         !!delivery ratios
       
       type exco_salts
-        real, dimension (:), allocatable :: salt                            !salts hydrographs
+        real, dimension (:), allocatable :: salt                            !!salts hydrographs
       end type exco_salts
-      type (exco_salts), dimension (:), allocatable :: exco_salt            !export coefficients
+      type (exco_salts), dimension (:), allocatable :: exco_salt            !!export coefficients
       
       type dr_salts
-        real, dimension (:), allocatable :: salt                            !salts delivery
+        real, dimension (:), allocatable :: salt                            !!salts delivery
       end type dr_salts
-      type (dr_salts), dimension (:), allocatable :: dr_salt                !delivery ratios
+      type (dr_salts), dimension (:), allocatable :: dr_salt                !!delivery ratios
       
       type salt_solids_soil
-        real, dimension (:), allocatable :: solid                               !salt solid by soil layer
+        real, dimension (:), allocatable :: solid                               !!salt solid by soil layer
       end type salt_solids_soil
-      type (salt_solids_soil), dimension (:), allocatable :: sol_salt_solid     !salt solid by hru
+      type (salt_solids_soil), dimension (:), allocatable :: sol_salt_solid     !!salt solid by hru
 
       ! constituent mass - soil, plant, aquifer, and channels
       type constituent_mass
-        real, dimension (:), allocatable :: pest        !kg/ha          |pesticide in soil layer
-        real, dimension (:), allocatable :: path        !pathogen hydrographs
-        real, dimension (:), allocatable :: hmet        !heavy metal hydrographs 
-        real, dimension (:), allocatable :: salt        !salt ion mass (kg/ha)
-        real, dimension (:), allocatable :: salt_min    !salt mineral hydrographs
-        real, dimension (:), allocatable :: saltc       !salt ion concentrations (mg/L)
-        real, dimension (:), allocatable :: cs          !constituent mass (kg/ha)
-        real, dimension (:), allocatable :: csc         !constituent concentration (mg/L)
-        real, dimension (:), allocatable :: cs_sorb     !sorbed constituent mass (kg/ha)
-        real, dimension (:), allocatable :: csc_sorb    !sorbed constituent concentration (mg/kg)
+        real, dimension (:), allocatable :: pest        !!kg/ha          |pesticide in soil layer
+        real, dimension (:), allocatable :: path        !!pathogen hydrographs
+        real, dimension (:), allocatable :: hmet        !!heavy metal hydrographs 
+        real, dimension (:), allocatable :: salt        !!salt ion mass (kg/ha)
+        real, dimension (:), allocatable :: salt_min    !!salt mineral hydrographs
+        real, dimension (:), allocatable :: saltc       !!salt ion concentrations (mg/L)
+        real, dimension (:), allocatable :: cs          !!constituent mass (kg/ha)
+        real, dimension (:), allocatable :: csc         !!constituent concentration (mg/L)
+        real, dimension (:), allocatable :: cs_sorb     !!sorbed constituent mass (kg/ha)
+        real, dimension (:), allocatable :: csc_sorb    !!sorbed constituent concentration (mg/kg)
       end type constituent_mass
       
       ! irrigation water constituent mass - dimensioned by hru
@@ -100,9 +100,9 @@
 
       ! plant constituent mass - dimensioned by hru
       type plant_constituent_mass
-        type (constituent_mass), dimension (:), allocatable :: pl_in    !constituent in plant
-        type (constituent_mass), dimension (:), allocatable :: pl_on    !constituent on plant
-        type (constituent_mass), dimension (:), allocatable :: pl_up    !constituent uptake by plant
+        type (constituent_mass), dimension (:), allocatable :: pl_in    !!constituent in plant
+        type (constituent_mass), dimension (:), allocatable :: pl_on    !!constituent on plant
+        type (constituent_mass), dimension (:), allocatable :: pl_up    !!constituent uptake by plant
       end type plant_constituent_mass
       
       type (plant_constituent_mass), dimension (:), allocatable :: cs_pl
@@ -122,10 +122,10 @@
         real, dimension (:), allocatable :: pest
         real, dimension (:), allocatable :: path
         real, dimension (:), allocatable :: hmet
-        real, dimension (:), allocatable :: salt        !salt ion mass (kg)
-        real, dimension (:), allocatable :: saltc       !salt ion concentrations (g/m3)
-        real, dimension (:), allocatable :: cs          !constituent mass (kg)
-        real, dimension (:), allocatable :: csc         !constituent concentration (g/m3)
+        real, dimension (:), allocatable :: salt        !!salt ion mass (kg)
+        real, dimension (:), allocatable :: saltc       !!salt ion concentrations (g/m3)
+        real, dimension (:), allocatable :: cs          !!constituent mass (kg)
+        real, dimension (:), allocatable :: csc         !!constituent concentration (g/m3)
       end type constituent_mass_res
       
       ! storing salt and constituent mass in reservoirs
@@ -185,11 +185,11 @@
       !recall salinity inputs (rtb salt)
       type recall_salt_inputs
          character (len=16) :: name = ""
-         integer :: typ = 0                    !recall type - 1=day, 2=mon, 3=year
-         character(len=30) :: filename = ""    !filename
-         integer :: start_yr = 0               !start year of point source file
-         integer :: end_yr = 0                 !end year of point source file
-         integer :: pts_type = 0               !1 = within watershed; 2 = from outside watershed
+         integer :: typ = 0                    !!recall type - 1=day, 2=mon, 3=year
+         character(len=30) :: filename = ""    !!filename
+         integer :: start_yr = 0               !!start year of point source file
+         integer :: end_yr = 0                 !!end year of point source file
+         integer :: pts_type = 0               !!1 = within watershed; 2 = from outside watershed
          type (constituent_mass), dimension (:,:), allocatable :: hd_salt
       end type recall_salt_inputs
       type (recall_salt_inputs), dimension(:),allocatable:: rec_salt
@@ -197,11 +197,11 @@
       !recall constituent inputs (rtb cs)
       type recall_cs_inputs
          character (len=16) :: name = ""
-         integer :: typ = 0                    !recall type - 1=day, 2=mon, 3=year
-         character(len=30) :: filename = ""    !filename
-         integer :: start_yr = 0               !start year of point source file
-         integer :: end_yr = 0                 !end year of point source file
-         integer :: pts_type = 0               !1 = within watershed; 2 = from outside watershed
+         integer :: typ = 0                    !!recall type - 1=day, 2=mon, 3=year
+         character(len=30) :: filename = ""    !!filename
+         integer :: start_yr = 0               !!start year of point source file
+         integer :: end_yr = 0                 !!end year of point source file
+         integer :: pts_type = 0               !!1 = within watershed; 2 = from outside watershed
          type (constituent_mass), dimension (:,:), allocatable :: hd_cs
       end type recall_cs_inputs
       type (recall_cs_inputs), dimension(:),allocatable:: rec_cs
@@ -233,9 +233,9 @@
       !recall pesticide inputs
       type recall_pesticide_inputs
          character (len=16) :: name = ""
-         integer :: num = 0                    !number of elements
-         integer :: typ = 0                    !recall type - 1=day, 2=mon, 3=year
-         character(len=13) :: filename = ""    !filename
+         integer :: num = 0                    !!number of elements
+         integer :: typ = 0                    !!recall type - 1=day, 2=mon, 3=year
+         character(len=13) :: filename = ""    !!filename
          !hyd_output units are in cms and mg/L
          type (constituent_mass), dimension (:,:), allocatable :: hd_pest
       end type recall_pesticide_inputs
@@ -252,7 +252,7 @@
       type (cs_soil_init_concentrations), dimension(:), allocatable:: hmet_soil_ini
       !! first 8 values of soil and plt are salt ion concentrations and next 5 are salt mineral fractions
       type (cs_soil_init_concentrations), dimension(:), allocatable:: salt_soil_ini
-      type (cs_soil_init_concentrations), dimension(:), allocatable:: cs_soil_ini !rtb cs
+      type (cs_soil_init_concentrations), dimension(:), allocatable:: cs_soil_ini !!rtb cs
       
       ! initial salt ion groundwater concentrations and mineral fractions for aquifers
       type salt_aqu_init_concentrations
@@ -304,9 +304,9 @@
       
       !daily output for constituents                
       !logical :: cs_obs_file                               !               |flag: file for channels with daily output
-      integer :: cs_obs_file = 0                            !               |flag: file for channels with daily output      
-      integer :: cs_str_nobs = 0                            !                |number of channels for daily output
-      integer, dimension (:), allocatable :: cs_str_obs     !                |list of channels for daily output
+      integer :: cs_obs_file = 0                            !!               |flag: file for channels with daily output      
+      integer :: cs_str_nobs = 0                            !!                |number of channels for daily output
+      integer, dimension (:), allocatable :: cs_str_obs     !!                |list of channels for daily output
       
       
       !header for routing unit salt balance output

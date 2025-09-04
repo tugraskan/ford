@@ -2,22 +2,22 @@
     
       implicit none
       
-      integer :: isep = 0            !          |
-      integer :: ilu = 0             !          | 
-      integer :: ulu = 0             !          |
-      integer :: iwgen = 0           !          |
-      character (len=1) :: timest = "" !          |
+      integer :: isep = 0            !!          |
+      integer :: ilu = 0             !!          | 
+      integer :: ulu = 0             !!          |
+      integer :: iwgen = 0           !!          |
+      character (len=1) :: timest = "" !!          |
      
       type uptake_parameters
-       real :: water_dis = 10.        !               |the uptake distribution for water is hardwired
-       real :: water_norm = 0.        !none           |water uptake normalization parameter 
-       real :: n_norm = 0.            !none           |nitrogen uptake normalization parameter 
-       real :: p_norm = 0.            !none           |phosphorus uptake normalization parameter
+       real :: water_dis = 10.        !!               |the uptake distribution for water is hardwired
+       real :: water_norm = 0.        !!none           |water uptake normalization parameter 
+       real :: n_norm = 0.            !!none           |nitrogen uptake normalization parameter 
+       real :: p_norm = 0.            !!none           |phosphorus uptake normalization parameter
       end type uptake_parameters
       type (uptake_parameters)  :: uptake
 
       type irrigation_sources
-        integer :: flag = 0   !0= don't irrigate, 1=irrigate
+        integer :: flag = 0   !!0= don't irrigate, 1=irrigate
         integer, dimension(:), allocatable :: chan
         integer, dimension(:), allocatable :: res
         integer, dimension(:), allocatable :: pond
@@ -71,14 +71,14 @@
       
       type snow_parameters
          character (len=40) :: name = ""
-         real :: falltmp = 0.     !deg C         |snowfall temp
-         real :: melttmp = 0.5    !deg C         |snow melt base temp 
-         real :: meltmx = 4.5     !mm/deg C/day  |Max melt rate for snow during year (June 21)
-         real :: meltmn = 0.5     !mm/deg C/day  |Min melt rate for snow during year (Dec 21)
-         real :: timp = 0.8       !none          |snow pack temp lag factor (0-1)
-         real :: covmx = 25.0     !mm H20        |snow water content at full ground cover
-         real :: cov50 = 0.5      !none          |frac of covmx at 50% snow cover
-         real :: init_mm = 0.     !mm H20        |initial snow water content at start of simulation
+         real :: falltmp = 0.     !!deg C         |snowfall temp
+         real :: melttmp = 0.5    !!deg C         |snow melt base temp 
+         real :: meltmx = 4.5     !!mm/deg C/day  |Max melt rate for snow during year (June 21)
+         real :: meltmn = 0.5     !!mm/deg C/day  |Min melt rate for snow during year (Dec 21)
+         real :: timp = 0.8       !!none          |snow pack temp lag factor (0-1)
+         real :: covmx = 25.0     !!mm H20        |snow water content at full ground cover
+         real :: cov50 = 0.5      !!none          |frac of covmx at 50% snow cover
+         real :: init_mm = 0.     !!mm H20        |initial snow water content at start of simulation
       end type snow_parameters
       type (snow_parameters), dimension (:), allocatable :: snodb
       
@@ -133,13 +133,13 @@
         character(len=40) :: pathc = ""
         character(len=40) :: saltc = ""
         character(len=40) :: hmetc = ""
-        character(len=40) :: csc = "" !rtb cs
+        character(len=40) :: csc = "" !!rtb cs
         integer :: nut = 0
         integer :: pest = 1
         integer :: path = 1
         integer :: salt = 1
         integer :: hmet = 1
-        integer :: cs = 1 !rtb cs
+        integer :: cs = 1 !!rtb cs
       end type soil_plant_initialize
       type (soil_plant_initialize), dimension (:), allocatable :: sol_plt_ini
       
@@ -150,7 +150,7 @@
         character(len=16) :: pathc = ""
         character(len=16) :: saltc = ""
         character(len=16) :: hmetc = ""
-        character(len=16) :: csc = "" !rtb cs
+        character(len=16) :: csc = "" !!rtb cs
         integer :: pest = 1
         integer :: path = 1
         integer :: salt = 1
@@ -233,13 +233,13 @@
         integer :: obj_no = 0
         real :: area_ha = 0.
         real :: km = 0.
-        integer :: surf_stor = 0                !points to res() for surface storage
-        type (hru_databases) :: dbs             !database pointers
-        type (hru_databases_char) :: dbsc       !database pointers
+        integer :: surf_stor = 0                !!points to res() for surface storage
+        type (hru_databases) :: dbs             !!database pointers
+        type (hru_databases_char) :: dbsc       !!database pointers
         integer :: land_use_mgt = 0
         character(len=40) :: land_use_mgt_c = ""
         integer :: lum_group = 0
-        character(len=40) :: lum_group_c = ""   !land use group for soft cal and output
+        character(len=40) :: lum_group_c = ""   !!land use group for soft cal and output
         character(len=40) :: cal_group = ""
         integer :: plant_cov = 0
         integer :: mgt_ops = 0
@@ -249,7 +249,7 @@
         integer :: grassww = 0
         integer :: bmpuser = 0
         integer :: crop_reg = 0
-        integer :: paddy_irr = 0  !Jaehak 2022
+        integer :: paddy_irr = 0  !!Jaehak 2022
 
         !! other data
         type (topography) :: topo
@@ -265,26 +265,26 @@
         real :: snocov1 = 0.
         real :: snocov2 = 0.
         integer :: cur_op = 1
-        integer :: irr = 0                      !none       |set to 1 if irrigated during simulation - for wb soft cal
+        integer :: irr = 0                      !!none       |set to 1 if irrigated during simulation - for wb soft cal
         integer :: irr_dmd_dtbl = 0
         integer :: man_dmd_dtbl = 0
         integer :: irr_dmd_iauto = 0
         integer :: man_dmd_iauto = 0
-        integer :: wet_db = 0                   !none       |pointer to wetland data - saved so turn on/off
-        real :: wet_hc = 0.                     !mm/h       |hydraulic conductivity of upper layer - wetlands
-        real :: sno_mm = 0.                     !mm H2O     |amount of water in snow on current day
+        integer :: wet_db = 0                   !!none       |pointer to wetland data - saved so turn on/off
+        real :: wet_hc = 0.                     !!mm/h       |hydraulic conductivity of upper layer - wetlands
+        real :: sno_mm = 0.                     !!mm H2O     |amount of water in snow on current day
         real :: water_seep = 0.
         real :: water_evap = 0.
-        real :: wet_obank_in = 0.               !mm         |inflow from overbank into wetlands
+        real :: wet_obank_in = 0.               !!mm         |inflow from overbank into wetlands
         real :: precip_aa = 0.
-        real :: irr_yr = 0.                     !mm         |irrigation for year - used as dtbl condition jga6-25
+        real :: irr_yr = 0.                     !!mm         |irrigation for year - used as dtbl condition jga6-25
         character(len=1) :: wet_fp = "n"
-        character(len=40) :: irr_src = "unlim"   !           |irrigation source, Jaehak 2022
+        character(len=40) :: irr_src = "unlim"   !!           |irrigation source, Jaehak 2022
         real :: strsa = 0.
-        real :: irr_hmax = 0                    !mm H2O     |target ponding depth during paddy irrigation Jaehak 2022
-        real :: irr_hmin = 0                    !mm H2O     |threshold ponding depth to trigger paddy irrigation
-        real :: irr_isc = 0                     !mm H2O     |ID of the source cha/res/aqu for paddy irrigation
-        real, dimension(5) :: flow = 0          !mm H2O     |average annual flow (1=wyld,2=perc,3=surface,4=lateral,5=tile)
+        real :: irr_hmax = 0                    !!mm H2O     |target ponding depth during paddy irrigation Jaehak 2022
+        real :: irr_hmin = 0                    !!mm H2O     |threshold ponding depth to trigger paddy irrigation
+        real :: irr_isc = 0                     !!mm H2O     |ID of the source cha/res/aqu for paddy irrigation
+        real, dimension(5) :: flow = 0          !!mm H2O     |average annual flow (1=wyld,2=perc,3=surface,4=lateral,5=tile)
       end type hydrologic_response_unit
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru_init
@@ -475,17 +475,17 @@
       real, dimension (:,:), allocatable :: irgwsalt
       real, dimension (:,:), allocatable :: wetqsalt
       real, dimension (:,:), allocatable :: wtspsalt
-      real, dimension (:,:), allocatable :: surqcs                                                                       !rtb cs
-      real, dimension (:,:), allocatable :: latqcs                                                                       !rtb cs
-      real, dimension (:,:), allocatable :: tilecs                                                                       !rtb cs
-      real, dimension (:,:), allocatable :: perccs                                                                       !rtb cs
-      real, dimension (:,:), allocatable :: gwupcs                                                                       !rtb cs
-      real, dimension (:,:), allocatable :: urbqcs                                                                       !rtb cs
-      real, dimension (:,:), allocatable :: sedmcs                                                                       !rtb cs
-      real, dimension (:,:), allocatable :: irswcs                                                                       !rtb cs
-      real, dimension (:,:), allocatable :: irgwcs                                                                       !rtb cs
-      real, dimension (:,:), allocatable :: wetqcs                                                                       !rtb cs
-      real, dimension (:,:), allocatable :: wtspcs                                                                       !rtb cs
+      real, dimension (:,:), allocatable :: surqcs                                                                       !!rtb cs
+      real, dimension (:,:), allocatable :: latqcs                                                                       !!rtb cs
+      real, dimension (:,:), allocatable :: tilecs                                                                       !!rtb cs
+      real, dimension (:,:), allocatable :: perccs                                                                       !!rtb cs
+      real, dimension (:,:), allocatable :: gwupcs                                                                       !!rtb cs
+      real, dimension (:,:), allocatable :: urbqcs                                                                       !!rtb cs
+      real, dimension (:,:), allocatable :: sedmcs                                                                       !!rtb cs
+      real, dimension (:,:), allocatable :: irswcs                                                                       !!rtb cs
+      real, dimension (:,:), allocatable :: irgwcs                                                                       !!rtb cs
+      real, dimension (:,:), allocatable :: wetqcs                                                                       !!rtb cs
+      real, dimension (:,:), allocatable :: wtspcs                                                                       !!rtb cs
       real, dimension (:), allocatable :: phubase
       real, dimension (:), allocatable :: dormhr
       real, dimension (:,:), allocatable :: wrt
@@ -499,14 +499,14 @@
       integer, dimension (:), allocatable :: igrz
       integer, dimension (:), allocatable :: ndeat
 
-      real, dimension (:), allocatable :: gwsoilq        !rtb gwflow
-      real, dimension (:), allocatable :: satexq         !rtb gwflow
-      real, dimension (:,:), allocatable :: bss_ex !rtb gwflow
-      real, dimension (:), allocatable :: gwsoiln                !rtb gwflow
-      real, dimension (:), allocatable :: gwsoilp                !rtb gwflow
-      real, dimension (:), allocatable :: satexn                 !rtb gwflow
-      real, dimension (:), allocatable :: irrn      !rtb irrig (irrigation nutrient mass)
-      real, dimension (:), allocatable :: irrp      !rtb irrig (irrigation nutrient mass)
+      real, dimension (:), allocatable :: gwsoilq        !!rtb gwflow
+      real, dimension (:), allocatable :: satexq         !!rtb gwflow
+      real, dimension (:,:), allocatable :: bss_ex !!rtb gwflow
+      real, dimension (:), allocatable :: gwsoiln                !!rtb gwflow
+      real, dimension (:), allocatable :: gwsoilp                !!rtb gwflow
+      real, dimension (:), allocatable :: satexn                 !!rtb gwflow
+      real, dimension (:), allocatable :: irrn      !!rtb irrig (irrigation nutrient mass)
+      real, dimension (:), allocatable :: irrp      !!rtb irrig (irrigation nutrient mass)
 
 !!     gsm added for sdr (drainage) 7/24/08
       integer, dimension (:,:), allocatable :: mgt_ops

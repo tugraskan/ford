@@ -18,7 +18,7 @@
         real :: ben_bury = 0.       !! m/day                |burial velocity in benthic sediment
         real :: ben_hlife = 0.      !! days                 |half-life of pest in benthic sediment
         real :: pl_uptake = 0.      !! none                 |fraction taken up by plant 
-        character(len=32) :: descrip = ""                   !pesticide description
+        character(len=32) :: descrip = ""                   !!pesticide description
       end type pesticide_db
       type (pesticide_db), dimension(:), allocatable, save :: pestdb
       

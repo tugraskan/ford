@@ -2,62 +2,62 @@
     
       implicit none
 
-      real :: reactw = 0.             !mg pst        |amount of pesticide in reach that is lost through reactions
-      real :: volatpst = 0.           !mg pst        |amount of pesticide lost from reach by volatilization
-      real :: setlpst = 0.            !mg pst        |amount of pesticide moving from water to sediment due to settling
-      real :: resuspst = 0.           !mg pst        |amount of pesticide moving from sediment to reach due to resuspension
-      real :: difus = 0.              !mg pst        |diffusion of pesticide from sediment to reach
-      real :: reactb = 0.             !mg pst        |amount of pesticide in sediment that is lost through reactions
-      real :: bury = 0.               !mg pst        |loss of pesticide from active sediment layer by burial
+      real :: reactw = 0.             !!mg pst        |amount of pesticide in reach that is lost through reactions
+      real :: volatpst = 0.           !!mg pst        |amount of pesticide lost from reach by volatilization
+      real :: setlpst = 0.            !!mg pst        |amount of pesticide moving from water to sediment due to settling
+      real :: resuspst = 0.           !!mg pst        |amount of pesticide moving from sediment to reach due to resuspension
+      real :: difus = 0.              !!mg pst        |diffusion of pesticide from sediment to reach
+      real :: reactb = 0.             !!mg pst        |amount of pesticide in sediment that is lost through reactions
+      real :: bury = 0.               !!mg pst        |loss of pesticide from active sediment layer by burial
 
       type reservoir
         character(len=13) :: name = "default"
-        integer :: ob = 0                           !object number if reservoir object; hru number if hru object
-        integer :: props = 0                        !points to res_dat
-        integer :: iweir = 0                !       !weir ID Jaehak 2023 
-        character (len=1) :: rel_tbl = "d"          !d == decision table, c == conditions table
-        real :: psa = 0.                    !ha     |res surface area when res is filled to princ spillway
-        real :: pvol = 0.                   !ha-m   |vol of water needed to fill the res to the princ spillway (read in as ha-m and converted to m^3)
-        real :: esa = 0.                    !ha     |res surface area when res is filled to emerg spillway 
-        real :: evol = 0.                   !ha-m   |vol of water needed to fill the res to the emerg spillway (read in as ha-m and converted to m^3)
-        real :: br1 = 0.                    !none   |vol-surface area coefficient for reservoirs (model estimates if zero)
+        integer :: ob = 0                           !!object number if reservoir object; hru number if hru object
+        integer :: props = 0                        !!points to res_dat
+        integer :: iweir = 0                !!       !weir ID Jaehak 2023 
+        character (len=1) :: rel_tbl = "d"          !!d == decision table, c == conditions table
+        real :: psa = 0.                    !!ha     |res surface area when res is filled to princ spillway
+        real :: pvol = 0.                   !!ha-m   |vol of water needed to fill the res to the princ spillway (read in as ha-m and converted to m^3)
+        real :: esa = 0.                    !!ha     |res surface area when res is filled to emerg spillway 
+        real :: evol = 0.                   !!ha-m   |vol of water needed to fill the res to the emerg spillway (read in as ha-m and converted to m^3)
+        real :: br1 = 0.                    !!none   |vol-surface area coefficient for reservoirs (model estimates if zero)
                                             !       |vol-depth coefficient for hru impoundment
-        real :: br2 = 0.                    !none   |vol-surface area coefficient for reservoirs (model estimates if zero)
+        real :: br2 = 0.                    !!none   |vol-surface area coefficient for reservoirs (model estimates if zero)
                                             !       |vol-depth coefficient for hru impoundment
-        real :: depth = 0                   !m      !average depth of water
-        real :: weir_hgt = 0                !m      !height of weir above the bottom
-        real :: weir_wid = 0                !m      !width of weir above the bottom  Jaehak 2022
-        real :: seci = 0                    !m      !seci depth
-        real :: prev_flo = 0                !m3     !previous days flow to smooth outflows
-        real :: lag_up = 0                  !       !lag parameter for increasing outflow - prevents sudden jumps
-        real :: lag_down = 0                !       !lag parameter for decreasing outflow - prevents sudden drops
-        real, dimension (:), allocatable :: kd      !           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
-        real, dimension (:), allocatable :: aq_mix  ! m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
+        real :: depth = 0                   !!m      !average depth of water
+        real :: weir_hgt = 0                !!m      !height of weir above the bottom
+        real :: weir_wid = 0                !!m      !width of weir above the bottom  Jaehak 2022
+        real :: seci = 0                    !!m      !seci depth
+        real :: prev_flo = 0                !!m3     !previous days flow to smooth outflows
+        real :: lag_up = 0                  !!       !lag parameter for increasing outflow - prevents sudden jumps
+        real :: lag_down = 0                !!       !lag parameter for decreasing outflow - prevents sudden drops
+        real, dimension (:), allocatable :: kd      !!           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
+        real, dimension (:), allocatable :: aq_mix  !! m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
       end type reservoir          
       type (reservoir), dimension(:),allocatable :: res_ob
       
       type wetland
-        integer :: iweir = 0                !       !weir ID   Jaehak 2022
-        real :: psa = 0.                    !ha     |res surface area when res is filled to princ spillway
-        real :: pvol = 0.                   !m^3    |vol of water needed to fill the res to the princ spillway (read in as ha-m and converted to m^3)
-        real :: esa = 0.                    !ha     |res surface area when res is filled to emerg spillway 
-        real :: evol = 0.                   !m^3    |vol of water needed to fill the res to the emerg spillway (read in as ha-m and converted to m^3)
-        real :: area_ha = 0                 !ha     !reservoir surface area
-        real :: depth = 0                   !m      !average depth of water
-        real :: weir_hgt = 0                !m      !height of weir above the bottom
-        real :: weir_wid = 0                !m      !width of weir   Jaehak 2022
-        real :: seci = 0                    !m      !seci depth
+        integer :: iweir = 0                !!       !weir ID   Jaehak 2022
+        real :: psa = 0.                    !!ha     |res surface area when res is filled to princ spillway
+        real :: pvol = 0.                   !!m^3    |vol of water needed to fill the res to the princ spillway (read in as ha-m and converted to m^3)
+        real :: esa = 0.                    !!ha     |res surface area when res is filled to emerg spillway 
+        real :: evol = 0.                   !!m^3    |vol of water needed to fill the res to the emerg spillway (read in as ha-m and converted to m^3)
+        real :: area_ha = 0                 !!ha     !reservoir surface area
+        real :: depth = 0                   !!m      !average depth of water
+        real :: weir_hgt = 0                !!m      !height of weir above the bottom
+        real :: weir_wid = 0                !!m      !width of weir   Jaehak 2022
+        real :: seci = 0                    !!m      !seci depth
       end type wetland          
       type (wetland), dimension(:),allocatable :: wet_ob
 
       type reservoir_pest_processes
-        real :: react = 0.              ! kg       !pesticide lost through reactions in water layer
-        real :: volat = 0.              ! kg       !pesticide lost through volatilization
-        real :: settle = 0.             ! kg       !pesticide settling to benthic layer
-        real :: resus = 0.              ! kg       !pesticide resuspended into lake water
-        real :: difus = 0.              ! kg       !pesticide diffusing from benthic sediment to water
-        real :: react_ben = 0.          ! kg       !pesticide lost from benthic by reactions
-        real :: bury = 0.               ! Kg       |pesticide lost from benthic by burial
+        real :: react = 0.              !! kg       !pesticide lost through reactions in water layer
+        real :: volat = 0.              !! kg       !pesticide lost through volatilization
+        real :: settle = 0.             !! kg       !pesticide settling to benthic layer
+        real :: resus = 0.              !! kg       !pesticide resuspended into lake water
+        real :: difus = 0.              !! kg       !pesticide diffusing from benthic sediment to water
+        real :: react_ben = 0.          !! kg       !pesticide lost from benthic by reactions
+        real :: bury = 0.               !! Kg       |pesticide lost from benthic by burial
       end type reservoir_pest_processes
       type (reservoir_pest_processes), dimension(:),allocatable :: res_pest_d
       type (reservoir_pest_processes), dimension(:),allocatable :: res_pest_m
@@ -124,16 +124,16 @@
        type reservoir_hdr
            !! last part of header for res_om
         character (len=10) :: area_ha    = "   area_ha"
-        character (len=10) :: evap       = "      evap"             !mm     |evaporation from res surface area
-        character (len=10) :: seep       = "      seep"             !mm     |seepage from res bottom
-        character (len=10) :: sed_setl   = " sed_setlp"             !t      |sediment settling
-        character (len=10) :: seci       = "      seci"             !m      !seci depth
-        character (len=10) :: solp_loss  = " solp_loss"             !kg     |soluble phosphorus loss
-        character (len=10) :: sedp_loss  = " sedp_loss"             !kg     |sediment attached phosphorus loss
-        character (len=10) :: orgn_loss  = " orgn_loss"             !kg     |organic nitrogen loss
-        character (len=10) :: no3_loss   = "  no3_loss"             !kg     |nitrate loss
-        character (len=10) :: nh3_loss   = "  nh3_loss"             !kg     |ammonium nitrogen loss
-        character (len=10) :: no2_loss   = "  no2_loss"             !kg     |nitrite loss
+        character (len=10) :: evap       = "      evap"             !!mm     |evaporation from res surface area
+        character (len=10) :: seep       = "      seep"             !!mm     |seepage from res bottom
+        character (len=10) :: sed_setl   = " sed_setlp"             !!t      |sediment settling
+        character (len=10) :: seci       = "      seci"             !!m      !seci depth
+        character (len=10) :: solp_loss  = " solp_loss"             !!kg     |soluble phosphorus loss
+        character (len=10) :: sedp_loss  = " sedp_loss"             !!kg     |sediment attached phosphorus loss
+        character (len=10) :: orgn_loss  = " orgn_loss"             !!kg     |organic nitrogen loss
+        character (len=10) :: no3_loss   = "  no3_loss"             !!kg     |nitrate loss
+        character (len=10) :: nh3_loss   = "  nh3_loss"             !!kg     |ammonium nitrogen loss
+        character (len=10) :: no2_loss   = "  no2_loss"             !!kg     |nitrite loss
       end type reservoir_hdr
       type (reservoir_hdr) :: res_hdr2
       
@@ -217,15 +217,15 @@
            !! last part of units 
         character (len=10) :: area_ha   =    "        ha"
         character (len=10) :: evap      =    "        mm"
-        character (len=10) :: seep      =    "        mm"        !mm     |seepage from res bottom
-        character (len=10) :: sed_setl  =    "         t"        !t      |sediment settling
-        character (len=10) :: seci      =    "         m"        !m      !seci depth 
-        character (len=10) :: solp_loss =    "        kg"        !kg     |soluble phosphorus loss  
-        character (len=10) :: sedp_loss =    "        kg"        !kg     |sediment attached phosphorus loss 
-        character (len=10) :: orgn_loss =    "        kg"        !kg     |organic nitrogen loss 
-        character (len=10) :: no3_loss  =    "        kg"        !kg     |nitrate loss
-        character (len=10) :: nh3_loss  =    "        kg"        !kg     |ammonium nitrogen loss
-        character (len=10) :: no2_loss  =    "        kg"        !kg     |nitrite loss
+        character (len=10) :: seep      =    "        mm"        !!mm     |seepage from res bottom
+        character (len=10) :: sed_setl  =    "         t"        !!t      |sediment settling
+        character (len=10) :: seci      =    "         m"        !!m      !seci depth 
+        character (len=10) :: solp_loss =    "        kg"        !!kg     |soluble phosphorus loss  
+        character (len=10) :: sedp_loss =    "        kg"        !!kg     |sediment attached phosphorus loss 
+        character (len=10) :: orgn_loss =    "        kg"        !!kg     |organic nitrogen loss 
+        character (len=10) :: no3_loss  =    "        kg"        !!kg     |nitrate loss
+        character (len=10) :: nh3_loss  =    "        kg"        !!kg     |ammonium nitrogen loss
+        character (len=10) :: no2_loss  =    "        kg"        !!kg     |nitrite loss
       end type res_header_unit2
 type (res_header_unit2) res_hdr_unt2
 
