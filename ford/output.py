@@ -25,6 +25,7 @@
 from dataclasses import asdict
 import sys
 import os
+import re
 import shutil
 import traceback
 from itertools import chain
@@ -101,9 +102,121 @@ def relative_url(entity: Union[FortranBase, str], page_url: pathlib.Path) -> str
     return link_str.replace(link_path, new_path)
 
 
+def extract_io_variables(io_statement, procedure=None):
+    """
+    Extract variable names and their types from I/O statements.
+    
+    Args:
+        io_statement: String containing the Fortran I/O statement
+        procedure: FortranProcedure object to get variable type information
+    
+    Returns:
+        List of tuples (variable_name, variable_type)
+    """
+    if not procedure or not io_statement:
+        return []
+    
+    # Get all variables from the procedure (args + local + non-local)
+    all_vars = {}
+    
+    # Add arguments
+    if hasattr(procedure, 'args') and procedure.args:
+        for var in procedure.args:
+            if hasattr(var, 'name') and hasattr(var, 'full_type'):
+                all_vars[var.name.lower()] = str(var.full_type)
+    
+    # Add local variables
+    if hasattr(procedure, 'local_variables') and procedure.local_variables:
+        for var in procedure.local_variables:
+            if hasattr(var, 'name') and hasattr(var, 'full_type'):
+                all_vars[var.name.lower()] = str(var.full_type)
+    
+    # Add non-local variables
+    if hasattr(procedure, 'non_local_variables') and procedure.non_local_variables:
+        for var in procedure.non_local_variables:
+            if hasattr(var, 'name') and hasattr(var, 'full_type'):
+                all_vars[var.name.lower()] = str(var.full_type)
+    
+    # Extract variable names from I/O statement
+    # For write/read statements with format: write(unit, 'format') variables
+    # Match patterns like: write(..., '...') var1, var2
+    
+    # Pattern to match write/read with format and variables
+    patterns = [
+        # write(unit, 'format') variables
+        r'(?:read|write)\s*\([^)]+\s*,\s*\'[^\']*\'\s*\)\s*(.+)',
+        # write(unit, "format") variables  
+        r'(?:read|write)\s*\([^)]+\s*,\s*\"[^\"]*\"\s*\)\s*(.+)',
+        # write(unit, format=...) variables
+        r'(?:read|write)\s*\([^)]+\)\s*(.+)',
+    ]
+    
+    var_part = None
+    for pattern in patterns:
+        io_match = re.search(pattern, io_statement, re.IGNORECASE)
+        if io_match:
+            var_part = io_match.group(1).strip()
+            break
+    
+    if not var_part:
+        return []
+    
+    # Split by commas, but be careful with quoted strings
+    var_items = []
+    current_item = ""
+    in_quotes = False
+    quote_char = None
+    
+    for char in var_part:
+        if char in ["'", '"'] and not in_quotes:
+            in_quotes = True
+            quote_char = char
+            current_item += char
+        elif char == quote_char and in_quotes:
+            in_quotes = False
+            quote_char = None
+            current_item += char
+        elif char == ',' and not in_quotes:
+            if current_item.strip():
+                var_items.append(current_item.strip())
+            current_item = ""
+        else:
+            current_item += char
+    
+    # Add the last item
+    if current_item.strip():
+        var_items.append(current_item.strip())
+    
+    # Extract variable names from each item
+    var_names = []
+    for item in var_items:
+        # Skip string literals
+        if item.startswith(("'", '"')):
+            continue
+        
+        # Extract variable names (handle array indices, expressions, etc.)
+        # Look for word characters at the start (variable name)
+        var_match = re.match(r'([a-zA-Z_][a-zA-Z0-9_]*)', item)
+        if var_match:
+            var_names.append(var_match.group(1))
+    
+    # Match variable names to their types
+    result = []
+    for var_name in var_names:
+        var_key = var_name.lower()
+        if var_key in all_vars:
+            result.append((var_name, all_vars[var_key]))
+        else:
+            # If we can't find the type, still show the variable name
+            result.append((var_name, 'unknown'))
+    
+    return result
+
+
 env.tests["more_than_one"] = is_more_than_one
 env.filters["meta"] = meta
 env.filters["relurl"] = relative_url
+env.filters["extract_io_variables"] = extract_io_variables
 
 USER_WRITABLE_ONLY = 0o755
 

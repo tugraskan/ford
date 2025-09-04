@@ -837,7 +837,7 @@
 {% endmacro %}
 
 
-{% macro io_operations_list(io_data) %}
+{% macro io_operations_list(io_data, procedure=None) %}
   {% if io_data and io_data.keys() %}
     <div class="accordion" id="ioAccordion">
       {% for unit, operations in io_data.items() %}
@@ -861,6 +861,7 @@
                     <tr>
                       <th>Operation</th>
                       <th>Details</th>
+                      <th>Variables & Types</th>
                       <th>Line</th>
                     </tr>
                   </thead>
@@ -869,6 +870,20 @@
                       <tr>
                         <td><span class="badge bg-primary">{{ op.kind }}</span></td>
                         <td><code>{{ op.raw }}</code></td>
+                        <td>
+                          {% if procedure and (op.kind == 'write' or op.kind == 'read') %}
+                            {% set variable_info = op.raw | extract_io_variables(procedure) %}
+                            {% if variable_info %}
+                              {% for var_name, var_type in variable_info %}
+                                <small class="text-muted">{{ var_name }}:</small> <code>{{ var_type }}</code>{% if not loop.last %}<br>{% endif %}
+                              {% endfor %}
+                            {% else %}
+                              <em>-</em>
+                            {% endif %}
+                          {% else %}
+                            <em>-</em>
+                          {% endif %}
+                        </td>
                         <td>{{ op.line if op.line else '-' }}</td>
                       </tr>
                     {% endfor %}
