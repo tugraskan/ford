@@ -1,0 +1,1140 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for SWAT+">
+    <meta name="author" content="" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>mgt_operations_module.f90 &ndash; SWAT+</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">SWAT+ <small>@SWAT_VERSION@</small></a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>mgt_operations_module.f90
+      <small>Source File</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 0.2% of total for sourcefile.">158 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/mgt_operations_module.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+            <li class="breadcrumb-item active" aria-current="page">mgt_operations_module.f90</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+        <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#mods-0"
+         aria-expanded="false" aria-controls="mods-0">
+         <h4 class="card-header bg-primary text-white">Modules</h4>
+      </a>
+      <div id="mods-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/mgt_operations_module.html">mgt_operations_module</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../sourcefile/mgt_operations_module.f90.html#src">mgt_operations_module.f90</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    <div class="col-md-9" id='text'>
+      
+      <br>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Files dependent on this one</h3>
+          </div>
+          <div class="card-body">
+            <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: sourcefile~~mgt_operations_module.f90~~AfferentGraph Pages: 1 -->
+<svg id="sourcefilemgt_operations_modulef90AfferentGraph" width="367pt" height="1880pt"
+ viewBox="0.00 0.00 367.00 1880.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 1876)">
+<title>sourcefile~~mgt_operations_module.f90~~AfferentGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-1876 363,-1876 363,4 -4,4"/>
+<!-- sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node1" class="node">
+<title>sourcefile~mgt_operations_module.f90</title>
+<polygon fill="none" stroke="black" points="162,-948 0,-948 0,-924 162,-924 162,-948"/>
+<text text-anchor="middle" x="81" y="-933.6" font-family="Helvetica,sans-Serif" font-size="10.50">mgt_operations_module.f90</text>
+</g>
+<!-- sourcefile~actions.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node2" class="node">
+<title>sourcefile~actions.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node2"><a xlink:href="../sourcefile/actions.f90.html" xlink:title="actions.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="314,-1872 243,-1872 243,-1848 314,-1848 314,-1872"/>
+<text text-anchor="middle" x="278.5" y="-1857.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">actions.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~actions.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge1" class="edge">
+<title>sourcefile~actions.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M242.79,-1859.31C226.87,-1857.11 209.11,-1851.66 198,-1839 78.34,-1702.61 80.01,-1084.6 81.63,-958.51"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="85.13,-958.21 81.78,-948.16 78.13,-958.11 85.13,-958.21"/>
+</g>
+<!-- sourcefile~cal_allo_init.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node3" class="node">
+<title>sourcefile~cal_allo_init.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node3"><a xlink:href="../sourcefile/cal_allo_init.f90.html" xlink:title="cal_allo_init.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="326,-1830 231,-1830 231,-1806 326,-1806 326,-1830"/>
+<text text-anchor="middle" x="278.5" y="-1815.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">cal_allo_init.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~cal_allo_init.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge2" class="edge">
+<title>sourcefile~cal_allo_init.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M230.88,-1815.01C218.58,-1811.96 206.41,-1806.52 198,-1797 83.66,-1667.48 81.07,-1080.23 81.79,-958.24"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="85.29,-958.22 81.86,-948.2 78.29,-958.17 85.29,-958.22"/>
+</g>
+<!-- sourcefile~calsoft_read_codes.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node4" class="node">
+<title>sourcefile~calsoft_read_codes.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node4"><a xlink:href="../sourcefile/calsoft_read_codes.f90.html" xlink:title="calsoft_read_codes.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="345.5,-1788 211.5,-1788 211.5,-1764 345.5,-1764 345.5,-1788"/>
+<text text-anchor="middle" x="278.5" y="-1773.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">calsoft_read_codes.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_read_codes.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge3" class="edge">
+<title>sourcefile~calsoft_read_codes.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M211.32,-1765.49C206.34,-1762.71 201.79,-1759.27 198,-1755 89.06,-1632.43 82.17,-1076.73 81.96,-958.26"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="85.46,-958.19 81.95,-948.19 78.46,-958.19 85.46,-958.19"/>
+</g>
+<!-- sourcefile~conditions.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node5" class="node">
+<title>sourcefile~conditions.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node5"><a xlink:href="../sourcefile/conditions.f90.html" xlink:title="conditions.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="322.5,-1746 234.5,-1746 234.5,-1722 322.5,-1722 322.5,-1746"/>
+<text text-anchor="middle" x="278.5" y="-1731.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">conditions.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~conditions.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge4" class="edge">
+<title>sourcefile~conditions.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M234.28,-1731.7C220.89,-1728.83 207.24,-1723.32 198,-1713 94.42,-1597.34 83.33,-1072.86 82.14,-958.19"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="85.64,-958.1 82.05,-948.13 78.64,-958.16 85.64,-958.1"/>
+</g>
+<!-- sourcefile~cs_fert.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node6" class="node">
+<title>sourcefile~cs_fert.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node6"><a xlink:href="../sourcefile/cs_fert.f90.html" xlink:title="cs_fert.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="312.5,-1704 244.5,-1704 244.5,-1680 312.5,-1680 312.5,-1704"/>
+<text text-anchor="middle" x="278.5" y="-1689.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">cs_fert.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~cs_fert.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge5" class="edge">
+<title>sourcefile~cs_fert.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M244.15,-1691.33C227.97,-1689.21 209.58,-1683.82 198,-1671 99.75,-1562.21 84.53,-1068.63 82.35,-958.03"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="85.85,-957.96 82.16,-948.03 78.85,-958.09 85.85,-957.96"/>
+</g>
+<!-- sourcefile~cs_fert_wet.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node7" class="node">
+<title>sourcefile~cs_fert_wet.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node7"><a xlink:href="../sourcefile/cs_fert_wet.f90.html" xlink:title="cs_fert_wet.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="324.5,-1662 232.5,-1662 232.5,-1638 324.5,-1638 324.5,-1662"/>
+<text text-anchor="middle" x="278.5" y="-1647.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">cs_fert_wet.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~cs_fert_wet.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge6" class="edge">
+<title>sourcefile~cs_fert_wet.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M232.32,-1647.14C219.6,-1644.15 206.85,-1638.71 198,-1629 105.23,-1527.23 85.87,-1065.96 82.59,-958.45"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="86.08,-958.03 82.29,-948.14 79.08,-958.23 86.08,-958.03"/>
+</g>
+<!-- sourcefile~dtbl_lum_read.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node8" class="node">
+<title>sourcefile~dtbl_lum_read.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node8"><a xlink:href="../sourcefile/dtbl_lum_read.f90.html" xlink:title="dtbl_lum_read.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="332.5,-1620 224.5,-1620 224.5,-1596 332.5,-1596 332.5,-1620"/>
+<text text-anchor="middle" x="278.5" y="-1605.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dtbl_lum_read.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~dtbl_lum_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge7" class="edge">
+<title>sourcefile~dtbl_lum_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M224.12,-1602.76C214.3,-1599.53 204.96,-1594.56 198,-1587 110.56,-1492.09 87.24,-1061.79 82.85,-958.39"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="86.34,-958.03 82.44,-948.18 79.35,-958.31 86.34,-958.03"/>
+</g>
+<!-- sourcefile~dtbl_res_read.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node9" class="node">
+<title>sourcefile~dtbl_res_read.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node9"><a xlink:href="../sourcefile/dtbl_res_read.f90.html" xlink:title="dtbl_res_read.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="330,-1578 227,-1578 227,-1554 330,-1554 330,-1578"/>
+<text text-anchor="middle" x="278.5" y="-1563.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dtbl_res_read.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~dtbl_res_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge8" class="edge">
+<title>sourcefile~dtbl_res_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M226.66,-1561.47C215.94,-1558.28 205.59,-1553.14 198,-1545 115.84,-1456.88 88.67,-1057.15 83.14,-958.2"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="86.63,-957.94 82.6,-948.14 79.64,-958.31 86.63,-957.94"/>
+</g>
+<!-- sourcefile~dtbl_scen_read.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node10" class="node">
+<title>sourcefile~dtbl_scen_read.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node10"><a xlink:href="../sourcefile/dtbl_scen_read.f90.html" xlink:title="dtbl_scen_read.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="334.5,-1536 222.5,-1536 222.5,-1512 334.5,-1512 334.5,-1536"/>
+<text text-anchor="middle" x="278.5" y="-1521.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dtbl_scen_read.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~dtbl_scen_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge9" class="edge">
+<title>sourcefile~dtbl_scen_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M222.23,-1517.93C213.15,-1514.7 204.57,-1509.95 198,-1503 121.24,-1421.78 90.29,-1053.57 83.5,-958.47"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="86.97,-958 82.79,-948.26 79.99,-958.48 86.97,-958"/>
+</g>
+<!-- sourcefile~hru_control.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node11" class="node">
+<title>sourcefile~hru_control.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node11"><a xlink:href="../sourcefile/hru_control.f90.html" xlink:title="hru_control.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="325,-1494 232,-1494 232,-1470 325,-1470 325,-1494"/>
+<text text-anchor="middle" x="278.5" y="-1479.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hru_control.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~hru_control.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge10" class="edge">
+<title>sourcefile~hru_control.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M231.79,-1478.65C219.37,-1475.62 206.9,-1470.27 198,-1461 126.48,-1386.5 91.93,-1048.57 83.88,-958.25"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="87.36,-957.94 83.01,-948.28 80.39,-958.55 87.36,-957.94"/>
+</g>
+<!-- sourcefile~hru_dtbl_actions_init.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node12" class="node">
+<title>sourcefile~hru_dtbl_actions_init.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node12"><a xlink:href="../sourcefile/hru_dtbl_actions_init.f90.html" xlink:title="hru_dtbl_actions_init.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="349.5,-1452 207.5,-1452 207.5,-1428 349.5,-1428 349.5,-1452"/>
+<text text-anchor="middle" x="278.5" y="-1437.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hru_dtbl_actions_init.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~hru_dtbl_actions_init.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge11" class="edge">
+<title>sourcefile~hru_dtbl_actions_init.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M209.49,-1427.84C205.29,-1425.39 201.39,-1422.47 198,-1419 131.79,-1351.28 93.8,-1044.23 84.35,-958.37"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="87.8,-957.75 83.25,-948.18 80.84,-958.5 87.8,-957.75"/>
+</g>
+<!-- sourcefile~landuse_read.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node13" class="node">
+<title>sourcefile~landuse_read.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node13"><a xlink:href="../sourcefile/landuse_read.f90.html" xlink:title="landuse_read.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="330.5,-1410 226.5,-1410 226.5,-1386 330.5,-1386 330.5,-1410"/>
+<text text-anchor="middle" x="278.5" y="-1395.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">landuse_read.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~landuse_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge12" class="edge">
+<title>sourcefile~landuse_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M226.23,-1392.84C215.79,-1389.64 205.67,-1384.68 198,-1377 137.08,-1316.02 95.87,-1039.7 84.91,-958.5"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="88.36,-957.83 83.57,-948.38 81.42,-958.76 88.36,-957.83"/>
+</g>
+<!-- sourcefile~manure_allocation_read.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node14" class="node">
+<title>sourcefile~manure_allocation_read.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node14"><a xlink:href="../sourcefile/manure_allocation_read.f90.html" xlink:title="manure_allocation_read.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="359,-1368 198,-1368 198,-1344 359,-1344 359,-1368"/>
+<text text-anchor="middle" x="278.5" y="-1353.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">manure_allocation_read.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~manure_allocation_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge13" class="edge">
+<title>sourcefile~manure_allocation_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M210.05,-1343.87C205.66,-1341.42 201.58,-1338.49 198,-1335 88.91,-1228.57 80.87,-1026.04 81.4,-958.53"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="84.9,-958.27 81.55,-948.22 77.9,-958.16 84.9,-958.27"/>
+</g>
+<!-- sourcefile~mgt_harvbiomass.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node15" class="node">
+<title>sourcefile~mgt_harvbiomass.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node15"><a xlink:href="../sourcefile/mgt_harvbiomass.f90.html" xlink:title="mgt_harvbiomass.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="342,-1326 215,-1326 215,-1302 342,-1302 342,-1326"/>
+<text text-anchor="middle" x="278.5" y="-1311.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_harvbiomass.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_harvbiomass.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge14" class="edge">
+<title>sourcefile~mgt_harvbiomass.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M214.8,-1304.08C208.64,-1301.23 202.88,-1297.61 198,-1293 99.26,-1199.63 84.41,-1021.51 82.3,-958.65"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="85.79,-958.21 82.04,-948.3 78.79,-958.39 85.79,-958.21"/>
+</g>
+<!-- sourcefile~mgt_harvgrain.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node16" class="node">
+<title>sourcefile~mgt_harvgrain.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node16"><a xlink:href="../sourcefile/mgt_harvgrain.f90.html" xlink:title="mgt_harvgrain.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="334,-1284 223,-1284 223,-1260 334,-1260 334,-1284"/>
+<text text-anchor="middle" x="278.5" y="-1269.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_harvgrain.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_harvgrain.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge15" class="edge">
+<title>sourcefile~mgt_harvgrain.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M222.65,-1264.94C213.63,-1261.81 204.97,-1257.34 198,-1251 109.29,-1170.3 88.24,-1015.8 83.4,-958.29"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="86.87,-957.84 82.63,-948.14 79.89,-958.37 86.87,-957.84"/>
+</g>
+<!-- sourcefile~mgt_harvtuber.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node17" class="node">
+<title>sourcefile~mgt_harvtuber.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node17"><a xlink:href="../sourcefile/mgt_harvtuber.f90.html" xlink:title="mgt_harvtuber.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="333.5,-1242 223.5,-1242 223.5,-1218 333.5,-1218 333.5,-1242"/>
+<text text-anchor="middle" x="278.5" y="-1227.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_harvtuber.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_harvtuber.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge16" class="edge">
+<title>sourcefile~mgt_harvtuber.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M223.31,-1222.8C214.12,-1219.68 205.23,-1215.26 198,-1209 119.48,-1141.01 92.68,-1010.69 84.84,-958.46"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="88.27,-957.7 83.41,-948.28 81.34,-958.67 88.27,-957.7"/>
+</g>
+<!-- sourcefile~mgt_operatn.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node18" class="node">
+<title>sourcefile~mgt_operatn.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node18"><a xlink:href="../sourcefile/mgt_operatn.f90.html" xlink:title="mgt_operatn.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="329,-1200 228,-1200 228,-1176 329,-1176 329,-1200"/>
+<text text-anchor="middle" x="278.5" y="-1185.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_operatn.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_operatn.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge17" class="edge">
+<title>sourcefile~mgt_operatn.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M227.77,-1181.72C217.13,-1178.59 206.53,-1173.93 198,-1167 129.29,-1111.23 97.61,-1004.32 86.67,-958.14"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="90.06,-957.24 84.44,-948.26 83.23,-958.79 90.06,-957.24"/>
+</g>
+<!-- sourcefile~mgt_read_chemapp.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node19" class="node">
+<title>sourcefile~mgt_read_chemapp.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node19"><a xlink:href="../sourcefile/mgt_read_chemapp.f90.html" xlink:title="mgt_read_chemapp.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="348,-1158 209,-1158 209,-1134 348,-1134 348,-1158"/>
+<text text-anchor="middle" x="278.5" y="-1143.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_read_chemapp.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_read_chemapp.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge18" class="edge">
+<title>sourcefile~mgt_read_chemapp.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M213.4,-1133.83C207.93,-1131.4 202.7,-1128.49 198,-1125 139.01,-1081.14 103.48,-997.57 89.24,-957.92"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="92.52,-956.7 85.93,-948.4 85.91,-959 92.52,-956.7"/>
+</g>
+<!-- sourcefile~mgt_read_fireops.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node20" class="node">
+<title>sourcefile~mgt_read_fireops.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node20"><a xlink:href="../sourcefile/mgt_read_fireops.f90.html" xlink:title="mgt_read_fireops.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="340.5,-1116 216.5,-1116 216.5,-1092 340.5,-1092 340.5,-1116"/>
+<text text-anchor="middle" x="278.5" y="-1101.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_read_fireops.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_read_fireops.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge19" class="edge">
+<title>sourcefile~mgt_read_fireops.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M216.27,-1092.22C209.84,-1089.72 203.61,-1086.68 198,-1083 148.24,-1050.36 110.33,-989.23 92.76,-957.05"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="95.76,-955.24 87.98,-948.06 89.59,-958.53 95.76,-955.24"/>
+</g>
+<!-- sourcefile~mgt_read_grazeops.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node21" class="node">
+<title>sourcefile~mgt_read_grazeops.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node21"><a xlink:href="../sourcefile/mgt_read_grazeops.f90.html" xlink:title="mgt_read_grazeops.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="347,-1074 210,-1074 210,-1050 347,-1050 347,-1074"/>
+<text text-anchor="middle" x="278.5" y="-1059.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_read_grazeops.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_read_grazeops.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge20" class="edge">
+<title>sourcefile~mgt_read_grazeops.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M218.94,-1049.99C211.68,-1047.51 204.53,-1044.54 198,-1041 157.2,-1018.87 119.19,-979.51 98.42,-955.78"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="100.99,-953.39 91.82,-948.09 95.68,-957.95 100.99,-953.39"/>
+</g>
+<!-- sourcefile~mgt_read_harvops.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node22" class="node">
+<title>sourcefile~mgt_read_harvops.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node22"><a xlink:href="../sourcefile/mgt_read_harvops.f90.html" xlink:title="mgt_read_harvops.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="344,-1032 213,-1032 213,-1008 344,-1008 344,-1032"/>
+<text text-anchor="middle" x="278.5" y="-1017.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_read_harvops.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_read_harvops.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge21" class="edge">
+<title>sourcefile~mgt_read_harvops.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M224.75,-1007.97C215.71,-1005.37 206.49,-1002.37 198,-999 166.41,-986.46 132.49,-967.3 109.54,-953.41"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="111.37,-950.42 101.01,-948.18 107.71,-956.39 111.37,-950.42"/>
+</g>
+<!-- sourcefile~mgt_read_irrops.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node23" class="node">
+<title>sourcefile~mgt_read_irrops.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node23"><a xlink:href="../sourcefile/mgt_read_irrops.f90.html" xlink:title="mgt_read_irrops.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="337.5,-990 219.5,-990 219.5,-966 337.5,-966 337.5,-990"/>
+<text text-anchor="middle" x="278.5" y="-975.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_read_irrops.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_read_irrops.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge22" class="edge">
+<title>sourcefile~mgt_read_irrops.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M221.48,-965.96C198.57,-961.04 171.9,-955.31 148.06,-950.19"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="148.54,-946.72 138.03,-948.04 147.07,-953.56 148.54,-946.72"/>
+</g>
+<!-- sourcefile~mgt_read_mgtops.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node24" class="node">
+<title>sourcefile~mgt_read_mgtops.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node24"><a xlink:href="../sourcefile/mgt_read_mgtops.f90.html" xlink:title="mgt_read_mgtops.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="342.5,-948 214.5,-948 214.5,-924 342.5,-924 342.5,-948"/>
+<text text-anchor="middle" x="278.5" y="-933.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_read_mgtops.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_read_mgtops.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge23" class="edge">
+<title>sourcefile~mgt_read_mgtops.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M214.3,-936C200.92,-936 186.55,-936 172.4,-936"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="172.14,-932.5 162.14,-936 172.14,-939.5 172.14,-932.5"/>
+</g>
+<!-- sourcefile~mgt_read_puddle.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node25" class="node">
+<title>sourcefile~mgt_read_puddle.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node25"><a xlink:href="../sourcefile/mgt_read_puddle.f90.html" xlink:title="mgt_read_puddle.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="341,-906 216,-906 216,-882 341,-882 341,-906"/>
+<text text-anchor="middle" x="278.5" y="-891.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_read_puddle.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_read_puddle.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge24" class="edge">
+<title>sourcefile~mgt_read_puddle.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M221.48,-906.04C198.57,-910.96 171.9,-916.69 148.06,-921.81"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="147.07,-918.44 138.03,-923.96 148.54,-925.28 147.07,-918.44"/>
+</g>
+<!-- sourcefile~mgt_read_sweepops.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node26" class="node">
+<title>sourcefile~mgt_read_sweepops.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node26"><a xlink:href="../sourcefile/mgt_read_sweepops.f90.html" xlink:title="mgt_read_sweepops.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="349,-864 208,-864 208,-840 349,-840 349,-864"/>
+<text text-anchor="middle" x="278.5" y="-849.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_read_sweepops.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_read_sweepops.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge25" class="edge">
+<title>sourcefile~mgt_read_sweepops.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M224.75,-864.03C215.71,-866.63 206.49,-869.63 198,-873 166.41,-885.54 132.49,-904.7 109.54,-918.59"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="107.71,-915.61 101.01,-923.82 111.37,-921.58 107.71,-915.61"/>
+</g>
+<!-- sourcefile~mgt_sched.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node27" class="node">
+<title>sourcefile~mgt_sched.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node27"><a xlink:href="../sourcefile/mgt_sched.f90.html" xlink:title="mgt_sched.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="324,-822 233,-822 233,-798 324,-798 324,-822"/>
+<text text-anchor="middle" x="278.5" y="-807.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_sched.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_sched.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge26" class="edge">
+<title>sourcefile~mgt_sched.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M232.75,-817.85C221.01,-820.96 208.67,-825.21 198,-831 157.2,-853.13 119.19,-892.49 98.42,-916.22"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="95.68,-914.05 91.82,-923.91 100.99,-918.61 95.68,-914.05"/>
+</g>
+<!-- sourcefile~pest_apply.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node28" class="node">
+<title>sourcefile~pest_apply.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node28"><a xlink:href="../sourcefile/pest_apply.f90.html" xlink:title="pest_apply.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="322.5,-780 234.5,-780 234.5,-756 322.5,-756 322.5,-780"/>
+<text text-anchor="middle" x="278.5" y="-765.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pest_apply.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pest_apply.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge27" class="edge">
+<title>sourcefile~pest_apply.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M234.12,-774.15C221.76,-777.27 208.74,-781.95 198,-789 148.24,-821.64 110.33,-882.77 92.76,-914.95"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="89.59,-913.47 87.98,-923.94 95.76,-916.76 89.59,-913.47"/>
+</g>
+<!-- sourcefile~pl_burnop.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node29" class="node">
+<title>sourcefile~pl_burnop.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node29"><a xlink:href="../sourcefile/pl_burnop.f90.html" xlink:title="pl_burnop.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="321.5,-738 235.5,-738 235.5,-714 321.5,-714 321.5,-738"/>
+<text text-anchor="middle" x="278.5" y="-723.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_burnop.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_burnop.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge28" class="edge">
+<title>sourcefile~pl_burnop.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M235.22,-730.97C222.35,-734.04 208.77,-738.99 198,-747 139.01,-790.86 103.48,-874.43 89.24,-914.08"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="85.91,-913 85.93,-923.6 92.52,-915.3 85.91,-913"/>
+</g>
+<!-- sourcefile~pl_fert.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node30" class="node">
+<title>sourcefile~pl_fert.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node30"><a xlink:href="../sourcefile/pl_fert.f90.html" xlink:title="pl_fert.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="312,-696 245,-696 245,-672 312,-672 312,-696"/>
+<text text-anchor="middle" x="278.5" y="-681.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_fert.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_fert.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge29" class="edge">
+<title>sourcefile~pl_fert.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M244.9,-686.41C229.3,-689 211.19,-694.29 198,-705 129.29,-760.77 97.61,-867.68 86.67,-913.86"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="83.23,-913.21 84.44,-923.74 90.06,-914.76 83.23,-913.21"/>
+</g>
+<!-- sourcefile~pl_fert_wet.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node31" class="node">
+<title>sourcefile~pl_fert_wet.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node31"><a xlink:href="../sourcefile/pl_fert_wet.f90.html" xlink:title="pl_fert_wet.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="324,-654 233,-654 233,-630 324,-630 324,-654"/>
+<text text-anchor="middle" x="278.5" y="-639.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_fert_wet.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_fert_wet.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge30" class="edge">
+<title>sourcefile~pl_fert_wet.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M232.82,-646.43C220.42,-649.5 207.71,-654.59 198,-663 119.48,-730.99 92.68,-861.31 84.84,-913.54"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="81.34,-913.33 83.41,-923.72 88.27,-914.3 81.34,-913.33"/>
+</g>
+<!-- sourcefile~pl_manure.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node32" class="node">
+<title>sourcefile~pl_manure.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node32"><a xlink:href="../sourcefile/pl_manure.f90.html" xlink:title="pl_manure.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="323,-612 234,-612 234,-588 323,-588 323,-612"/>
+<text text-anchor="middle" x="278.5" y="-597.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_manure.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_manure.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge31" class="edge">
+<title>sourcefile~pl_manure.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M233.8,-603.83C221,-606.85 207.82,-612.07 198,-621 109.29,-701.7 88.24,-856.2 83.4,-913.71"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="79.89,-913.63 82.63,-923.86 86.87,-914.16 79.89,-913.63"/>
+</g>
+<!-- sourcefile~plant_init.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node33" class="node">
+<title>sourcefile~plant_init.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node33"><a xlink:href="../sourcefile/plant_init.f90.html" xlink:title="plant_init.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="319.5,-570 237.5,-570 237.5,-546 319.5,-546 319.5,-570"/>
+<text text-anchor="middle" x="278.5" y="-555.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">plant_init.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~plant_init.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge32" class="edge">
+<title>sourcefile~plant_init.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M237.29,-560.79C223.35,-563.63 208.58,-569 198,-579 99.26,-672.37 84.41,-850.49 82.3,-913.35"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="78.79,-913.61 82.04,-923.7 85.79,-913.79 78.79,-913.61"/>
+</g>
+<!-- sourcefile~proc_cond.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node34" class="node">
+<title>sourcefile~proc_cond.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node34"><a xlink:href="../sourcefile/proc_cond.f90.html" xlink:title="proc_cond.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="322.5,-528 234.5,-528 234.5,-504 322.5,-504 322.5,-528"/>
+<text text-anchor="middle" x="278.5" y="-513.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">proc_cond.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~proc_cond.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge33" class="edge">
+<title>sourcefile~proc_cond.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M234.24,-519.23C221.16,-522.2 207.71,-527.53 198,-537 88.91,-643.43 80.87,-845.96 81.4,-913.47"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="77.9,-913.84 81.55,-923.78 84.9,-913.73 77.9,-913.84"/>
+</g>
+<!-- sourcefile~re_initialize.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node35" class="node">
+<title>sourcefile~re_initialize.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node35"><a xlink:href="../sourcefile/re_initialize.f90.html" xlink:title="re_initialize.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="325,-486 232,-486 232,-462 325,-462 325,-486"/>
+<text text-anchor="middle" x="278.5" y="-471.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">re_initialize.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~re_initialize.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge34" class="edge">
+<title>sourcefile~re_initialize.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M231.61,-477.67C219.32,-480.73 206.98,-486.01 198,-495 137.08,-555.98 95.87,-832.3 84.91,-913.5"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="81.42,-913.24 83.57,-923.62 88.36,-914.17 81.42,-913.24"/>
+</g>
+<!-- sourcefile~read_mgtops.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node36" class="node">
+<title>sourcefile~read_mgtops.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node36"><a xlink:href="../sourcefile/read_mgtops.f90.html" xlink:title="read_mgtops.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="329.5,-444 227.5,-444 227.5,-420 329.5,-420 329.5,-444"/>
+<text text-anchor="middle" x="278.5" y="-429.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">read_mgtops.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~read_mgtops.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge35" class="edge">
+<title>sourcefile~read_mgtops.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M227.35,-436.67C216.47,-439.85 205.88,-444.94 198,-453 131.79,-520.72 93.8,-827.77 84.35,-913.63"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="80.84,-913.5 83.25,-923.82 87.8,-914.25 80.84,-913.5"/>
+</g>
+<!-- sourcefile~salt_fert.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node37" class="node">
+<title>sourcefile~salt_fert.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node37"><a xlink:href="../sourcefile/salt_fert.f90.html" xlink:title="salt_fert.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="316.5,-402 240.5,-402 240.5,-378 316.5,-378 316.5,-402"/>
+<text text-anchor="middle" x="278.5" y="-387.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">salt_fert.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~salt_fert.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge36" class="edge">
+<title>sourcefile~salt_fert.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M240.44,-391.58C225.38,-394.1 208.97,-399.57 198,-411 126.48,-485.5 91.93,-823.43 83.88,-913.75"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="80.39,-913.45 83.01,-923.72 87.36,-914.06 80.39,-913.45"/>
+</g>
+<!-- sourcefile~salt_fert_wet.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node38" class="node">
+<title>sourcefile~salt_fert_wet.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node38"><a xlink:href="../sourcefile/salt_fert_wet.f90.html" xlink:title="salt_fert_wet.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="328.5,-360 228.5,-360 228.5,-336 328.5,-336 328.5,-360"/>
+<text text-anchor="middle" x="278.5" y="-345.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">salt_fert_wet.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~salt_fert_wet.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge37" class="edge">
+<title>sourcefile~salt_fert_wet.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M228.39,-352.13C217.09,-355.28 206.04,-360.49 198,-369 121.24,-450.22 90.29,-818.43 83.5,-913.53"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="79.99,-913.52 82.79,-923.74 86.97,-914 79.99,-913.52"/>
+</g>
+<!-- sourcefile~scen_read_bmpuser.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node39" class="node">
+<title>sourcefile~scen_read_bmpuser.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node39"><a xlink:href="../sourcefile/scen_read_bmpuser.f90.html" xlink:title="scen_read_bmpuser.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="347.5,-318 209.5,-318 209.5,-294 347.5,-294 347.5,-318"/>
+<text text-anchor="middle" x="278.5" y="-303.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">scen_read_bmpuser.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~scen_read_bmpuser.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge38" class="edge">
+<title>sourcefile~scen_read_bmpuser.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M209.3,-317.98C205.14,-320.47 201.31,-323.45 198,-327 115.84,-415.12 88.67,-814.85 83.14,-913.8"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="79.64,-913.69 82.6,-923.86 86.63,-914.06 79.64,-913.69"/>
+</g>
+<!-- sourcefile~scen_read_filtstrip.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node40" class="node">
+<title>sourcefile~scen_read_filtstrip.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node40"><a xlink:href="../sourcefile/scen_read_filtstrip.f90.html" xlink:title="scen_read_filtstrip.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="343,-276 214,-276 214,-252 343,-252 343,-276"/>
+<text text-anchor="middle" x="278.5" y="-261.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">scen_read_filtstrip.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~scen_read_filtstrip.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge39" class="edge">
+<title>sourcefile~scen_read_filtstrip.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M213.76,-273.46C207.87,-276.4 202.45,-280.17 198,-285 110.56,-379.91 87.24,-810.21 82.85,-913.61"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="79.35,-913.69 82.44,-923.82 86.34,-913.97 79.35,-913.69"/>
+</g>
+<!-- sourcefile~scen_read_grwway.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node41" class="node">
+<title>sourcefile~scen_read_grwway.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node41"><a xlink:href="../sourcefile/scen_read_grwway.f90.html" xlink:title="scen_read_grwway.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="344,-234 213,-234 213,-210 344,-210 344,-234"/>
+<text text-anchor="middle" x="278.5" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">scen_read_grwway.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~scen_read_grwway.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge40" class="edge">
+<title>sourcefile~scen_read_grwway.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M212.94,-231.8C207.36,-234.69 202.23,-238.36 198,-243 105.23,-344.77 85.87,-806.04 82.59,-913.55"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="79.08,-913.77 82.29,-923.86 86.08,-913.97 79.08,-913.77"/>
+</g>
+<!-- sourcefile~structure_set_parms.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node42" class="node">
+<title>sourcefile~structure_set_parms.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node42"><a xlink:href="../sourcefile/structure_set_parms.f90.html" xlink:title="structure_set_parms.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="348.5,-192 208.5,-192 208.5,-168 348.5,-168 348.5,-192"/>
+<text text-anchor="middle" x="278.5" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">structure_set_parms.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~structure_set_parms.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge41" class="edge">
+<title>sourcefile~structure_set_parms.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M208.81,-192.08C204.82,-194.56 201.16,-197.5 198,-201 99.75,-309.79 84.53,-803.37 82.35,-913.97"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="78.85,-913.91 82.16,-923.97 85.85,-914.04 78.85,-913.91"/>
+</g>
+<!-- sourcefile~time_control.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node43" class="node">
+<title>sourcefile~time_control.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node43"><a xlink:href="../sourcefile/time_control.f90.html" xlink:title="time_control.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="328,-150 229,-150 229,-126 328,-126 328,-150"/>
+<text text-anchor="middle" x="278.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">time_control.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~time_control.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge42" class="edge">
+<title>sourcefile~time_control.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M228.9,-141.6C217.31,-144.74 206,-150.07 198,-159 94.42,-274.66 83.33,-799.14 82.14,-913.81"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="78.64,-913.84 82.05,-923.87 85.64,-913.9 78.64,-913.84"/>
+</g>
+<!-- sourcefile~water_allocation_read.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node44" class="node">
+<title>sourcefile~water_allocation_read.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node44"><a xlink:href="../sourcefile/water_allocation_read.f90.html" xlink:title="water_allocation_read.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="353.5,-108 203.5,-108 203.5,-84 353.5,-84 353.5,-108"/>
+<text text-anchor="middle" x="278.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">water_allocation_read.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~water_allocation_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge43" class="edge">
+<title>sourcefile~water_allocation_read.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M208.75,-108.03C204.77,-110.52 201.13,-113.48 198,-117 89.06,-239.57 82.17,-795.27 81.96,-913.74"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="78.46,-913.81 81.95,-923.81 85.46,-913.81 78.46,-913.81"/>
+</g>
+<!-- sourcefile~wet_irrp.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node45" class="node">
+<title>sourcefile~wet_irrp.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node45"><a xlink:href="../sourcefile/wet_irrp.f90.html" xlink:title="wet_irrp.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="316.5,-66 240.5,-66 240.5,-42 316.5,-42 316.5,-66"/>
+<text text-anchor="middle" x="278.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">wet_irrp.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~wet_irrp.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge44" class="edge">
+<title>sourcefile~wet_irrp.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M240.38,-55.08C225.12,-57.5 208.58,-63.01 198,-75 83.66,-204.52 81.07,-791.77 81.79,-913.76"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="78.29,-913.83 81.86,-923.8 85.29,-913.78 78.29,-913.83"/>
+</g>
+<!-- sourcefile~wetland_control.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_node46" class="node">
+<title>sourcefile~wetland_control.f90</title>
+<g id="a_sourcefile~~mgt_operations_module.f90~~AfferentGraph_node46"><a xlink:href="../sourcefile/wetland_control.f90.html" xlink:title="wetland_control.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="337,-24 220,-24 220,0 337,0 337,-24"/>
+<text text-anchor="middle" x="278.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">wetland_control.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~wetland_control.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~mgt_operations_module.f90~~AfferentGraph_edge45" class="edge">
+<title>sourcefile~wetland_control.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M219.79,-18.44C211.51,-21.68 203.84,-26.35 198,-33 78.34,-169.39 80.01,-787.4 81.63,-913.49"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="78.13,-913.89 81.78,-923.84 85.13,-913.79 78.13,-913.89"/>
+</g>
+</g>
+</svg>
+</div>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#AfferentGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="AfferentGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="202pt" height="32pt"
+ viewBox="0.00 0.00 201.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 197.5,-28 197.5,4 -4,4"/>
+<!-- Source File -->
+<g id="node1" class="node">
+<title>Source File</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="70,-24 0,-24 0,0 70,0 70,-24"/>
+<text text-anchor="middle" x="35" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Source File</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node2" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="193.5,-24 88.5,-24 88.5,0 193.5,0 193.5,-24"/>
+<text text-anchor="middle" x="141" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a file to a file which it depends on. A file
+is dependent upon another if the latter must be compiled before the former
+can be.
+</p>
+ Where possible, edges connecting nodes are
+given different colours to make them easier to distinguish in
+large graphs.</div>
+            </div>
+          </div>
+        </div>
+          </div>
+        </div>
+<br>
+      <section>
+        <h2><span class="anchor" id="src"></span>Source Code</h2>
+        <div class="hl codehilite"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="w">      </span><span class="k">module </span><span class="n">mgt_operations_module</span>
+<a id="ln-2" name="ln-2" href="#ln-2"></a><span class="w">    </span>
+<a id="ln-3" name="ln-3" href="#ln-3"></a><span class="w">      </span><span class="k">implicit none</span>
+<a id="ln-4" name="ln-4" href="#ln-4"></a><span class="k">      </span>
+<a id="ln-5" name="ln-5" href="#ln-5"></a><span class="k">     type </span><span class="n">irrigation_operation</span>
+<a id="ln-6" name="ln-6" href="#ln-6"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-7" name="ln-7" href="#ln-7"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">amt_mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="mf">5.4</span><span class="w">           </span><span class="c">!! mm     |irrigation application amount</span>
+<a id="ln-8" name="ln-8" href="#ln-8"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">eff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!!        |irrigation in-field efficiency</span>
+<a id="ln-9" name="ln-9" href="#ln-9"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">surq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">               </span><span class="c">!! frac   |surface runoff ratio</span>
+<a id="ln-10" name="ln-10" href="#ln-10"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dep_mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">             </span><span class="c">!! mm     |depth of application for subsurface irrigation</span>
+<a id="ln-11" name="ln-11" href="#ln-11"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">salt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">               </span><span class="c">!! mg/kg  |concentration of total salt in irrigation</span>
+<a id="ln-12" name="ln-12" href="#ln-12"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">no3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!! mg/kg  |concentration of nitrate in irrigation</span>
+<a id="ln-13" name="ln-13" href="#ln-13"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">po4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!! mg/kg  |concentration of phosphate in irrigation</span>
+<a id="ln-14" name="ln-14" href="#ln-14"></a><span class="w">      </span><span class="k">end type </span><span class="n">irrigation_operation</span>
+<a id="ln-15" name="ln-15" href="#ln-15"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">irrigation_operation</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">irrop_db</span>
+<a id="ln-16" name="ln-16" href="#ln-16"></a>
+<a id="ln-17" name="ln-17" href="#ln-17"></a><span class="w">     </span><span class="k">type </span><span class="n">puddle_operation</span>
+<a id="ln-18" name="ln-18" href="#ln-18"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-19" name="ln-19" href="#ln-19"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wet_hc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">             </span><span class="c">!! mm/h     |hydraulic conductivity of upper layer of soil after puddling</span>
+<a id="ln-20" name="ln-20" href="#ln-20"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!! ppm      |sediment concentration after puddling</span>
+<a id="ln-21" name="ln-21" href="#ln-21"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">orgn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">               </span><span class="c">!! ppm      |organic N concentration after puddling</span>
+<a id="ln-22" name="ln-22" href="#ln-22"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sedp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">               </span><span class="c">!! ppm      |organic P concentration after puddling</span>
+<a id="ln-23" name="ln-23" href="#ln-23"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">no3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!! ppm      |NO3-N concentration after puddling</span>
+<a id="ln-24" name="ln-24" href="#ln-24"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">solp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">               </span><span class="c">!! ppm      |mineral (soluble P) concentration after puddling</span>
+<a id="ln-25" name="ln-25" href="#ln-25"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nh3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!! ppm      |NH3 concentration after puddling</span>
+<a id="ln-26" name="ln-26" href="#ln-26"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">no2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!! ppm      |NO2 concentration after puddling</span>
+<a id="ln-27" name="ln-27" href="#ln-27"></a><span class="w">      </span><span class="k">end type </span><span class="n">puddle_operation</span>
+<a id="ln-28" name="ln-28" href="#ln-28"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">puddle_operation</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pudl_db</span>
+<a id="ln-29" name="ln-29" href="#ln-29"></a>
+<a id="ln-30" name="ln-30" href="#ln-30"></a><span class="w">      </span><span class="k">type </span><span class="n">filtstrip_operation</span>
+<a id="ln-31" name="ln-31" href="#ln-31"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-32" name="ln-32" href="#ln-32"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vfsi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">             </span><span class="c">!!       |on/off flag for vegetative filter strip</span>
+<a id="ln-33" name="ln-33" href="#ln-33"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vfsratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">           </span><span class="c">!!       |contouring USLE P factor</span>
+<a id="ln-34" name="ln-34" href="#ln-34"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vfscon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">             </span><span class="c">!!       |fraction of the total runoff from the entire field</span>
+<a id="ln-35" name="ln-35" href="#ln-35"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vfsch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">              </span><span class="c">!!       |fraction of flow entering the most concentrated 10% of the VFS.</span>
+<a id="ln-36" name="ln-36" href="#ln-36"></a><span class="w">                                        </span><span class="c">!          which is fully channelized</span>
+<a id="ln-37" name="ln-37" href="#ln-37"></a><span class="w">      </span><span class="k">end type </span><span class="n">filtstrip_operation</span>
+<a id="ln-38" name="ln-38" href="#ln-38"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">filtstrip_operation</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">filtstrip_db</span>
+<a id="ln-39" name="ln-39" href="#ln-39"></a>
+<a id="ln-40" name="ln-40" href="#ln-40"></a><span class="w">      </span><span class="k">type </span><span class="n">fire_operation</span>
+<a id="ln-41" name="ln-41" href="#ln-41"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-42" name="ln-42" href="#ln-42"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cn2_upd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">            </span><span class="c">!!       |change in SCS curve number II value</span>
+<a id="ln-43" name="ln-43" href="#ln-43"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fr_burn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">            </span><span class="c">!!       |fraction burned</span>
+<a id="ln-44" name="ln-44" href="#ln-44"></a><span class="w">      </span><span class="k">end type </span><span class="n">fire_operation</span>
+<a id="ln-45" name="ln-45" href="#ln-45"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">fire_operation</span><span class="p">),</span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fire_db</span>
+<a id="ln-46" name="ln-46" href="#ln-46"></a><span class="w">      </span>
+<a id="ln-47" name="ln-47" href="#ln-47"></a><span class="w">      </span><span class="k">type </span><span class="n">grwaterway_operation</span>
+<a id="ln-48" name="ln-48" href="#ln-48"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-49" name="ln-49" href="#ln-49"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grwat_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">     </span><span class="c">!!none          |On/off Flag for waterway simulation</span>
+<a id="ln-50" name="ln-50" href="#ln-50"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grwat_n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!none          |Mannings&quot;s n for grassed waterway</span>
+<a id="ln-51" name="ln-51" href="#ln-51"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grwat_spcon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">    </span><span class="c">!!none          |sediment transport coefficant defined by user</span>
+<a id="ln-52" name="ln-52" href="#ln-52"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grwat_d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!m             |depth of Grassed waterway</span>
+<a id="ln-53" name="ln-53" href="#ln-53"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grwat_w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!none          |width of grass waterway</span>
+<a id="ln-54" name="ln-54" href="#ln-54"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grwat_l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!km            |length of Grass Waterway</span>
+<a id="ln-55" name="ln-55" href="#ln-55"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grwat_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!m/m           |slope of grass waterway</span>
+<a id="ln-56" name="ln-56" href="#ln-56"></a><span class="w">      </span><span class="k">end type </span><span class="n">grwaterway_operation</span>
+<a id="ln-57" name="ln-57" href="#ln-57"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">grwaterway_operation</span><span class="p">),</span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grwaterway_db</span>
+<a id="ln-58" name="ln-58" href="#ln-58"></a>
+<a id="ln-59" name="ln-59" href="#ln-59"></a><span class="w">      </span><span class="k">type </span><span class="n">bmpuser_operation</span><span class="w">  </span>
+<a id="ln-60" name="ln-60" href="#ln-60"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-61" name="ln-61" href="#ln-61"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bmp_flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-62" name="ln-62" href="#ln-62"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bmp_sed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">       </span><span class="c">!!%              | Sediment removal by BMP       </span>
+<a id="ln-63" name="ln-63" href="#ln-63"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bmp_pp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Particulate P removal by BMP</span>
+<a id="ln-64" name="ln-64" href="#ln-64"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bmp_sp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Soluble P removal by BMP</span>
+<a id="ln-65" name="ln-65" href="#ln-65"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bmp_pn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Particulate N removal by BMP </span>
+<a id="ln-66" name="ln-66" href="#ln-66"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bmp_sn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Soluble N removal by BMP  </span>
+<a id="ln-67" name="ln-67" href="#ln-67"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bmp_bac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">       </span><span class="c">!!%              | Bacteria removal by BMP</span>
+<a id="ln-68" name="ln-68" href="#ln-68"></a><span class="w">      </span><span class="k">end type </span><span class="n">bmpuser_operation</span><span class="w"> </span>
+<a id="ln-69" name="ln-69" href="#ln-69"></a><span class="w">      </span>
+<a id="ln-70" name="ln-70" href="#ln-70"></a><span class="w">      </span><span class="k">type </span><span class="n">bmpuser_operation1</span><span class="w">  </span>
+<a id="ln-71" name="ln-71" href="#ln-71"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-72" name="ln-72" href="#ln-72"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bmp_flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-73" name="ln-73" href="#ln-73"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">surf_flo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">       </span><span class="c">!!%              | Surface Flow removal by BMP  </span>
+<a id="ln-74" name="ln-74" href="#ln-74"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">surf_sed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">       </span><span class="c">!!%              | Surface Sediment removal by BMP       </span>
+<a id="ln-75" name="ln-75" href="#ln-75"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">surf_pp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Surface Particulate P removal by BMP</span>
+<a id="ln-76" name="ln-76" href="#ln-76"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">surf_sp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Surface Soluble P removal by BMP</span>
+<a id="ln-77" name="ln-77" href="#ln-77"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">surf_pn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Surface Particulate N removal by BMP </span>
+<a id="ln-78" name="ln-78" href="#ln-78"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">surf_sn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Surface Soluble N removal by BMP  </span>
+<a id="ln-79" name="ln-79" href="#ln-79"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">surf_bac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">       </span><span class="c">!!%              | Surface Bacteria removal by BMP</span>
+<a id="ln-80" name="ln-80" href="#ln-80"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sub_flo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Subsurface Flow removal by BMP  </span>
+<a id="ln-81" name="ln-81" href="#ln-81"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sub_sed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Subsurface Sediment removal by BMP       </span>
+<a id="ln-82" name="ln-82" href="#ln-82"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sub_pp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">         </span><span class="c">!!%              | Subsurface Particulate P removal by BMP</span>
+<a id="ln-83" name="ln-83" href="#ln-83"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sub_sp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">         </span><span class="c">!!%              | Subsurface Soluble P removal by BMP</span>
+<a id="ln-84" name="ln-84" href="#ln-84"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sub_pn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">         </span><span class="c">!!%              | Subsurface Particulate N removal by BMP </span>
+<a id="ln-85" name="ln-85" href="#ln-85"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sub_sn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">         </span><span class="c">!!%              | Subsurface Soluble N removal by BMP  </span>
+<a id="ln-86" name="ln-86" href="#ln-86"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sub_bac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Subsurface Bacteria removal by BMP </span>
+<a id="ln-87" name="ln-87" href="#ln-87"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tile_flo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">       </span><span class="c">!!%              | Tile Flow removal by BMP </span>
+<a id="ln-88" name="ln-88" href="#ln-88"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tile_sed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">       </span><span class="c">!!%              | Tile Sediment removal by BMP       </span>
+<a id="ln-89" name="ln-89" href="#ln-89"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tile_pp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Tile Particulate P removal by BMP</span>
+<a id="ln-90" name="ln-90" href="#ln-90"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tile_sp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Tile Soluble P removal by BMP</span>
+<a id="ln-91" name="ln-91" href="#ln-91"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tile_pn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Tile Particulate N removal by BMP </span>
+<a id="ln-92" name="ln-92" href="#ln-92"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tile_sn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!%              | Tile Soluble N removal by BMP  </span>
+<a id="ln-93" name="ln-93" href="#ln-93"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tile_bac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">       </span><span class="c">!!%              | Tile Bacteria removal by BMP </span>
+<a id="ln-94" name="ln-94" href="#ln-94"></a><span class="w">      </span><span class="k">end type </span><span class="n">bmpuser_operation1</span>
+<a id="ln-95" name="ln-95" href="#ln-95"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">bmpuser_operation</span><span class="p">),</span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bmpuser_db</span>
+<a id="ln-96" name="ln-96" href="#ln-96"></a><span class="w">      </span>
+<a id="ln-97" name="ln-97" href="#ln-97"></a><span class="w">      </span><span class="k">type </span><span class="n">chemical_application_operation</span>
+<a id="ln-98" name="ln-98" href="#ln-98"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-99" name="ln-99" href="#ln-99"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">form</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot; &quot;</span><span class="w">        </span><span class="c">!!           |solid; liquid</span>
+<a id="ln-100" name="ln-100" href="#ln-100"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">op_typ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot; &quot;</span><span class="w">      </span><span class="c">!!           |operation type-spread; spray; inject; direct</span>
+<a id="ln-101" name="ln-101" href="#ln-101"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">app_eff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                    </span><span class="c">!!           |application efficiency</span>
+<a id="ln-102" name="ln-102" href="#ln-102"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">foliar_eff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                 </span><span class="c">!!           |foliar efficiency</span>
+<a id="ln-103" name="ln-103" href="#ln-103"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">inject_dep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                 </span><span class="c">!!mm         |injection depth</span>
+<a id="ln-104" name="ln-104" href="#ln-104"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">surf_frac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                  </span><span class="c">!!           |surface fraction-amount in upper 10 mm</span>
+<a id="ln-105" name="ln-105" href="#ln-105"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">drift_pot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                  </span><span class="c">!!           |drift potential</span>
+<a id="ln-106" name="ln-106" href="#ln-106"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">aerial_unif</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!!           |aerial uniformity</span>
+<a id="ln-107" name="ln-107" href="#ln-107"></a><span class="w">      </span><span class="k">end type </span><span class="n">chemical_application_operation</span>
+<a id="ln-108" name="ln-108" href="#ln-108"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">chemical_application_operation</span><span class="p">),</span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">chemapp_db</span>
+<a id="ln-109" name="ln-109" href="#ln-109"></a>
+<a id="ln-110" name="ln-110" href="#ln-110"></a><span class="w">      </span><span class="k">type </span><span class="n">harvest_operation</span>
+<a id="ln-111" name="ln-111" href="#ln-111"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-112" name="ln-112" href="#ln-112"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">typ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="c">!!none              |grain;biomass;residue;tree;tuber</span>
+<a id="ln-113" name="ln-113" href="#ln-113"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hi_ovr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">         </span><span class="c">!!(kg/ha)/(kg/ha)   |harvest index target specified at harvest</span>
+<a id="ln-114" name="ln-114" href="#ln-114"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">eff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">            </span><span class="c">!!none              |harvest efficiency: fraction of harvested yield that is removed </span>
+<a id="ln-115" name="ln-115" href="#ln-115"></a><span class="w">                                                       </span><span class="c">!the remainder becomes residue on the soil surface</span>
+<a id="ln-116" name="ln-116" href="#ln-116"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bm_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">          </span><span class="c">!!kg/ha             |minimum biomass to allow harvest</span>
+<a id="ln-117" name="ln-117" href="#ln-117"></a><span class="w">      </span><span class="k">end type </span><span class="n">harvest_operation</span>
+<a id="ln-118" name="ln-118" href="#ln-118"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">harvest_operation</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">harvop_db</span>
+<a id="ln-119" name="ln-119" href="#ln-119"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">harvest_operation</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">harvop</span>
+<a id="ln-120" name="ln-120" href="#ln-120"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">harvest_operation</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hkop</span>
+<a id="ln-121" name="ln-121" href="#ln-121"></a><span class="w">      </span>
+<a id="ln-122" name="ln-122" href="#ln-122"></a><span class="w">      </span><span class="k">type </span><span class="n">grazing_operation</span>
+<a id="ln-123" name="ln-123" href="#ln-123"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-124" name="ln-124" href="#ln-124"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fertnm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot; &quot;</span>
+<a id="ln-125" name="ln-125" href="#ln-125"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">manure_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">                         </span><span class="c">!!fertilizer number from fertilizer.frt</span>
+<a id="ln-126" name="ln-126" href="#ln-126"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">eat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">              </span><span class="c">!!(kg/ha)/day      |dry weight of biomass removed by grazing daily</span>
+<a id="ln-127" name="ln-127" href="#ln-127"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tramp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">            </span><span class="c">!!(kg/ha)/day      |dry weight of biomass removed by trampling daily</span>
+<a id="ln-128" name="ln-128" href="#ln-128"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">manure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">           </span><span class="c">!!(kg/ha)/day      |dry weight of manure deposited</span>
+<a id="ln-129" name="ln-129" href="#ln-129"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">biomin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">           </span><span class="c">!!kg/ha            |minimum plant biomass for grazing</span>
+<a id="ln-130" name="ln-130" href="#ln-130"></a><span class="w">      </span><span class="k">end type </span><span class="n">grazing_operation</span>
+<a id="ln-131" name="ln-131" href="#ln-131"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">grazing_operation</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grazeop_db</span>
+<a id="ln-132" name="ln-132" href="#ln-132"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">grazing_operation</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">graze</span>
+<a id="ln-133" name="ln-133" href="#ln-133"></a><span class="w">      </span>
+<a id="ln-134" name="ln-134" href="#ln-134"></a><span class="w">      </span><span class="k">type </span><span class="n">streetsweep_operation</span>
+<a id="ln-135" name="ln-135" href="#ln-135"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-136" name="ln-136" href="#ln-136"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">eff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">               </span><span class="c">!!none             |removal efficiency of sweeping operation</span>
+<a id="ln-137" name="ln-137" href="#ln-137"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fr_curb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">           </span><span class="c">!!none             |availability factor, the fraction of the</span>
+<a id="ln-138" name="ln-138" href="#ln-138"></a><span class="w">                                       </span><span class="c">!!                    curb length that is sweepable</span>
+<a id="ln-139" name="ln-139" href="#ln-139"></a><span class="w">      </span><span class="k">end type </span><span class="n">streetsweep_operation</span>
+<a id="ln-140" name="ln-140" href="#ln-140"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">streetsweep_operation</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sweepop_db</span>
+<a id="ln-141" name="ln-141" href="#ln-141"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">streetsweep_operation</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sweepop</span>
+<a id="ln-142" name="ln-142" href="#ln-142"></a><span class="w">      </span>
+<a id="ln-143" name="ln-143" href="#ln-143"></a><span class="w">      </span><span class="k">type </span><span class="n">management_ops</span>
+<a id="ln-144" name="ln-144" href="#ln-144"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-145" name="ln-145" href="#ln-145"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">op</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-146" name="ln-146" href="#ln-146"></a><span class="w">        </span><span class="c">!! operation code 4-digit char name</span>
+<a id="ln-147" name="ln-147" href="#ln-147"></a><span class="w">        </span><span class="c">!! plnt; autoplnt - plant</span>
+<a id="ln-148" name="ln-148" href="#ln-148"></a><span class="w">        </span><span class="c">!! harv; autoharv - harvest only</span>
+<a id="ln-149" name="ln-149" href="#ln-149"></a><span class="w">        </span><span class="c">!! kill; autokill - kill</span>
+<a id="ln-150" name="ln-150" href="#ln-150"></a><span class="w">        </span><span class="c">!! hvkl; autohk - harvest and kill</span>
+<a id="ln-151" name="ln-151" href="#ln-151"></a><span class="w">        </span><span class="c">!! till; autotill - tillage</span>
+<a id="ln-152" name="ln-152" href="#ln-152"></a><span class="w">        </span><span class="c">!! irr; autoirr - irrigation</span>
+<a id="ln-153" name="ln-153" href="#ln-153"></a><span class="w">        </span><span class="c">!! fert; autofert - fertlizer</span>
+<a id="ln-154" name="ln-154" href="#ln-154"></a><span class="w">        </span><span class="c">!! pest; pestauto - pesticide application</span>
+<a id="ln-155" name="ln-155" href="#ln-155"></a><span class="w">        </span><span class="c">!! graz; autograz - grazing</span>
+<a id="ln-156" name="ln-156" href="#ln-156"></a><span class="w">        </span><span class="c">!! burn; autoburn - burn</span>
+<a id="ln-157" name="ln-157" href="#ln-157"></a><span class="w">        </span><span class="c">!! swep; autoswep - street sweep</span>
+<a id="ln-158" name="ln-158" href="#ln-158"></a><span class="w">        </span><span class="c">!! prtp - print plant vars</span>
+<a id="ln-159" name="ln-159" href="#ln-159"></a><span class="w">        </span><span class="c">!! skip - skip to end of the year</span>
+<a id="ln-160" name="ln-160" href="#ln-160"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-161" name="ln-161" href="#ln-161"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-162" name="ln-162" href="#ln-162"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">jday</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-163" name="ln-163" href="#ln-163"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-164" name="ln-164" href="#ln-164"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">husc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span>
+<a id="ln-165" name="ln-165" href="#ln-165"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">op_char</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-166" name="ln-166" href="#ln-166"></a><span class="w">        </span><span class="kt">character</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">op_plant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-167" name="ln-167" href="#ln-167"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">op1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-168" name="ln-168" href="#ln-168"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">op2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">              </span><span class="c">!! |none          |plant number in community for hu scheduling</span>
+<a id="ln-169" name="ln-169" href="#ln-169"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">op3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">                 </span><span class="c">!! |none          |application amount (mm or kg/ha)</span>
+<a id="ln-170" name="ln-170" href="#ln-170"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">op4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">              </span><span class="c">!! |none          |fert and pest type-point to fert and pest db</span>
+<a id="ln-171" name="ln-171" href="#ln-171"></a><span class="w">      </span><span class="k">end type </span><span class="n">management_ops</span>
+<a id="ln-172" name="ln-172" href="#ln-172"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">management_ops</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mgt</span>
+<a id="ln-173" name="ln-173" href="#ln-173"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">management_ops</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mgt1</span>
+<a id="ln-174" name="ln-174" href="#ln-174"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">management_ops</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mgt2</span>
+<a id="ln-175" name="ln-175" href="#ln-175"></a><span class="w">      </span>
+<a id="ln-176" name="ln-176" href="#ln-176"></a><span class="w">      </span><span class="k">type </span><span class="n">management_schedule</span>
+<a id="ln-177" name="ln-177" href="#ln-177"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="ln-178" name="ln-178" href="#ln-178"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">num_ops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-179" name="ln-179" href="#ln-179"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">num_autos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-180" name="ln-180" href="#ln-180"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">first_op</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-181" name="ln-181" href="#ln-181"></a><span class="w">        </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">management_ops</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="w"> </span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mgt_ops</span>
+<a id="ln-182" name="ln-182" href="#ln-182"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="w"> </span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">auto_name</span>
+<a id="ln-183" name="ln-183" href="#ln-183"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="w"> </span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">auto_crop</span>
+<a id="ln-184" name="ln-184" href="#ln-184"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">auto_crop_num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-185" name="ln-185" href="#ln-185"></a><span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="w"> </span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">num_db</span>
+<a id="ln-186" name="ln-186" href="#ln-186"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">irr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="ln-187" name="ln-187" href="#ln-187"></a><span class="w">      </span><span class="k">end type </span><span class="n">management_schedule</span>
+<a id="ln-188" name="ln-188" href="#ln-188"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">management_schedule</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="w"> </span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sched</span>
+<a id="ln-189" name="ln-189" href="#ln-189"></a><span class="w">      </span>
+<a id="ln-190" name="ln-190" href="#ln-190"></a><span class="w">      </span><span class="k">end module </span><span class="n">mgt_operations_module</span><span class="w"> </span>
+</pre></div>
+
+      </section>
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              SWAT+
+              &copy; 2025 
+<br /><small>@SWAT_VERSION@</small></p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-09-04             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

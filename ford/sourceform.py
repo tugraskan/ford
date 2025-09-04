@@ -656,11 +656,17 @@ class FortranBase:
         if not obj:
             obj = self.obj
         total = total or self.num_lines
-        description = f"{float(self.num_lines) / total * 100:4.1f}% of total for {self.pretty_obj[obj]}."
+        # Fallback if pretty_obj is missing
+        pretty_obj = getattr(self, 'pretty_obj', None)
+        if pretty_obj and obj in pretty_obj:
+            obj_name = pretty_obj[obj]
+        else:
+            obj_name = str(obj)
+        description = f"{float(self.num_lines) / total * 100:4.1f}% of total for {obj_name}."
         if total_all:
             description = (
                 f"<p>{description}</p>Including implementation: {self.num_lines_all} statements, "
-                f"{float(self.num_lines_all) / total_all * 100:4.1f}% of total for {self.pretty_obj[obj]}."
+                f"{float(self.num_lines_all) / total_all * 100:4.1f}% of total for {obj_name}."
             )
         return description
 
@@ -786,7 +792,8 @@ class FortranBase:
         # Add I/O information to metadata if available
         if hasattr(self, 'io_tracker') and isinstance(self, (FortranProcedure, FortranProgram, FortranModule)):
             io_summary = self.io_tracker.get_io_summary()
-            if io_summary["operations"]["total"] > 0:
+            total_ops = io_summary["operations"].get("total", 0)
+            if total_ops > 0:
                 self.meta.io_summary = io_summary
 
                 # Generate I/O documentation section
@@ -796,7 +803,7 @@ class FortranBase:
                         io_doc += f"<li><strong>{filename}</strong>: accessed via {len(file_info['units'])} unit(s)</li>"
                     io_doc += "</ul>"
 
-                    if io_summary["operations"]["read"] > 0 or io_summary["operations"]["write"] > 0:
+                    if io_summary["operations"].get("read", 0) > 0 or io_summary["operations"].get("write", 0) > 0:
                         io_doc += "<h4>I/O Operations</h4><ul>"
                         if io_summary["operations"]["read"] > 0:
                             io_doc += f"<li>Read operations: {io_summary['operations']['read']}</li>"

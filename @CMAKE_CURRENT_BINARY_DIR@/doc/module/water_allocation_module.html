@@ -1,0 +1,3343 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for SWAT+">
+    <meta name="author" content="" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>water_allocation_module &ndash; SWAT+</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">SWAT+ <small>@SWAT_VERSION@</small></a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>water_allocation_module
+      <small>Module</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 1.3% of total for module.">161 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/water_allocation_module.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/water_allocation_module.f90.html'>water_allocation_module.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">water_allocation_module</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+        <div id="sidebar">
+      <h3>Contents</h3>
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#vars-0"
+         aria-expanded="false" aria-controls="vars-0">
+         <h4 class="card-header bg-primary text-white">Variables</h4>
+      </a>
+      <div id="vars-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-trans_m3">trans_m3</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-dmd_m3">dmd_m3</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-trt_om_name">trt_om_name</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-div_volume_daily">div_volume_daily</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-div_volume_total">div_volume_total</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-div_volume_used">div_volume_used</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-div_delay">div_delay</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-walloz">walloz</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-wallo">wallo</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-wallod_out">wallod_out</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-wallom_out">wallom_out</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-walloy_out">walloy_out</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-walloa_out">walloa_out</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-wallo_hdr">wallo_hdr</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#variable-wallo_hdr_units">wallo_hdr_units</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#inters-0"
+         aria-expanded="false" aria-controls="inters-0">
+         <h4 class="card-header bg-primary text-white">Interfaces</h4>
+      </a>
+      <div id="inters-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/water_allocation_module.html#interface-operator%20%28%2B%29~15">operator (+)</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#interface-operator%20%28SLASH%29~11">operator (/)</a>
+        </div>
+      </div>
+    </div>
+
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#types-0"
+         aria-expanded="false" aria-controls="types-0">
+         <h4 class="card-header bg-primary text-white">Derived Types</h4>
+      </a>
+      <div id="types-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/water_allocation_module.html#type-water_source_objects">water_source_objects</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#type-water_demand_sources">water_demand_sources</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#type-water_demand_source_objects">water_demand_source_objects</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#type-water_demand_objects">water_demand_objects</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#type-source_output">source_output</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#type-water_allocation">water_allocation</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#type-demand_object_output">demand_object_output</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#type-water_allocation_output">water_allocation_output</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#type-wallo_header">wallo_header</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#type-wallo_header_units">wallo_header_units</a>
+        </div>
+      </div>
+    </div>
+
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#funcs-0"
+         aria-expanded="false" aria-controls="funcs-0">
+         <h4 class="card-header bg-primary text-white">Functions</h4>
+      </a>
+      <div id="funcs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/water_allocation_module.html#proc-wallout_add">wallout_add</a>
+            <a class="list-group-item" href="../module/water_allocation_module.html#proc-wallo_div_const">wallo_div_const</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+  </div>
+
+    </div>
+
+    <div class="col-md-9" id='text'>
+      <p>routines for hydrograph module</p>
+<br>          <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href='hydrograph_module.html'>hydrograph_module</a></li>
+              </ul>
+            </li>
+            <li class="list-group-item">
+              <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: module~~water_allocation_module~~UsesGraph Pages: 1 -->
+<svg id="modulewater_allocation_moduleUsesGraph" width="433pt" height="74pt"
+ viewBox="0.00 0.00 433.00 74.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="module~~water_allocation_module~~UsesGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 70)">
+<title>module~~water_allocation_module~~UsesGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-70 429,-70 429,4 -4,4"/>
+<!-- module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsesGraph_node1" class="node">
+<title>module~water_allocation_module</title>
+<polygon fill="none" stroke="black" points="425,-45 279,-45 279,-21 425,-21 425,-45"/>
+<text text-anchor="middle" x="352" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50">water_allocation_module</text>
+</g>
+<!-- module~hydrograph_module -->
+<g id="module~~water_allocation_module~~UsesGraph_node2" class="node">
+<title>module~hydrograph_module</title>
+<g id="a_module~~water_allocation_module~~UsesGraph_node2"><a xlink:href="../module/hydrograph_module.html" xlink:title="hydrograph_module">
+<polygon fill="#337ab7" stroke="#337ab7" points="243,-45 123,-45 123,-21 243,-21 243,-45"/>
+<text text-anchor="middle" x="183" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hydrograph_module</text>
+</a>
+</g>
+</g>
+<!-- module~water_allocation_module&#45;&gt;module~hydrograph_module -->
+<g id="module~~water_allocation_module~~UsesGraph_edge1" class="edge">
+<title>module~water_allocation_module&#45;&gt;module~hydrograph_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M278.72,-33C270.26,-33 261.65,-33 253.23,-33"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="253.08,-29.5 243.08,-33 253.08,-36.5 253.08,-29.5"/>
+</g>
+<!-- module~basin_module -->
+<g id="module~~water_allocation_module~~UsesGraph_node3" class="node">
+<title>module~basin_module</title>
+<g id="a_module~~water_allocation_module~~UsesGraph_node3"><a xlink:href="../module/basin_module.html" xlink:title="basin_module">
+<polygon fill="#337ab7" stroke="#337ab7" points="87,-66 0,-66 0,-42 87,-42 87,-66"/>
+<text text-anchor="middle" x="43.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">basin_module</text>
+</a>
+</g>
+</g>
+<!-- module~hydrograph_module&#45;&gt;module~basin_module -->
+<g id="module~~water_allocation_module~~UsesGraph_edge2" class="edge">
+<title>module~hydrograph_module&#45;&gt;module~basin_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M122.89,-42.03C114.4,-43.32 105.72,-44.65 97.36,-45.93"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="96.73,-42.48 87.37,-47.45 97.78,-49.4 96.73,-42.48"/>
+</g>
+<!-- module~time_module -->
+<g id="module~~water_allocation_module~~UsesGraph_node4" class="node">
+<title>module~time_module</title>
+<g id="a_module~~water_allocation_module~~UsesGraph_node4"><a xlink:href="../module/time_module.html" xlink:title="time_module">
+<polygon fill="#337ab7" stroke="#337ab7" points="84.5,-24 2.5,-24 2.5,0 84.5,0 84.5,-24"/>
+<text text-anchor="middle" x="43.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">time_module</text>
+</a>
+</g>
+</g>
+<!-- module~hydrograph_module&#45;&gt;module~time_module -->
+<g id="module~~water_allocation_module~~UsesGraph_edge3" class="edge">
+<title>module~hydrograph_module&#45;&gt;module~time_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M122.89,-23.97C113.48,-22.53 103.82,-21.06 94.64,-19.66"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="94.93,-16.16 84.51,-18.11 93.87,-23.08 94.93,-16.16"/>
+</g>
+</g>
+</svg>
+</div>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#UsesGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="UsesGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="518pt" height="32pt"
+ viewBox="0.00 0.00 517.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 513.5,-28 513.5,4 -4,4"/>
+<!-- Module -->
+<g id="node1" class="node">
+<title>Module</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="54,-24 0,-24 0,0 54,0 54,-24"/>
+<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Module</text>
+</g>
+<!-- Submodule -->
+<g id="node2" class="node">
+<title>Submodule</title>
+<polygon fill="#5bc0de" stroke="#5bc0de" points="145.5,-24 72.5,-24 72.5,0 145.5,0 145.5,-24"/>
+<text text-anchor="middle" x="109" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Submodule</text>
+</g>
+<!-- Subroutine -->
+<g id="node3" class="node">
+<title>Subroutine</title>
+<polygon fill="#d9534f" stroke="#d9534f" points="234,-24 164,-24 164,0 234,0 234,-24"/>
+<text text-anchor="middle" x="199" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Subroutine</text>
+</g>
+<!-- Function -->
+<g id="node4" class="node">
+<title>Function</title>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="310,-24 252,-24 252,0 310,0 310,-24"/>
+<text text-anchor="middle" x="281" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Function</text>
+</g>
+<!-- Program -->
+<g id="node5" class="node">
+<title>Program</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="386,-24 328,-24 328,0 386,0 386,-24"/>
+<text text-anchor="middle" x="357" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Program</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node6" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="509.5,-24 404.5,-24 404.5,0 509.5,0 509.5,-24"/>
+<text text-anchor="middle" x="457" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a submodule to the (sub)module which it is
+descended from. Dashed arrows point from a module or program unit to 
+modules which it uses.
+</p>
+ Where possible, edges connecting nodes are
+given different colours to make them easier to distinguish in
+large graphs.</div>
+            </div>
+          </div>
+        </div>
+            </li>
+        </ul>
+      </div>
+    </div>
+
+          <div class="card">
+      <h3 class="card-header card-title bg-light">Used by</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: module~~water_allocation_module~~UsedByGraph Pages: 1 -->
+<svg id="modulewater_allocation_moduleUsedByGraph" width="334pt" height="788pt"
+ viewBox="0.00 0.00 334.00 788.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="module~~water_allocation_module~~UsedByGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 784)">
+<title>module~~water_allocation_module~~UsedByGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-784 330,-784 330,4 -4,4"/>
+<!-- module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_node1" class="node">
+<title>module~water_allocation_module</title>
+<polygon fill="none" stroke="black" points="146,-402 0,-402 0,-378 146,-378 146,-402"/>
+<text text-anchor="middle" x="73" y="-387.6" font-family="Helvetica,sans-Serif" font-size="10.50">water_allocation_module</text>
+</g>
+<!-- proc~actions -->
+<g id="module~~water_allocation_module~~UsedByGraph_node2" class="node">
+<title>proc~actions</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node2"><a xlink:href="../proc/actions.html" xlink:title="actions">
+<polygon fill="#d9534f" stroke="#d9534f" points="281,-780 227,-780 227,-756 281,-756 281,-780"/>
+<text text-anchor="middle" x="254" y="-765.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">actions</text>
+</a>
+</g>
+</g>
+<!-- proc~actions&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge1" class="edge">
+<title>proc~actions&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M226.95,-766.31C211.98,-764.01 193.85,-758.78 182,-747 86.23,-651.82 74.82,-474.84 73.88,-412.46"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="77.38,-412.17 73.81,-402.19 70.38,-412.22 77.38,-412.17"/>
+</g>
+<!-- proc~conditions -->
+<g id="module~~water_allocation_module~~UsedByGraph_node3" class="node">
+<title>proc~conditions</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node3"><a xlink:href="../proc/conditions.html" xlink:title="conditions">
+<polygon fill="#d9534f" stroke="#d9534f" points="287.5,-738 220.5,-738 220.5,-714 287.5,-714 287.5,-738"/>
+<text text-anchor="middle" x="254" y="-723.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">conditions</text>
+</a>
+</g>
+</g>
+<!-- proc~conditions&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge2" class="edge">
+<title>proc~conditions&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M220.38,-722.92C207.02,-720.13 192.3,-714.87 182,-705 96.1,-622.69 78.51,-469.17 74.92,-412.11"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="78.41,-411.83 74.37,-402.03 71.42,-412.21 78.41,-411.83"/>
+</g>
+<!-- proc~cs_divert -->
+<g id="module~~water_allocation_module~~UsedByGraph_node4" class="node">
+<title>proc~cs_divert</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node4"><a xlink:href="../proc/cs_divert.html" xlink:title="cs_divert">
+<polygon fill="#d9534f" stroke="#d9534f" points="284,-696 224,-696 224,-672 284,-672 284,-696"/>
+<text text-anchor="middle" x="254" y="-681.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">cs_divert</text>
+</a>
+</g>
+</g>
+<!-- proc~cs_divert&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge3" class="edge">
+<title>proc~cs_divert&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M223.81,-681.33C209.69,-678.68 193.38,-673.41 182,-663 106.14,-593.62 82.77,-464.1 76.28,-412.27"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="79.73,-411.7 75.1,-402.17 72.78,-412.51 79.73,-411.7"/>
+</g>
+<!-- proc~cs_irrig -->
+<g id="module~~water_allocation_module~~UsedByGraph_node5" class="node">
+<title>proc~cs_irrig</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node5"><a xlink:href="../proc/cs_irrig.html" xlink:title="cs_irrig">
+<polygon fill="#d9534f" stroke="#d9534f" points="281,-654 227,-654 227,-630 281,-630 281,-654"/>
+<text text-anchor="middle" x="254" y="-639.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">cs_irrig</text>
+</a>
+</g>
+</g>
+<!-- proc~cs_irrig&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge4" class="edge">
+<title>proc~cs_irrig&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M226.85,-639.55C212.22,-636.98 194.47,-631.73 182,-621 115.97,-564.18 87.64,-458.23 78.06,-412.25"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="81.44,-411.29 76.07,-402.16 74.57,-412.65 81.44,-411.29"/>
+</g>
+<!-- proc~header_water_allocation -->
+<g id="module~~water_allocation_module~~UsedByGraph_node6" class="node">
+<title>proc~header_water_allocation</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node6"><a xlink:href="../proc/header_water_allocation.html" xlink:title="header_water_allocation">
+<polygon fill="#d9534f" stroke="#d9534f" points="326,-612 182,-612 182,-588 326,-588 326,-612"/>
+<text text-anchor="middle" x="254" y="-597.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">header_water_allocation</text>
+</a>
+</g>
+</g>
+<!-- proc~header_water_allocation&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge5" class="edge">
+<title>proc~header_water_allocation&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M196.69,-587.87C191.44,-585.43 186.43,-582.51 182,-579 125.54,-534.31 93.3,-451.45 80.5,-411.99"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="83.79,-410.79 77.47,-402.3 77.11,-412.88 83.79,-410.79"/>
+</g>
+<!-- proc~res_hydro -->
+<g id="module~~water_allocation_module~~UsedByGraph_node7" class="node">
+<title>proc~res_hydro</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node7"><a xlink:href="../proc/res_hydro.html" xlink:title="res_hydro">
+<polygon fill="#d9534f" stroke="#d9534f" points="286,-570 222,-570 222,-546 286,-546 286,-570"/>
+<text text-anchor="middle" x="254" y="-555.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">res_hydro</text>
+</a>
+</g>
+</g>
+<!-- proc~res_hydro&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge6" class="edge">
+<title>proc~res_hydro&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M221.71,-553.31C208.57,-550.24 193.68,-545.2 182,-537 134.8,-503.84 100.09,-443.44 83.99,-411.36"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="87.14,-409.82 79.6,-402.37 80.85,-412.89 87.14,-409.82"/>
+</g>
+<!-- proc~res_weir_release -->
+<g id="module~~water_allocation_module~~UsedByGraph_node8" class="node">
+<title>proc~res_weir_release</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node8"><a xlink:href="../proc/res_weir_release.html" xlink:title="res_weir_release">
+<polygon fill="#d9534f" stroke="#d9534f" points="304,-528 204,-528 204,-504 304,-504 304,-528"/>
+<text text-anchor="middle" x="254" y="-513.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">res_weir_release</text>
+</a>
+</g>
+</g>
+<!-- proc~res_weir_release&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge7" class="edge">
+<title>proc~res_weir_release&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M203.95,-504.9C196.34,-502.23 188.77,-498.96 182,-495 143.81,-472.65 108.92,-433.97 89.65,-410.31"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="92.26,-407.97 83.28,-402.33 86.79,-412.33 92.26,-407.97"/>
+</g>
+<!-- proc~salt_irrig -->
+<g id="module~~water_allocation_module~~UsedByGraph_node9" class="node">
+<title>proc~salt_irrig</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node9"><a xlink:href="../proc/salt_irrig.html" xlink:title="salt_irrig">
+<polygon fill="#d9534f" stroke="#d9534f" points="283,-486 225,-486 225,-462 283,-462 283,-486"/>
+<text text-anchor="middle" x="254" y="-471.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">salt_irrig</text>
+</a>
+</g>
+</g>
+<!-- proc~salt_irrig&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge8" class="edge">
+<title>proc~salt_irrig&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M224.8,-467.33C211.55,-463.78 195.69,-458.91 182,-453 152.71,-440.34 121.45,-421.45 100.13,-407.65"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="101.93,-404.64 91.64,-402.09 98.09,-410.5 101.93,-404.64"/>
+</g>
+<!-- proc~sd_channel_control -->
+<g id="module~~water_allocation_module~~UsedByGraph_node10" class="node">
+<title>proc~sd_channel_control</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node10"><a xlink:href="../proc/sd_channel_control.html" xlink:title="sd_channel_control">
+<polygon fill="#d9534f" stroke="#d9534f" points="311.5,-444 196.5,-444 196.5,-420 311.5,-420 311.5,-444"/>
+<text text-anchor="middle" x="254" y="-429.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sd_channel_control</text>
+</a>
+</g>
+</g>
+<!-- proc~sd_channel_control&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge9" class="edge">
+<title>proc~sd_channel_control&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M201.71,-419.96C180.92,-415.09 156.75,-409.42 135.07,-404.33"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="135.84,-400.91 125.3,-402.04 134.24,-407.73 135.84,-400.91"/>
+</g>
+<!-- proc~sd_channel_control3 -->
+<g id="module~~water_allocation_module~~UsedByGraph_node11" class="node">
+<title>proc~sd_channel_control3</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node11"><a xlink:href="../proc/sd_channel_control3.html" xlink:title="sd_channel_control3">
+<polygon fill="#d9534f" stroke="#d9534f" points="314.5,-402 193.5,-402 193.5,-378 314.5,-378 314.5,-402"/>
+<text text-anchor="middle" x="254" y="-387.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sd_channel_control3</text>
+</a>
+</g>
+</g>
+<!-- proc~sd_channel_control3&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge10" class="edge">
+<title>proc~sd_channel_control3&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M193.4,-390C181.44,-390 168.68,-390 156.11,-390"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="156.09,-386.5 146.09,-390 156.09,-393.5 156.09,-386.5"/>
+</g>
+<!-- proc~time_control -->
+<g id="module~~water_allocation_module~~UsedByGraph_node12" class="node">
+<title>proc~time_control</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node12"><a xlink:href="../proc/time_control.html" xlink:title="time_control">
+<polygon fill="#d9534f" stroke="#d9534f" points="293.5,-360 214.5,-360 214.5,-336 293.5,-336 293.5,-360"/>
+<text text-anchor="middle" x="254" y="-345.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">time_control</text>
+</a>
+</g>
+</g>
+<!-- proc~time_control&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge11" class="edge">
+<title>proc~time_control&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M214.16,-357.11C191.09,-362.53 161.33,-369.51 135.17,-375.65"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="134.28,-372.26 125.34,-377.95 135.88,-379.08 134.28,-372.26"/>
+</g>
+<!-- proc~treat_read_om -->
+<g id="module~~water_allocation_module~~UsedByGraph_node13" class="node">
+<title>proc~treat_read_om</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node13"><a xlink:href="../proc/treat_read_om.html" xlink:title="treat_read_om">
+<polygon fill="#d9534f" stroke="#d9534f" points="298.5,-318 209.5,-318 209.5,-294 298.5,-294 298.5,-318"/>
+<text text-anchor="middle" x="254" y="-303.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">treat_read_om</text>
+</a>
+</g>
+</g>
+<!-- proc~treat_read_om&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge12" class="edge">
+<title>proc~treat_read_om&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M209.23,-317.15C200.09,-319.97 190.61,-323.28 182,-327 152.71,-339.66 121.45,-358.55 100.13,-372.35"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="98.09,-369.5 91.64,-377.91 101.93,-375.36 98.09,-369.5"/>
+</g>
+<!-- proc~wallo_control -->
+<g id="module~~water_allocation_module~~UsedByGraph_node14" class="node">
+<title>proc~wallo_control</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node14"><a xlink:href="../proc/wallo_control.html" xlink:title="wallo_control">
+<polygon fill="#d9534f" stroke="#d9534f" points="295,-276 213,-276 213,-252 295,-252 295,-276"/>
+<text text-anchor="middle" x="254" y="-261.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">wallo_control</text>
+</a>
+</g>
+</g>
+<!-- proc~wallo_control&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge13" class="edge">
+<title>proc~wallo_control&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M212.91,-272.21C202.43,-275.31 191.43,-279.48 182,-285 143.81,-307.35 108.92,-346.03 89.65,-369.69"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="86.79,-367.67 83.28,-377.67 92.26,-372.03 86.79,-367.67"/>
+</g>
+<!-- proc~wallo_demand -->
+<g id="module~~water_allocation_module~~UsedByGraph_node15" class="node">
+<title>proc~wallo_demand</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node15"><a xlink:href="../proc/wallo_demand.html" xlink:title="wallo_demand">
+<polygon fill="#d9534f" stroke="#d9534f" points="299,-234 209,-234 209,-210 299,-210 299,-234"/>
+<text text-anchor="middle" x="254" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">wallo_demand</text>
+</a>
+</g>
+</g>
+<!-- proc~wallo_demand&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge14" class="edge">
+<title>proc~wallo_demand&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M208.91,-230.22C199.5,-233.25 189.99,-237.38 182,-243 134.8,-276.16 100.09,-336.56 83.99,-368.64"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="80.85,-367.11 79.6,-377.63 87.14,-370.18 80.85,-367.11"/>
+</g>
+<!-- proc~wallo_transfer -->
+<g id="module~~water_allocation_module~~UsedByGraph_node16" class="node">
+<title>proc~wallo_transfer</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node16"><a xlink:href="../proc/wallo_transfer.html" xlink:title="wallo_transfer">
+<polygon fill="#d9534f" stroke="#d9534f" points="298,-192 210,-192 210,-168 298,-168 298,-192"/>
+<text text-anchor="middle" x="254" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">wallo_transfer</text>
+</a>
+</g>
+</g>
+<!-- proc~wallo_transfer&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge15" class="edge">
+<title>proc~wallo_transfer&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M209.9,-187.08C200.02,-190.17 190.06,-194.62 182,-201 125.54,-245.69 93.3,-328.55 80.5,-368.01"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="77.11,-367.12 77.47,-377.7 83.79,-369.21 77.11,-367.12"/>
+</g>
+<!-- proc~wallo_treatment -->
+<g id="module~~water_allocation_module~~UsedByGraph_node17" class="node">
+<title>proc~wallo_treatment</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node17"><a xlink:href="../proc/wallo_treatment.html" xlink:title="wallo_treatment">
+<polygon fill="#d9534f" stroke="#d9534f" points="303,-150 205,-150 205,-126 303,-126 303,-150"/>
+<text text-anchor="middle" x="254" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">wallo_treatment</text>
+</a>
+</g>
+</g>
+<!-- proc~wallo_treatment&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge16" class="edge">
+<title>proc~wallo_treatment&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M204.72,-146.25C196.5,-149.27 188.53,-153.38 182,-159 115.97,-215.82 87.64,-321.77 78.06,-367.75"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="74.57,-367.35 76.07,-377.84 81.44,-368.71 74.57,-367.35"/>
+</g>
+<!-- proc~wallo_withdraw -->
+<g id="module~~water_allocation_module~~UsedByGraph_node18" class="node">
+<title>proc~wallo_withdraw</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node18"><a xlink:href="../proc/wallo_withdraw.html" xlink:title="wallo_withdraw">
+<polygon fill="#d9534f" stroke="#d9534f" points="301,-108 207,-108 207,-84 301,-84 301,-108"/>
+<text text-anchor="middle" x="254" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">wallo_withdraw</text>
+</a>
+</g>
+</g>
+<!-- proc~wallo_withdraw&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge17" class="edge">
+<title>proc~wallo_withdraw&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M206.64,-103.14C197.67,-106.24 188.92,-110.67 182,-117 106.14,-186.38 82.77,-315.9 76.28,-367.73"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.78,-367.49 75.1,-377.83 79.73,-368.3 72.78,-367.49"/>
+</g>
+<!-- proc~water_allocation_output -->
+<g id="module~~water_allocation_module~~UsedByGraph_node19" class="node">
+<title>proc~water_allocation_output</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node19"><a xlink:href="../proc/water_allocation_output.html" xlink:title="water_allocation_output">
+<polygon fill="#d9534f" stroke="#d9534f" points="324,-66 184,-66 184,-42 324,-42 324,-66"/>
+<text text-anchor="middle" x="254" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">water_allocation_output</text>
+</a>
+</g>
+</g>
+<!-- proc~water_allocation_output&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge18" class="edge">
+<title>proc~water_allocation_output&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M194.59,-66.02C190,-68.48 185.71,-71.44 182,-75 96.1,-157.31 78.51,-310.83 74.92,-367.89"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="71.42,-367.79 74.37,-377.97 78.41,-368.17 71.42,-367.79"/>
+</g>
+<!-- proc~water_allocation_read -->
+<g id="module~~water_allocation_module~~UsedByGraph_node20" class="node">
+<title>proc~water_allocation_read</title>
+<g id="a_module~~water_allocation_module~~UsedByGraph_node20"><a xlink:href="../proc/water_allocation_read.html" xlink:title="water_allocation_read">
+<polygon fill="#d9534f" stroke="#d9534f" points="319,-24 189,-24 189,0 319,0 319,-24"/>
+<text text-anchor="middle" x="254" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">water_allocation_read</text>
+</a>
+</g>
+</g>
+<!-- proc~water_allocation_read&#45;&gt;module~water_allocation_module -->
+<g id="module~~water_allocation_module~~UsedByGraph_edge19" class="edge">
+<title>proc~water_allocation_read&#45;&gt;module~water_allocation_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M194.11,-24.07C189.68,-26.52 185.56,-29.47 182,-33 86.23,-128.18 74.82,-305.16 73.88,-367.54"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="70.38,-367.78 73.81,-377.81 77.38,-367.83 70.38,-367.78"/>
+</g>
+</g>
+</svg>
+</div>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#UsedByGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="UsedByGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="518pt" height="32pt"
+ viewBox="0.00 0.00 517.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 513.5,-28 513.5,4 -4,4"/>
+<!-- Module -->
+<g id="node1" class="node">
+<title>Module</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="54,-24 0,-24 0,0 54,0 54,-24"/>
+<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Module</text>
+</g>
+<!-- Submodule -->
+<g id="node2" class="node">
+<title>Submodule</title>
+<polygon fill="#5bc0de" stroke="#5bc0de" points="145.5,-24 72.5,-24 72.5,0 145.5,0 145.5,-24"/>
+<text text-anchor="middle" x="109" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Submodule</text>
+</g>
+<!-- Subroutine -->
+<g id="node3" class="node">
+<title>Subroutine</title>
+<polygon fill="#d9534f" stroke="#d9534f" points="234,-24 164,-24 164,0 234,0 234,-24"/>
+<text text-anchor="middle" x="199" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Subroutine</text>
+</g>
+<!-- Function -->
+<g id="node4" class="node">
+<title>Function</title>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="310,-24 252,-24 252,0 310,0 310,-24"/>
+<text text-anchor="middle" x="281" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Function</text>
+</g>
+<!-- Program -->
+<g id="node5" class="node">
+<title>Program</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="386,-24 328,-24 328,0 386,0 386,-24"/>
+<text text-anchor="middle" x="357" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Program</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node6" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="509.5,-24 404.5,-24 404.5,0 509.5,0 509.5,-24"/>
+<text text-anchor="middle" x="457" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a submodule to the (sub)module which it is
+descended from. Dashed arrows point from a module or program unit to 
+modules which it uses.
+</p>
+ Where possible, edges connecting nodes are
+given different colours to make them easier to distinguish in
+large graphs.</div>
+            </div>
+          </div>
+        </div>
+            </li>
+        </ul>
+      </div>
+    </div>
+
+      <br>
+
+
+        <section>
+          <h2>Variables</h2>
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-trans_m3"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>trans_m3</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd_m3"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd_m3</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+                <p>m3     |demand</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-trt_om_name"></span>
+              character(len=16),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>trt_om_name</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>treatment name in treatment.trt</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-div_volume_daily"></span>
+              real,
+            </td>
+              <td>public,</td>
+            <td>
+              dimension (:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>div_volume_daily</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>daily volume of canal water added to total</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-div_volume_total"></span>
+              real,
+            </td>
+              <td>public,</td>
+            <td>
+              dimension (:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>div_volume_total</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>volume of canal water available for irrigation</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-div_volume_used"></span>
+              real,
+            </td>
+              <td>public,</td>
+            <td>
+              dimension (:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>div_volume_used</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>volume of canal water used for irrigation</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-div_delay"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>div_delay</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+                <p>number of days that diverted irrigation water can be used</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-walloz"></span>
+              type(<a href='../type/source_output.html'>source_output</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>walloz</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-wallo"></span>
+              type(<a href='../type/water_allocation.html'>water_allocation</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>wallo</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>dimension by water allocation objects</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-wallod_out"></span>
+              type(<a href='../type/water_allocation_output.html'>water_allocation_output</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>wallod_out</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>dimension by demand objects</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-wallom_out"></span>
+              type(<a href='../type/water_allocation_output.html'>water_allocation_output</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>wallom_out</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>dimension by demand objects</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-walloy_out"></span>
+              type(<a href='../type/water_allocation_output.html'>water_allocation_output</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>walloy_out</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>dimension by demand objects</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-walloa_out"></span>
+              type(<a href='../type/water_allocation_output.html'>water_allocation_output</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>walloa_out</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>dimension by demand objects</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-wallo_hdr"></span>
+              type(<a href='../type/wallo_header.html'>wallo_header</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wallo_hdr</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-wallo_hdr_units"></span>
+              type(<a href='../type/wallo_header_units.html'>wallo_header_units</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wallo_hdr_units</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+        </section>
+        <br>
+
+
+        <section>
+          <h2>Interfaces</h2>
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-operator%20%28%2B%29~15"></span>
+      <h3>public        interface <a href='../interface/operator (+)~15.html'>operator (+)</a> 
+      </h3>
+    </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    public  function <a href='../proc/wallout_add.html'>wallout_add</a>(wallo1, wallo2) result(wallo3)  
+
+    </h3>
+    
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-wallo1"></span>
+              type(<a href='../type/source_output.html'>source_output</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wallo1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-wallo2"></span>
+              type(<a href='../type/source_output.html'>source_output</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wallo2</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/source_output.html'>source_output</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-operator%20%28SLASH%29~11"></span>
+      <h3>public        interface <a href='../interface/operator (SLASH)~11.html'>operator (/)</a> 
+      </h3>
+    </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    public  function <a href='../proc/wallo_div_const.html'>wallo_div_const</a>(wallo1, const) result(wallo2)  
+
+    </h3>
+    
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-wallo1~2"></span>
+              type(<a href='../type/source_output.html'>source_output</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wallo1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-const~47"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>const</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/source_output.html'>source_output</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+        </section>
+        <br>
+
+
+        <section>
+          <h2>Derived Types</h2>
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-water_source_objects"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/water_source_objects.html'>water_source_objects</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-num~16"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>num</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>demand object number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ob_typ~6"></span>
+              character(len=3),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ob_typ</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>channel(cha), reservoir(res), aquifer(aqu), unlimited source(unl)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ob_num~7"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ob_num</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>number of the object type</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-limit_mon"></span>
+              real,
+            </td>
+              <td>public,</td>
+            <td>
+              dimension (12)
+            </td>
+            <td>::</td>
+            <td><strong>limit_mon</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>min chan flow(m3/s), min res level(frac prinicpal), max aqu depth(m)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-div_rec"></span>
+              character(len=25),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>div_rec</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rec_num"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rec_num</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-div_vol"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>div_vol</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-water_demand_sources"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/water_demand_sources.html'>water_demand_sources</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src~2"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>sequential source number as listed in wallo object</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-frac~10"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>frac</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>fraction of demand supplied by the source</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-comp"></span>
+              character(len=1),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>comp</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>compensate from source if other sources are limiting (y/n)</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-water_demand_source_objects"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/water_demand_source_objects.html'>water_demand_source_objects</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ob_typ~7"></span>
+              character(len=10),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ob_typ</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>hru (for irrigation) or muni (municipal) or divert (interbasin diversion)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ob_num~8"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ob_num</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>number of the object type</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-water_demand_objects"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/water_demand_objects.html'>water_demand_objects</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-num~17"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>num</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>demand object number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ob_typ~8"></span>
+              character(len=10),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ob_typ</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>hru (for irrigation) or muni (municipal) or divert (interbasin diversion)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ob_num~9"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ob_num</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>number of the object type</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-withdr~3"></span>
+              character(len=25),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>withdr</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>withdrawal type - ave_day or recall for muni and divert - irrig for hru</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-amount~2"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>amount</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>m3 per day for muni and mm for hru</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-right~2"></span>
+              character(len=2),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>right</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>water right (sr -senior or jr - junior right)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-treat_typ"></span>
+              character(len=25),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>treat_typ</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>recall for inputting a recall object and treat for a treatment object</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-treatment"></span>
+              character(len=25),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>treatment</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>pointer to the recall or dr file</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rcv_ob"></span>
+              character(len=10),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rcv_ob</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>receiving object (channel, reservoir, aquifer) - no dtl - all return to this object</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rcv_num"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rcv_num</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>receiving object number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rcv_dtl"></span>
+              character(len=10),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rcv_dtl</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>receiving object decision table - to condition water transfers and diversions</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rec_num~2"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rec_num</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>recall number when using recall for muni or divert demands</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-trt_num"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>trt_num</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>treatment database number when treating the withdrawn water</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd_src_obs"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd_src_obs</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>number of source objects available for the demand object</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-unmet_m3"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>unmet_m3</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>m3 |unmet demand for the object</p><a href="../type/water_demand_objects.html#variable-unmet_m3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-withdr_tot"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>withdr_tot</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>m3 |total withdrawal of demand object from all sources</p><a href="../type/water_demand_objects.html#variable-withdr_tot" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-irr_eff"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>irr_eff</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>irrigation in-field efficiency</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-surq~7"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>surq</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>surface runoff ratio</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-hd~11"></span>
+              type(<a href='../type/hyd_output.html'>hyd_output</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>hd</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-trt~2"></span>
+              type(<a href='../type/hyd_output.html'>hyd_output</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>trt</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src~3"></span>
+              type(<a href='../type/water_demand_sources.html'>water_demand_sources</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>src</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+<p>sequential source objects as listed in wallo object</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src_ob"></span>
+              type(<a href='../type/water_demand_source_objects.html'>water_demand_source_objects</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>src_ob</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+<p>type and number of each source object</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-source_output"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/source_output.html'>source_output</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-demand~4"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>demand</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>ha-m !demand</p><a href="../type/source_output.html#variable-demand~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-withdr~4"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>withdr</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>ha-m |amoount withdrawn from the source</p><a href="../type/source_output.html#variable-withdr~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-unmet"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>unmet</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>ha-m |unmet demand</p><a href="../type/source_output.html#variable-unmet" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-water_allocation"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/water_allocation.html'>water_allocation</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-name~128"></span>
+              character(len=25),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>name</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>name of the water allocation object</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rule_typ~2"></span>
+              character(len=25),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rule_typ</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>rule type to allocate water</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src_obs~2"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src_obs</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>number of source objects</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd_obs~2"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd_obs</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>number of demand objects</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cha_ob"></span>
+              character(len=1),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cha_ob</strong></td>
+<td> =</td>
+                <td>&#34;&#34;</td>
+            <td>
+<p>y-yes there is a channel object; n-no channel object (only one per water allocation object)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cha"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cha</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>channel number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-tot~5"></span>
+              type(<a href='../type/source_output.html'>source_output</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tot</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+<p>total demand, withdrawal and unmet for entire allocation object</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src~4"></span>
+              type(<a href='../type/water_source_objects.html'>water_source_objects</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>src</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+<p>dimension by source objects</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd~2"></span>
+              type(<a href='../type/water_demand_objects.html'>water_demand_objects</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>dmd</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+<p>dimension by demand objects</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-demand_object_output"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/demand_object_output.html'>demand_object_output</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd_tot"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd_tot</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>m3 |total demand of the demand object</p><a href="../type/demand_object_output.html#variable-dmd_tot" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src~5"></span>
+              type(<a href='../type/source_output.html'>source_output</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>src</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-water_allocation_output"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/water_allocation_output.html'>water_allocation_output</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd~3"></span>
+              type(<a href='../type/demand_object_output.html'>demand_object_output</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>dmd</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-wallo_header"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/wallo_header.html'>wallo_header</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-day~38"></span>
+              character(len=6),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>day</strong></td>
+<td> =</td>
+                <td>&#34;  jday&#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-mo~42"></span>
+              character(len=6),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>mo</strong></td>
+<td> =</td>
+                <td>&#34;   mon&#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-day_mo~39"></span>
+              character(len=6),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>day_mo</strong></td>
+<td> =</td>
+                <td>&#34; day &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-yrc~35"></span>
+              character(len=6),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>yrc</strong></td>
+<td> =</td>
+                <td>&#34; yr  &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-idmd~10"></span>
+              character(len=8),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>idmd</strong></td>
+<td> =</td>
+                <td>&#34; unit   &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd_typ~3"></span>
+              character(len=16),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd_typ</strong></td>
+<td> =</td>
+                <td>&#34;dmd_typ         &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd_num~3"></span>
+              character(len=16),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd_num</strong></td>
+<td> =</td>
+                <td>&#34;    dmd_num     &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rcv_typ"></span>
+              character(len=17),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rcv_typ</strong></td>
+<td> =</td>
+                <td>&#34;drcv_typ         &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rcv_num~2"></span>
+              character(len=16),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rcv_num</strong></td>
+<td> =</td>
+                <td>&#34;    rcv_num     &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src1_obj~3"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src1_obj</strong></td>
+<td> =</td>
+                <td>&#34;   src1_obj &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src1_typ~3"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src1_typ</strong></td>
+<td> =</td>
+                <td>&#34; src1_typ   &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src1_num~3"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src1_num</strong></td>
+<td> =</td>
+                <td>&#34; src1_num   &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd1~3"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd1</strong></td>
+<td> =</td>
+                <td>&#34;    demand     &#34;</td>
+            <td>
+<p>ha-m |demand - muni or irrigation </p><a href="../type/wallo_header.html#variable-dmd1~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s1out~3"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s1out</strong></td>
+<td> =</td>
+                <td>&#34;src1_withdraw  &#34;</td>
+            <td>
+<p>ha-m |withdrawal from source 1</p><a href="../type/wallo_header.html#variable-s1out~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s1un~3"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s1un</strong></td>
+<td> =</td>
+                <td>&#34;  src1_unmet&#34;</td>
+            <td>
+<p>ha-m |unmet from source 1 </p><a href="../type/wallo_header.html#variable-s1un~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src2_typ~3"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src2_typ</strong></td>
+<td> =</td>
+                <td>&#34; src2_typ   &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src2_num~3"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src2_num</strong></td>
+<td> =</td>
+                <td>&#34; src2_num   &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd2~3"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd2</strong></td>
+<td> =</td>
+                <td>&#34;    demand     &#34;</td>
+            <td>
+<p>ha-m |demand - muni or irrigation </p><a href="../type/wallo_header.html#variable-dmd2~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s2out~3"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s2out</strong></td>
+<td> =</td>
+                <td>&#34;src2_withdraw  &#34;</td>
+            <td>
+<p>ha-m |withdrawal from source 2</p><a href="../type/wallo_header.html#variable-s2out~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s2un~3"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s2un</strong></td>
+<td> =</td>
+                <td>&#34;  src2_unmet&#34;</td>
+            <td>
+<p>ha-m |unmet from source 2 </p><a href="../type/wallo_header.html#variable-s2un~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src3_typ~3"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src3_typ</strong></td>
+<td> =</td>
+                <td>&#34; src3_typ   &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src3_num~3"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src3_num</strong></td>
+<td> =</td>
+                <td>&#34; src3_num   &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd3~3"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd3</strong></td>
+<td> =</td>
+                <td>&#34;    demand     &#34;</td>
+            <td>
+<p>ha-m |demand - muni or irrigation </p><a href="../type/wallo_header.html#variable-dmd3~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s3out~3"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s3out</strong></td>
+<td> =</td>
+                <td>&#34;src3_withdraw  &#34;</td>
+            <td>
+<p>ha-m |withdrawal from source 3</p><a href="../type/wallo_header.html#variable-s3out~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s3un~3"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s3un</strong></td>
+<td> =</td>
+                <td>&#34;  src3_unmet&#34;</td>
+            <td>
+<p>ha-m |unmet from source 3 </p><a href="../type/wallo_header.html#variable-s3un~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-wallo_header_units"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/wallo_header_units.html'>wallo_header_units</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-day~39"></span>
+              character(len=8),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>day</strong></td>
+<td> =</td>
+                <td>&#34;        &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-mo~43"></span>
+              character(len=8),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>mo</strong></td>
+<td> =</td>
+                <td>&#34;        &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-day_mo~40"></span>
+              character(len=8),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>day_mo</strong></td>
+<td> =</td>
+                <td>&#34;        &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-yrc~36"></span>
+              character(len=8),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>yrc</strong></td>
+<td> =</td>
+                <td>&#34;        &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-idmd~11"></span>
+              character(len=8),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>idmd</strong></td>
+<td> =</td>
+                <td>&#34;        &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd_typ~4"></span>
+              character(len=16),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd_typ</strong></td>
+<td> =</td>
+                <td>&#34;                &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd_num~4"></span>
+              character(len=16),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd_num</strong></td>
+<td> =</td>
+                <td>&#34;                &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rcv_typ~2"></span>
+              character(len=16),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rcv_typ</strong></td>
+<td> =</td>
+                <td>&#34;                &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rcv_num~3"></span>
+              character(len=16),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rcv_num</strong></td>
+<td> =</td>
+                <td>&#34;                &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src1_obj~4"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src1_obj</strong></td>
+<td> =</td>
+                <td>&#34;            &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src1_typ~4"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src1_typ</strong></td>
+<td> =</td>
+                <td>&#34;            &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src1_num~4"></span>
+              character(len=8),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src1_num</strong></td>
+<td> =</td>
+                <td>&#34;        &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd1~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd1</strong></td>
+<td> =</td>
+                <td>&#34;m^3            &#34;</td>
+            <td>
+<p>ha-m |demand - muni or irrigation</p><a href="../type/wallo_header_units.html#variable-dmd1~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s1out~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s1out</strong></td>
+<td> =</td>
+                <td>&#34;m^3            &#34;</td>
+            <td>
+<p>ha-m |withdrawal from source 1 </p><a href="../type/wallo_header_units.html#variable-s1out~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s1un~4"></span>
+              character(len=9),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s1un</strong></td>
+<td> =</td>
+                <td>&#34;m^3      &#34;</td>
+            <td>
+<p>ha-m |unmet from source 1 </p><a href="../type/wallo_header_units.html#variable-s1un~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src2_typ~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src2_typ</strong></td>
+<td> =</td>
+                <td>&#34;               &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src2_num~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src2_num</strong></td>
+<td> =</td>
+                <td>&#34;               &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd2~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd2</strong></td>
+<td> =</td>
+                <td>&#34;m^3            &#34;</td>
+            <td>
+<p>ha-m |demand - muni or irrigation</p><a href="../type/wallo_header_units.html#variable-dmd2~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s2out~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s2out</strong></td>
+<td> =</td>
+                <td>&#34;m^3            &#34;</td>
+            <td>
+<p>ha-m |withdrawal from source 2 </p><a href="../type/wallo_header_units.html#variable-s2out~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s2un~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s2un</strong></td>
+<td> =</td>
+                <td>&#34;m^3            &#34;</td>
+            <td>
+<p>ha-m |unmet from source 2 </p><a href="../type/wallo_header_units.html#variable-s2un~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src3_typ~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src3_typ</strong></td>
+<td> =</td>
+                <td>&#34;               &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src3_num~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src3_num</strong></td>
+<td> =</td>
+                <td>&#34;               &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dmd3~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dmd3</strong></td>
+<td> =</td>
+                <td>&#34;m^3            &#34;</td>
+            <td>
+<p>ha-m |demand - muni or irrigation</p><a href="../type/wallo_header_units.html#variable-dmd3~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s3out~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s3out</strong></td>
+<td> =</td>
+                <td>&#34;m^3            &#34;</td>
+            <td>
+<p>ha-m |withdrawal from source 3 </p><a href="../type/wallo_header_units.html#variable-s3out~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s3un~4"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s3un</strong></td>
+<td> =</td>
+                <td>&#34;m^3            &#34;</td>
+            <td>
+<p>ha-m |unmet from source 3 </p><a href="../type/wallo_header_units.html#variable-s3un~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+        </section>
+        <br>
+
+        <section>
+          <h2>Functions</h2>
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-wallout_add"></span> <h3>public  function <a href='../proc/wallout_add.html'>wallout_add</a>(wallo1, wallo2) result(wallo3)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-wallo1"></span>
+              type(<a href='../type/source_output.html'>source_output</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wallo1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-wallo2"></span>
+              type(<a href='../type/source_output.html'>source_output</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wallo2</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/source_output.html'>source_output</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-wallo_div_const"></span> <h3>public  function <a href='../proc/wallo_div_const.html'>wallo_div_const</a>(wallo1, const) result(wallo2)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-wallo1~2"></span>
+              type(<a href='../type/source_output.html'>source_output</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wallo1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-const~47"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>const</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/source_output.html'>source_output</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+        </section>
+        <br>
+
+
+
+
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              SWAT+
+              &copy; 2025 
+<br /><small>@SWAT_VERSION@</small></p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-09-04             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

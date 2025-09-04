@@ -1,0 +1,1991 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for SWAT+">
+    <meta name="author" content="" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>ch_pesticide_module &ndash; SWAT+</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">SWAT+ <small>@SWAT_VERSION@</small></a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>ch_pesticide_module
+      <small>Module</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 1.0% of total for module.">127 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/ch_pesticide_module.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/ch_pesticide_module.f90.html'>ch_pesticide_module.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">ch_pesticide_module</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+        <div id="sidebar">
+      <h3>Contents</h3>
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#vars-0"
+         aria-expanded="false" aria-controls="vars-0">
+         <h4 class="card-header bg-primary text-white">Variables</h4>
+      </a>
+      <div id="vars-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-frsol">frsol</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-frsrb">frsrb</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-ch_pestbz">ch_pestbz</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-chpst_d">chpst_d</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-chpst_m">chpst_m</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-chpst_y">chpst_y</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-chpst_a">chpst_a</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-bchpst_d">bchpst_d</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-bchpst_m">bchpst_m</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-bchpst_y">bchpst_y</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-bchpst_a">bchpst_a</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-chpst">chpst</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-chpstz">chpstz</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#variable-chpest_hdr">chpest_hdr</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#inters-0"
+         aria-expanded="false" aria-controls="inters-0">
+         <h4 class="card-header bg-primary text-white">Interfaces</h4>
+      </a>
+      <div id="inters-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#interface-operator%20%28%2B%29~12">operator (+)</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#interface-operator%20%28SLASH%29~8">operator (/)</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#interface-operator%20%28SLASHSLASH%29~4">operator (//)</a>
+        </div>
+      </div>
+    </div>
+
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#types-0"
+         aria-expanded="false" aria-controls="types-0">
+         <h4 class="card-header bg-primary text-white">Derived Types</h4>
+      </a>
+      <div id="types-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#type-ch_pesticide_processes">ch_pesticide_processes</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#type-ch_pesticide_output">ch_pesticide_output</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#type-ch_pesticide_header">ch_pesticide_header</a>
+        </div>
+      </div>
+    </div>
+
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#funcs-0"
+         aria-expanded="false" aria-controls="funcs-0">
+         <h4 class="card-header bg-primary text-white">Functions</h4>
+      </a>
+      <div id="funcs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#proc-chpest_add">chpest_add</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#proc-chpest_div">chpest_div</a>
+            <a class="list-group-item" href="../module/ch_pesticide_module.html#proc-chpest_ave">chpest_ave</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+  </div>
+
+    </div>
+
+    <div class="col-md-9" id='text'>
+      
+<br>          <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href='constituent_mass_module.html'>constituent_mass_module</a></li>
+              </ul>
+            </li>
+            <li class="list-group-item">
+              <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: module~~ch_pesticide_module~~UsesGraph Pages: 1 -->
+<svg id="modulech_pesticide_moduleUsesGraph" width="319pt" height="32pt"
+ viewBox="0.00 0.00 319.00 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="module~~ch_pesticide_module~~UsesGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>module~~ch_pesticide_module~~UsesGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 315,-28 315,4 -4,4"/>
+<!-- module~ch_pesticide_module -->
+<g id="module~~ch_pesticide_module~~UsesGraph_node1" class="node">
+<title>module~ch_pesticide_module</title>
+<polygon fill="none" stroke="black" points="311,-24 187,-24 187,0 311,0 311,-24"/>
+<text text-anchor="middle" x="249" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">ch_pesticide_module</text>
+</g>
+<!-- module~constituent_mass_module -->
+<g id="module~~ch_pesticide_module~~UsesGraph_node2" class="node">
+<title>module~constituent_mass_module</title>
+<g id="a_module~~ch_pesticide_module~~UsesGraph_node2"><a xlink:href="../module/constituent_mass_module.html" xlink:title="constituent_mass_module">
+<polygon fill="#337ab7" stroke="#337ab7" points="151,-24 0,-24 0,0 151,0 151,-24"/>
+<text text-anchor="middle" x="75.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">constituent_mass_module</text>
+</a>
+</g>
+</g>
+<!-- module~ch_pesticide_module&#45;&gt;module~constituent_mass_module -->
+<g id="module~~ch_pesticide_module~~UsesGraph_edge1" class="edge">
+<title>module~ch_pesticide_module&#45;&gt;module~constituent_mass_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M186.57,-12C178.44,-12 169.99,-12 161.55,-12"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="161.28,-8.5 151.28,-12 161.28,-15.5 161.28,-8.5"/>
+</g>
+</g>
+</svg>
+</div>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#UsesGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="UsesGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="518pt" height="32pt"
+ viewBox="0.00 0.00 517.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 513.5,-28 513.5,4 -4,4"/>
+<!-- Module -->
+<g id="node1" class="node">
+<title>Module</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="54,-24 0,-24 0,0 54,0 54,-24"/>
+<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Module</text>
+</g>
+<!-- Submodule -->
+<g id="node2" class="node">
+<title>Submodule</title>
+<polygon fill="#5bc0de" stroke="#5bc0de" points="145.5,-24 72.5,-24 72.5,0 145.5,0 145.5,-24"/>
+<text text-anchor="middle" x="109" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Submodule</text>
+</g>
+<!-- Subroutine -->
+<g id="node3" class="node">
+<title>Subroutine</title>
+<polygon fill="#d9534f" stroke="#d9534f" points="234,-24 164,-24 164,0 234,0 234,-24"/>
+<text text-anchor="middle" x="199" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Subroutine</text>
+</g>
+<!-- Function -->
+<g id="node4" class="node">
+<title>Function</title>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="310,-24 252,-24 252,0 310,0 310,-24"/>
+<text text-anchor="middle" x="281" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Function</text>
+</g>
+<!-- Program -->
+<g id="node5" class="node">
+<title>Program</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="386,-24 328,-24 328,0 386,0 386,-24"/>
+<text text-anchor="middle" x="357" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Program</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node6" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="509.5,-24 404.5,-24 404.5,0 509.5,0 509.5,-24"/>
+<text text-anchor="middle" x="457" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a submodule to the (sub)module which it is
+descended from. Dashed arrows point from a module or program unit to 
+modules which it uses.
+</p>
+ Where possible, edges connecting nodes are
+given different colours to make them easier to distinguish in
+large graphs.</div>
+            </div>
+          </div>
+        </div>
+            </li>
+        </ul>
+      </div>
+    </div>
+
+          <div class="card">
+      <h3 class="card-header card-title bg-light">Used by</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: module~~ch_pesticide_module~~UsedByGraph Pages: 1 -->
+<svg id="modulech_pesticide_moduleUsedByGraph" width="295pt" height="368pt"
+ viewBox="0.00 0.00 295.00 368.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="module~~ch_pesticide_module~~UsedByGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 364)">
+<title>module~~ch_pesticide_module~~UsedByGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-364 291,-364 291,4 -4,4"/>
+<!-- module~ch_pesticide_module -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_node1" class="node">
+<title>module~ch_pesticide_module</title>
+<polygon fill="none" stroke="black" points="124,-192 0,-192 0,-168 124,-168 124,-192"/>
+<text text-anchor="middle" x="62" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50">ch_pesticide_module</text>
+</g>
+<!-- proc~aqu_1d_control -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_node2" class="node">
+<title>proc~aqu_1d_control</title>
+<g id="a_module~~ch_pesticide_module~~UsedByGraph_node2"><a xlink:href="../proc/aqu_1d_control.html" xlink:title="aqu_1d_control">
+<polygon fill="#d9534f" stroke="#d9534f" points="270.5,-360 176.5,-360 176.5,-336 270.5,-336 270.5,-360"/>
+<text text-anchor="middle" x="223.5" y="-345.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">aqu_1d_control</text>
+</a>
+</g>
+</g>
+<!-- proc~aqu_1d_control&#45;&gt;module~ch_pesticide_module -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_edge1" class="edge">
+<title>proc~aqu_1d_control&#45;&gt;module~ch_pesticide_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M176.32,-336.45C170.51,-333.88 164.9,-330.77 160,-327 116.05,-293.18 85.69,-233.5 71.72,-201.57"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="74.89,-200.09 67.76,-192.25 68.45,-202.82 74.89,-200.09"/>
+</g>
+<!-- proc~basin_ch_pest_output -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_node3" class="node">
+<title>proc~basin_ch_pest_output</title>
+<g id="a_module~~ch_pesticide_module~~UsedByGraph_node3"><a xlink:href="../proc/basin_ch_pest_output.html" xlink:title="basin_ch_pest_output">
+<polygon fill="#d9534f" stroke="#d9534f" points="287,-318 160,-318 160,-294 287,-294 287,-318"/>
+<text text-anchor="middle" x="223.5" y="-303.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">basin_ch_pest_output</text>
+</a>
+</g>
+</g>
+<!-- proc~basin_ch_pest_output&#45;&gt;module~ch_pesticide_module -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_edge2" class="edge">
+<title>proc~basin_ch_pest_output&#45;&gt;module~ch_pesticide_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M177.52,-293.95C171.4,-291.45 165.38,-288.48 160,-285 124.9,-262.28 93.99,-223.99 76.95,-200.46"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="79.76,-198.37 71.12,-192.23 74.05,-202.41 79.76,-198.37"/>
+</g>
+<!-- proc~ch_rtpest -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_node4" class="node">
+<title>proc~ch_rtpest</title>
+<g id="a_module~~ch_pesticide_module~~UsedByGraph_node4"><a xlink:href="../proc/ch_rtpest.html" xlink:title="ch_rtpest">
+<polygon fill="#d9534f" stroke="#d9534f" points="254,-276 193,-276 193,-252 254,-252 254,-276"/>
+<text text-anchor="middle" x="223.5" y="-261.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ch_rtpest</text>
+</a>
+</g>
+</g>
+<!-- proc~ch_rtpest&#45;&gt;module~ch_pesticide_module -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_edge3" class="edge">
+<title>proc~ch_rtpest&#45;&gt;module~ch_pesticide_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M192.96,-255.76C182.33,-252.36 170.41,-248.03 160,-243 133.66,-230.27 105.88,-211.63 86.84,-197.92"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="88.88,-195.08 78.74,-192.01 84.75,-200.73 88.88,-195.08"/>
+</g>
+<!-- proc~cha_pesticide_output -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_node5" class="node">
+<title>proc~cha_pesticide_output</title>
+<g id="a_module~~ch_pesticide_module~~UsedByGraph_node5"><a xlink:href="../proc/cha_pesticide_output.html" xlink:title="cha_pesticide_output">
+<polygon fill="#d9534f" stroke="#d9534f" points="286,-234 161,-234 161,-210 286,-210 286,-234"/>
+<text text-anchor="middle" x="223.5" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">cha_pesticide_output</text>
+</a>
+</g>
+</g>
+<!-- proc~cha_pesticide_output&#45;&gt;module~ch_pesticide_module -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_edge4" class="edge">
+<title>proc~cha_pesticide_output&#45;&gt;module~ch_pesticide_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M176.79,-209.96C158.61,-205.18 137.51,-199.62 118.46,-194.6"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="119.27,-191.2 108.71,-192.04 117.49,-197.97 119.27,-191.2"/>
+</g>
+<!-- proc~header_pest -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_node6" class="node">
+<title>proc~header_pest</title>
+<g id="a_module~~ch_pesticide_module~~UsedByGraph_node6"><a xlink:href="../proc/header_pest.html" xlink:title="header_pest">
+<polygon fill="#d9534f" stroke="#d9534f" points="263,-192 184,-192 184,-168 263,-168 263,-192"/>
+<text text-anchor="middle" x="223.5" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">header_pest</text>
+</a>
+</g>
+</g>
+<!-- proc~header_pest&#45;&gt;module~ch_pesticide_module -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_edge5" class="edge">
+<title>proc~header_pest&#45;&gt;module~ch_pesticide_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M183.89,-180C169.08,-180 151.66,-180 134.73,-180"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="134.27,-176.5 124.27,-180 134.27,-183.5 134.27,-176.5"/>
+</g>
+<!-- proc~sd_channel_control -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_node7" class="node">
+<title>proc~sd_channel_control</title>
+<g id="a_module~~ch_pesticide_module~~UsedByGraph_node7"><a xlink:href="../proc/sd_channel_control.html" xlink:title="sd_channel_control">
+<polygon fill="#d9534f" stroke="#d9534f" points="281,-150 166,-150 166,-126 281,-126 281,-150"/>
+<text text-anchor="middle" x="223.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sd_channel_control</text>
+</a>
+</g>
+</g>
+<!-- proc~sd_channel_control&#45;&gt;module~ch_pesticide_module -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_edge6" class="edge">
+<title>proc~sd_channel_control&#45;&gt;module~ch_pesticide_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M176.79,-150.04C158.61,-154.82 137.51,-160.38 118.46,-165.4"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="117.49,-162.03 108.71,-167.96 119.27,-168.8 117.49,-162.03"/>
+</g>
+<!-- proc~sd_channel_control2 -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_node8" class="node">
+<title>proc~sd_channel_control2</title>
+<g id="a_module~~ch_pesticide_module~~UsedByGraph_node8"><a xlink:href="../proc/sd_channel_control2.html" xlink:title="sd_channel_control2">
+<polygon fill="#d9534f" stroke="#d9534f" points="284,-108 163,-108 163,-84 284,-84 284,-108"/>
+<text text-anchor="middle" x="223.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sd_channel_control2</text>
+</a>
+</g>
+</g>
+<!-- proc~sd_channel_control2&#45;&gt;module~ch_pesticide_module -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_edge7" class="edge">
+<title>proc~sd_channel_control2&#45;&gt;module~ch_pesticide_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M181.56,-108.1C174.25,-110.73 166.8,-113.71 160,-117 133.66,-129.73 105.88,-148.37 86.84,-162.08"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="84.75,-159.27 78.74,-167.99 88.88,-164.92 84.75,-159.27"/>
+</g>
+<!-- proc~sd_channel_control3 -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_node9" class="node">
+<title>proc~sd_channel_control3</title>
+<g id="a_module~~ch_pesticide_module~~UsedByGraph_node9"><a xlink:href="../proc/sd_channel_control3.html" xlink:title="sd_channel_control3">
+<polygon fill="#d9534f" stroke="#d9534f" points="284,-66 163,-66 163,-42 284,-42 284,-66"/>
+<text text-anchor="middle" x="223.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sd_channel_control3</text>
+</a>
+</g>
+</g>
+<!-- proc~sd_channel_control3&#45;&gt;module~ch_pesticide_module -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_edge8" class="edge">
+<title>proc~sd_channel_control3&#45;&gt;module~ch_pesticide_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M177.52,-66.05C171.4,-68.55 165.38,-71.52 160,-75 124.9,-97.72 93.99,-136.01 76.95,-159.54"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="74.05,-157.59 71.12,-167.77 79.76,-161.63 74.05,-157.59"/>
+</g>
+<!-- proc~sd_channel_read -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_node10" class="node">
+<title>proc~sd_channel_read</title>
+<g id="a_module~~ch_pesticide_module~~UsedByGraph_node10"><a xlink:href="../proc/sd_channel_read.html" xlink:title="sd_channel_read">
+<polygon fill="#d9534f" stroke="#d9534f" points="274.5,-24 172.5,-24 172.5,0 274.5,0 274.5,-24"/>
+<text text-anchor="middle" x="223.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sd_channel_read</text>
+</a>
+</g>
+</g>
+<!-- proc~sd_channel_read&#45;&gt;module~ch_pesticide_module -->
+<g id="module~~ch_pesticide_module~~UsedByGraph_edge9" class="edge">
+<title>proc~sd_channel_read&#45;&gt;module~ch_pesticide_module</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M175.03,-24.13C169.68,-26.58 164.54,-29.51 160,-33 116.05,-66.82 85.69,-126.5 71.72,-158.43"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="68.45,-157.18 67.76,-167.75 74.89,-159.91 68.45,-157.18"/>
+</g>
+</g>
+</svg>
+</div>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#UsedByGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="UsedByGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="518pt" height="32pt"
+ viewBox="0.00 0.00 517.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 513.5,-28 513.5,4 -4,4"/>
+<!-- Module -->
+<g id="node1" class="node">
+<title>Module</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="54,-24 0,-24 0,0 54,0 54,-24"/>
+<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Module</text>
+</g>
+<!-- Submodule -->
+<g id="node2" class="node">
+<title>Submodule</title>
+<polygon fill="#5bc0de" stroke="#5bc0de" points="145.5,-24 72.5,-24 72.5,0 145.5,0 145.5,-24"/>
+<text text-anchor="middle" x="109" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Submodule</text>
+</g>
+<!-- Subroutine -->
+<g id="node3" class="node">
+<title>Subroutine</title>
+<polygon fill="#d9534f" stroke="#d9534f" points="234,-24 164,-24 164,0 234,0 234,-24"/>
+<text text-anchor="middle" x="199" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Subroutine</text>
+</g>
+<!-- Function -->
+<g id="node4" class="node">
+<title>Function</title>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="310,-24 252,-24 252,0 310,0 310,-24"/>
+<text text-anchor="middle" x="281" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Function</text>
+</g>
+<!-- Program -->
+<g id="node5" class="node">
+<title>Program</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="386,-24 328,-24 328,0 386,0 386,-24"/>
+<text text-anchor="middle" x="357" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Program</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node6" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="509.5,-24 404.5,-24 404.5,0 509.5,0 509.5,-24"/>
+<text text-anchor="middle" x="457" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a submodule to the (sub)module which it is
+descended from. Dashed arrows point from a module or program unit to 
+modules which it uses.
+</p>
+ Where possible, edges connecting nodes are
+given different colours to make them easier to distinguish in
+large graphs.</div>
+            </div>
+          </div>
+        </div>
+            </li>
+        </ul>
+      </div>
+    </div>
+
+      <br>
+
+
+        <section>
+          <h2>Variables</h2>
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-frsol"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>frsol</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+                <p>none          |fraction of pesticide in reach that is soluble</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-frsrb"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>frsrb</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+                <p>none          |fraction of pesticide in reach that is sorbed</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ch_pestbz"></span>
+              type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ch_pestbz</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-chpst_d"></span>
+              type(<a href='../type/ch_pesticide_output.html'>ch_pesticide_output</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable, save
+            </td>
+            <td>::</td>
+            <td><strong>chpst_d</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-chpst_m"></span>
+              type(<a href='../type/ch_pesticide_output.html'>ch_pesticide_output</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable, save
+            </td>
+            <td>::</td>
+            <td><strong>chpst_m</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-chpst_y"></span>
+              type(<a href='../type/ch_pesticide_output.html'>ch_pesticide_output</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable, save
+            </td>
+            <td>::</td>
+            <td><strong>chpst_y</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-chpst_a"></span>
+              type(<a href='../type/ch_pesticide_output.html'>ch_pesticide_output</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension(:), allocatable, save
+            </td>
+            <td>::</td>
+            <td><strong>chpst_a</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-bchpst_d"></span>
+              type(<a href='../type/ch_pesticide_output.html'>ch_pesticide_output</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>bchpst_d</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-bchpst_m"></span>
+              type(<a href='../type/ch_pesticide_output.html'>ch_pesticide_output</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>bchpst_m</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-bchpst_y"></span>
+              type(<a href='../type/ch_pesticide_output.html'>ch_pesticide_output</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>bchpst_y</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-bchpst_a"></span>
+              type(<a href='../type/ch_pesticide_output.html'>ch_pesticide_output</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>bchpst_a</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-chpst"></span>
+              type(<a href='../type/ch_pesticide_output.html'>ch_pesticide_output</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>chpst</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-chpstz"></span>
+              type(<a href='../type/ch_pesticide_output.html'>ch_pesticide_output</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>chpstz</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-chpest_hdr"></span>
+              type(<a href='../type/ch_pesticide_header.html'>ch_pesticide_header</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>chpest_hdr</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+        </section>
+        <br>
+
+
+        <section>
+          <h2>Interfaces</h2>
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-operator%20%28%2B%29~12"></span>
+      <h3>public        interface <a href='../interface/operator (+)~12.html'>operator (+)</a> 
+      </h3>
+    </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    public  function <a href='../proc/chpest_add.html'>chpest_add</a>(cho1, cho2) result(cho3)  
+
+    </h3>
+    
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cho1~2"></span>
+              type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cho1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cho2~2"></span>
+              type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cho2</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-operator%20%28SLASH%29~8"></span>
+      <h3>public        interface <a href='../interface/operator (SLASH)~8.html'>operator (/)</a> 
+      </h3>
+    </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    public  function <a href='../proc/chpest_div.html'>chpest_div</a>(ch1, const) result(ch2)  
+
+    </h3>
+    
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ch1~2"></span>
+              type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ch1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-const~36"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>const</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-operator%20%28SLASHSLASH%29~4"></span>
+      <h3>public        interface <a href='../interface/operator (SLASHSLASH)~4.html'>operator (//)</a> 
+      </h3>
+    </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    public  function <a href='../proc/chpest_ave.html'>chpest_ave</a>(ch1, const) result(ch2)  
+
+    </h3>
+    
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ch1~3"></span>
+              type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ch1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-const~37"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>const</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+        </section>
+        <br>
+
+
+        <section>
+          <h2>Derived Types</h2>
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-ch_pesticide_processes"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-tot_in~2"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tot_in</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !total pesticide into reservoir</p><a href="../type/ch_pesticide_processes.html#variable-tot_in~2" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-sol_out"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sol_out</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !soluble pesticide out of reservoir</p><a href="../type/ch_pesticide_processes.html#variable-sol_out" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-sor_out"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sor_out</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !sorbed pesticide out of reservoir</p><a href="../type/ch_pesticide_processes.html#variable-sor_out" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-react~5"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>react</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !pesticide lost through reactions in water layer</p><a href="../type/ch_pesticide_processes.html#variable-react~5" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-metab"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metab</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !pesticide metabolized from parent in water layer</p><a href="../type/ch_pesticide_processes.html#variable-metab" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-volat~5"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>volat</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !pesticide lost through volatilization</p><a href="../type/ch_pesticide_processes.html#variable-volat~5" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-settle~3"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>settle</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !pesticide settling to sediment layer</p><a href="../type/ch_pesticide_processes.html#variable-settle~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-resus~2"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>resus</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !pesticide resuspended into lake water</p><a href="../type/ch_pesticide_processes.html#variable-resus~2" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-difus~7"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>difus</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !pesticide diffusing from sediment to water</p><a href="../type/ch_pesticide_processes.html#variable-difus~7" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-react_bot"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>react_bot</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !pesticide lost from benthic sediment by reactions</p><a href="../type/ch_pesticide_processes.html#variable-react_bot" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-metab_bot"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metab_bot</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !pesticide metabolized from parent in water layer</p><a href="../type/ch_pesticide_processes.html#variable-metab_bot" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-bury~7"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>bury</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !pesticide lost from benthic sediment by burial</p><a href="../type/ch_pesticide_processes.html#variable-bury~7" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-water~6"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>water</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !pesticide in water at end of day</p><a href="../type/ch_pesticide_processes.html#variable-water~6" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-benthic~2"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>benthic</strong></td>
+<td> =</td>
+                <td>0.</td>
+            <td>
+<p>kg !pesticide in benthic sediment at tend of day</p><a href="../type/ch_pesticide_processes.html#variable-benthic~2" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-ch_pesticide_output"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/ch_pesticide_output.html'>ch_pesticide_output</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pest~17"></span>
+              type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              dimension (:), allocatable
+            </td>
+            <td>::</td>
+            <td><strong>pest</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+<p>pesticide hydrographs</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-ch_pesticide_header"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/ch_pesticide_header.html'>ch_pesticide_header</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-day~28"></span>
+              character(len=6),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>day</strong></td>
+<td> =</td>
+                <td>&#34;  jday&#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-mo~32"></span>
+              character(len=6),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>mo</strong></td>
+<td> =</td>
+                <td>&#34;   mon&#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-day_mo~29"></span>
+              character(len=6),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>day_mo</strong></td>
+<td> =</td>
+                <td>&#34;   day&#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-yrc~26"></span>
+              character(len=6),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>yrc</strong></td>
+<td> =</td>
+                <td>&#34;    yr&#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-isd~19"></span>
+              character(len=8),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>isd</strong></td>
+<td> =</td>
+                <td>&#34;   unit &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-id~23"></span>
+              character(len=8),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>id</strong></td>
+<td> =</td>
+                <td>&#34; gis_id &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-name~103"></span>
+              character(len=16),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>name</strong></td>
+<td> =</td>
+                <td>&#34; name           &#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pest~18"></span>
+              character(len=16),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pest</strong></td>
+<td> =</td>
+                <td>&#34; pesticide&#34;</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-tot_in~3"></span>
+              character(len=13),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tot_in</strong></td>
+<td> =</td>
+                <td>&#34;tot_in_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-sol_out~2"></span>
+              character(len=13),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sol_out</strong></td>
+<td> =</td>
+                <td>&#34;sol_out_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-sor_out~2"></span>
+              character(len=14),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sor_out</strong></td>
+<td> =</td>
+                <td>&#34;sor_out_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-react~6"></span>
+              character(len=13),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>react</strong></td>
+<td> =</td>
+                <td>&#34;react_h2o_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-metab~2"></span>
+              character(len=13),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metab</strong></td>
+<td> =</td>
+                <td>&#34;metab_h2o_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-volat~6"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>volat</strong></td>
+<td> =</td>
+                <td>&#34;volat_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-settle~4"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>settle</strong></td>
+<td> =</td>
+                <td>&#34;settle_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-resus~3"></span>
+              character(len=13),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>resus</strong></td>
+<td> =</td>
+                <td>&#34;resuspend_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-difus~8"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>difus</strong></td>
+<td> =</td>
+                <td>&#34;diffuse_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-react_bot~2"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>react_bot</strong></td>
+<td> =</td>
+                <td>&#34;react_benth_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-metab_bot~2"></span>
+              character(len=15),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metab_bot</strong></td>
+<td> =</td>
+                <td>&#34;metab_benth_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-bury~8"></span>
+              character(len=14),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>bury</strong></td>
+<td> =</td>
+                <td>&#34;bury_benth_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-water~7"></span>
+              character(len=14),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>water</strong></td>
+<td> =</td>
+                <td>&#34;water_stor_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-benthic~3"></span>
+              character(len=12),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>benthic</strong></td>
+<td> =</td>
+                <td>&#34;benthic_kg &#34;</td>
+            <td>
+<p>(kg)</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+        </section>
+        <br>
+
+        <section>
+          <h2>Functions</h2>
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-chpest_add"></span> <h3>public  function <a href='../proc/chpest_add.html'>chpest_add</a>(cho1, cho2) result(cho3)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cho1~2"></span>
+              type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cho1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cho2~2"></span>
+              type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cho2</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-chpest_div"></span> <h3>public  function <a href='../proc/chpest_div.html'>chpest_div</a>(ch1, const) result(ch2)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ch1~2"></span>
+              type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ch1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-const~36"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>const</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-chpest_ave"></span> <h3>public  function <a href='../proc/chpest_ave.html'>chpest_ave</a>(ch1, const) result(ch2)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ch1~3"></span>
+              type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ch1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-const~37"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>const</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/ch_pesticide_processes.html'>ch_pesticide_processes</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+        </section>
+        <br>
+
+
+
+
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              SWAT+
+              &copy; 2025 
+<br /><small>@SWAT_VERSION@</small></p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-09-04             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

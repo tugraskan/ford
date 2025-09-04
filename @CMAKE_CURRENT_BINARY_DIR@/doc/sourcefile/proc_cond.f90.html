@@ -1,0 +1,413 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for SWAT+">
+    <meta name="author" content="" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>proc_cond.f90 &ndash; SWAT+</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">SWAT+ <small>@SWAT_VERSION@</small></a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>proc_cond.f90
+      <small>Source File</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 0.0% of total for sourcefile.">25 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/proc_cond.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+            <li class="breadcrumb-item active" aria-current="page">proc_cond.f90</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+        <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#subs-0"
+         aria-expanded="false" aria-controls="subs-0">
+         <h4 class="card-header bg-primary text-white">Subroutines</h4>
+      </a>
+      <div id="subs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../proc/proc_cond.html">proc_cond</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../sourcefile/proc_cond.f90.html#src">proc_cond.f90</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    <div class="col-md-9" id='text'>
+      
+      <br>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">This file depends on</h3>
+          </div>
+          <div class="card-body">
+            <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: sourcefile~~proc_cond.f90~~EfferentGraph Pages: 1 -->
+<svg id="sourcefileproc_condf90EfferentGraph" width="437pt" height="200pt"
+ viewBox="0.00 0.00 437.00 200.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 196)">
+<title>sourcefile~~proc_cond.f90~~EfferentGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-196 433,-196 433,4 -4,4"/>
+<!-- sourcefile~proc_cond.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_node1" class="node">
+<title>sourcefile~proc_cond.f90</title>
+<polygon fill="none" stroke="black" points="429,-108 341,-108 341,-84 429,-84 429,-108"/>
+<text text-anchor="middle" x="385" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50">proc_cond.f90</text>
+</g>
+<!-- sourcefile~conditional_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_node2" class="node">
+<title>sourcefile~conditional_module.f90</title>
+<g id="a_sourcefile~~proc_cond.f90~~EfferentGraph_node2"><a xlink:href="../sourcefile/conditional_module.f90.html" xlink:title="conditional_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="293,-192 155,-192 155,-168 293,-168 293,-192"/>
+<text text-anchor="middle" x="224" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">conditional_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~proc_cond.f90&#45;&gt;sourcefile~conditional_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_edge1" class="edge">
+<title>sourcefile~proc_cond.f90&#45;&gt;sourcefile~conditional_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M372.27,-108.03C357.75,-122.23 331.66,-145.63 305,-159 300.99,-161.01 296.77,-162.84 292.45,-164.51"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="291.13,-161.26 282.88,-167.9 293.47,-167.86 291.13,-161.26"/>
+</g>
+<!-- sourcefile~hru_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_node3" class="node">
+<title>sourcefile~hru_module.f90</title>
+<g id="a_sourcefile~~proc_cond.f90~~EfferentGraph_node3"><a xlink:href="../sourcefile/hru_module.f90.html" xlink:title="hru_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="272.5,-150 175.5,-150 175.5,-126 272.5,-126 272.5,-150"/>
+<text text-anchor="middle" x="224" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hru_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~proc_cond.f90&#45;&gt;sourcefile~hru_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_edge2" class="edge">
+<title>sourcefile~proc_cond.f90&#45;&gt;sourcefile~hru_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M340.96,-107.47C329.29,-110.57 316.66,-113.92 305,-117 297.2,-119.06 288.98,-121.23 280.88,-123.35"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="279.9,-119.99 271.12,-125.92 281.68,-126.76 279.9,-119.99"/>
+</g>
+<!-- sourcefile~hydrograph_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_node4" class="node">
+<title>sourcefile~hydrograph_module.f90</title>
+<g id="a_sourcefile~~proc_cond.f90~~EfferentGraph_node4"><a xlink:href="../sourcefile/hydrograph_module.f90.html" xlink:title="hydrograph_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="294,-108 154,-108 154,-84 294,-84 294,-108"/>
+<text text-anchor="middle" x="224" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hydrograph_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~proc_cond.f90&#45;&gt;sourcefile~hydrograph_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_edge3" class="edge">
+<title>sourcefile~proc_cond.f90&#45;&gt;sourcefile~hydrograph_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M340.97,-96C329.58,-96 316.91,-96 304.25,-96"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="304.12,-92.5 294.12,-96 304.12,-99.5 304.12,-92.5"/>
+</g>
+<!-- sourcefile~maximum_data_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_node5" class="node">
+<title>sourcefile~maximum_data_module.f90</title>
+<g id="a_sourcefile~~proc_cond.f90~~EfferentGraph_node5"><a xlink:href="../sourcefile/maximum_data_module.f90.html" xlink:title="maximum_data_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="305,-66 143,-66 143,-42 305,-42 305,-66"/>
+<text text-anchor="middle" x="224" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">maximum_data_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~proc_cond.f90&#45;&gt;sourcefile~maximum_data_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_edge4" class="edge">
+<title>sourcefile~proc_cond.f90&#45;&gt;sourcefile~maximum_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M340.96,-84.53C329.29,-81.43 316.66,-78.08 305,-75 297.2,-72.94 288.98,-70.77 280.88,-68.65"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="281.68,-65.24 271.12,-66.08 279.9,-72.01 281.68,-65.24"/>
+</g>
+<!-- sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_node6" class="node">
+<title>sourcefile~mgt_operations_module.f90</title>
+<g id="a_sourcefile~~proc_cond.f90~~EfferentGraph_node6"><a xlink:href="../sourcefile/mgt_operations_module.f90.html" xlink:title="mgt_operations_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="305,-24 143,-24 143,0 305,0 305,-24"/>
+<text text-anchor="middle" x="224" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_operations_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~proc_cond.f90&#45;&gt;sourcefile~mgt_operations_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_edge5" class="edge">
+<title>sourcefile~proc_cond.f90&#45;&gt;sourcefile~mgt_operations_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M372.27,-83.97C357.75,-69.77 331.66,-46.37 305,-33 300.99,-30.99 296.77,-29.16 292.45,-27.49"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="293.47,-24.14 282.88,-24.1 291.13,-30.74 293.47,-24.14"/>
+</g>
+<!-- sourcefile~basin_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_node7" class="node">
+<title>sourcefile~basin_module.f90</title>
+<g id="a_sourcefile~~proc_cond.f90~~EfferentGraph_node7"><a xlink:href="../sourcefile/basin_module.f90.html" xlink:title="basin_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="107,-129 0,-129 0,-105 107,-105 107,-129"/>
+<text text-anchor="middle" x="53.5" y="-114.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">basin_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~hydrograph_module.f90&#45;&gt;sourcefile~basin_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_edge6" class="edge">
+<title>sourcefile~hydrograph_module.f90&#45;&gt;sourcefile~basin_module.f90</title>
+<path fill="none" stroke="#00ff66" stroke-dasharray="5,2" d="M153.98,-104.6C141.77,-106.12 129.11,-107.7 117.09,-109.2"/>
+<polygon fill="#00ff66" stroke="#00ff66" points="116.65,-105.73 107.16,-110.44 117.52,-112.67 116.65,-105.73"/>
+</g>
+<!-- sourcefile~time_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_node8" class="node">
+<title>sourcefile~time_module.f90</title>
+<g id="a_sourcefile~~proc_cond.f90~~EfferentGraph_node8"><a xlink:href="../sourcefile/time_module.f90.html" xlink:title="time_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="105,-87 2,-87 2,-63 105,-63 105,-87"/>
+<text text-anchor="middle" x="53.5" y="-72.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">time_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~hydrograph_module.f90&#45;&gt;sourcefile~time_module.f90 -->
+<g id="sourcefile~~proc_cond.f90~~EfferentGraph_edge7" class="edge">
+<title>sourcefile~hydrograph_module.f90&#45;&gt;sourcefile~time_module.f90</title>
+<path fill="none" stroke="#00ff66" stroke-dasharray="5,2" d="M153.98,-87.4C141.07,-85.79 127.67,-84.12 115.04,-82.54"/>
+<polygon fill="#00ff66" stroke="#00ff66" points="115.46,-79.07 105.1,-81.31 114.59,-86.02 115.46,-79.07"/>
+</g>
+</g>
+</svg>
+</div>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#EfferentGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="EfferentGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="202pt" height="32pt"
+ viewBox="0.00 0.00 201.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 197.5,-28 197.5,4 -4,4"/>
+<!-- Source File -->
+<g id="node1" class="node">
+<title>Source File</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="70,-24 0,-24 0,0 70,0 70,-24"/>
+<text text-anchor="middle" x="35" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Source File</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node2" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="193.5,-24 88.5,-24 88.5,0 193.5,0 193.5,-24"/>
+<text text-anchor="middle" x="141" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a file to a file which it depends on. A file
+is dependent upon another if the latter must be compiled before the former
+can be.
+</p>
+ Where possible, edges connecting nodes are
+given different colours to make them easier to distinguish in
+large graphs.</div>
+            </div>
+          </div>
+        </div>
+          </div>
+        </div>
+<br>
+      <section>
+        <h2><span class="anchor" id="src"></span>Source Code</h2>
+        <div class="hl codehilite"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="w">      </span><span class="k">subroutine </span><span class="n">proc_cond</span>
+<a id="ln-2" name="ln-2" href="#ln-2"></a>
+<a id="ln-3" name="ln-3" href="#ln-3"></a><span class="w">      </span><span class="k">use </span><span class="n">hru_module</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">hru</span><span class="p">,</span><span class="w"> </span><span class="n">ihru</span>
+<a id="ln-4" name="ln-4" href="#ln-4"></a><span class="w">      </span><span class="k">use </span><span class="n">mgt_operations_module</span>
+<a id="ln-5" name="ln-5" href="#ln-5"></a><span class="w">      </span><span class="k">use </span><span class="n">hydrograph_module</span>
+<a id="ln-6" name="ln-6" href="#ln-6"></a><span class="w">      </span><span class="k">use </span><span class="n">maximum_data_module</span>
+<a id="ln-7" name="ln-7" href="#ln-7"></a><span class="w">      </span><span class="k">use </span><span class="n">conditional_module</span>
+<a id="ln-8" name="ln-8" href="#ln-8"></a>
+<a id="ln-9" name="ln-9" href="#ln-9"></a><span class="w">      </span><span class="k">implicit none</span>
+<a id="ln-10" name="ln-10" href="#ln-10"></a><span class="k">    </span>
+<a id="ln-11" name="ln-11" href="#ln-11"></a><span class="k">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">isched</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">             </span><span class="c">!              | </span>
+<a id="ln-12" name="ln-12" href="#ln-12"></a><span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iauto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">              </span><span class="c">!none          |counter</span>
+<a id="ln-13" name="ln-13" href="#ln-13"></a><span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ictl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">               </span><span class="c">!none          |counter</span>
+<a id="ln-14" name="ln-14" href="#ln-14"></a><span class="w">          </span>
+<a id="ln-15" name="ln-15" href="#ln-15"></a><span class="w">      </span><span class="c">!! set cross walk for auto management operations</span>
+<a id="ln-16" name="ln-16" href="#ln-16"></a><span class="w">      </span><span class="k">do </span><span class="n">ihru</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">sp_ob</span><span class="p">%</span><span class="n">hru</span>
+<a id="ln-17" name="ln-17" href="#ln-17"></a><span class="w">        </span><span class="n">isched</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hru</span><span class="p">(</span><span class="n">ihru</span><span class="p">)%</span><span class="n">mgt_ops</span>
+<a id="ln-18" name="ln-18" href="#ln-18"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sched</span><span class="p">(</span><span class="n">isched</span><span class="p">)%</span><span class="n">num_autos</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<a id="ln-19" name="ln-19" href="#ln-19"></a><span class="k">           </span><span class="n">sched</span><span class="p">(</span><span class="n">isched</span><span class="p">)%</span><span class="n">irr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<a id="ln-20" name="ln-20" href="#ln-20"></a><span class="w">           </span><span class="c">!! crosswalk with conditional.ctl</span>
+<a id="ln-21" name="ln-21" href="#ln-21"></a><span class="w">           </span><span class="k">do </span><span class="n">iauto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">sched</span><span class="p">(</span><span class="n">isched</span><span class="p">)%</span><span class="n">num_autos</span>
+<a id="ln-22" name="ln-22" href="#ln-22"></a><span class="w">             </span><span class="k">do </span><span class="n">ictl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">db_mx</span><span class="p">%</span><span class="n">dtbl_lum</span>
+<a id="ln-23" name="ln-23" href="#ln-23"></a><span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sched</span><span class="p">(</span><span class="n">isched</span><span class="p">)%</span><span class="n">auto_name</span><span class="p">(</span><span class="n">iauto</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">dtbl_lum</span><span class="p">(</span><span class="n">ictl</span><span class="p">)%</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<a id="ln-24" name="ln-24" href="#ln-24"></a><span class="k">                 </span><span class="n">sched</span><span class="p">(</span><span class="n">isched</span><span class="p">)%</span><span class="n">num_db</span><span class="p">(</span><span class="n">iauto</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ictl</span>
+<a id="ln-25" name="ln-25" href="#ln-25"></a><span class="w">               </span><span class="k">end if</span>
+<a id="ln-26" name="ln-26" href="#ln-26"></a><span class="k">             end do</span>
+<a id="ln-27" name="ln-27" href="#ln-27"></a><span class="k">           end do</span>
+<a id="ln-28" name="ln-28" href="#ln-28"></a><span class="k">         end if</span>
+<a id="ln-29" name="ln-29" href="#ln-29"></a><span class="k">      end do</span>
+<a id="ln-30" name="ln-30" href="#ln-30"></a><span class="k">    </span>
+<a id="ln-31" name="ln-31" href="#ln-31"></a><span class="k">      return</span>
+<a id="ln-32" name="ln-32" href="#ln-32"></a><span class="k">      </span>
+<a id="ln-33" name="ln-33" href="#ln-33"></a><span class="k">      end subroutine </span><span class="n">proc_cond</span>
+</pre></div>
+
+      </section>
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              SWAT+
+              &copy; 2025 
+<br /><small>@SWAT_VERSION@</small></p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-09-04             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>
