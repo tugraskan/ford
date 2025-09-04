@@ -856,35 +856,78 @@
                aria-labelledby="heading{{ unit }}" data-bs-parent="#ioAccordion">
             <div class="accordion-body">
               {% if operations.timeline %}
-                <table class="table table-sm">
-                  <thead>
-                    <tr>
-                      <th>Operation</th>
-                      <th>Details</th>
-                      <th>Condition</th>
-                      <th>Line</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for op in operations.timeline %}
-                      <tr>
-                        <td><span class="badge bg-primary">{{ op.kind }}</span></td>
-                        <td><code>{{ op.raw }}</code></td>
-                        <td>
-                          {% if op.condition %}
-                            <small class="text-info">{{ op.condition.text }}</small>
-                            {% if op.condition.line %}
-                              <br><small class="text-muted">(line {{ op.condition.line }})</small>
-                            {% endif %}
-                          {% else %}
-                            <em class="text-muted">-</em>
-                          {% endif %}
-                        </td>
-                        <td>{{ op.line if op.line else '-' }}</td>
-                      </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
+                {% set conditions_dict = {} %}
+                {% for op in operations.timeline %}
+                  {% set condition_key = op.condition.text if op.condition else "no_condition" %}
+                  {% set condition_line = op.condition.line if op.condition else None %}
+                  {% if condition_key not in conditions_dict %}
+                    {% set _ = conditions_dict.update({condition_key: {'operations': [], 'line': condition_line}}) %}
+                  {% endif %}
+                  {% set _ = conditions_dict[condition_key]['operations'].append(op) %}
+                {% endfor %}
+                
+                {% for condition_key, condition_data in conditions_dict.items() %}
+                  {% if condition_key != "no_condition" %}
+                    <div class="condition-section mb-3">
+                      <h5 class="text-primary">
+                        <i class="fa fa-caret-up" style="transform: rotate(45deg);"></i>
+                        <strong>{{ condition_key }}</strong>
+                        {% if condition_data.line %}
+                          <small class="text-muted">(line {{ condition_data.line }})</small>
+                        {% endif %}
+                      </h5>
+                      <div class="ms-3">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th>Operation</th>
+                              <th>Details</th>
+                              <th>Line</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for op in condition_data.operations %}
+                              <tr>
+                                <td><span class="badge bg-primary">{{ op.kind }}</span></td>
+                                <td><code>{{ op.raw }}</code></td>
+                                <td>{{ op.line if op.line else '-' }}</td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                
+                {% if "no_condition" in conditions_dict %}
+                  <div class="condition-section mb-3">
+                    <h5 class="text-secondary">
+                      <i class="fa fa-caret-up" style="transform: rotate(45deg);"></i>
+                      <strong>Unconditional Operations</strong>
+                    </h5>
+                    <div class="ms-3">
+                      <table class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th>Operation</th>
+                            <th>Details</th>
+                            <th>Line</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for op in conditions_dict["no_condition"].operations %}
+                            <tr>
+                              <td><span class="badge bg-primary">{{ op.kind }}</span></td>
+                              <td><code>{{ op.raw }}</code></td>
+                              <td>{{ op.line if op.line else '-' }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                {% endif %}
               {% else %}
                 <em>No operations recorded</em>
               {% endif %}
