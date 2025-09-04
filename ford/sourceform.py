@@ -89,12 +89,13 @@ class IoSession:
         self.loop_context = loop_context  # e.g., loop variable/name
         self.line_no = line_no            # record line number for context
 
-    def add(self, kind, raw, line_no=None):
-        """Record an I/O operation with optional line number."""
+    def add(self, kind, raw, line_no=None, condition=None):
+        """Record an I/O operation with optional line number and condition."""
         self.operations.append({
             "kind": kind,
             "raw": raw.strip(),
-            "line": line_no
+            "line": line_no,
+            "condition": condition
         })
 
     def close(self) -> None:
@@ -107,6 +108,8 @@ class IoTracker:
         self.completed = defaultdict(list)      # unit → [IoSession,...]
         self.file_mappings = defaultdict(set)   # filename → {unit1, unit2, ...}
         self.stragglers = []                    # IoSessions never closed
+        self.condition_stack = []               # Stack of active conditions
+        self.current_condition = None           # Current active condition context
 
     def normalize_file_key(self, fname: str) -> str:
         """
@@ -130,6 +133,37 @@ class IoTracker:
             return self.normalize_file_key(m.group(1).strip())
         return f    
     
+    def push_condition(self, condition_text, line_no=None):
+        """Push a new condition context onto the stack."""
+        condition_info = {
+            'text': condition_text.strip(),
+            'line': line_no,
+            'type': self._determine_condition_type(condition_text)
+        }
+        self.condition_stack.append(condition_info)
+        self.current_condition = condition_info
+
+    def pop_condition(self):
+        """Pop the current condition context from the stack."""
+        if self.condition_stack:
+            self.condition_stack.pop()
+        self.current_condition = self.condition_stack[-1] if self.condition_stack else None
+
+    def _determine_condition_type(self, condition_text):
+        """Determine the type of control structure."""
+        text_lower = condition_text.lower().strip()
+        if text_lower.startswith('if'):
+            return 'if'
+        elif text_lower.startswith('select case'):
+            return 'select'
+        elif text_lower.startswith('case'):
+            return 'case'
+        elif text_lower.startswith('else'):
+            return 'else'
+        elif text_lower.startswith('do'):
+            return 'do'
+        return 'unknown'
+
     def operations_timeline(self) -> dict[str, list[dict]]:
         """
         Returns a dict mapping file or synthetic unit-based name → chronological list of raw I/O operations.
@@ -160,7 +194,7 @@ class IoTracker:
         """Record a raw I/O operation under the open session for `unit`."""
         sess = self._open_sessions.get(unit)
         if sess:
-            sess.add(kind, raw, line_no)
+            sess.add(kind, raw, line_no, condition=self.current_condition)
 
     def record_or_create(self, unit, kind, raw, line_no=None):
         """
@@ -178,13 +212,13 @@ class IoTracker:
         else:
             sess = self._open_sessions[unit]
 
-        sess.add(kind, raw, line_no)
+        sess.add(kind, raw, line_no, condition=self.current_condition)
 
     def close(self, unit, line_no=None):
         """Close and archive the I/O session for `unit`."""
         sess = self._open_sessions.pop(unit, None)
         if sess:
-            sess.add('close', f'close({unit})', line_no)
+            sess.add('close', f'close({unit})', line_no, condition=self.current_condition)
             sess.close()
             self.completed[unit].append(sess)
 
@@ -1651,6 +1685,66 @@ class FortranContainer(FortranBase):
             self.io_tracker.close(unit)
             return
 
+    def _parse_control_flow(self, line: str, line_no: int = None) -> None:
+        """Parse control flow statements and update condition context."""
+        if not hasattr(self, 'io_tracker'):
+            return
+            
+        raw = self.restore_strings(line, self.strings)
+        stripped = raw.strip().lower()
+        
+        # Handle if statements
+        if stripped.startswith('if') and ('then' in stripped or '=' in stripped):
+            # Extract the condition part
+            if 'then' in stripped:
+                condition_match = re.match(r'if\s*\((.+?)\)\s*then', stripped, re.IGNORECASE)
+                if condition_match:
+                    condition = f"if ({condition_match.group(1)})"
+                    self.io_tracker.push_condition(condition, line_no)
+            
+        # Handle select case statements  
+        elif stripped.startswith('select case'):
+            case_match = re.match(r'select\s+case\s*\((.+?)\)', stripped, re.IGNORECASE)
+            if case_match:
+                condition = f"select case ({case_match.group(1)})"
+                self.io_tracker.push_condition(condition, line_no)
+        
+        # Handle case statements
+        elif stripped.startswith('case'):
+            case_match = re.match(r'case\s*\((.+?)\)', stripped, re.IGNORECASE)
+            if case_match:
+                condition = f"case ({case_match.group(1)})"
+                # Pop previous case and push new one
+                if self.io_tracker.condition_stack and self.io_tracker.condition_stack[-1]['type'] == 'case':
+                    self.io_tracker.pop_condition()
+                self.io_tracker.push_condition(condition, line_no)
+            elif 'default' in stripped:
+                condition = "case default"
+                if self.io_tracker.condition_stack and self.io_tracker.condition_stack[-1]['type'] == 'case':
+                    self.io_tracker.pop_condition()
+                self.io_tracker.push_condition(condition, line_no)
+        
+        # Handle else statements
+        elif stripped.startswith('else') and not stripped.startswith('elseif'):
+            condition = "else"
+            self.io_tracker.push_condition(condition, line_no)
+            
+        # Handle elseif statements  
+        elif stripped.startswith('elseif'):
+            elseif_match = re.match(r'elseif\s*\((.+?)\)\s*then', stripped, re.IGNORECASE)
+            if elseif_match:
+                condition = f"elseif ({elseif_match.group(1)})"
+                # Pop previous condition and push new one
+                if self.io_tracker.condition_stack:
+                    self.io_tracker.pop_condition()
+                self.io_tracker.push_condition(condition, line_no)
+        
+        # Handle end statements
+        elif stripped.startswith('end'):
+            if any(end_kw in stripped for end_kw in ['endif', 'end if', 'endselect', 'end select']):
+                if self.io_tracker.condition_stack:
+                    self.io_tracker.pop_condition()
+
     def _add_procedure_calls(self,
                         line: str,
                         associations: Associations = Associations(),
@@ -1660,6 +1754,9 @@ class FortranContainer(FortranBase):
         FortranProcedure, and FortranModuleProcedureImplementation
         """
 
+        # ==== Parse control flow statements ====
+        self._parse_control_flow(line, line_no)
+        
         # ==== call the new I/O parser ====
         self._parse_io_open(line, line_no)
 
