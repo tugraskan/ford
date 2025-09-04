@@ -160,29 +160,29 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
-                  <li class="list-inline-item"><a href='../module/output_landscape_module.html'>output_landscape_module</a></li>
+                  <li class="list-inline-item"><a href='../module/carbon_module.html'>carbon_module</a></li>
                   <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
-                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
+                  <li class="list-inline-item"><a href='../module/septic_data_module.html'>septic_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/reservoir_module.html'>reservoir_module</a></li>
+                  <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
+                  <li class="list-inline-item"><a href='../module/output_ls_pesticide_module.html'>output_ls_pesticide_module</a></li>
+                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/salt_module.html'>salt_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
-                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
-                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
-                  <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/output_landscape_module.html'>output_landscape_module</a></li>
+                  <li class="list-inline-item"><a href='../module/salt_module.html'>salt_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
                   <li class="list-inline-item"><a href='../module/tillage_data_module.html'>tillage_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
-                  <li class="list-inline-item"><a href='../module/cs_module.html'>cs_module</a></li>
-                  <li class="list-inline-item"><a href='../module/output_ls_pesticide_module.html'>output_ls_pesticide_module</a></li>
-                  <li class="list-inline-item"><a href='../module/reservoir_module.html'>reservoir_module</a></li>
-                  <li class="list-inline-item"><a href='../module/carbon_module.html'>carbon_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/septic_data_module.html'>septic_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/reservoir_data_module.html'>reservoir_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
                   <li class="list-inline-item"><a href='../module/mgt_operations_module.html'>mgt_operations_module</a></li>
+                  <li class="list-inline-item"><a href='../module/cs_module.html'>cs_module</a></li>
+                  <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
               </ul>
             </li>
             <li class="list-group-item">
@@ -748,6 +748,47 @@ Route incoming aquifer flow
     <h3>Arguments</h3>
     <em>None</em>
     <br>
+
+
+
+    <section>
+      <h3>I/O Operations</h3>
+          <div class="accordion" id="ioAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingunit_100100">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseunit_100100" aria-expanded="true" 
+                    aria-controls="collapseunit_100100">
+              Unit unit_100100
+            </button>
+          </h3>
+          <div id="collapseunit_100100" class="accordion-collapse collapse show" 
+               aria-labelledby="headingunit_100100" data-bs-parent="#ioAccordion">
+            <div class="accordion-body">
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Operation</th>
+                      <th>Details</th>
+                      <th>Line</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                        <td><span class="badge bg-primary">write</span></td>
+                        <td><code>write(100100,'(4(I6,","),20(f20.1,","))') time%yrc,time%mo,time%day_mo,j,w%precip,irrig(j)%applied,hru(j)%water_seep, pet_day,etday,wet_ob(j)%weir_hgt*1000,wet_ob(j)%depth*1000.,ht2%flo/(hru(j)%area_ha*10.),soil(j)%sw,sedppm,ht2%sed*1000, wet(j)%no3,ht2%no3,pcom(j)%lai_sum,saltcon</code></td>
+                        <td>541</td>
+                      </tr>
+                  </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    </section>
+    <br>
+
     <br>
     <div class="card">
       <div class="card-header">

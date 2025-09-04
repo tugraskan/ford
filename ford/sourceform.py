@@ -2516,7 +2516,8 @@ class FortranProcedure(FortranCodeUnit):
         # Get variables from uses
         if hasattr(self, 'uses'):
             for use in self.uses:
-                if len(use) > 1 and hasattr(use[0], 'variables'):
+                # Ensure use is a sequence (list/tuple) before checking length
+                if isinstance(use, (list, tuple)) and len(use) > 1 and hasattr(use[0], 'variables'):
                     # If specific items are imported
                     if len(use) > 2:
                         for item_name in use[2:]:

@@ -22,6 +22,7 @@
 #
 #
 
+import re
 import os
 import json
 import toposort
