@@ -159,11 +159,11 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
-                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
                   <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
               </ul>
             </li>
@@ -439,7 +439,7 @@ set outflow object type to 0 - needed in final hyd_read_connect loop </p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nspu~5"></span>
+              <span class="anchor" id="variable-nspu~3"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -507,6 +507,8 @@ set outflow object type to 0 - needed in final hyd_read_connect loop </p>
                     <tr>
                       <th>Operation</th>
                       <th>Details</th>
+                      <th>Condition</th>
+                      <th>Variables & Types</th>
                       <th>Line</th>
                     </tr>
                   </thead>
@@ -514,41 +516,93 @@ set outflow object type to 0 - needed in final hyd_read_connect loop </p>
                       <tr>
                         <td><span class="badge bg-primary">open</span></td>
                         <td><code>open (107,file=con_file)</code></td>
+                        <td>
+                            <small class="text-info">if (i_exist )</small>
+                              <br><small class="text-muted">(line 53)</small>
+                        </td>
+                        <td>
+                            <em>-</em>
+                        </td>
                         <td>55</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">read</span></td>
                         <td><code>read (107,*,iostat=eof) titldum</code></td>
+                        <td>
+                            <small class="text-info">if (i_exist )</small>
+                              <br><small class="text-muted">(line 53)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">titldum:</small> <code>unknown</code>                        </td>
                         <td>56</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">read</span></td>
                         <td><code>read (107,*,iostat=eof) header</code></td>
+                        <td>
+                            <small class="text-info">if (i_exist )</small>
+                              <br><small class="text-muted">(line 53)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">header:</small> <code>unknown</code>                        </td>
                         <td>58</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">read</span></td>
                         <td><code>read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot</code></td>
+                        <td>
+                            <small class="text-info">if (ncs > 0)</small>
+                              <br><small class="text-muted">(line 196)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code>                        </td>
                         <td>219</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">backspace</span></td>
                         <td><code>backspace (107)</code></td>
+                        <td>
+                            <small class="text-info">if (ncs > 0)</small>
+                              <br><small class="text-muted">(line 278)</small>
+                        </td>
+                        <td>
+                            <em>-</em>
+                        </td>
                         <td>295</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">read</span></td>
                         <td><code>read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot, (ob(i)%obtyp_out(isp), ob(i)%obtypno_out(isp), ob(i)%htyp_out(isp), ob(i)%frac_out(isp), isp = 1, nout)</code></td>
+                        <td>
+                            <small class="text-info">if (ncs > 0)</small>
+                              <br><small class="text-muted">(line 278)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">ob:</small> <code>unknown</code><br>                                <small class="text-muted">isp:</small> <code>unknown</code><br>                                <small class="text-muted">nout:</small> <code>unknown</code>                        </td>
                         <td>299</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">close</span></td>
                         <td><code>close (107)</code></td>
+                        <td>
+                            <small class="text-info">if (aqu_found.eq.1 .and. nat_model == 1)</small>
+                              <br><small class="text-muted">(line 310)</small>
+                        </td>
+                        <td>
+                            <em>-</em>
+                        </td>
                         <td>340</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">close</span></td>
                         <td><code>close(107)</code></td>
+                        <td>
+                            <small class="text-info">if (aqu_found.eq.1 .and. nat_model == 1)</small>
+                              <br><small class="text-muted">(line 310)</small>
+                        </td>
+                        <td>
+                            <em>-</em>
+                        </td>
                         <td>-</td>
                       </tr>
                   </tbody>
@@ -747,7 +801,7 @@ large graphs.</div>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nspu~5"></span>
+              <span class="anchor" id="variable-nspu~3"></span>
               integer,
             </td>
               <td>public</td>

@@ -159,22 +159,22 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/calibration_data_module.html'>calibration_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
-                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
+                  <li class="list-inline-item"><a href='../module/mgt_operations_module.html'>mgt_operations_module</a></li>
                   <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
                   <li class="list-inline-item"><a href='../module/reservoir_module.html'>reservoir_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/tillage_data_module.html'>tillage_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
                   <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
-                  <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/aquifer_module.html'>aquifer_module</a></li>
-                  <li class="list-inline-item"><a href='../module/tillage_data_module.html'>tillage_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
-                  <li class="list-inline-item"><a href='../module/mgt_operations_module.html'>mgt_operations_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/reservoir_data_module.html'>reservoir_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/calibration_data_module.html'>calibration_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
+                  <li class="list-inline-item"><a href='../module/aquifer_module.html'>aquifer_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
               </ul>
             </li>
             <li class="list-group-item">
@@ -596,7 +596,7 @@ skip a year</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-isched~3"></span>
+              <span class="anchor" id="variable-isched~14"></span>
               integer
             </td>
 <td></td>
@@ -634,6 +634,8 @@ skip a year</p>
                     <tr>
                       <th>Operation</th>
                       <th>Details</th>
+                      <th>Condition</th>
+                      <th>Variables & Types</th>
                       <th>Line</th>
                     </tr>
                   </thead>
@@ -641,91 +643,199 @@ skip a year</p>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm,  "    PLANT ", phubase(j), pcom(j)%plcur(ipl)%phuacc,  soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j),pcom(j)%plg(ipl)%lai, pcom(j)%plcur(ipl)%lai_pot</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout ==  "y")</small>
+                              <br><small class="text-muted">(line 102)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">pldb:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code>                        </td>
                         <td>106</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm, "    PLANT_ALREADY_GROWING", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j),pcom(j)%plg(ipl)%lai, pcom(j)%plcur(ipl)%lai_pot</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout ==  "y")</small>
+                              <br><small class="text-muted">(line 110)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">pldb:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code>                        </td>
                         <td>114</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "    HARVEST ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, biomass, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), pl_yield%m, pcom(j)%plstr(ipl)%sum_n, pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w, pcom(j)%plstr(ipl)%sum_a</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 195)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">pldb:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">biomass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">pl_yield:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code>                        </td>
                         <td>200</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "    KILL ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, biomass, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), pl_yield%m, pcom(j)%plstr(ipl)%sum_n, pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w, pcom(j)%plstr(ipl)%sum_a</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 215)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">pldb:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">biomass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">pl_yield:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code>                        </td>
                         <td>220</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "    HARV/KILL ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, biomass, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), pl_yield%m, pcom(j)%plstr(ipl)%sum_n, pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w, pcom(j)%plstr(ipl)%sum_a</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 283)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">pldb:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">biomass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">pl_yield:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code>                        </td>
                         <td>288</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, tilldb(idtill)%tillnm, "    TILLAGE ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), tilldb(idtill)%effmix</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 300)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">tilldb:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">tilldb:</small> <code>unknown</code>                        </td>
                         <td>303</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, irrop_db(irrop)%name, "IRRIGATE ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied, irrig(j)%runoff</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 317)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">irrop_db:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">irrig:</small> <code>unknown</code><br>                                <small class="text-muted">irrig:</small> <code>unknown</code>                        </td>
                         <td>320</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612,*) j, time%yrc, time%mo, time%day_mo, mgt%op_char, " FERT-WET", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), frt_kg, fertno3, fertnh3, fertorgn, fertsolp, fertorgp</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 332)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">frt_kg:</small> <code>unknown</code><br>                                <small class="text-muted">fertno3:</small> <code>unknown</code><br>                                <small class="text-muted">fertnh3:</small> <code>unknown</code><br>                                <small class="text-muted">fertorgn:</small> <code>unknown</code><br>                                <small class="text-muted">fertsolp:</small> <code>unknown</code><br>                                <small class="text-muted">fertorgp:</small> <code>unknown</code>                        </td>
                         <td>336</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612,*) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    FERT ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), frt_kg, fertno3, fertnh3, fertorgn, fertsolp, fertorgp</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 342)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">frt_kg:</small> <code>unknown</code><br>                                <small class="text-muted">fertno3:</small> <code>unknown</code><br>                                <small class="text-muted">fertnh3:</small> <code>unknown</code><br>                                <small class="text-muted">fertorgn:</small> <code>unknown</code><br>                                <small class="text-muted">fertsolp:</small> <code>unknown</code><br>                                <small class="text-muted">fertorgp:</small> <code>unknown</code>                        </td>
                         <td>346</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612,*) j, time%yrc, time%mo, time%day_mo, mgt%op_char, " MANURE ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), frt_kg, fertno3, fertnh3, fertorgn, fertsolp, fertorgp</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 358)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">frt_kg:</small> <code>unknown</code><br>                                <small class="text-muted">fertno3:</small> <code>unknown</code><br>                                <small class="text-muted">fertnh3:</small> <code>unknown</code><br>                                <small class="text-muted">fertorgn:</small> <code>unknown</code><br>                                <small class="text-muted">fertsolp:</small> <code>unknown</code><br>                                <small class="text-muted">fertorgp:</small> <code>unknown</code>                        </td>
                         <td>362</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    PEST ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), pest_kg</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 381)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">pest_kg:</small> <code>unknown</code>                        </td>
                         <td>384</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    GRAZE ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), grazeop_db(mgt%op1)%eat, grazeop_db(mgt%op1)%manure</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 394)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">grazeop_db:</small> <code>unknown</code><br>                                <small class="text-muted">grazeop_db:</small> <code>unknown</code>                        </td>
                         <td>397</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612,*) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    CNUP ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), mgt%op3, cn2(j)</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 407)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">cn2:</small> <code>unknown</code>                        </td>
                         <td>410</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    BURN ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j)</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 417)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code>                        </td>
                         <td>421</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "STREET_SWEEP ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j)</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 431)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code>                        </td>
                         <td>434</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm,  "  DRAIN_CONTROL", phubase(j), pcom(j)%plcur(j)%phuacc,  soil(j)%sw, pl_mass(j)%tot(j)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j),hru(j)%lumv%sdr_dep</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout ==  "y")</small>
+                              <br><small class="text-muted">(line 448)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">pldb:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">hru:</small> <code>unknown</code>                        </td>
                         <td>451</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "BEGIN_PADDY_IRRIGATION ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), mgt%op3, mgt%op4</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 487)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code>                        </td>
                         <td>490</td>
                       </tr>
                       <tr>
                         <td><span class="badge bg-primary">write</span></td>
                         <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo,  mgt%op_char, "IRRIGATE ", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied, irrig(j)%runoff</code></td>
+                        <td>
+                            <small class="text-info">if (pco%mgtout == "y")</small>
+                              <br><small class="text-muted">(line 504)</small>
+                        </td>
+                        <td>
+                                <small class="text-muted">j:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">time:</small> <code>unknown</code><br>                                <small class="text-muted">mgt:</small> <code>unknown</code><br>                                <small class="text-muted">phubase:</small> <code>unknown</code><br>                                <small class="text-muted">pcom:</small> <code>unknown</code><br>                                <small class="text-muted">soil:</small> <code>unknown</code><br>                                <small class="text-muted">pl_mass:</small> <code>unknown</code><br>                                <small class="text-muted">soil1:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumno3:</small> <code>unknown</code><br>                                <small class="text-muted">sol_sumsolp:</small> <code>unknown</code><br>                                <small class="text-muted">irrig:</small> <code>unknown</code><br>                                <small class="text-muted">irrig:</small> <code>unknown</code>                        </td>
                         <td>507</td>
                       </tr>
                   </tbody>
@@ -1089,7 +1199,7 @@ large graphs.</div>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-isched~3"></span>
+              <span class="anchor" id="variable-isched~14"></span>
               integer,
             </td>
               <td>public</td>
