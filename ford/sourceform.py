@@ -2477,6 +2477,74 @@ class FortranProcedure(FortranCodeUnit):
 
             self.args[i] = arg
 
+    @property
+    def local_variables(self):
+        """Return variables that are declared locally within this procedure (excluding arguments)."""
+        local_vars = []
+        
+        # Get variables that are declared in this procedure
+        if hasattr(self, 'variables'):
+            for var in self.variables:
+                # Variable is local if its parent is this procedure
+                if getattr(var, 'parent', None) == self:
+                    local_vars.append(var)
+        
+        return local_vars
+
+    @property 
+    def non_local_variables(self):
+        """Return variables that are not declared locally (arguments, parameters, etc.)."""
+        non_local_vars = []
+        
+        # Include arguments
+        if hasattr(self, 'args'):
+            non_local_vars.extend(self.args)
+        
+        # Include variables that are not local to this procedure
+        if hasattr(self, 'variables'):
+            for var in self.variables:
+                if getattr(var, 'parent', None) != self:
+                    non_local_vars.append(var)
+        
+        return non_local_vars
+
+    @property
+    def outside_variables_used(self):
+        """Return variables and types from outside modules that are used in this procedure."""
+        outside_vars = []
+        
+        # Get variables from uses
+        if hasattr(self, 'uses'):
+            for use in self.uses:
+                if len(use) > 1 and hasattr(use[0], 'variables'):
+                    # If specific items are imported
+                    if len(use) > 2:
+                        for item_name in use[2:]:
+                            for var in use[0].variables:
+                                if var.name.lower() == item_name.lower():
+                                    outside_vars.append(var)
+                    else:
+                        # If whole module is used
+                        outside_vars.extend(use[0].variables)
+        
+        # Remove duplicates by name
+        seen_names = set()
+        unique_vars = []
+        for var in outside_vars:
+            if var.name.lower() not in seen_names:
+                seen_names.add(var.name.lower())
+                unique_vars.append(var)
+        
+        return unique_vars
+
+    @property
+    def io_operations(self):
+        """Return I/O operations from the io_tracker."""
+        if hasattr(self, 'io_tracker'):
+            self.io_tracker.finalize()
+            return self.io_tracker.summarize_file_io()
+        return {}
+
 
 class FortranSubroutine(FortranProcedure):
     """

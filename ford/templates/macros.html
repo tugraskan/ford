@@ -807,3 +807,82 @@
     </dl>
   {% endif %}
 {% endmacro %}
+
+
+{% macro outside_variables_list(variables) %}
+  {% if variables %}
+    <table class="table table-striped varlist">
+      <thead>
+        <tr>
+          <th scope="col">Type</th>
+          <th scope="col">Name</th>
+          <th scope="col">Module</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for var in variables %}
+          <tr>
+            <td>{{ var.full_type | relurl(page_url) }}</td>
+            <td><strong>{{ var.name }}</strong>{{ var.dimension }}</td>
+            <td>{{ var.parent.name if var.parent else 'Unknown' }}</td>
+            <td>{{ var | meta('summary') }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <em>None</em>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro io_operations_list(io_data) %}
+  {% if io_data and io_data.keys() %}
+    <div class="accordion" id="ioAccordion">
+      {% for unit, operations in io_data.items() %}
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="heading{{ unit }}">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapse{{ unit }}" aria-expanded="true" 
+                    aria-controls="collapse{{ unit }}">
+              Unit {{ unit }}
+              {% if operations.filename %}
+                - {{ operations.filename }}
+              {% endif %}
+            </button>
+          </h3>
+          <div id="collapse{{ unit }}" class="accordion-collapse collapse show" 
+               aria-labelledby="heading{{ unit }}" data-bs-parent="#ioAccordion">
+            <div class="accordion-body">
+              {% if operations.timeline %}
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Operation</th>
+                      <th>Details</th>
+                      <th>Line</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for op in operations.timeline %}
+                      <tr>
+                        <td><span class="badge bg-primary">{{ op.kind }}</span></td>
+                        <td><code>{{ op.raw }}</code></td>
+                        <td>{{ op.line if op.line else '-' }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <em>No operations recorded</em>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <em>No I/O operations detected</em>
+  {% endif %}
+{% endmacro %}
