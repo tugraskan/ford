@@ -3171,58 +3171,134 @@ class FortranProcedure(FortranCodeUnit):
 
     @property
     def outside_variables_used(self):
-        """Return variables and types from outside modules that are used in this procedure."""
-        outside_vars = []
-        
-        # Get variables from uses
-        if hasattr(self, 'uses'):
-            for use in self.uses:
-                # Handle different use statement formats
-                if isinstance(use, (list, tuple)) and len(use) >= 1:
-                    module = use[0]
-                    if hasattr(module, 'variables'):
-                        # If specific items are imported (like "use module, only: var1, var2")
-                        if len(use) > 2 and use[1] == "only":
-                            for item_name in use[2:]:
-                                for var in module.variables:
-                                    if var.name.lower() == item_name.lower():
-                                        outside_vars.append(var)
+        """Return variables and types from outside modules that are actually used in this procedure."""
+        try:
+            import re
+            outside_vars = []
+            
+            # Get the source code for this procedure
+            source_code = ""
+            if hasattr(self, 'source') and self.source:
+                source_code = self.source.source
+            elif hasattr(self, 'obj') and hasattr(self.obj, 'source'):
+                source_code = self.obj.source
+            
+            if not source_code:
+                return []
+            
+            # Extract all variable references from the source code
+            # Look for patterns like: variable_name, module_var%member, etc.
+            variable_references = set()
+            
+            # Split source into lines and process each line
+            lines = source_code.split('\n')
+            for line in lines:
+                # Remove comments (anything after ! that's not in quotes)
+                in_quote = False
+                quote_char = None
+                cleaned_line = ""
+                i = 0
+                while i < len(line):
+                    char = line[i]
+                    if not in_quote and char == '!':
+                        break  # Rest of line is comment
+                    elif not in_quote and char in ('"', "'"):
+                        in_quote = True
+                        quote_char = char
+                    elif in_quote and char == quote_char:
+                        # Check if it's escaped
+                        if i + 1 < len(line) and line[i + 1] == quote_char:
+                            i += 1  # Skip escaped quote
                         else:
-                            # If whole module is used (like "use module")
-                            # Add first few variables as examples
-                            outside_vars.extend(module.variables[:5])  # Limit to avoid too many
-                elif hasattr(use, 'variables'):
-                    # Direct module reference
-                    outside_vars.extend(use.variables[:5])
-        
-        # If no variables found from uses, create mock entries for the modules used
-        if not outside_vars and hasattr(self, 'uses'):
-            for use in self.uses:
-                module_name = None
-                if isinstance(use, (list, tuple)) and len(use) >= 1:
-                    module_name = getattr(use[0], 'name', str(use[0]))
-                elif hasattr(use, 'name'):
-                    module_name = use.name
+                            in_quote = False
+                            quote_char = None
+                    cleaned_line += char
+                    i += 1
                 
-                if module_name:
-                    # Create a mock variable representing the module usage
-                    mock_var = type('MockModuleUsage', (), {
-                        'name': module_name.replace('_module', ''),
-                        'full_type': f"from {module_name}",
-                        'parent': type('MockModule', (), {'name': module_name})(),
-                        'meta': lambda self, key: f"Variables and types from {module_name}"
-                    })()
-                    outside_vars.append(mock_var)
-        
-        # Remove duplicates by name
-        seen_names = set()
-        unique_vars = []
-        for var in outside_vars:
-            if hasattr(var, 'name') and var.name.lower() not in seen_names:
-                seen_names.add(var.name.lower())
-                unique_vars.append(var)
-        
-        return unique_vars
+                # Find variable references in the cleaned line
+                # Pattern for Fortran identifiers with % separators
+                var_pattern = r'\b([a-zA-Z_][a-zA-Z0-9_]*(?:%[a-zA-Z_][a-zA-Z0-9_]*)*)\b'
+                matches = re.findall(var_pattern, cleaned_line, re.IGNORECASE)
+                
+                for match in matches:
+                    # Skip Fortran keywords and intrinsics
+                    if match.lower() not in ['if', 'then', 'else', 'endif', 'do', 'end', 'while', 'select', 'case',
+                                            'where', 'elsewhere', 'endwhere', 'subroutine', 'function', 'program',
+                                            'module', 'contains', 'implicit', 'none', 'integer', 'real', 'character',
+                                            'logical', 'complex', 'parameter', 'allocatable', 'pointer', 'target',
+                                            'intent', 'optional', 'dimension', 'save', 'public', 'private',
+                                            'read', 'write', 'open', 'close', 'allocate', 'deallocate', 'iostat',
+                                            'file', 'unit', 'fmt', 'format', 'advance', 'size', 'len', 'trim',
+                                            'exit', 'cycle', 'return', 'stop', 'backspace', 'rewind', 'print',
+                                            'true', 'false', 'status', 'form', 'access', 'recl', 'blank', 'position',
+                                            'action', 'delim', 'pad', 'round', 'sign', 'encoding']:
+                        variable_references.add(match.lower())
+            
+            # Now find which modules these variables come from
+            module_vars = {}
+            if hasattr(self, 'uses'):
+                for use in self.uses:
+                    module = None
+                    module_name = ""
+                    if isinstance(use, (list, tuple)) and len(use) >= 1:
+                        module = use[0]
+                        module_name = getattr(module, 'name', str(module))
+                    elif hasattr(use, 'variables'):
+                        module = use
+                        module_name = getattr(module, 'name', 'Unknown')
+                    
+                    if module:
+                        # Check module-level variables
+                        if hasattr(module, 'variables'):
+                            for var in module.variables:
+                                var_name = var.name.lower()
+                                # Check if this variable is referenced
+                                for ref in variable_references:
+                                    if var_name == ref or ref.startswith(var_name + '%'):
+                                        if module_name not in module_vars:
+                                            module_vars[module_name] = []
+                                        module_vars[module_name].append(var)
+                                        break
+                        
+                        # Check derived types in the module
+                        if hasattr(module, 'types'):
+                            for dtype in module.types:
+                                type_name = dtype.name.lower()
+                                # Look for references to this type
+                                for ref in variable_references:
+                                    if ref.startswith(type_name + '%') or type_name == ref:
+                                        # This type is used, add it to outside vars
+                                        if module_name not in module_vars:
+                                            module_vars[module_name] = []
+                                        
+                                        # Create a representation of the type usage
+                                        type_var = type('TypeUsage', (), {
+                                            'name': dtype.name,
+                                            'full_type': f"type({dtype.name})",
+                                            'parent': module,
+                                            'meta': lambda self, key: getattr(dtype, 'meta', lambda k: "")(key) if hasattr(dtype, 'meta') else "",
+                                            'vartype': f"type({dtype.name})"
+                                        })()
+                                        module_vars[module_name].append(type_var)
+                                        break
+            
+            # Convert to the format expected by the template
+            for module_name, vars_list in module_vars.items():
+                outside_vars.extend(vars_list)
+            
+            # Remove duplicates by name
+            seen_names = set()
+            unique_vars = []
+            for var in outside_vars:
+                if hasattr(var, 'name') and var.name.lower() not in seen_names:
+                    seen_names.add(var.name.lower())
+                    unique_vars.append(var)
+            
+            return unique_vars
+        except Exception as e:
+            # In case of any error, return empty list to avoid breaking the documentation generation
+            print(f"Error in outside_variables_used: {e}")
+            return []
 
     @property
     def io_operations(self):
