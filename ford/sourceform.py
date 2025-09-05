@@ -189,6 +189,8 @@ class IoTracker:
         
         # Patterns for variable assignments 
         assignment_patterns = [
+            # Fortran type declarations with defaults: character(len=25) :: prt = "print.prt"  
+            r'^\s*(?:character|integer|real|logical|double\s*precision)(?:\([^)]*\))?\s*::\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']+)["\']',
             # Module variable assignments like: in_link%aqu_cha = "aqu_cha.lin"
             r'^\s*([a-zA-Z_][a-zA-Z0-9_%]*)\s*=\s*["\']([^"\']+)["\']',
             # Simple variable assignments like: filename = "data.txt"  
@@ -457,7 +459,16 @@ class IoTracker:
             file_var = file_match.group(1)
             # Check if this variable has a default value
             for var_name, var_value in variable_defaults.items():
-                if var_name == file_var or var_name.endswith(f'%{file_var}'):
+                # Direct match
+                if var_name == file_var:
+                    relevant_defaults[f"{file_var}"] = var_value
+                # Match module%variable with variable (e.g., in_sim%prt with prt)
+                elif file_var.count('%') > 0:
+                    var_parts = file_var.split('%')
+                    if len(var_parts) >= 2 and var_name == var_parts[-1]:
+                        relevant_defaults[file_var] = var_value
+                # Match variable%subvar with variable
+                elif var_name.endswith(f'%{file_var}'):
                     relevant_defaults[var_name] = var_value
         
         # Also look for any variables mentioned in the operation that have defaults
@@ -465,7 +476,17 @@ class IoTracker:
             # Check if the variable appears in the operation
             if re.search(r'\b' + re.escape(var_name.replace('%', r'%')) + r'\b', raw_statement, re.IGNORECASE):
                 relevant_defaults[var_name] = var_value
-                
+        
+        # Look for compound variables (like in_sim%prt) and match with simple names (like prt)
+        compound_vars = re.findall(r'([a-zA-Z_][a-zA-Z0-9_]*%[a-zA-Z_][a-zA-Z0-9_]*)', raw_statement, re.IGNORECASE)
+        for compound_var in compound_vars:
+            var_parts = compound_var.split('%')
+            if len(var_parts) >= 2:
+                simple_name = var_parts[-1]  # Get the part after the last %
+                if simple_name in variable_defaults:
+                    relevant_defaults[compound_var] = variable_defaults[simple_name]
+                    
+        return relevant_defaults
         return relevant_defaults
 
 
@@ -3213,6 +3234,19 @@ class FortranProcedure(FortranCodeUnit):
             variable_defaults = {}
             if hasattr(self, 'source') and self.source:
                 variable_defaults = self.io_tracker.extract_variable_defaults(self.source.source)
+            
+            # Also extract variable defaults from imported modules
+            if hasattr(self, 'uses'):
+                for use in self.uses:
+                    module = None
+                    if isinstance(use, (list, tuple)) and len(use) >= 1:
+                        module = use[0]
+                    elif hasattr(use, 'source'):
+                        module = use
+                    
+                    if module and hasattr(module, 'source') and module.source:
+                        module_defaults = self.io_tracker.extract_variable_defaults(module.source.source)
+                        variable_defaults.update(module_defaults)
             
             return self.io_tracker.summarize_file_io(variable_defaults)
         return {}
