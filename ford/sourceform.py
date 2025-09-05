@@ -179,6 +179,41 @@ class IoTracker:
                 result.setdefault(key, []).extend(sess.operations)
 
         return result
+    
+    def extract_variable_defaults(self, source_lines: list[str]) -> dict[str, str]:
+        """
+        Extract variable assignments that might be relevant to file operations.
+        Returns a dictionary mapping variable names to their assigned values.
+        """
+        defaults = {}
+        
+        # Patterns for variable assignments 
+        assignment_patterns = [
+            # Module variable assignments like: in_link%aqu_cha = "aqu_cha.lin"
+            r'^\s*([a-zA-Z_][a-zA-Z0-9_%]*)\s*=\s*["\']([^"\']+)["\']',
+            # Simple variable assignments like: filename = "data.txt"  
+            r'^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']+)["\']',
+        ]
+        
+        for line in source_lines:
+            # Skip comment lines
+            comment_pos = line.find('!')
+            if comment_pos >= 0:
+                line = line[:comment_pos]
+            
+            line = line.strip()
+            if not line:
+                continue
+                
+            for pattern in assignment_patterns:
+                match = re.match(pattern, line, re.IGNORECASE)
+                if match:
+                    var_name = match.group(1).strip()
+                    var_value = match.group(2).strip()
+                    defaults[var_name] = var_value
+                    log.debug(f"Found variable default: {var_name} = {var_value}")
+                    
+        return defaults
 
     def start(self, unit, filename, line_no=None):
         """Begin a new I/O session, closing any prior one on same unit."""
@@ -256,7 +291,7 @@ class IoTracker:
                 summary['files'][fname] = {'units': list(units), 'count': len(units)}
         return summary
 
-    def summarize_file_io(self) -> dict[str, dict]:
+    def summarize_file_io(self, variable_defaults: dict[str, str] = None) -> dict[str, dict]:
         """
         Produce both:
         - a structured I/O summary per file:
@@ -265,8 +300,11 @@ class IoTracker:
             - data_reads:     grouped reads by columns
             - header_writes:  single-column titldum/header writes
             - data_writes:    grouped writes by columns
-        - a full raw I/O timeline per file
+        - a full raw I/O timeline per file with variable defaults
         """
+        if variable_defaults is None:
+            variable_defaults = {}
+            
         raw_result: dict[str, dict] = {}
 
         for sessions in self.completed.values():
@@ -375,18 +413,60 @@ class IoTracker:
                 for cols, count in dw_counts.items()
             ]
 
-            # attach timeline
+            # attach timeline with variable defaults
             timeline = self.operations_timeline().get(fname, [])
+            
+            # Enhance operations with variable defaults
+            enhanced_timeline = []
+            for op in timeline:
+                enhanced_op = op.copy()
+                
+                # Find relevant variable defaults for this operation
+                relevant_defaults = self._find_relevant_variable_defaults(enhanced_op, variable_defaults)
+                enhanced_op['variable_defaults'] = relevant_defaults
+                
+                enhanced_timeline.append(enhanced_op)
+            
             all_timelines = self.operations_timeline()
             log.debug("Available timeline keys: %s", list(all_timelines.keys()))
             log.debug("Available ops for key %s: %s", fname, all_timelines.get(fname, []))
 
             final_result[fname] = {
                 "summary": rec,
-                "timeline": timeline
+                "timeline": enhanced_timeline
             }
 
         return final_result
+    
+    def _find_relevant_variable_defaults(self, operation: dict, variable_defaults: dict[str, str]) -> dict[str, str]:
+        """
+        Find variable defaults relevant to the given I/O operation.
+        Looks for file-related variables in the operation and matches them with defaults.
+        """
+        relevant_defaults = {}
+        
+        if not variable_defaults:
+            return relevant_defaults
+            
+        # Extract the raw I/O statement
+        raw_statement = operation.get('raw', '')
+        
+        # Look for file= parameters in open statements
+        file_match = re.search(r'file\s*=\s*([a-zA-Z_][a-zA-Z0-9_%]*)', raw_statement, re.IGNORECASE)
+        if file_match:
+            file_var = file_match.group(1)
+            # Check if this variable has a default value
+            for var_name, var_value in variable_defaults.items():
+                if var_name == file_var or var_name.endswith(f'%{file_var}'):
+                    relevant_defaults[var_name] = var_value
+        
+        # Also look for any variables mentioned in the operation that have defaults
+        for var_name, var_value in variable_defaults.items():
+            # Check if the variable appears in the operation
+            if re.search(r'\b' + re.escape(var_name.replace('%', r'%')) + r'\b', raw_statement, re.IGNORECASE):
+                relevant_defaults[var_name] = var_value
+                
+        return relevant_defaults
 
 
 
@@ -3125,10 +3205,16 @@ class FortranProcedure(FortranCodeUnit):
 
     @property
     def io_operations(self):
-        """Return I/O operations from the io_tracker."""
+        """Return I/O operations from the io_tracker with variable defaults."""
         if hasattr(self, 'io_tracker'):
             self.io_tracker.finalize()
-            return self.io_tracker.summarize_file_io()
+            
+            # Extract variable defaults from source code
+            variable_defaults = {}
+            if hasattr(self, 'source') and self.source:
+                variable_defaults = self.io_tracker.extract_variable_defaults(self.source.source)
+            
+            return self.io_tracker.summarize_file_io(variable_defaults)
         return {}
 
     @property
