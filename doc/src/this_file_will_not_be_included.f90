@@ -1,2 +1,0 @@
-program excluded_program
-end program excluded_program

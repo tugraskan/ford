@@ -3171,31 +3171,120 @@ class FortranProcedure(FortranCodeUnit):
 
     @property
     def outside_variables_used(self):
-        """Return variables and types from outside modules that are actually used in this procedure."""
+        """Return variables and types from outside modules that are actually used in this procedure, 
+        with detailed component/attribute information from JSON analysis."""
         try:
             import re
+            import json
+            import os
             outside_vars = []
             
-            # Get the source code for this procedure - try multiple approaches
+            # Try to use JSON output data first for more detailed analysis
+            procedure_name = getattr(self, 'name', '')
+            if procedure_name:
+                # Look for the I/O analysis JSON file
+                json_path = os.path.join('json_outputs', f'{procedure_name}.io.json')
+                if os.path.exists(json_path):
+                    try:
+                        with open(json_path, 'r') as f:
+                            io_data = json.load(f)
+                        
+                        # Extract variable usage from JSON data
+                        variable_usage = {}  # {base_var: set of attributes}
+                        
+                        for unit, operations in io_data.items():
+                            if isinstance(operations, dict) and 'summary' in operations:
+                                # Process data_reads to find variable usage
+                                for data_read in operations['summary'].get('data_reads', []):
+                                    for column in data_read.get('columns', []):
+                                        # Parse variables like "pco%wb_bsn%d", "in_sim%prt", etc.
+                                        if '%' in column:
+                                            parts = column.split('%')
+                                            base_var = parts[0].strip()
+                                            attribute = '%'.join(parts[1:])
+                                            
+                                            if base_var not in variable_usage:
+                                                variable_usage[base_var] = set()
+                                            variable_usage[base_var].add(attribute)
+                                        else:
+                                            # Simple variable reference
+                                            base_var = column.strip()
+                                            if base_var not in variable_usage:
+                                                variable_usage[base_var] = set()
+                        
+                        # Now map these to actual types from the modules
+                        if hasattr(self, 'uses'):
+                            for use in self.uses:
+                                module = None
+                                module_name = ""
+                                if isinstance(use, (list, tuple)) and len(use) >= 1:
+                                    module = use[0]
+                                    module_name = getattr(module, 'name', str(module))
+                                elif hasattr(use, 'variables'):
+                                    module = use
+                                    module_name = getattr(module, 'name', 'Unknown')
+                                
+                                if module:
+                                    # Check module-level variables
+                                    if hasattr(module, 'variables'):
+                                        for var in module.variables:
+                                            var_name = var.name.lower()
+                                            if var_name in variable_usage:
+                                                # Create a variable with attribute information
+                                                attributes = list(variable_usage[var_name])
+                                                
+                                                # Create individual attribute variables
+                                                for attr in attributes:
+                                                    attr_var = type('AttributeVar', (), {
+                                                        'name': f'{var.name}%{attr}',
+                                                        'full_type': getattr(var, 'vartype', 'unknown'),
+                                                        'parent': module,
+                                                        'dimension': '',
+                                                        'meta': lambda self, key: f'{var.name} component: {attr}' if key == 'summary' else ""
+                                                    })()
+                                                    outside_vars.append(attr_var)
+                                                
+                                                # Also add the base variable if no attributes were found
+                                                if not attributes:
+                                                    outside_vars.append(var)
+                                    
+                                    # Check derived types in the module
+                                    if hasattr(module, 'types'):
+                                        for dtype in module.types:
+                                            type_name = dtype.name.lower()
+                                            if type_name in variable_usage:
+                                                attributes = list(variable_usage[type_name])
+                                                
+                                                # Create individual attribute variables for the type
+                                                for attr in attributes:
+                                                    attr_var = type('TypeAttributeVar', (), {
+                                                        'name': f'{dtype.name}%{attr}',
+                                                        'full_type': f"type({dtype.name})",
+                                                        'parent': module,
+                                                        'dimension': '',
+                                                        'meta': lambda self, key: f'Type {dtype.name} component: {attr}' if key == 'summary' else ""
+                                                    })()
+                                                    outside_vars.append(attr_var)
+                        
+                        if outside_vars:
+                            return outside_vars
+                    
+                    except Exception as e:
+                        # Fall back to source code analysis if JSON parsing fails
+                        pass
+            
+            # Fallback to source code analysis if JSON not available
             source_code = ""
             
-            # Approach 1: Direct source attribute
+            # Get the source code for this procedure - try multiple approaches
             if hasattr(self, 'source') and self.source:
                 source_code = self.source.source
-            
-            # Approach 2: obj.source
             elif hasattr(self, 'obj') and hasattr(self.obj, 'source'):
                 source_code = self.obj.source
-            
-            # Approach 3: Try to get from the parent file using raw_src
             elif hasattr(self, 'parent') and hasattr(self.parent, 'raw_src'):
                 source_code = self.parent.raw_src
-            
-            # Approach 4: Try to get from the parent file using src
             elif hasattr(self, 'parent') and hasattr(self.parent, 'src'):
                 source_code = self.parent.src
-            
-            # Approach 5: Try loading from parent path
             elif hasattr(self, 'parent') and hasattr(self.parent, 'path'):
                 try:
                     with open(self.parent.path, 'r') as f:
@@ -3206,9 +3295,8 @@ class FortranProcedure(FortranCodeUnit):
             if not source_code:
                 return []
             
-            # Extract all variable references from the source code
-            # Look for patterns like: variable_name, module_var%member, etc.
-            variable_references = set()
+            # Extract variable references with detailed attribute information
+            variable_references = {}  # {base_var: set of attributes}
             
             # Split source into lines and process each line
             lines = source_code.split('\n')
@@ -3235,8 +3323,7 @@ class FortranProcedure(FortranCodeUnit):
                     cleaned_line += char
                     i += 1
                 
-                # Find variable references in the cleaned line
-                # Pattern for Fortran identifiers with % separators
+                # Find variable references with attributes
                 var_pattern = r'\b([a-zA-Z_][a-zA-Z0-9_]*(?:%[a-zA-Z_][a-zA-Z0-9_]*)*)\b'
                 matches = re.findall(var_pattern, cleaned_line, re.IGNORECASE)
                 
@@ -3252,10 +3339,23 @@ class FortranProcedure(FortranCodeUnit):
                                             'exit', 'cycle', 'return', 'stop', 'backspace', 'rewind', 'print',
                                             'true', 'false', 'status', 'form', 'access', 'recl', 'blank', 'position',
                                             'action', 'delim', 'pad', 'round', 'sign', 'encoding']:
-                        variable_references.add(match.lower())
+                        
+                        if '%' in match:
+                            # Parse complex variable reference
+                            parts = match.split('%')
+                            base_var = parts[0].lower()
+                            attribute = '%'.join(parts[1:])
+                            
+                            if base_var not in variable_references:
+                                variable_references[base_var] = set()
+                            variable_references[base_var].add(attribute)
+                        else:
+                            # Simple variable reference
+                            base_var = match.lower()
+                            if base_var not in variable_references:
+                                variable_references[base_var] = set()
             
             # Now find which modules these variables come from
-            module_vars = {}
             if hasattr(self, 'uses'):
                 for use in self.uses:
                     module = None
@@ -3272,49 +3372,54 @@ class FortranProcedure(FortranCodeUnit):
                         if hasattr(module, 'variables'):
                             for var in module.variables:
                                 var_name = var.name.lower()
-                                # Check if this variable is referenced
-                                for ref in variable_references:
-                                    if var_name == ref or ref.startswith(var_name + '%'):
-                                        if module_name not in module_vars:
-                                            module_vars[module_name] = []
-                                        module_vars[module_name].append(var)
-                                        break
+                                if var_name in variable_references:
+                                    attributes = list(variable_references[var_name])
+                                    
+                                    if attributes:
+                                        # Create individual attribute variables
+                                        for attr in attributes:
+                                            attr_var = type('AttributeVar', (), {
+                                                'name': f'{var.name}%{attr}',
+                                                'full_type': getattr(var, 'vartype', 'unknown'),
+                                                'parent': module,
+                                                'dimension': '',
+                                                'meta': lambda self, key: f'{var.name} component: {attr}' if key == 'summary' else ""
+                                            })()
+                                            outside_vars.append(attr_var)
+                                    else:
+                                        # Add the base variable
+                                        outside_vars.append(var)
                         
                         # Check derived types in the module
                         if hasattr(module, 'types'):
                             for dtype in module.types:
                                 type_name = dtype.name.lower()
-                                # Look for references to this type
-                                for ref in variable_references:
-                                    if ref.startswith(type_name + '%') or type_name == ref:
-                                        # This type is used, add it to outside vars
-                                        if module_name not in module_vars:
-                                            module_vars[module_name] = []
-                                        
+                                if type_name in variable_references:
+                                    attributes = list(variable_references[type_name])
+                                    
+                                    if attributes:
+                                        # Create individual attribute variables for the type
+                                        for attr in attributes:
+                                            attr_var = type('TypeAttributeVar', (), {
+                                                'name': f'{dtype.name}%{attr}',
+                                                'full_type': f"type({dtype.name})",
+                                                'parent': module,
+                                                'dimension': '',
+                                                'meta': lambda self, key: f'Type {dtype.name} component: {attr}' if key == 'summary' else ""
+                                            })()
+                                            outside_vars.append(attr_var)
+                                    else:
                                         # Create a representation of the type usage
                                         type_var = type('TypeUsage', (), {
                                             'name': dtype.name,
                                             'full_type': f"type({dtype.name})",
                                             'parent': module,
-                                            'meta': lambda self, key: getattr(dtype, 'meta', lambda k: "")(key) if hasattr(dtype, 'meta') else "",
-                                            'vartype': f"type({dtype.name})"
+                                            'dimension': '',
+                                            'meta': lambda self, key: getattr(dtype, 'meta', lambda k: "")(key) if hasattr(dtype, 'meta') else ""
                                         })()
-                                        module_vars[module_name].append(type_var)
-                                        break
+                                        outside_vars.append(type_var)
             
-            # Convert to the format expected by the template
-            for module_name, vars_list in module_vars.items():
-                outside_vars.extend(vars_list)
-            
-            # Remove duplicates by name
-            seen_names = set()
-            unique_vars = []
-            for var in outside_vars:
-                if hasattr(var, 'name') and var.name.lower() not in seen_names:
-                    seen_names.add(var.name.lower())
-                    unique_vars.append(var)
-            
-            return unique_vars
+            return outside_vars
         except Exception as e:
             # In case of any error, return empty list to avoid breaking the documentation generation
             return []
