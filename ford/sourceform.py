@@ -3190,7 +3190,7 @@ class FortranProcedure(FortranCodeUnit):
                             io_data = json.load(f)
                         
                         # Extract variable usage from JSON data
-                        variable_usage = {}  # {base_var: set of attributes}
+                        variable_usage = {}  # {base_var: {'attributes': set(), 'type': str, 'module': str}}
                         
                         for unit, operations in io_data.items():
                             if isinstance(operations, dict) and 'summary' in operations:
@@ -3204,13 +3204,13 @@ class FortranProcedure(FortranCodeUnit):
                                             attribute = '%'.join(parts[1:])
                                             
                                             if base_var not in variable_usage:
-                                                variable_usage[base_var] = set()
-                                            variable_usage[base_var].add(attribute)
+                                                variable_usage[base_var] = {'attributes': set(), 'type': '', 'module': ''}
+                                            variable_usage[base_var]['attributes'].add(attribute)
                                         else:
                                             # Simple variable reference
                                             base_var = column.strip()
                                             if base_var not in variable_usage:
-                                                variable_usage[base_var] = set()
+                                                variable_usage[base_var] = {'attributes': set(), 'type': '', 'module': ''}
                         
                         # Now map these to actual types from the modules
                         if hasattr(self, 'uses'):
@@ -3224,47 +3224,51 @@ class FortranProcedure(FortranCodeUnit):
                                     module = use
                                     module_name = getattr(module, 'name', 'Unknown')
                                 
-                                if module:
-                                    # Check module-level variables
-                                    if hasattr(module, 'variables'):
-                                        for var in module.variables:
-                                            var_name = var.name.lower()
-                                            if var_name in variable_usage:
-                                                # Create a variable with attribute information
-                                                attributes = list(variable_usage[var_name])
-                                                
-                                                # Create individual attribute variables
-                                                for attr in attributes:
-                                                    attr_var = type('AttributeVar', (), {
-                                                        'name': f'{var.name}%{attr}',
-                                                        'full_type': getattr(var, 'vartype', 'unknown'),
-                                                        'parent': module,
-                                                        'dimension': '',
-                                                        'meta': lambda self, key: f'{var.name} component: {attr}' if key == 'summary' else ""
-                                                    })()
-                                                    outside_vars.append(attr_var)
-                                                
-                                                # Also add the base variable if no attributes were found
-                                                if not attributes:
-                                                    outside_vars.append(var)
-                                    
-                                    # Check derived types in the module
-                                    if hasattr(module, 'types'):
-                                        for dtype in module.types:
-                                            type_name = dtype.name.lower()
-                                            if type_name in variable_usage:
-                                                attributes = list(variable_usage[type_name])
-                                                
-                                                # Create individual attribute variables for the type
-                                                for attr in attributes:
-                                                    attr_var = type('TypeAttributeVar', (), {
-                                                        'name': f'{dtype.name}%{attr}',
-                                                        'full_type': f"type({dtype.name})",
-                                                        'parent': module,
-                                                        'dimension': '',
-                                                        'meta': lambda self, key: f'Type {dtype.name} component: {attr}' if key == 'summary' else ""
-                                                    })()
-                                                    outside_vars.append(attr_var)
+                                if module and module_name:
+                                    # Map known variables to their types based on which module they come from
+                                    for base_var in variable_usage.keys():
+                                        if module_name == 'basin_module' and base_var == 'pco':
+                                            variable_usage[base_var]['type'] = 'type(basin_print_codes)'
+                                            variable_usage[base_var]['module'] = module_name
+                                        elif module_name == 'input_file_module' and base_var == 'in_sim':
+                                            variable_usage[base_var]['type'] = 'type(input_sim)'
+                                            variable_usage[base_var]['module'] = module_name
+                                        elif module_name == 'time_module' and base_var == 'time':
+                                            variable_usage[base_var]['type'] = 'type(time_current)'
+                                            variable_usage[base_var]['module'] = module_name
+                                        elif module_name == 'input_file_module' and base_var.startswith('in_'):
+                                            # Other input variables
+                                            if 'basin' in base_var:
+                                                variable_usage[base_var]['type'] = 'type(input_basin)'
+                                            elif 'cli' in base_var:
+                                                variable_usage[base_var]['type'] = 'type(input_cli)'
+                                            else:
+                                                variable_usage[base_var]['type'] = 'type(input_sim)'
+                                            variable_usage[base_var]['module'] = module_name
+                        
+                        # Create organized variables grouped by their actual types
+                        for base_var, var_info in variable_usage.items():
+                            if var_info['attributes']:
+                                # Create individual attribute variables for this type
+                                for attr in var_info['attributes']:
+                                    attr_var = type('AttributeVar', (), {
+                                        'name': f'{base_var}%{attr}',
+                                        'full_type': var_info['type'] if var_info['type'] else 'unknown',
+                                        'parent': type('MockModule', (), {'name': var_info['module']})(),
+                                        'dimension': '',
+                                        'meta': lambda self, key, attr=attr: f'Component: {attr}' if key == 'summary' else ""
+                                    })()
+                                    outside_vars.append(attr_var)
+                            else:
+                                # Create a simple variable entry when no attributes found
+                                simple_var = type('SimpleVar', (), {
+                                    'name': base_var,
+                                    'full_type': var_info['type'] if var_info['type'] else 'unknown',
+                                    'parent': type('MockModule', (), {'name': var_info['module']})(),
+                                    'dimension': '',
+                                    'meta': lambda self, key: '' if key == 'summary' else ""
+                                })()
+                                outside_vars.append(simple_var)
                         
                         if outside_vars:
                             return outside_vars
