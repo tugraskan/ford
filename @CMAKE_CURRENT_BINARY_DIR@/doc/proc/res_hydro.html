@@ -159,16 +159,16 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/reservoir_module.html'>reservoir_module</a></li>
+                  <li class="list-inline-item"><a href='../module/water_allocation_module.html'>water_allocation_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
+                  <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
+                  <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
+                  <li class="list-inline-item"><a href='../module/reservoir_data_module.html'>reservoir_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
-                  <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
-                  <li class="list-inline-item"><a href='../module/water_allocation_module.html'>water_allocation_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
-                  <li class="list-inline-item"><a href='../module/reservoir_module.html'>reservoir_module</a></li>
-                  <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
-                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
-                  <li class="list-inline-item"><a href='../module/reservoir_data_module.html'>reservoir_data_module</a></li>
               </ul>
             </li>
             <li class="list-group-item">
@@ -488,7 +488,7 @@ measured outflow or release</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-jres"></span>
+              <span class="anchor" id="variable-jres~6"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -503,7 +503,7 @@ measured outflow or release</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-id~8"></span>
+              <span class="anchor" id="variable-id~87"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -518,7 +518,7 @@ measured outflow or release</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pvol_m3"></span>
+              <span class="anchor" id="variable-pvol_m3~4"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -533,7 +533,7 @@ measured outflow or release</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-evol_m3"></span>
+              <span class="anchor" id="variable-evol_m3~5"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -550,6 +550,888 @@ measured outflow or release</p>
   </table>
 
 
+    <section>
+      <h3>Local Variables</h3>
+        <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="var-iweir"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iweir</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-nstep"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nstep</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-tstep"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tstep</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-iac"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iac</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ic"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ic</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ial"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ial</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-irel"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>irel</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-iob"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iob</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-vol"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>vol</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-vol_above"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>vol_above</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-b_lo"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b_lo</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-res_h"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>res_h</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-demand"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>demand</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-wsa1"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wsa1</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-qout"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>qout</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-hgt"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>hgt</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-hgt_above"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>hgt_above</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-sto_max"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sto_max</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    </section>
+    <br>
+
+    <section>
+      <h3>Outside Variables and Types Used</h3>
+          
+    <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingreal">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsereal" aria-expanded="false" 
+                    aria-controls="collapsereal">
+              real
+              <small class="text-muted ms-2">(14 attributes from reservoir_module)</small>
+            </button>
+          </h3>
+          <div id="collapsereal" class="accordion-collapse collapse" 
+               aria-labelledby="headingreal" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>reactw</strong></td>
+                      <td><p>mg pst |amount of pesticide in reach that is lost through reactions</p><a href="../module/reservoir_module.html#variable-reactw" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>volatpst</strong></td>
+                      <td><p>mg pst |amount of pesticide lost from reach by volatilization</p><a href="../module/reservoir_module.html#variable-volatpst" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>setlpst</strong></td>
+                      <td><p>mg pst |amount of pesticide moving from water to sediment due to settling</p><a href="../module/reservoir_module.html#variable-setlpst~4" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>resuspst</strong></td>
+                      <td><p>mg pst |amount of pesticide moving from sediment to reach due to resuspension</p><a href="../module/reservoir_module.html#variable-resuspst~4" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>difus</strong></td>
+                      <td><p>mg pst |diffusion of pesticide from sediment to reach</p><a href="../module/reservoir_module.html#variable-difus~8" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>trans_m3</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>dmd_m3</strong></td>
+                      <td><p>m3 |demand</p><a href="../module/water_allocation_module.html#variable-dmd_m3" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>div_volume_daily</strong></td>
+                      <td><p>daily volume of canal water added to total</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>div_volume_total</strong></td>
+                      <td><p>volume of canal water available for irrigation</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>cal_adj</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>yrs_print</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>frad</strong></td>
+                      <td><p>none |fraction of solar radiation occurring </p><a href="../module/climate_module.html#variable-frad" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>wgncur</strong></td>
+                      <td><p>none |parameter to predict the impact of precip on</p><a href="../module/climate_module.html#variable-wgncur" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>wgnold</strong></td>
+                      <td><p>none |previous value of wgncur(:,:)</p><a href="../module/climate_module.html#variable-wgnold" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingcharacter_len_16_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsecharacter_len_16_" aria-expanded="false" 
+                    aria-controls="collapsecharacter_len_16_">
+              character(len=16)
+              <small class="text-muted ms-2">(1 attribute from water_allocation_module)</small>
+            </button>
+          </h3>
+          <div id="collapsecharacter_len_16_" class="accordion-collapse collapse" 
+               aria-labelledby="headingcharacter_len_16_" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>trt_om_name</strong></td>
+                      <td><p>treatment name in treatment.trt</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headinginteger">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseinteger" aria-expanded="false" 
+                    aria-controls="collapseinteger">
+              integer
+              <small class="text-muted ms-2">(14 attributes from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapseinteger" class="accordion-collapse collapse" 
+               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>mhyd</strong></td>
+                      <td><p>none |max number of hydrographs</p><a href="../module/hydrograph_module.html#variable-mhyd" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>mcmd</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>inum2</strong></td>
+                      <td><p>none |inflow hydrograph storage location number</p><a href="../module/hydrograph_module.html#variable-inum2" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>jrch</strong></td>
+                      <td><p>none |reach number</p><a href="../module/hydrograph_module.html#variable-jrch~4" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>jrchq</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>nmbr_cbn_tests</strong></td>
+                      <td><p>none |number of soil carbon tests </p><a href="../module/soil_module.html#variable-nmbr_cbn_tests" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>ndays</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>ndays_leap</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>ppet_ndays</strong></td>
+                      <td><p>none |number of days for precip/pet sum</p><a href="../module/climate_module.html#variable-ppet_ndays" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>ppet_mce</strong></td>
+                      <td><p>none |current element in precip/pet linked list</p><a href="../module/climate_module.html#variable-ppet_mce" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>isep</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>ilu</strong></td>
+                      <td><p>| </p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>ulu</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>iwgen</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soilayer_html__soilayer__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soilayer_html__soilayer__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soilayer_html__soilayer__a__">
+              type(<a href='../type/soilayer.html'>soilayer</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soilayer_html__soilayer__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soilayer_html__soilayer__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>layer1</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_physical_properties_html__soil_physical_properties__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_physical_properties_html__soil_physical_properties__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_physical_properties_html__soil_physical_properties__a__">
+              type(<a href='../type/soil_physical_properties.html'>soil_physical_properties</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_physical_properties_html__soil_physical_properties__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_physical_properties_html__soil_physical_properties__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>phys1</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_carbon_test_html__soil_carbon_test__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_carbon_test_html__soil_carbon_test__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_carbon_test_html__soil_carbon_test__a__">
+              type(<a href='../type/soil_carbon_test.html'>soil_carbon_test</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_carbon_test_html__soil_carbon_test__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_carbon_test_html__soil_carbon_test__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>sol_cbn_test</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_profile_html__soil_profile__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_profile_html__soil_profile__a__">
+              type(<a href='../type/soil_profile.html'>soil_profile</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_water_body_html__water_body__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_water_body_html__water_body__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_water_body_html__water_body__a__">
+              type(<a href='../type/water_body.html'>water_body</a>)
+              <small class="text-muted ms-2">(5 attributes from water_body_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_water_body_html__water_body__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_water_body_html__water_body__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wbodz</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>res_wat_d</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>res_wat_m</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>res_wat_y</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>res_wat_a</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_decision_table_html__decision_table__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_decision_table_html__decision_table__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_decision_table_html__decision_table__a__">
+              type(<a href='../type/decision_table.html'>decision_table</a>)
+              <small class="text-muted ms-2">(5 attributes from conditional_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_decision_table_html__decision_table__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_decision_table_html__decision_table__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>dtbl_lum</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>dtbl_res</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>dtbl_scen</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>dtbl_flo</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>d_tbl</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__">
+              type(<a href='../type/reservoir_data_char_input.html'>reservoir_data_char_input</a>)
+              <small class="text-muted ms-2">(2 attributes from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_dat_c</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>wet_dat_c</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_char_input_cs_html__reservoir_data_char_input_cs__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_char_input_cs_html__reservoir_data_char_input_cs__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_char_input_cs_html__reservoir_data_char_input_cs__a__">
+              type(<a href='../type/reservoir_data_char_input_cs.html'>reservoir_data_char_input_cs</a>)
+              <small class="text-muted ms-2">(2 attributes from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_char_input_cs_html__reservoir_data_char_input_cs__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_char_input_cs_html__reservoir_data_char_input_cs__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_dat_c_cs</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>wet_dat_c_cs</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_html__reservoir_data__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_html__reservoir_data__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_html__reservoir_data__a__">
+              type(<a href='../type/reservoir_data.html'>reservoir_data</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_html__reservoir_data__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford__CMAKE_CURRENT_BINARY_DIR__doc_type_reservoir_data_html__reservoir_data__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_dat</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingcharacter_len_29_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsecharacter_len_29_" aria-expanded="false" 
+                    aria-controls="collapsecharacter_len_29_">
+              character(len=29)
+              <small class="text-muted ms-2">(1 attribute from time_module)</small>
+            </button>
+          </h3>
+          <div id="collapsecharacter_len_29_" class="accordion-collapse collapse" 
+               aria-labelledby="headingcharacter_len_29_" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>cal_sim</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingcharacter_len_1_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsecharacter_len_1_" aria-expanded="false" 
+                    aria-controls="collapsecharacter_len_1_">
+              character(len=1)
+              <small class="text-muted ms-2">(1 attribute from hru_module)</small>
+            </button>
+          </h3>
+          <div id="collapsecharacter_len_1_" class="accordion-collapse collapse" 
+               aria-labelledby="headingcharacter_len_1_" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>timest</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    </section>
+    <br>
 
 
 
@@ -570,7 +1452,7 @@ measured outflow or release</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-jres"></span>
+              <span class="anchor" id="variable-jres~6"></span>
               integer,
             </td>
               <td>public</td>
@@ -587,7 +1469,7 @@ measured outflow or release</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-id~8"></span>
+              <span class="anchor" id="variable-id~87"></span>
               integer,
             </td>
               <td>public</td>
@@ -604,7 +1486,7 @@ measured outflow or release</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pvol_m3"></span>
+              <span class="anchor" id="variable-pvol_m3~4"></span>
               real,
             </td>
               <td>public</td>
@@ -621,7 +1503,7 @@ measured outflow or release</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-evol_m3"></span>
+              <span class="anchor" id="variable-evol_m3~5"></span>
               real,
             </td>
               <td>public</td>
@@ -669,7 +1551,7 @@ measured outflow or release</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-09-04             </p>
+ on 2025-09-05             </p>
           </div>
         </div>
         <br>
