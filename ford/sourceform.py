@@ -415,6 +415,87 @@ CALL_AND_WHITESPACE_RE = re.compile(r"\(\)|\s")
 base_url = ""
 
 
+class AllocationTracker:
+    """Tracks memory allocation and deallocation operations."""
+    
+    def __init__(self):
+        self.operations = []  # List of allocation operations
+        self.condition_stack = []  # Stack of active conditions
+        self.current_condition = None  # Current active condition context
+        self.completed = False
+        
+    def push_condition(self, condition_text, line_no=None):
+        """Push a new condition context onto the stack."""
+        condition_info = {
+            'text': condition_text.strip(),
+            'line': line_no,
+            'type': self._determine_condition_type(condition_text)
+        }
+        self.condition_stack.append(condition_info)
+        self.current_condition = condition_info
+
+    def pop_condition(self):
+        """Pop the current condition context from the stack."""
+        if self.condition_stack:
+            self.condition_stack.pop()
+        self.current_condition = self.condition_stack[-1] if self.condition_stack else None
+
+    def _determine_condition_type(self, condition_text):
+        """Determine the type of control structure."""
+        text_lower = condition_text.lower().strip()
+        if text_lower.startswith('if'):
+            return 'if'
+        elif text_lower.startswith('select case'):
+            return 'select'
+        elif text_lower.startswith('case'):
+            return 'case'
+        elif text_lower.startswith('else'):
+            return 'else'
+        elif text_lower.startswith('do'):
+            return 'do'
+        return 'unknown'
+        
+    def record_allocation(self, kind, raw, line_no=None, variables=None):
+        """Record an allocation operation."""
+        operation = {
+            'kind': kind,  # 'allocate' or 'deallocate'
+            'raw': raw,
+            'line': line_no,
+            'variables': variables or [],
+            'condition': dict(self.current_condition) if self.current_condition else None
+        }
+        self.operations.append(operation)
+        
+    def finalize(self):
+        """Mark as completed."""
+        self.completed = True
+        
+    def summarize_allocations(self):
+        """Return allocation operations grouped by conditions."""
+        if not self.completed:
+            self.finalize()
+            
+        # Group operations by condition
+        result = {}
+        for op in self.operations:
+            condition_key = "no_condition"
+            condition_line = None
+            
+            if op['condition']:
+                condition_key = op['condition']['text']
+                condition_line = op['condition']['line']
+            
+            if condition_key not in result:
+                result[condition_key] = {
+                    'operations': [],
+                    'line': condition_line
+                }
+            
+            result[condition_key]['operations'].append(op)
+        
+        return result
+
+
 SUBLINK_TYPES = {
     "variable": "variables",
     "type": "types",
@@ -542,6 +623,8 @@ class FortranBase:
     ):
         # start an I/O session tracker for this code unit
         self.io_tracker = IoTracker()
+        # start an allocation tracker for this code unit
+        self.allocation_tracker = AllocationTracker()
 
         # Record starting line number
         if line_number is not None:
@@ -1685,6 +1768,65 @@ class FortranContainer(FortranBase):
             self.io_tracker.close(unit)
             return
 
+    def _parse_allocations(self, line: str, line_no: int = None) -> None:
+        """Parse allocation and deallocation statements."""
+        raw = self.restore_strings(line, self.strings)
+        low = raw.strip().lower()
+        
+        if low.startswith('allocate'):
+            # Extract variables being allocated
+            variables = self._extract_allocation_variables(raw)
+            self.allocation_tracker.record_allocation('allocate', raw, line_no, variables)
+            return
+            
+        if low.startswith('deallocate'):
+            # Extract variables being deallocated
+            variables = self._extract_allocation_variables(raw)
+            self.allocation_tracker.record_allocation('deallocate', raw, line_no, variables)
+            return
+    
+    def _extract_allocation_variables(self, raw_line: str) -> list:
+        """Extract variable names from allocate/deallocate statements."""
+        variables = []
+        
+        # Pattern to match allocate(var1, var2, var3, source=...) or deallocate(var1, var2)
+        # Remove the allocate/deallocate keyword and parentheses
+        if 'allocate' in raw_line.lower():
+            match = re.search(r'allocate\s*\(\s*([^)]+)\s*\)', raw_line, re.IGNORECASE)
+        else:
+            match = re.search(r'deallocate\s*\(\s*([^)]+)\s*\)', raw_line, re.IGNORECASE)
+            
+        if match:
+            var_part = match.group(1)
+            # Split by commas, but be careful about source= and stat= parameters
+            parts = []
+            paren_level = 0
+            current_part = ""
+            
+            for char in var_part:
+                if char == '(':
+                    paren_level += 1
+                elif char == ')':
+                    paren_level -= 1
+                elif char == ',' and paren_level == 0:
+                    parts.append(current_part.strip())
+                    current_part = ""
+                    continue
+                current_part += char
+            
+            if current_part.strip():
+                parts.append(current_part.strip())
+            
+            # Filter out source=, stat=, etc. parameters
+            for part in parts:
+                part = part.strip()
+                if '=' in part and any(keyword in part.lower() for keyword in ['source', 'stat', 'errmsg']):
+                    continue
+                if part and not part.lower().startswith(('source', 'stat', 'errmsg')):
+                    variables.append(part)
+        
+        return variables
+
     def _parse_control_flow(self, line: str, line_no: int = None) -> None:
         """Parse control flow statements and update condition context."""
         if not hasattr(self, 'io_tracker'):
@@ -1701,6 +1843,8 @@ class FortranContainer(FortranBase):
                 if condition_match:
                     condition = f"if ({condition_match.group(1)})"
                     self.io_tracker.push_condition(condition, line_no)
+                    if hasattr(self, 'allocation_tracker'):
+                        self.allocation_tracker.push_condition(condition, line_no)
             
         # Handle select case statements  
         elif stripped.startswith('select case'):
@@ -1708,6 +1852,8 @@ class FortranContainer(FortranBase):
             if case_match:
                 condition = f"select case ({case_match.group(1)})"
                 self.io_tracker.push_condition(condition, line_no)
+                if hasattr(self, 'allocation_tracker'):
+                    self.allocation_tracker.push_condition(condition, line_no)
         
         # Handle case statements
         elif stripped.startswith('case'):
@@ -1718,16 +1864,26 @@ class FortranContainer(FortranBase):
                 if self.io_tracker.condition_stack and self.io_tracker.condition_stack[-1]['type'] == 'case':
                     self.io_tracker.pop_condition()
                 self.io_tracker.push_condition(condition, line_no)
+                if hasattr(self, 'allocation_tracker'):
+                    if self.allocation_tracker.condition_stack and self.allocation_tracker.condition_stack[-1]['type'] == 'case':
+                        self.allocation_tracker.pop_condition()
+                    self.allocation_tracker.push_condition(condition, line_no)
             elif 'default' in stripped:
                 condition = "case default"
                 if self.io_tracker.condition_stack and self.io_tracker.condition_stack[-1]['type'] == 'case':
                     self.io_tracker.pop_condition()
                 self.io_tracker.push_condition(condition, line_no)
+                if hasattr(self, 'allocation_tracker'):
+                    if self.allocation_tracker.condition_stack and self.allocation_tracker.condition_stack[-1]['type'] == 'case':
+                        self.allocation_tracker.pop_condition()
+                    self.allocation_tracker.push_condition(condition, line_no)
         
         # Handle else statements
         elif stripped.startswith('else') and not stripped.startswith('elseif'):
             condition = "else"
             self.io_tracker.push_condition(condition, line_no)
+            if hasattr(self, 'allocation_tracker'):
+                self.allocation_tracker.push_condition(condition, line_no)
             
         # Handle elseif statements  
         elif stripped.startswith('elseif'):
@@ -1738,12 +1894,18 @@ class FortranContainer(FortranBase):
                 if self.io_tracker.condition_stack:
                     self.io_tracker.pop_condition()
                 self.io_tracker.push_condition(condition, line_no)
+                if hasattr(self, 'allocation_tracker'):
+                    if self.allocation_tracker.condition_stack:
+                        self.allocation_tracker.pop_condition()
+                    self.allocation_tracker.push_condition(condition, line_no)
         
         # Handle end statements
         elif stripped.startswith('end'):
             if any(end_kw in stripped for end_kw in ['endif', 'end if', 'endselect', 'end select']):
                 if self.io_tracker.condition_stack:
                     self.io_tracker.pop_condition()
+                if hasattr(self, 'allocation_tracker') and self.allocation_tracker.condition_stack:
+                    self.allocation_tracker.pop_condition()
 
     def _add_procedure_calls(self,
                         line: str,
@@ -1759,6 +1921,9 @@ class FortranContainer(FortranBase):
         
         # ==== call the new I/O parser ====
         self._parse_io_open(line, line_no)
+        
+        # ==== call the allocation parser ====
+        self._parse_allocations(line, line_no)
 
         if not hasattr(self, "call_records"):
             self.call_records = []      # will be list of (chain, line_no)
@@ -1889,6 +2054,10 @@ class FortranCodeUnit(FortranContainer):
         # finalize & print all I/O for this code‐unit
         self.io_tracker.finalize()
         self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
 
         # existing cleanup logic
         self.process_attribs()
@@ -2820,6 +2989,14 @@ class FortranProcedure(FortranCodeUnit):
             return self.io_tracker.summarize_file_io()
         return {}
 
+    @property
+    def allocation_operations(self):
+        """Return allocation operations from the allocation_tracker."""
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
+            return self.allocation_tracker.summarize_allocations()
+        return {}
+
 
 class FortranSubroutine(FortranProcedure):
     """
@@ -2969,6 +3146,10 @@ class FortranType(FortranContainer):
         # finish any half‑open sessions and emit their reports
         self.io_tracker.finalize()
         self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
 
         # Match parameters with variables
         for i in range(len(self.parameters)):
@@ -3093,6 +3274,10 @@ class FortranEnum(FortranContainer):
         # finish any half‑open sessions and emit their reports
         self.io_tracker.finalize()
         self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
 
         prev_val = -1
         for var in self.variables:
@@ -3186,6 +3371,10 @@ class FortranInterface(FortranContainer):
         # finish any half‑open sessions and emit their reports
         self.io_tracker.finalize()
         self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
 
         if not self.abstract and self.generic:
             return
@@ -3633,6 +3822,10 @@ class FortranBlockData(FortranContainer):
         # finish any half‑open sessions and emit their reports
         self.io_tracker.finalize()
         self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
 
         self.process_attribs()
 
@@ -3707,6 +3900,10 @@ class FortranCommon(FortranBase):
         # finish any half‑open sessions and emit their reports
         self.io_tracker.finalize()
         self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
 
         # now apply attribute processing if needed
         self.process_attribs()
