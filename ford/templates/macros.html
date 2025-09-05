@@ -923,6 +923,7 @@
                         <tr>
                           <th>Operation</th>
                           <th>Details</th>
+                          <th>Variable Defaults</th>
                           <th>Line</th>
                         </tr>
                       </thead>
@@ -931,6 +932,15 @@
                           <tr>
                             <td><span class="badge bg-primary">{{ op.kind }}</span></td>
                             <td><code>{{ op.raw }}</code></td>
+                            <td>
+                              {% if op.variable_defaults %}
+                                {% for var_name, var_value in op.variable_defaults.items() %}
+                                  <small><code>{{ var_name }} = {{ var_value }}</code></small>{% if not loop.last %}<br>{% endif %}
+                                {% endfor %}
+                              {% else %}
+                                <small class="text-muted">-</small>
+                              {% endif %}
+                            </td>
                             <td>{{ op.line if op.line else '-' }}</td>
                           </tr>
                         {% endfor %}

@@ -496,6 +496,87 @@ class AllocationTracker:
         return result
 
 
+class AllocationTracker:
+    """Tracks memory allocation and deallocation operations."""
+    
+    def __init__(self):
+        self.operations = []  # List of allocation operations
+        self.condition_stack = []  # Stack of active conditions
+        self.current_condition = None  # Current active condition context
+        self.completed = False
+        
+    def push_condition(self, condition_text, line_no=None):
+        """Push a new condition context onto the stack."""
+        condition_info = {
+            'text': condition_text.strip(),
+            'line': line_no,
+            'type': self._determine_condition_type(condition_text)
+        }
+        self.condition_stack.append(condition_info)
+        self.current_condition = condition_info
+
+    def pop_condition(self):
+        """Pop the current condition context from the stack."""
+        if self.condition_stack:
+            self.condition_stack.pop()
+        self.current_condition = self.condition_stack[-1] if self.condition_stack else None
+
+    def _determine_condition_type(self, condition_text):
+        """Determine the type of control structure."""
+        text_lower = condition_text.lower().strip()
+        if text_lower.startswith('if'):
+            return 'if'
+        elif text_lower.startswith('select case'):
+            return 'select'
+        elif text_lower.startswith('case'):
+            return 'case'
+        elif text_lower.startswith('else'):
+            return 'else'
+        elif text_lower.startswith('do'):
+            return 'do'
+        return 'unknown'
+        
+    def record_allocation(self, kind, raw, line_no=None, variables=None):
+        """Record an allocation operation."""
+        operation = {
+            'kind': kind,  # 'allocate' or 'deallocate'
+            'raw': raw,
+            'line': line_no,
+            'variables': variables or [],
+            'condition': dict(self.current_condition) if self.current_condition else None
+        }
+        self.operations.append(operation)
+        
+    def finalize(self):
+        """Mark as completed."""
+        self.completed = True
+        
+    def summarize_allocations(self):
+        """Return allocation operations grouped by conditions."""
+        if not self.completed:
+            self.finalize()
+            
+        # Group operations by condition
+        result = {}
+        for op in self.operations:
+            condition_key = "no_condition"
+            condition_line = None
+            
+            if op['condition']:
+                condition_key = op['condition']['text']
+                condition_line = op['condition']['line']
+            
+            if condition_key not in result:
+                result[condition_key] = {
+                    'operations': [],
+                    'line': condition_line
+                }
+            
+            result[condition_key]['operations'].append(op)
+        
+        return result
+
+
 SUBLINK_TYPES = {
     "variable": "variables",
     "type": "types",
@@ -623,6 +704,8 @@ class FortranBase:
     ):
         # start an I/O session tracker for this code unit
         self.io_tracker = IoTracker()
+        # start an allocation tracker for this code unit
+        self.allocation_tracker = AllocationTracker()
         # start an allocation tracker for this code unit
         self.allocation_tracker = AllocationTracker()
 
