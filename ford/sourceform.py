@@ -1910,6 +1910,65 @@ class FortranContainer(FortranBase):
         
         return variables
 
+    def _parse_allocations(self, line: str, line_no: int = None) -> None:
+        """Parse allocation and deallocation statements."""
+        raw = self.restore_strings(line, self.strings)
+        low = raw.strip().lower()
+        
+        if low.startswith('allocate'):
+            # Extract variables being allocated
+            variables = self._extract_allocation_variables(raw)
+            self.allocation_tracker.record_allocation('allocate', raw, line_no, variables)
+            return
+            
+        if low.startswith('deallocate'):
+            # Extract variables being deallocated
+            variables = self._extract_allocation_variables(raw)
+            self.allocation_tracker.record_allocation('deallocate', raw, line_no, variables)
+            return
+    
+    def _extract_allocation_variables(self, raw_line: str) -> list:
+        """Extract variable names from allocate/deallocate statements."""
+        variables = []
+        
+        # Pattern to match allocate(var1, var2, var3, source=...) or deallocate(var1, var2)
+        # Remove the allocate/deallocate keyword and parentheses
+        if 'allocate' in raw_line.lower():
+            match = re.search(r'allocate\s*\(\s*([^)]+)\s*\)', raw_line, re.IGNORECASE)
+        else:
+            match = re.search(r'deallocate\s*\(\s*([^)]+)\s*\)', raw_line, re.IGNORECASE)
+            
+        if match:
+            var_part = match.group(1)
+            # Split by commas, but be careful about source= and stat= parameters
+            parts = []
+            paren_level = 0
+            current_part = ""
+            
+            for char in var_part:
+                if char == '(':
+                    paren_level += 1
+                elif char == ')':
+                    paren_level -= 1
+                elif char == ',' and paren_level == 0:
+                    parts.append(current_part.strip())
+                    current_part = ""
+                    continue
+                current_part += char
+            
+            if current_part.strip():
+                parts.append(current_part.strip())
+            
+            # Filter out source=, stat=, etc. parameters
+            for part in parts:
+                part = part.strip()
+                if '=' in part and any(keyword in part.lower() for keyword in ['source', 'stat', 'errmsg']):
+                    continue
+                if part and not part.lower().startswith(('source', 'stat', 'errmsg')):
+                    variables.append(part)
+        
+        return variables
+
     def _parse_control_flow(self, line: str, line_no: int = None) -> None:
         """Parse control flow statements and update condition context."""
         if not hasattr(self, 'io_tracker'):
