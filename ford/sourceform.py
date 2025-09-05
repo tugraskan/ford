@@ -3176,12 +3176,32 @@ class FortranProcedure(FortranCodeUnit):
             import re
             outside_vars = []
             
-            # Get the source code for this procedure
+            # Get the source code for this procedure - try multiple approaches
             source_code = ""
+            
+            # Approach 1: Direct source attribute
             if hasattr(self, 'source') and self.source:
                 source_code = self.source.source
+            
+            # Approach 2: obj.source
             elif hasattr(self, 'obj') and hasattr(self.obj, 'source'):
                 source_code = self.obj.source
+            
+            # Approach 3: Try to get from the parent file using raw_src
+            elif hasattr(self, 'parent') and hasattr(self.parent, 'raw_src'):
+                source_code = self.parent.raw_src
+            
+            # Approach 4: Try to get from the parent file using src
+            elif hasattr(self, 'parent') and hasattr(self.parent, 'src'):
+                source_code = self.parent.src
+            
+            # Approach 5: Try loading from parent path
+            elif hasattr(self, 'parent') and hasattr(self.parent, 'path'):
+                try:
+                    with open(self.parent.path, 'r') as f:
+                        source_code = f.read()
+                except Exception:
+                    pass
             
             if not source_code:
                 return []
@@ -3297,7 +3317,6 @@ class FortranProcedure(FortranCodeUnit):
             return unique_vars
         except Exception as e:
             # In case of any error, return empty list to avoid breaking the documentation generation
-            print(f"Error in outside_variables_used: {e}")
             return []
 
     @property
