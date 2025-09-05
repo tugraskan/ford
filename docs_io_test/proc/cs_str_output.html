@@ -160,10 +160,10 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/ch_cs_module.html'>ch_cs_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
               </ul>
             </li>
         </ul>
@@ -179,186 +179,375 @@ this subroutine prints out daily constituent data for specified channels</p>
     <em>None</em>
     <br>
 
+    <section>
+      <h3>Local Variables</h3>
+        <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="var-i"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>i</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-chan_id"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>chan_id</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-elem_count"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>elem_count</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-line_array"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>line_array</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    </section>
+    <br>
 
     <section>
       <h3>Outside Variables and Types Used</h3>
-          <table class="table table-striped varlist">
-      <thead>
-        <tr>
-          <th scope="col">Type</th>
-          <th scope="col">Name</th>
-          <th scope="col">Module</th>
-          <th scope="col">Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr>
-            <td>character(len=16)</td>
-            <td><strong>pest_init_name</strong></td>
-            <td>constituent_mass_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>character(len=16)</td>
-            <td><strong>path_init_name</strong></td>
-            <td>constituent_mass_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>character(len=16)</td>
-            <td><strong>hmet_init_name</strong></td>
-            <td>constituent_mass_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>character(len=16)</td>
-            <td><strong>salt_init_name</strong></td>
-            <td>constituent_mass_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>character(len=16)</td>
-            <td><strong>cs_init_name</strong></td>
-            <td>constituent_mass_module</td>
-            <td><p>rtb cs</p></td>
-          </tr>
-          <tr>
-            <td>character(len=29)</td>
-            <td><strong>cal_sim</strong></td>
-            <td>time_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>real</td>
-            <td><strong>cal_adj</strong></td>
-            <td>time_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>real</td>
-            <td><strong>yrs_print</strong></td>
-            <td>time_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>integer</td>
-            <td><strong>ndays</strong></td>
-            <td>time_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>integer</td>
-            <td><strong>ndays_leap</strong></td>
-            <td>time_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>type(<a href='../type/ch_cs_balance.html'>ch_cs_balance</a>)</td>
-            <td><strong>ch_csbz</strong></td>
-            <td>ch_cs_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>type(<a href='../type/ch_cs_output.html'>ch_cs_output</a>)</td>
-            <td><strong>chcs_d</strong></td>
-            <td>ch_cs_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>type(<a href='../type/ch_cs_output.html'>ch_cs_output</a>)</td>
-            <td><strong>chcs_m</strong></td>
-            <td>ch_cs_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>type(<a href='../type/ch_cs_output.html'>ch_cs_output</a>)</td>
-            <td><strong>chcs_y</strong></td>
-            <td>ch_cs_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>type(<a href='../type/ch_cs_output.html'>ch_cs_output</a>)</td>
-            <td><strong>chcs_a</strong></td>
-            <td>ch_cs_module</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>integer</td>
-            <td><strong>mhyd</strong></td>
-            <td>hydrograph_module</td>
-            <td><p>none |max number of hydrographs</p><a href="../module/hydrograph_module.html#variable-mhyd" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-          </tr>
-          <tr>
-            <td>integer</td>
-            <td><strong>mcmd</strong></td>
-            <td>hydrograph_module</td>
-            <td><p>|</p></td>
-          </tr>
-          <tr>
-            <td>integer</td>
-            <td><strong>inum2</strong></td>
-            <td>hydrograph_module</td>
-            <td><p>none |inflow hydrograph storage location number</p><a href="../module/hydrograph_module.html#variable-inum2" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-          </tr>
-          <tr>
-            <td>integer</td>
-            <td><strong>jrch</strong></td>
-            <td>hydrograph_module</td>
-            <td><p>none |reach number</p><a href="../module/hydrograph_module.html#variable-jrch~6" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-          </tr>
-          <tr>
-            <td>integer</td>
-            <td><strong>jrchq</strong></td>
-            <td>hydrograph_module</td>
-            <td><p>|</p></td>
-          </tr>
-      </tbody>
-    </table>
+          
+    <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headinginteger">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseinteger" aria-expanded="false" 
+                    aria-controls="collapseinteger">
+              integer
+              <small class="text-muted ms-2">(7 attributes from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapseinteger" class="accordion-collapse collapse" 
+               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>mhyd</strong></td>
+                      <td><p>none |max number of hydrographs</p><a href="../module/hydrograph_module.html#variable-mhyd" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>mcmd</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>inum2</strong></td>
+                      <td><p>none |inflow hydrograph storage location number</p><a href="../module/hydrograph_module.html#variable-inum2" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>jrch</strong></td>
+                      <td><p>none |reach number</p><a href="../module/hydrograph_module.html#variable-jrch~5" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>jrchq</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>ndays</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>ndays_leap</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingcharacter_len_29_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsecharacter_len_29_" aria-expanded="false" 
+                    aria-controls="collapsecharacter_len_29_">
+              character(len=29)
+              <small class="text-muted ms-2">(1 attribute from time_module)</small>
+            </button>
+          </h3>
+          <div id="collapsecharacter_len_29_" class="accordion-collapse collapse" 
+               aria-labelledby="headingcharacter_len_29_" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>cal_sim</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingreal">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsereal" aria-expanded="false" 
+                    aria-controls="collapsereal">
+              real
+              <small class="text-muted ms-2">(2 attributes from time_module)</small>
+            </button>
+          </h3>
+          <div id="collapsereal" class="accordion-collapse collapse" 
+               aria-labelledby="headingreal" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>cal_adj</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>yrs_print</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_docs_io_test_type_ch_cs_balance_html__ch_cs_balance__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_docs_io_test_type_ch_cs_balance_html__ch_cs_balance__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_docs_io_test_type_ch_cs_balance_html__ch_cs_balance__a__">
+              type(<a href='../type/ch_cs_balance.html'>ch_cs_balance</a>)
+              <small class="text-muted ms-2">(1 attribute from ch_cs_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_docs_io_test_type_ch_cs_balance_html__ch_cs_balance__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_docs_io_test_type_ch_cs_balance_html__ch_cs_balance__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ch_csbz</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_docs_io_test_type_ch_cs_output_html__ch_cs_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_docs_io_test_type_ch_cs_output_html__ch_cs_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_docs_io_test_type_ch_cs_output_html__ch_cs_output__a__">
+              type(<a href='../type/ch_cs_output.html'>ch_cs_output</a>)
+              <small class="text-muted ms-2">(4 attributes from ch_cs_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_docs_io_test_type_ch_cs_output_html__ch_cs_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_docs_io_test_type_ch_cs_output_html__ch_cs_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>chcs_d</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>chcs_m</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>chcs_y</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>chcs_a</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingcharacter_len_16_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsecharacter_len_16_" aria-expanded="false" 
+                    aria-controls="collapsecharacter_len_16_">
+              character(len=16)
+              <small class="text-muted ms-2">(5 attributes from constituent_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsecharacter_len_16_" class="accordion-collapse collapse" 
+               aria-labelledby="headingcharacter_len_16_" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pest_init_name</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>path_init_name</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>hmet_init_name</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>salt_init_name</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_init_name</strong></td>
+                      <td><p>rtb cs</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
 
     </section>
     <br>
 
     <section>
       <h3>I/O Operations</h3>
-          <div class="accordion" id="ioAccordion">
+          <!-- First, collect all conditions across all units -->
+          
+          <!-- Group by unit within this condition -->
+    
+    <div class="accordion" id="ioConditionsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingunit_8200">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseunit_8200" aria-expanded="true" 
-                    aria-controls="collapseunit_8200">
-              Unit unit_8200
+          <h3 class="accordion-header" id="headingCondif__cs_obs_file____1_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseCondif__cs_obs_file____1_" aria-expanded="false" 
+                    aria-controls="collapseCondif__cs_obs_file____1_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (cs_obs_file == 1)</strong>
+                  <small class="text-muted ms-2">(line 20)</small>
             </button>
           </h3>
-          <div id="collapseunit_8200" class="accordion-collapse collapse show" 
-               aria-labelledby="headingunit_8200" data-bs-parent="#ioAccordion">
+          <div id="collapseCondif__cs_obs_file____1_" class="accordion-collapse collapse" 
+               aria-labelledby="headingCondif__cs_obs_file____1_" data-bs-parent="#ioConditionsAccordion">
             <div class="accordion-body">
-                
-                    <div class="condition-section mb-3">
-                      <h5 class="text-primary">
-                        <i class="fa fa-caret-up" style="transform: rotate(45deg);"></i>
-                        <strong>if (cs_obs_file == 1)</strong>
-                          <small class="text-muted">(line 20)</small>
-                      </h5>
-                      <div class="ms-3">
-                        <table class="table table-sm">
-                          <thead>
-                            <tr>
-                              <th>Operation</th>
-                              <th>Details</th>
-                              <th>Line</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                              <tr>
-                                <td><span class="badge bg-primary">write</span></td>
-                                <td><code>write(8200,100) time%yrc,time%day,(line_array(i),i=1,elem_count)</code></td>
-                                <td>63</td>
-                              </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                
+                <div class="unit-section mb-3">
+                  <h6 class="text-secondary">
+                    <i class="fa fa-file-o me-1"></i>
+                    <strong>Unit unit_8200</strong>
+                  </h6>
+                  <div class="ms-3">
+                    <table class="table table-sm">
+                      <thead>
+                        <tr>
+                          <th>Operation</th>
+                          <th>Details</th>
+                          <th>Line</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                            <td><span class="badge bg-primary">write</span></td>
+                            <td><code>write(8200,100) time%yrc,time%day,(line_array(i),i=1,elem_count)</code></td>
+                            <td>63</td>
+                          </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
             </div>
           </div>
         </div>

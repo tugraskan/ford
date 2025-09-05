@@ -2588,44 +2588,6 @@ class FortranProcedure(FortranCodeUnit):
                     if not hasattr(self, 'args') or var not in self.args:
                         local_vars.append(var)
         
-        # If this is the basin_print_codes_read procedure, add some example local variables
-        if hasattr(self, 'name') and self.name == 'basin_print_codes_read':
-            class MockVariable:
-                def __init__(self, name, var_type, parent):
-                    self.obj = 'variable'
-                    self.name = name
-                    self.var_type = var_type
-                    self.full_type = var_type
-                    self.parent = parent
-                    self.dimension = ""
-                    self.anchor = f"var-{name.lower()}"
-                    self.intent = None
-                    self.optional = False
-                    self.permission = "private"
-                    self.parameter = False
-                    self.attribs = []
-                    self.initial = None
-                    
-                def meta(self, key):
-                    if key == 'summary':
-                        return f"Local variable of type {self.var_type}"
-                    return ""
-            
-            # Add some known local variables from the source
-            example_vars = [
-                ('header', 'character(len=500)'),
-                ('titldum', 'character(len=80)'),
-                ('name', 'character(len=16)'),
-                ('eof', 'integer'),
-                ('i_exist', 'logical'),
-                ('ii', 'integer'),
-                ('result', 'integer'),
-            ]
-            
-            for var_name, var_type in example_vars:
-                mock_var = MockVariable(var_name, var_type, self)
-                local_vars.append(mock_var)
-        
         # Always try to extract from source as fallback or supplement
         try:
             source_vars = self._extract_local_variables_from_source()
@@ -2646,14 +2608,47 @@ class FortranProcedure(FortranCodeUnit):
         import re
         local_vars = []
         
-        # Get the source code - check multiple possible attributes
+        # Get the source code - try to read from source file
         source_text = None
-        if hasattr(self, 'src') and self.src:
-            source_text = self.src
-        elif hasattr(self, 'raw_src') and self.raw_src:
-            source_text = self.raw_src
-        elif hasattr(self, 'source') and self.source:
-            source_text = self.source
+        if hasattr(self, 'source_file') and self.source_file:
+            try:
+                # Read the source file directly
+                with open(self.source_file.path, 'r', encoding='utf-8', errors='ignore') as f:
+                    full_source = f.read()
+                
+                # Extract just the procedure's source code
+                # Find the procedure start and end
+                proc_start_pattern = rf'^\s*{self.proctype.lower()}\s+{re.escape(self.name)}\b'
+                proc_end_pattern = rf'^\s*end\s+{self.proctype.lower()}\b'
+                
+                source_lines = full_source.split('\n')
+                in_procedure = False
+                procedure_lines = []
+                
+                for line in source_lines:
+                    if re.match(proc_start_pattern, line.strip(), re.IGNORECASE):
+                        in_procedure = True
+                        procedure_lines.append(line)
+                    elif in_procedure:
+                        procedure_lines.append(line)
+                        if re.match(proc_end_pattern, line.strip(), re.IGNORECASE):
+                            break
+                
+                if procedure_lines:
+                    source_text = '\n'.join(procedure_lines)
+                    
+            except Exception as e:
+                return local_vars
+        else:
+            # Fallback to other attributes
+            if hasattr(self, 'src') and self.src:
+                source_text = self.src
+            elif hasattr(self, 'raw_src') and self.raw_src:
+                source_text = self.raw_src
+            elif hasattr(self, 'source') and self.source:
+                source_text = self.source
+            else:
+                return local_vars
         
         if not source_text:
             return local_vars
@@ -2662,21 +2657,53 @@ class FortranProcedure(FortranCodeUnit):
         if not isinstance(source_text, str):
             source_text = str(source_text)
             
-        # Simple regex to find variable declarations
+        # Enhanced regex patterns to find variable declarations
         var_patterns = [
-            r'^\s*(integer|real|character|logical|double\s+precision)\s*(?:\([^)]*\))?\s*::\s*([^!]+)',
+            # Character declarations with :: and specific length (with space)
+            r'^\s*character\s+\(\s*len\s*=\s*\d+\s*\)\s*::\s*([^!]+)',
+            # Character declarations without :: and specific length (with space)
+            r'^\s*character\s+\(\s*len\s*=\s*\d+\s*\)\s+([^!=,\n]+)(?:\s*=.*)?(?:\s*!.*)?$',
+            # Standard declaration with :: 
+            r'^\s*(integer|real|logical|double\s+precision)(?:\s*\([^)]*\))?\s*::\s*([^!]+)',
+            # Older Fortran style without :: (more common in the test files)
+            r'^\s*(integer|real|logical|double\s+precision)(?:\s*\([^)]*\))?\s+([^!=,\n]+)(?:\s*=.*)?(?:\s*!.*)?$',
         ]
         
         source_lines = source_text.split('\n')
+        
         for line in source_lines:
+            line_stripped = line.strip()
+            
+            # Skip comment lines, empty lines, and continuation lines
+            if not line_stripped or line_stripped.startswith('!'):
+                continue
+            # Only skip if it's actually a comment line (starts with 'c' or 'C' followed by space or not alphanumeric)
+            if line_stripped.lower().startswith('c ') or (line_stripped.lower().startswith('c') and len(line_stripped) > 1 and not line_stripped[1].isalnum()):
+                continue
+            if line.startswith('     ') and len(line) > 5 and line[5] in ['&', '+', '*']:  # Fortran continuation
+                continue
+                
             for pattern in var_patterns:
-                match = re.match(pattern, line.strip(), re.IGNORECASE)
+                match = re.match(pattern, line_stripped, re.IGNORECASE)
                 if match:
-                    var_type = match.group(1)
-                    var_declarations = match.group(2)
+                    if pattern.startswith(r'^\s*character'):
+                        # Character variable
+                        var_type = "character"
+                        var_declarations = match.group(1).strip()
+                    else:
+                        # Other types
+                        var_type = match.group(1)
+                        var_declarations = match.group(2).strip()
                     
                     # Parse variable names (handle multiple variables on one line)
-                    var_names = [name.strip().split('=')[0].strip() for name in var_declarations.split(',')]
+                    var_names = []
+                    for name in var_declarations.split(','):
+                        # Clean up variable name (remove initialization, dimensions, etc.)
+                        clean_name = name.strip().split('=')[0].strip()
+                        clean_name = re.sub(r'\([^)]*\)', '', clean_name).strip()  # Remove array dimensions
+                        clean_name = re.sub(r'\s*!.*$', '', clean_name).strip()    # Remove comments
+                        if clean_name and clean_name.replace('_', '').replace(' ', '').isalnum():
+                            var_names.append(clean_name)
                     
                     for var_name in var_names:
                         # Skip if variable name is empty or is an argument
@@ -2688,11 +2715,19 @@ class FortranProcedure(FortranCodeUnit):
                         # Create a mock variable object with the required interface
                         class MockVariable:
                             def __init__(self, name, var_type, parent):
+                                self.obj = 'variable'
                                 self.name = name
                                 self.var_type = var_type
                                 self.full_type = var_type
                                 self.parent = parent
                                 self.dimension = ""
+                                self.anchor = f"var-{name.lower()}"
+                                self.intent = None
+                                self.optional = False
+                                self.permission = "private"
+                                self.parameter = False
+                                self.attribs = []
+                                self.initial = None
                                 
                             def meta(self, key):
                                 if key == 'summary':
@@ -2701,6 +2736,7 @@ class FortranProcedure(FortranCodeUnit):
                         
                         mock_var = MockVariable(var_name, var_type, self)
                         local_vars.append(mock_var)
+                    break  # Found a match, no need to try other patterns for this line
         
         return local_vars
 
