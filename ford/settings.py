@@ -176,6 +176,7 @@ class ProjectSettings:
     md_base_dir: Path = Path(".")
     md_extensions: List[str] = field(default_factory=list)
     media_dir: Optional[Path] = None
+    modular_database: bool = True
     output_dir: Path = Path("./doc")
     page_dir: Optional[Path] = None
     parallel: int = default_cpus()
