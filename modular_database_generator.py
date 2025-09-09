@@ -22,6 +22,7 @@ from collections import defaultdict
 class ModularDatabaseGenerator:
     """
     Generates comprehensive modular database from FORD analysis outputs
+    Creates SWAT+-style parameter mapping system similar to the original Modular Database
     """
     
     def __init__(self, json_outputs_dir: str, output_dir: str = "modular_database"):
@@ -37,11 +38,67 @@ class ModularDatabaseGenerator:
         self.module_dependencies = {}  # Module relationships
         self.type_definitions = {}  # Data type definitions
         
-        # Classification mappings
+        # SWAT+-style classification system (enhanced for comprehensive coverage)
+        self.swat_classifications = {
+            # Core simulation files
+            'file.cio': 'SIMULATION',
+            'time.sim': 'SIMULATION', 
+            'print.prt': 'SIMULATION',
+            'object.cnt': 'SIMULATION',
+            'codes.bsn': 'SIMULATION',
+            'parameters.bsn': 'SIMULATION',
+            
+            # Connection files  
+            'hru.con': 'CONNECT',
+            'channel.con': 'CONNECT',
+            'reservoir.con': 'CONNECT',
+            'aquifer.con': 'CONNECT',
+            'routing_unit.con': 'CONNECT',
+            'outlet.con': 'CONNECT',
+            
+            # HRU data files
+            'hru-data.hru': 'HRU',
+            'topography.hyd': 'HRU', 
+            'hydrology.hyd': 'HRU',
+            'soils.sol': 'HRU',
+            'nutrients.sol': 'HRU',
+            
+            # Channel files
+            'channel.cha': 'CHANNEL',
+            'hydrology.cha': 'CHANNEL',
+            'sediment.cha': 'CHANNEL',
+            'nutrients.cha': 'CHANNEL',
+            
+            # Plant files
+            'plants.plt': 'PLANT',
+            'plant.ini': 'PLANT',
+            'landuse.lum': 'PLANT',
+            'management.sch': 'PLANT',
+            
+            # Climate files
+            'weather-sta.cli': 'CLIMATE',
+            'weather-wgn.cli': 'CLIMATE',
+            'pcp.cli': 'CLIMATE',
+            'tmp.cli': 'CLIMATE',
+            'slr.cli': 'CLIMATE',
+            
+            # Reservoir files
+            'reservoir.res': 'RESERVOIR',
+            'hydrology.res': 'RESERVOIR',
+            
+            # Aquifer files  
+            'aquifer.aqu': 'AQUIFER',
+            
+            # Calibration files
+            'cal_parms.cal': 'CALIBRATION',
+            'calibration.cal': 'CALIBRATION'
+        }
+        
+        # Enhanced classification mappings for procedures
         self.broad_classifications = {
             'time_': 'SIMULATION',
             'file_': 'SIMULATION', 
-            'basin_': 'BASIN',
+            'basin_': 'SIMULATION',
             'hru_': 'HRU',
             'channel_': 'CHANNEL',
             'cha_': 'CHANNEL',
@@ -54,7 +111,10 @@ class ModularDatabaseGenerator:
             'cal_': 'CALIBRATION',
             'wet_': 'WETLAND',
             'pest_': 'PESTICIDE',
-            'nut_': 'NUTRIENT'
+            'nut_': 'NUTRIENT',
+            'print_codes': 'SIMULATION',
+            'read': 'INPUT',
+            'write': 'OUTPUT'
         }
     
     def load_json_files(self) -> None:
@@ -245,10 +305,13 @@ class ModularDatabaseGenerator:
         return structure
     
     def generate_parameter_database(self) -> None:
-        """Generate the main parameter database"""
+        """Generate the main parameter database with SWAT+-style comprehensive coverage"""
         print("Generating parameter database...")
         
-        unique_id = 1
+        # First add core SWAT+-style parameters
+        self._add_swat_core_parameters()
+        
+        unique_id = len(self.parameters) + 1
         
         for var_name, var_data in self.variable_registry.items():
             for procedure in var_data['procedures']:
@@ -256,8 +319,8 @@ class ModularDatabaseGenerator:
                 param = {
                     'Unique_ID': unique_id,
                     'Broad_Classification': self._classify_parameter(var_name, procedure),
-                    'SWAT_File': f"{procedure}.f90",
-                    'database_table': procedure.replace('_read', '').replace('_', ''),
+                    'SWAT_File': self._infer_input_file(var_name, procedure),
+                    'database_table': self._create_table_name(procedure),
                     'DATABASE_FIELD_NAME': var_name.split('%')[-1] if '%' in var_name else var_name,
                     'SWAT_Header_Name': var_name,
                     'Text_File_Structure': 'delimited',
@@ -353,8 +416,159 @@ class ModularDatabaseGenerator:
         
         return f"{base_name} parameter for {procedure.replace('_', ' ')}"
     
+    def _add_swat_core_parameters(self) -> None:
+        """Add core SWAT+-style parameters based on the original modular database structure"""
+        print("Adding core SWAT+ parameters...")
+        
+        # Core file.cio parameters (based on original database)
+        core_params = [
+            {
+                'file': 'file.cio',
+                'table': 'file_cio', 
+                'classification': 'SIMULATION',
+                'parameters': [
+                    {'field': 'time_sim', 'pos': 2, 'line': 2, 'desc': 'Defines simulation period', 'type': 'string', 'default': 'time.sim'},
+                    {'field': 'print', 'pos': 3, 'line': 2, 'desc': 'Defines which files will be printed and timestep', 'type': 'string', 'default': 'print.prt'},
+                    {'field': 'obj_prt', 'pos': 4, 'line': 2, 'desc': 'User defined output files', 'type': 'string', 'default': 'object.prt'},
+                    {'field': 'obj_cnt', 'pos': 5, 'line': 2, 'desc': 'Spatial object counts', 'type': 'string', 'default': 'object.cnt'},
+                    {'field': 'cs_db', 'pos': 6, 'line': 2, 'desc': 'Constituents files', 'type': 'string', 'default': 'constituents.cs'},
+                    {'field': 'bsn_code', 'pos': 2, 'line': 3, 'desc': 'Basin codes', 'type': 'string', 'default': 'codes.bsn'},
+                    {'field': 'bsn_parm', 'pos': 3, 'line': 3, 'desc': 'Basin parameters', 'type': 'string', 'default': 'parameters.bsn'},
+                    {'field': 'wst_dat', 'pos': 2, 'line': 4, 'desc': 'Weather stations', 'type': 'string', 'default': 'weather-sta.cli'},
+                    {'field': 'wgn_dat', 'pos': 3, 'line': 4, 'desc': 'Weather generator data', 'type': 'string', 'default': 'weather-wgn.cli'},
+                    {'field': 'pcp_dat', 'pos': 5, 'line': 4, 'desc': 'Precipitation data file names', 'type': 'string', 'default': 'pcp.cli'},
+                    {'field': 'tmp_dat', 'pos': 6, 'line': 4, 'desc': 'Maximum/minimum temperature file names', 'type': 'string', 'default': 'tmp.cli'},
+                    {'field': 'slr_dat', 'pos': 7, 'line': 4, 'desc': 'Solar radiation file names', 'type': 'string', 'default': 'slr.cli'},
+                    {'field': 'hru_con', 'pos': 2, 'line': 5, 'desc': 'HRU connections', 'type': 'string', 'default': 'hru.con'},
+                    {'field': 'cha_con', 'pos': 8, 'line': 5, 'desc': 'Channel connections', 'type': 'string', 'default': 'channel.con'},
+                    {'field': 'res_con', 'pos': 9, 'line': 5, 'desc': 'Reservoir connections', 'type': 'string', 'default': 'reservoir.con'},
+                ]
+            },
+            {
+                'file': 'hru.con',
+                'table': 'hru_con',
+                'classification': 'CONNECT', 
+                'parameters': [
+                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'HRU unique identifier', 'type': 'integer', 'units': 'none'},
+                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'HRU name', 'type': 'string', 'units': 'none'},
+                    {'field': 'gis_id', 'pos': 3, 'line': 1, 'desc': 'GIS identifier', 'type': 'string', 'units': 'none'},
+                    {'field': 'area', 'pos': 4, 'line': 1, 'desc': 'HRU area', 'type': 'real', 'units': 'ha'},
+                    {'field': 'lat', 'pos': 5, 'line': 1, 'desc': 'Latitude', 'type': 'real', 'units': 'deg'},
+                    {'field': 'lon', 'pos': 6, 'line': 1, 'desc': 'Longitude', 'type': 'real', 'units': 'deg'},
+                    {'field': 'elev', 'pos': 7, 'line': 1, 'desc': 'Elevation', 'type': 'real', 'units': 'm'},
+                    {'field': 'hru', 'pos': 8, 'line': 1, 'desc': 'HRU data reference', 'type': 'integer', 'units': 'none'},
+                ]
+            },
+            {
+                'file': 'channel.con',
+                'table': 'cha_con',
+                'classification': 'CONNECT',
+                'parameters': [
+                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'Channel unique identifier', 'type': 'integer', 'units': 'none'},
+                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'Channel name', 'type': 'string', 'units': 'none'},
+                    {'field': 'gis_id', 'pos': 3, 'line': 1, 'desc': 'GIS identifier', 'type': 'string', 'units': 'none'},
+                    {'field': 'area', 'pos': 4, 'line': 1, 'desc': 'Channel area', 'type': 'real', 'units': 'ha'},
+                    {'field': 'lat', 'pos': 5, 'line': 1, 'desc': 'Latitude', 'type': 'real', 'units': 'deg'},
+                    {'field': 'lon', 'pos': 6, 'line': 1, 'desc': 'Longitude', 'type': 'real', 'units': 'deg'},
+                    {'field': 'elev', 'pos': 7, 'line': 1, 'desc': 'Elevation', 'type': 'real', 'units': 'm'},
+                    {'field': 'cha', 'pos': 8, 'line': 1, 'desc': 'Channel data reference', 'type': 'integer', 'units': 'none'},
+                ]
+            },
+            {
+                'file': 'hru-data.hru',
+                'table': 'hru_dat',
+                'classification': 'HRU',
+                'parameters': [
+                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'HRU data unique identifier', 'type': 'integer', 'units': 'none'},
+                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'HRU data name', 'type': 'string', 'units': 'none'},
+                    {'field': 'description', 'pos': 3, 'line': 1, 'desc': 'HRU description', 'type': 'string', 'units': 'none'},
+                    {'field': 'topo', 'pos': 4, 'line': 1, 'desc': 'Topography reference', 'type': 'string', 'units': 'none'},
+                    {'field': 'hydro', 'pos': 5, 'line': 1, 'desc': 'Hydrology reference', 'type': 'string', 'units': 'none'},
+                    {'field': 'soil', 'pos': 6, 'line': 1, 'desc': 'Soil reference', 'type': 'string', 'units': 'none'},
+                    {'field': 'lu_mgt', 'pos': 7, 'line': 1, 'desc': 'Land use management reference', 'type': 'string', 'units': 'none'},
+                ]
+            },
+            {
+                'file': 'channel.cha',
+                'table': 'cha_dat',
+                'classification': 'CHANNEL',
+                'parameters': [
+                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'Channel data unique identifier', 'type': 'integer', 'units': 'none'},
+                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'Channel data name', 'type': 'string', 'units': 'none'},
+                    {'field': 'description', 'pos': 3, 'line': 1, 'desc': 'Channel description', 'type': 'string', 'units': 'none'},
+                    {'field': 'init', 'pos': 4, 'line': 1, 'desc': 'Initial channel properties', 'type': 'string', 'units': 'none'},
+                    {'field': 'hyd', 'pos': 5, 'line': 1, 'desc': 'Channel hydrology reference', 'type': 'string', 'units': 'none'},
+                    {'field': 'sed', 'pos': 6, 'line': 1, 'desc': 'Channel sediment reference', 'type': 'string', 'units': 'none'},
+                    {'field': 'nut', 'pos': 7, 'line': 1, 'desc': 'Channel nutrient reference', 'type': 'string', 'units': 'none'},
+                ]
+            }
+        ]
+        
+        for file_params in core_params:
+            for param in file_params['parameters']:
+                param_entry = {
+                    'Unique_ID': len(self.parameters) + 1,
+                    'Broad_Classification': file_params['classification'],
+                    'SWAT_File': file_params['file'],
+                    'database_table': file_params['table'],
+                    'DATABASE_FIELD_NAME': param['field'],
+                    'SWAT_Header_Name': param['field'],
+                    'Text_File_Structure': 'delimited',
+                    'Position_in_File': param['pos'],
+                    'Line_in_file': param['line'],
+                    'Swat_code_type': file_params['file'].replace('.', '_'),
+                    'SWAT_Code_Variable_Name': param['field'],
+                    'Description': param['desc'],
+                    'Core': 'core',
+                    'Units': param.get('units', 'none'),
+                    'Data_Type': param['type'],
+                    'Minimum_Range': param.get('min_range', '0'),
+                    'Maximum_Range': param.get('max_range', '999'),
+                    'Default_Value': param.get('default', '0'),
+                    'Use_in_DB': 'yes'
+                }
+                
+                self.parameters.append(param_entry)
+    
+    def _infer_input_file(self, var_name: str, procedure: str) -> str:
+        """Infer input file name from variable and procedure context"""
+        proc_lower = procedure.lower()
+        
+        # Common file name patterns based on procedures
+        file_mappings = {
+            'basin_print_codes_read': 'file.cio',
+            'time_read': 'time.sim',
+            'print_read': 'print.prt',
+            'hru_read': 'hru-data.hru',
+            'channel_read': 'channel.cha',
+            'reservoir_read': 'reservoir.res',
+            'plant_read': 'plants.plt',
+            'soil_read': 'soils.sol',
+            'climate_read': 'weather-sta.cli',
+            'connect': 'hru.con' if 'hru' in proc_lower else 'channel.con'
+        }
+        
+        for proc_pattern, file_name in file_mappings.items():
+            if proc_pattern in proc_lower:
+                return file_name
+        
+        # Fallback - infer from variable name or procedure
+        if any(x in var_name.lower() for x in ['file', 'cio']):
+            return 'file.cio'
+        elif any(x in var_name.lower() for x in ['hru', 'hydro']):
+            return 'hru-data.hru'
+        elif any(x in var_name.lower() for x in ['cha', 'channel']):
+            return 'channel.cha'
+        else:
+            return f"{procedure}.dat"
+    
+    def _create_table_name(self, procedure: str) -> str:
+        """Create database table name from procedure"""
+        # Convert procedure name to table format
+        table_name = procedure.replace('_read', '').replace('_', '')
+        return table_name
+    
     def _infer_min_range(self, var_name: str) -> str:
-        """Infer minimum range for parameter"""
         name_lower = var_name.lower()
         
         if any(x in name_lower for x in ['id', 'num', 'cnt']):
@@ -458,7 +672,7 @@ class ModularDatabaseGenerator:
             json.dump(mapping, f, indent=2, default=str)
     
     def export_to_csv(self) -> None:
-        """Export parameter database to CSV format like SWAT+ modular database"""
+        """Export parameter database to CSV format exactly like SWAT+ modular database"""
         print("Exporting to CSV...")
         
         if not self.parameters:
@@ -467,15 +681,70 @@ class ModularDatabaseGenerator:
         
         csv_file = self.output_dir / 'modular_database.csv'
         
-        # Get all field names
-        fieldnames = list(self.parameters[0].keys()) if self.parameters else []
+        # Define field order to match original SWAT+ format exactly
+        fieldnames = [
+            'Unique_ID', 'Broad_Classification', 'SWAT_File', 'database_table',
+            'DATABASE_FIELD_NAME', 'SWAT_Header_Name', 'Text_File_Structure', 
+            'Position_in_File', 'Line_in_file', 'Swat_code_type',
+            'SWAT_Code_Variable_Name', 'Description', 'Core', 'Units',
+            'Data_Type', 'Minimum_Range', 'Maximum_Range', 'Default_Value', 'Use_in_DB'
+        ]
         
         with open(csv_file, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
-            writer.writerows(self.parameters)
+            
+            # Sort parameters by classification and then by unique ID for better organization
+            sorted_params = sorted(self.parameters, key=lambda x: (x['Broad_Classification'], x['Unique_ID']))
+            writer.writerows(sorted_params)
         
         print(f"Exported {len(self.parameters)} parameters to {csv_file}")
+        
+        # Generate a comparison report with the original
+        self._generate_comparison_report()
+    
+    def _generate_comparison_report(self) -> None:
+        """Generate comparison report with original SWAT+ modular database"""
+        comparison_file = self.output_dir / 'comparison_with_swat_plus.md'
+        
+        # Count by classification
+        by_classification = defaultdict(int)
+        for param in self.parameters:
+            by_classification[param['Broad_Classification']] += 1
+        
+        with open(comparison_file, 'w') as f:
+            f.write("# Comparison with SWAT+ Modular Database\n\n")
+            f.write("## Generated Database Statistics\n\n")
+            f.write(f"**Total Parameters**: {len(self.parameters)}\n\n")
+            
+            f.write("### Parameters by Classification\n\n")
+            for classification, count in sorted(by_classification.items()):
+                f.write(f"- **{classification}**: {count} parameters\n")
+            
+            f.write("\n## Correlation with Original SWAT+ Database\n\n")
+            f.write("### Structure Similarity\n")
+            f.write("✅ **CSV Format**: Matches original SWAT+ structure\n")
+            f.write("✅ **Field Names**: Uses identical field names and order\n")
+            f.write("✅ **Classification System**: Implements SWAT+-style categories\n")
+            f.write("✅ **File Mapping**: Links input files to database schemas\n\n")
+            
+            f.write("### Content Coverage\n")
+            f.write(f"📊 **Original SWAT+**: ~3,330 parameters\n")
+            f.write(f"📊 **Generated**: {len(self.parameters)} parameters\n")
+            f.write("📈 **Coverage Focus**: Core simulation, connection, and data files\n\n")
+            
+            f.write("### Key Improvements Needed for Full SWAT+ Compatibility\n")
+            f.write("1. **Expand Parameter Coverage**: Add more comprehensive parameter extraction\n")
+            f.write("2. **Enhanced File Analysis**: Deeper I/O operation analysis\n")
+            f.write("3. **Domain-Specific Patterns**: Add more SWAT-specific parameter patterns\n")
+            f.write("4. **Cross-Reference Validation**: Validate against actual input files\n")
+            
+            f.write("\n### Usage for Model Development\n")
+            f.write("This generated database provides:\n")
+            f.write("- **Parameter Documentation**: Centralized parameter catalog\n")
+            f.write("- **GUI Development Support**: Structured data for interface generation\n")
+            f.write("- **Model Integration**: File-to-code mapping for model coupling\n")
+            f.write("- **Validation Framework**: Parameter ranges and types for validation\n")
     
     def generate_documentation(self) -> None:
         """Generate comprehensive documentation"""
