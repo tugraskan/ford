@@ -308,38 +308,12 @@ class ModularDatabaseGenerator:
         """Generate the main parameter database with SWAT+-style comprehensive coverage"""
         print("Generating parameter database...")
         
-        # First add core SWAT+-style parameters
-        self._add_swat_core_parameters()
+        # First add core SWAT+-style parameters based on input file structure
+        self._add_swat_input_file_parameters()
         
+        # Add additional parameters found through I/O analysis
         unique_id = len(self.parameters) + 1
-        
-        for var_name, var_data in self.variable_registry.items():
-            for procedure in var_data['procedures']:
-                # Create parameter entry
-                param = {
-                    'Unique_ID': unique_id,
-                    'Broad_Classification': self._classify_parameter(var_name, procedure),
-                    'SWAT_File': self._infer_input_file(var_name, procedure),
-                    'database_table': self._create_table_name(procedure),
-                    'DATABASE_FIELD_NAME': var_name.split('%')[-1] if '%' in var_name else var_name,
-                    'SWAT_Header_Name': var_name,
-                    'Text_File_Structure': 'delimited',
-                    'Position_in_File': self._get_position_in_file(var_name, procedure),
-                    'Line_in_file': self._get_line_in_file(var_name, procedure),
-                    'Swat_code_type': procedure,
-                    'SWAT_Code_Variable_Name': var_name,
-                    'Description': self._generate_description(var_name, procedure),
-                    'Core': 'yes' if any('read' in t for t in var_data['types']) else 'no',
-                    'Units': self._extract_units(var_name),
-                    'Data_Type': self._extract_data_type(var_name),
-                    'Minimum_Range': self._infer_min_range(var_name),
-                    'Maximum_Range': self._infer_max_range(var_name),
-                    'Default_Value': self._infer_default_value(var_name),
-                    'Use_in_DB': 'yes'
-                }
-                
-                self.parameters.append(param)
-                unique_id += 1
+        self._add_io_derived_parameters(unique_id)
     
     def _get_position_in_file(self, var_name: str, procedure: str) -> int:
         """Get position of variable in file"""
@@ -416,151 +390,336 @@ class ModularDatabaseGenerator:
         
         return f"{base_name} parameter for {procedure.replace('_', ' ')}"
     
-    def _add_swat_core_parameters(self) -> None:
-        """Add core SWAT+-style parameters based on the original modular database structure"""
-        print("Adding core SWAT+ parameters...")
+    def _add_swat_input_file_parameters(self) -> None:
+        """Add comprehensive input file parameters based on SWAT+ file structure (like the original database)"""
+        print("Adding SWAT+ input file parameters...")
         
-        # Core file.cio parameters (based on original database)
-        core_params = [
+        # This focuses on user-facing input file parameters, not internal code variables
+        # Based on the original SWAT+ Modular Database structure
+        
+        input_file_params = [
+            # FILE.CIO - Master configuration file (SIMULATION category)
             {
                 'file': 'file.cio',
-                'table': 'file_cio', 
+                'table': 'file_cio',
                 'classification': 'SIMULATION',
                 'parameters': [
-                    {'field': 'time_sim', 'pos': 2, 'line': 2, 'desc': 'Defines simulation period', 'type': 'string', 'default': 'time.sim'},
-                    {'field': 'print', 'pos': 3, 'line': 2, 'desc': 'Defines which files will be printed and timestep', 'type': 'string', 'default': 'print.prt'},
-                    {'field': 'obj_prt', 'pos': 4, 'line': 2, 'desc': 'User defined output files', 'type': 'string', 'default': 'object.prt'},
-                    {'field': 'obj_cnt', 'pos': 5, 'line': 2, 'desc': 'Spatial object counts', 'type': 'string', 'default': 'object.cnt'},
-                    {'field': 'cs_db', 'pos': 6, 'line': 2, 'desc': 'Constituents files', 'type': 'string', 'default': 'constituents.cs'},
-                    {'field': 'bsn_code', 'pos': 2, 'line': 3, 'desc': 'Basin codes', 'type': 'string', 'default': 'codes.bsn'},
-                    {'field': 'bsn_parm', 'pos': 3, 'line': 3, 'desc': 'Basin parameters', 'type': 'string', 'default': 'parameters.bsn'},
-                    {'field': 'wst_dat', 'pos': 2, 'line': 4, 'desc': 'Weather stations', 'type': 'string', 'default': 'weather-sta.cli'},
-                    {'field': 'wgn_dat', 'pos': 3, 'line': 4, 'desc': 'Weather generator data', 'type': 'string', 'default': 'weather-wgn.cli'},
-                    {'field': 'pcp_dat', 'pos': 5, 'line': 4, 'desc': 'Precipitation data file names', 'type': 'string', 'default': 'pcp.cli'},
-                    {'field': 'tmp_dat', 'pos': 6, 'line': 4, 'desc': 'Maximum/minimum temperature file names', 'type': 'string', 'default': 'tmp.cli'},
-                    {'field': 'slr_dat', 'pos': 7, 'line': 4, 'desc': 'Solar radiation file names', 'type': 'string', 'default': 'slr.cli'},
-                    {'field': 'hru_con', 'pos': 2, 'line': 5, 'desc': 'HRU connections', 'type': 'string', 'default': 'hru.con'},
-                    {'field': 'cha_con', 'pos': 8, 'line': 5, 'desc': 'Channel connections', 'type': 'string', 'default': 'channel.con'},
-                    {'field': 'res_con', 'pos': 9, 'line': 5, 'desc': 'Reservoir connections', 'type': 'string', 'default': 'reservoir.con'},
+                    {'field': 'time_sim', 'pos': 2, 'line': 2, 'desc': 'Defines simulation period', 'type': 'string', 'default': 'time.sim', 'units': 'none'},
+                    {'field': 'print', 'pos': 3, 'line': 2, 'desc': 'Defines which files will be printed and timestep', 'type': 'string', 'default': 'print.prt', 'units': 'none'},
+                    {'field': 'obj_prt', 'pos': 4, 'line': 2, 'desc': 'User defined output files', 'type': 'string', 'default': 'object.prt', 'units': 'none'},
+                    {'field': 'obj_cnt', 'pos': 5, 'line': 2, 'desc': 'Spatial object counts', 'type': 'string', 'default': 'object.cnt', 'units': 'none'},
+                    {'field': 'cs_db', 'pos': 6, 'line': 2, 'desc': 'Constituents files', 'type': 'string', 'default': 'constituents.cs', 'units': 'none'},
+                    {'field': 'bsn_code', 'pos': 2, 'line': 3, 'desc': 'Basin codes', 'type': 'string', 'default': 'codes.bsn', 'units': 'none'},
+                    {'field': 'bsn_parm', 'pos': 3, 'line': 3, 'desc': 'Basin parameters', 'type': 'string', 'default': 'parameters.bsn', 'units': 'none'},
+                    {'field': 'wst_dat', 'pos': 2, 'line': 4, 'desc': 'Weather stations', 'type': 'string', 'default': 'weather-sta.cli', 'units': 'none'},
+                    {'field': 'wgn_dat', 'pos': 3, 'line': 4, 'desc': 'Weather generator data', 'type': 'string', 'default': 'weather-wgn.cli', 'units': 'none'},
+                    {'field': 'pcp_dat', 'pos': 5, 'line': 4, 'desc': 'Precipitation data file names', 'type': 'string', 'default': 'pcp.cli', 'units': 'none'},
+                    {'field': 'tmp_dat', 'pos': 6, 'line': 4, 'desc': 'Maximum/minimum temperature file names', 'type': 'string', 'default': 'tmp.cli', 'units': 'none'},
+                    {'field': 'slr_dat', 'pos': 7, 'line': 4, 'desc': 'Solar radiation file names', 'type': 'string', 'default': 'slr.cli', 'units': 'none'},
+                    {'field': 'hmd_dat', 'pos': 8, 'line': 4, 'desc': 'Relative humidity file names', 'type': 'string', 'default': 'hmd.cli', 'units': 'none'},
+                    {'field': 'wnd_dat', 'pos': 9, 'line': 4, 'desc': 'Wind data file names', 'type': 'string', 'default': 'wnd.cli', 'units': 'none'},
+                    {'field': 'atmo_dep_db', 'pos': 10, 'line': 4, 'desc': 'Atmospheric deposition', 'type': 'string', 'default': 'atmo.cli', 'units': 'none'},
+                    {'field': 'hru_con', 'pos': 2, 'line': 5, 'desc': 'HRU connections', 'type': 'string', 'default': 'hru.con', 'units': 'none'},
+                    {'field': 'lhru_con', 'pos': 3, 'line': 5, 'desc': 'HRU lte connections', 'type': 'string', 'default': 'hru-lte.con', 'units': 'none'},
+                    {'field': 'rtu_con', 'pos': 4, 'line': 5, 'desc': 'Routing Unit connections', 'type': 'string', 'default': 'rout_unit.con', 'units': 'none'},
+                    {'field': 'gwflow_con', 'pos': 5, 'line': 5, 'desc': 'Groundwater flow connections', 'type': 'string', 'default': 'gwflow.con', 'units': 'none'},
+                    {'field': 'aqu_con', 'pos': 6, 'line': 5, 'desc': 'Aquifer connections', 'type': 'string', 'default': 'aquifer.con', 'units': 'none'},
+                    {'field': 'aqu_2d_con', 'pos': 7, 'line': 5, 'desc': 'Aquifer 2d connections', 'type': 'string', 'default': 'aquifer2d.con', 'units': 'none'},
+                    {'field': 'cha_con', 'pos': 8, 'line': 5, 'desc': 'Channel connections', 'type': 'string', 'default': 'channel.con', 'units': 'none'},
+                    {'field': 'res_con', 'pos': 9, 'line': 5, 'desc': 'Reservoir connections', 'type': 'string', 'default': 'reservoir.con', 'units': 'none'},
+                    {'field': 'rec_con', 'pos': 10, 'line': 5, 'desc': 'Recall connections', 'type': 'string', 'default': 'recall.con', 'units': 'none'},
+                    {'field': 'exco_con', 'pos': 11, 'line': 5, 'desc': 'Export coefficient connections', 'type': 'string', 'default': 'exco.con', 'units': 'none'},
+                    {'field': 'del_con', 'pos': 12, 'line': 5, 'desc': 'Delivery ratio connections', 'type': 'string', 'default': 'delratio.con', 'units': 'none'},
+                    {'field': 'out_con', 'pos': 13, 'line': 5, 'desc': 'Outlet connections', 'type': 'string', 'default': 'outlet.con', 'units': 'none'},
+                    {'field': 'lcha_con', 'pos': 14, 'line': 5, 'desc': 'Channel lte connections', 'type': 'string', 'default': 'chandeg.con', 'units': 'none'},
                 ]
             },
+            
+            # HRU.CON - HRU connections (CONNECT category)  
             {
                 'file': 'hru.con',
                 'table': 'hru_con',
-                'classification': 'CONNECT', 
+                'classification': 'CONNECT',
                 'parameters': [
-                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'HRU unique identifier', 'type': 'integer', 'units': 'none'},
-                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'HRU name', 'type': 'string', 'units': 'none'},
-                    {'field': 'gis_id', 'pos': 3, 'line': 1, 'desc': 'GIS identifier', 'type': 'string', 'units': 'none'},
-                    {'field': 'area', 'pos': 4, 'line': 1, 'desc': 'HRU area', 'type': 'real', 'units': 'ha'},
-                    {'field': 'lat', 'pos': 5, 'line': 1, 'desc': 'Latitude', 'type': 'real', 'units': 'deg'},
-                    {'field': 'lon', 'pos': 6, 'line': 1, 'desc': 'Longitude', 'type': 'real', 'units': 'deg'},
-                    {'field': 'elev', 'pos': 7, 'line': 1, 'desc': 'Elevation', 'type': 'real', 'units': 'm'},
-                    {'field': 'hru', 'pos': 8, 'line': 1, 'desc': 'HRU data reference', 'type': 'integer', 'units': 'none'},
+                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'HRU unique identifier', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '9999', 'default': '1'},
+                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'HRU name', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'hru'},
+                    {'field': 'gis_id', 'pos': 3, 'line': 1, 'desc': 'GIS identifier', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': '1'},
+                    {'field': 'area', 'pos': 4, 'line': 1, 'desc': 'HRU area', 'type': 'real', 'units': 'ha', 'min': '0.01', 'max': '100000', 'default': '1.0'},
+                    {'field': 'lat', 'pos': 5, 'line': 1, 'desc': 'Latitude', 'type': 'real', 'units': 'deg', 'min': '-90', 'max': '90', 'default': '40.0'},
+                    {'field': 'lon', 'pos': 6, 'line': 1, 'desc': 'Longitude', 'type': 'real', 'units': 'deg', 'min': '-180', 'max': '180', 'default': '-95.0'},
+                    {'field': 'elev', 'pos': 7, 'line': 1, 'desc': 'Elevation', 'type': 'real', 'units': 'm', 'min': '1', 'max': '7000', 'default': '300'},
+                    {'field': 'hru', 'pos': 8, 'line': 1, 'desc': 'HRU data reference', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '9999', 'default': '1'},
+                    {'field': 'wst', 'pos': 9, 'line': 1, 'desc': 'Weather station number', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'wst1'},
+                    {'field': 'cst', 'pos': 10, 'line': 1, 'desc': 'Constituent data pointer', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '9999', 'default': '1'},
+                    {'field': 'ovfl', 'pos': 11, 'line': 1, 'desc': 'Overflow connections pointer', 'type': 'integer', 'units': 'none', 'min': '0', 'max': '9999', 'default': '0'},
+                    {'field': 'rule', 'pos': 12, 'line': 1, 'desc': 'Ruleset pointer', 'type': 'integer', 'units': 'none', 'min': '0', 'max': '9999', 'default': '0'},
+                    {'field': 'out_tot', 'pos': 13, 'line': 1, 'desc': 'Total outgoing hydrographs', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '12', 'default': '1'},
                 ]
             },
+            
+            # CHANNEL.CON - Channel connections (CONNECT category)
             {
                 'file': 'channel.con',
                 'table': 'cha_con',
                 'classification': 'CONNECT',
                 'parameters': [
-                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'Channel unique identifier', 'type': 'integer', 'units': 'none'},
-                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'Channel name', 'type': 'string', 'units': 'none'},
-                    {'field': 'gis_id', 'pos': 3, 'line': 1, 'desc': 'GIS identifier', 'type': 'string', 'units': 'none'},
-                    {'field': 'area', 'pos': 4, 'line': 1, 'desc': 'Channel area', 'type': 'real', 'units': 'ha'},
-                    {'field': 'lat', 'pos': 5, 'line': 1, 'desc': 'Latitude', 'type': 'real', 'units': 'deg'},
-                    {'field': 'lon', 'pos': 6, 'line': 1, 'desc': 'Longitude', 'type': 'real', 'units': 'deg'},
-                    {'field': 'elev', 'pos': 7, 'line': 1, 'desc': 'Elevation', 'type': 'real', 'units': 'm'},
-                    {'field': 'cha', 'pos': 8, 'line': 1, 'desc': 'Channel data reference', 'type': 'integer', 'units': 'none'},
+                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'Channel unique identifier', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '9999', 'default': '1'},
+                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'Channel name', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'cha'},
+                    {'field': 'gis_id', 'pos': 3, 'line': 1, 'desc': 'GIS identifier', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': '1'},
+                    {'field': 'area', 'pos': 4, 'line': 1, 'desc': 'Channel area', 'type': 'real', 'units': 'ha', 'min': '0.01', 'max': '100000', 'default': '1.0'},
+                    {'field': 'lat', 'pos': 5, 'line': 1, 'desc': 'Latitude', 'type': 'real', 'units': 'deg', 'min': '-90', 'max': '90', 'default': '40.0'},
+                    {'field': 'lon', 'pos': 6, 'line': 1, 'desc': 'Longitude', 'type': 'real', 'units': 'deg', 'min': '-180', 'max': '180', 'default': '-95.0'},
+                    {'field': 'elev', 'pos': 7, 'line': 1, 'desc': 'Elevation', 'type': 'real', 'units': 'm', 'min': '1', 'max': '7000', 'default': '300'},
+                    {'field': 'cha', 'pos': 8, 'line': 1, 'desc': 'Channel data reference', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '9999', 'default': '1'},
+                    {'field': 'wst', 'pos': 9, 'line': 1, 'desc': 'Weather station number', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'wst1'},
+                    {'field': 'cst', 'pos': 10, 'line': 1, 'desc': 'Constituent data pointer', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '9999', 'default': '1'},
+                    {'field': 'ovfl', 'pos': 11, 'line': 1, 'desc': 'Overflow connections pointer', 'type': 'real', 'units': 'none', 'min': '0', 'max': '9999', 'default': '0'},
+                    {'field': 'rule', 'pos': 12, 'line': 1, 'desc': 'Ruleset pointer', 'type': 'integer', 'units': 'none', 'min': '0', 'max': '9999', 'default': '0'},
+                    {'field': 'out_tot', 'pos': 13, 'line': 1, 'desc': 'Total outgoing hydrographs', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '12', 'default': '1'},
                 ]
             },
+            
+            # HRU-DATA.HRU - HRU properties (HRU category)
             {
                 'file': 'hru-data.hru',
                 'table': 'hru_dat',
                 'classification': 'HRU',
                 'parameters': [
-                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'HRU data unique identifier', 'type': 'integer', 'units': 'none'},
-                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'HRU data name', 'type': 'string', 'units': 'none'},
-                    {'field': 'description', 'pos': 3, 'line': 1, 'desc': 'HRU description', 'type': 'string', 'units': 'none'},
-                    {'field': 'topo', 'pos': 4, 'line': 1, 'desc': 'Topography reference', 'type': 'string', 'units': 'none'},
-                    {'field': 'hydro', 'pos': 5, 'line': 1, 'desc': 'Hydrology reference', 'type': 'string', 'units': 'none'},
-                    {'field': 'soil', 'pos': 6, 'line': 1, 'desc': 'Soil reference', 'type': 'string', 'units': 'none'},
-                    {'field': 'lu_mgt', 'pos': 7, 'line': 1, 'desc': 'Land use management reference', 'type': 'string', 'units': 'none'},
+                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'HRU data unique identifier', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '9999', 'default': '1'},
+                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'HRU data name', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'hru_dat'},
+                    {'field': 'description', 'pos': 3, 'line': 1, 'desc': 'HRU description', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'HRU data'},
+                    {'field': 'topo', 'pos': 4, 'line': 1, 'desc': 'Topography reference', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'topo1'},
+                    {'field': 'hydro', 'pos': 5, 'line': 1, 'desc': 'Hydrology reference', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'hydro1'},
+                    {'field': 'soil', 'pos': 6, 'line': 1, 'desc': 'Soil reference', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'soil1'},
+                    {'field': 'lu_mgt', 'pos': 7, 'line': 1, 'desc': 'Land use management reference', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'lum1'},
+                    {'field': 'soil_ini', 'pos': 8, 'line': 1, 'desc': 'Soil initial conditions', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'soil_ini1'},
+                    {'field': 'surf_stor', 'pos': 9, 'line': 1, 'desc': 'Surface storage reference', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'surf_stor1'},
+                    {'field': 'snow', 'pos': 10, 'line': 1, 'desc': 'Snow parameters reference', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'snow1'},
+                    {'field': 'field', 'pos': 11, 'line': 1, 'desc': 'Field properties reference', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'field1'},
                 ]
             },
+            
+            # CHANNEL.CHA - Channel properties (CHANNEL category)
             {
                 'file': 'channel.cha',
                 'table': 'cha_dat',
                 'classification': 'CHANNEL',
                 'parameters': [
-                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'Channel data unique identifier', 'type': 'integer', 'units': 'none'},
-                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'Channel data name', 'type': 'string', 'units': 'none'},
-                    {'field': 'description', 'pos': 3, 'line': 1, 'desc': 'Channel description', 'type': 'string', 'units': 'none'},
-                    {'field': 'init', 'pos': 4, 'line': 1, 'desc': 'Initial channel properties', 'type': 'string', 'units': 'none'},
-                    {'field': 'hyd', 'pos': 5, 'line': 1, 'desc': 'Channel hydrology reference', 'type': 'string', 'units': 'none'},
-                    {'field': 'sed', 'pos': 6, 'line': 1, 'desc': 'Channel sediment reference', 'type': 'string', 'units': 'none'},
-                    {'field': 'nut', 'pos': 7, 'line': 1, 'desc': 'Channel nutrient reference', 'type': 'string', 'units': 'none'},
+                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'Channel data unique identifier', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '9999', 'default': '1'},
+                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'Channel data name', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'cha_dat'},
+                    {'field': 'description', 'pos': 3, 'line': 1, 'desc': 'Channel description', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'Channel data'},
+                    {'field': 'init', 'pos': 4, 'line': 1, 'desc': 'Initial channel properties', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'init_cha1'},
+                    {'field': 'hyd', 'pos': 5, 'line': 1, 'desc': 'Channel hydrology reference', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'hyd_cha1'},
+                    {'field': 'sed', 'pos': 6, 'line': 1, 'desc': 'Channel sediment reference', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'sed_cha1'},
+                    {'field': 'nut', 'pos': 7, 'line': 1, 'desc': 'Channel nutrient reference', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'nut_cha1'},
+                ]
+            },
+            
+            # HYDROLOGY.HYD - HRU hydrology parameters (HRU category)
+            {
+                'file': 'hydrology.hyd',
+                'table': 'hydro_hru',
+                'classification': 'HRU',
+                'parameters': [
+                    {'field': 'name', 'pos': 1, 'line': 1, 'desc': 'Hydrology parameter set name', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'hydro1'},
+                    {'field': 'lat_ttime', 'pos': 2, 'line': 1, 'desc': 'Lateral flow travel time', 'type': 'real', 'units': 'days', 'min': '0', 'max': '180', 'default': '0'},
+                    {'field': 'lat_sed', 'pos': 3, 'line': 1, 'desc': 'Lateral flow sediment concentration', 'type': 'real', 'units': 'mg/L', 'min': '0', 'max': '5000', 'default': '0'},
+                    {'field': 'can_max', 'pos': 4, 'line': 1, 'desc': 'Maximum canopy storage', 'type': 'real', 'units': 'mm H2O', 'min': '0', 'max': '100', 'default': '0'},
+                    {'field': 'esco', 'pos': 5, 'line': 1, 'desc': 'Soil evaporation compensation factor', 'type': 'real', 'units': 'none', 'min': '0.01', 'max': '1', 'default': '0.95'},
+                    {'field': 'epco', 'pos': 6, 'line': 1, 'desc': 'Plant uptake compensation factor', 'type': 'real', 'units': 'none', 'min': '0.01', 'max': '1', 'default': '1'},
+                    {'field': 'orgn_enrich', 'pos': 7, 'line': 1, 'desc': 'Organic nitrogen enrichment ratio', 'type': 'real', 'units': 'none', 'min': '0', 'max': '5', 'default': '0'},
+                    {'field': 'orgp_enrich', 'pos': 8, 'line': 1, 'desc': 'Organic phosphorus enrichment ratio', 'type': 'real', 'units': 'none', 'min': '0', 'max': '5', 'default': '0'},
+                    {'field': 'cn3_swf', 'pos': 9, 'line': 1, 'desc': 'Curve number soil water factor', 'type': 'real', 'units': 'none', 'min': '0', 'max': '1', 'default': '1'},
+                    {'field': 'bio_mix', 'pos': 10, 'line': 1, 'desc': 'Biological mixing efficiency', 'type': 'real', 'units': 'none', 'min': '0', 'max': '1', 'default': '0.2'},
+                    {'field': 'perco', 'pos': 11, 'line': 1, 'desc': 'Percolation coefficient', 'type': 'real', 'units': 'none', 'min': '0.01', 'max': '1', 'default': '0.5'},
+                    {'field': 'lat_orgn', 'pos': 12, 'line': 1, 'desc': 'Lateral organic nitrogen concentration', 'type': 'real', 'units': 'mg N/L', 'min': '0', 'max': '200', 'default': '0'},
+                    {'field': 'lat_orgp', 'pos': 13, 'line': 1, 'desc': 'Lateral organic phosphorus concentration', 'type': 'real', 'units': 'mg P/L', 'min': '0', 'max': '25', 'default': '0'},
+                    {'field': 'harg_pet', 'pos': 14, 'line': 1, 'desc': 'Hargreaves PET equation coefficient', 'type': 'real', 'units': 'none', 'min': '0.0023', 'max': '0.0032', 'default': '0.0023'},
+                    {'field': 'latq_co', 'pos': 15, 'line': 1, 'desc': 'Lateral flow coefficient', 'type': 'real', 'units': 'none', 'min': '0', 'max': '1', 'default': '0'},
+                ]
+            },
+            
+            # TIME.SIM - Simulation time settings (SIMULATION category)
+            {
+                'file': 'time.sim',
+                'table': 'time',
+                'classification': 'SIMULATION',
+                'parameters': [
+                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'Time data identifier', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '1', 'default': '1'},
+                    {'field': 'day_start', 'pos': 2, 'line': 1, 'desc': 'Starting day of simulation', 'type': 'integer', 'units': 'julian day', 'min': '1', 'max': '366', 'default': '1'},
+                    {'field': 'yrc_start', 'pos': 3, 'line': 1, 'desc': 'Starting year of simulation', 'type': 'integer', 'units': 'year', 'min': '1900', 'max': '2100', 'default': '2000'},
+                    {'field': 'day_end', 'pos': 4, 'line': 1, 'desc': 'Ending day of simulation', 'type': 'integer', 'units': 'julian day', 'min': '1', 'max': '366', 'default': '365'},
+                    {'field': 'yrc_end', 'pos': 5, 'line': 1, 'desc': 'Ending year of simulation', 'type': 'integer', 'units': 'year', 'min': '1900', 'max': '2100', 'default': '2010'},
+                    {'field': 'step', 'pos': 6, 'line': 1, 'desc': 'Time step', 'type': 'integer', 'units': 'none', 'min': '0', 'max': '2', 'default': '0'},
+                ]
+            },
+            
+            # PRINT.PRT - Output control settings (SIMULATION category)
+            {
+                'file': 'print.prt',
+                'table': 'print',
+                'classification': 'SIMULATION',
+                'parameters': [
+                    {'field': 'n_yrs_skip', 'pos': 1, 'line': 1, 'desc': 'Number of years to skip before output', 'type': 'integer', 'units': 'years', 'min': '0', 'max': '100', 'default': '0'},
+                    {'field': 'jd_start', 'pos': 2, 'line': 1, 'desc': 'Starting julian day for output', 'type': 'integer', 'units': 'julian day', 'min': '0', 'max': '366', 'default': '0'},
+                    {'field': 'yrc_start', 'pos': 3, 'line': 1, 'desc': 'Starting year for output', 'type': 'integer', 'units': 'year', 'min': '1900', 'max': '2100', 'default': '2000'},
+                    {'field': 'jd_end', 'pos': 4, 'line': 1, 'desc': 'Ending julian day for output', 'type': 'integer', 'units': 'julian day', 'min': '0', 'max': '366', 'default': '0'},
+                    {'field': 'yrc_end', 'pos': 5, 'line': 1, 'desc': 'Ending year for output', 'type': 'integer', 'units': 'year', 'min': '1900', 'max': '2100', 'default': '2010'},
+                    {'field': 'interval', 'pos': 6, 'line': 1, 'desc': 'Output interval', 'type': 'integer', 'units': 'none', 'min': '0', 'max': '4', 'default': '0'},
+                    {'field': 'aa_int_cnt', 'pos': 7, 'line': 1, 'desc': 'Average annual interval count', 'type': 'integer', 'units': 'none', 'min': '0', 'max': '50', 'default': '0'},
+                    {'field': 'aa_int', 'pos': 8, 'line': 1, 'desc': 'Average annual interval', 'type': 'integer', 'units': 'years', 'min': '0', 'max': '50', 'default': '0'},
+                    {'field': 'aa_yrs', 'pos': 9, 'line': 1, 'desc': 'Average annual years', 'type': 'integer', 'units': 'years', 'min': '0', 'max': '50', 'default': '0'},
+                    {'field': 'csvout', 'pos': 10, 'line': 1, 'desc': 'CSV output flag', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'y'},
+                    {'field': 'db_files', 'pos': 11, 'line': 1, 'desc': 'Database files flag', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'n'},
+                    {'field': 'dbout', 'pos': 12, 'line': 1, 'desc': 'Database output flag', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'n'},
+                    {'field': 'cdfout', 'pos': 13, 'line': 1, 'desc': 'NetCDF output flag', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'n'},
+                    {'field': 'soilout', 'pos': 14, 'line': 1, 'desc': 'Soil output flag', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'n'},
                 ]
             }
         ]
         
-        for file_params in core_params:
-            for param in file_params['parameters']:
-                param_entry = {
-                    'Unique_ID': len(self.parameters) + 1,
-                    'Broad_Classification': file_params['classification'],
-                    'SWAT_File': file_params['file'],
-                    'database_table': file_params['table'],
-                    'DATABASE_FIELD_NAME': param['field'],
-                    'SWAT_Header_Name': param['field'],
+        # Generate parameters from input file definitions
+        unique_id = 1
+        for file_group in input_file_params:
+            for param_def in file_group['parameters']:
+                param = {
+                    'Unique_ID': unique_id,
+                    'Broad_Classification': file_group['classification'],
+                    'SWAT_File': file_group['file'],
+                    'database_table': file_group['table'],
+                    'DATABASE_FIELD_NAME': param_def['field'],
+                    'SWAT_Header_Name': param_def['field'],
                     'Text_File_Structure': 'delimited',
-                    'Position_in_File': param['pos'],
-                    'Line_in_file': param['line'],
-                    'Swat_code_type': file_params['file'].replace('.', '_'),
-                    'SWAT_Code_Variable_Name': param['field'],
-                    'Description': param['desc'],
-                    'Core': 'core',
-                    'Units': param.get('units', 'none'),
-                    'Data_Type': param['type'],
-                    'Minimum_Range': param.get('min_range', '0'),
-                    'Maximum_Range': param.get('max_range', '999'),
-                    'Default_Value': param.get('default', '0'),
+                    'Position_in_File': param_def['pos'],
+                    'Line_in_file': param_def['line'],
+                    'Swat_code_type': file_group['file'].replace('.', '_'),
+                    'SWAT_Code_Variable_Name': param_def['field'],
+                    'Description': param_def['desc'],
+                    'Core': 'core' if file_group['classification'] == 'SIMULATION' else 'no',
+                    'Units': param_def['units'],
+                    'Data_Type': param_def['type'],
+                    'Minimum_Range': param_def.get('min', ''),
+                    'Maximum_Range': param_def.get('max', ''),
+                    'Default_Value': param_def.get('default', ''),
                     'Use_in_DB': 'yes'
                 }
                 
-                self.parameters.append(param_entry)
+                self.parameters.append(param)
+                unique_id += 1
+        
+        print(f"Added {len(self.parameters)} input file parameters")
     
-    def _infer_input_file(self, var_name: str, procedure: str) -> str:
-        """Infer input file name from variable and procedure context"""
+    def _add_io_derived_parameters(self, start_id: int) -> None:
+        """Add additional parameters derived from I/O analysis (complementary to input file params)"""
+        print("Adding I/O-derived parameters...")
+        
+        unique_id = start_id
+        added_params = set()  # Track to avoid duplicates
+        
+        # Only add parameters that provide additional value beyond the input file structure
+        for procedure, io_data in self.io_operations.items():
+            # Skip if not a dictionary
+            if not isinstance(io_data, dict):
+                continue
+                
+            # Focus on procedures that indicate input file processing
+            if not any(keyword in procedure.lower() for keyword in ['read', 'input', 'con', 'dat', 'hru', 'cha']):
+                continue
+            
+            for unit_name, unit_data in io_data.items():
+                if not isinstance(unit_data, dict) or 'summary' not in unit_data:
+                    continue
+                    
+                summary = unit_data['summary']
+                file_name = self._infer_input_file_from_procedure(procedure)
+                
+                # Add parameters for columns that aren't already covered by input file definitions
+                for read_op in summary.get('data_reads', []):
+                    for column in read_op.get('columns', []):
+                        param_key = f"{file_name}_{column}"
+                        
+                        # Skip if already added or if it's an internal variable
+                        if param_key in added_params or self._is_internal_variable(column):
+                            continue
+                            
+                        classification = self._classify_by_file(file_name)
+                        
+                        param = {
+                            'Unique_ID': unique_id,
+                            'Broad_Classification': classification,
+                            'SWAT_File': file_name,
+                            'database_table': self._create_table_name(procedure),
+                            'DATABASE_FIELD_NAME': column,
+                            'SWAT_Header_Name': column,
+                            'Text_File_Structure': 'delimited',
+                            'Position_in_File': 1,
+                            'Line_in_file': 1,
+                            'Swat_code_type': procedure,
+                            'SWAT_Code_Variable_Name': column,
+                            'Description': self._generate_description(column, procedure),
+                            'Core': 'yes' if classification == 'SIMULATION' else 'no',
+                            'Units': self._extract_units(column),
+                            'Data_Type': self._extract_data_type(column),
+                            'Minimum_Range': self._infer_min_range(column),
+                            'Maximum_Range': self._infer_max_range(column),
+                            'Default_Value': self._infer_default_value(column),
+                            'Use_in_DB': 'yes'
+                        }
+                        
+                        self.parameters.append(param)
+                        added_params.add(param_key)
+                        unique_id += 1
+        
+        print(f"Added {unique_id - start_id} I/O-derived parameters")
+    
+    def _infer_input_file_from_procedure(self, procedure: str) -> str:
+        """Infer input file name from procedure name"""
         proc_lower = procedure.lower()
         
-        # Common file name patterns based on procedures
+        # Direct mapping from procedure names to input files
         file_mappings = {
-            'basin_print_codes_read': 'file.cio',
+            'hru_con': 'hru.con',
+            'hru_read': 'hru-data.hru',
+            'channel_con': 'channel.con',
+            'channel_read': 'channel.cha',
+            'file_cio': 'file.cio',
             'time_read': 'time.sim',
             'print_read': 'print.prt',
-            'hru_read': 'hru-data.hru',
-            'channel_read': 'channel.cha',
-            'reservoir_read': 'reservoir.res',
-            'plant_read': 'plants.plt',
-            'soil_read': 'soils.sol',
-            'climate_read': 'weather-sta.cli',
-            'connect': 'hru.con' if 'hru' in proc_lower else 'channel.con'
+            'hydrology_read': 'hydrology.hyd',
+            'topography_read': 'topography.hyd',
+            'reservoir_con': 'reservoir.con',
+            'aquifer_con': 'aquifer.con'
         }
         
-        for proc_pattern, file_name in file_mappings.items():
-            if proc_pattern in proc_lower:
-                return file_name
+        for pattern, filename in file_mappings.items():
+            if pattern in proc_lower:
+                return filename
         
-        # Fallback - infer from variable name or procedure
-        if any(x in var_name.lower() for x in ['file', 'cio']):
-            return 'file.cio'
-        elif any(x in var_name.lower() for x in ['hru', 'hydro']):
-            return 'hru-data.hru'
-        elif any(x in var_name.lower() for x in ['cha', 'channel']):
-            return 'channel.cha'
+        # Default inference from procedure name
+        if 'con' in proc_lower:
+            return f"{proc_lower.replace('_', '')}.con"
+        elif 'read' in proc_lower:
+            base = proc_lower.replace('_read', '').replace('_', '')
+            return f"{base}.dat"
         else:
-            return f"{procedure}.dat"
+            return f"{proc_lower.replace('_', '')}.txt"
+    
+    def _classify_by_file(self, filename: str) -> str:
+        """Classify parameter by its input file"""
+        return self.swat_classifications.get(filename, 'GENERAL')
+    
+    def _is_internal_variable(self, var_name: str) -> bool:
+        """Check if variable is internal/programming variable vs user parameter"""
+        internal_patterns = [
+            'lamda', 'charbal', 'gw_state', 'a_size', 'eof', 'iostat',
+            'allocate', 'deallocate', 'temp_', 'tmp_', 'iter_', 'loop_',
+            'counter', 'index', 'flag_', 'status_'
+        ]
+        
+        var_lower = var_name.lower()
+        return any(pattern in var_lower for pattern in internal_patterns)
+    
+
     
     def _create_table_name(self, procedure: str) -> str:
         """Create database table name from procedure"""
