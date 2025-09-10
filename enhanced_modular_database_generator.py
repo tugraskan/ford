@@ -361,20 +361,85 @@ class EnhancedModularDatabaseGenerator:
         """Add core SWAT+ parameters based on the original modular database structure"""
         print("Adding core SWAT+ parameters...")
         
-        # Core file.cio parameters (based on original database)
+        # Complete file.cio parameters (based on original SWAT+ database)
         core_params = [
             {
                 'file': 'file.cio',
                 'table': 'file_cio', 
                 'classification': 'SIMULATION',
                 'parameters': [
-                    {'field': 'time_sim', 'pos': 2, 'line': 2, 'desc': 'Defines simulation period', 'type': 'string', 'default': 'time.sim'},
-                    {'field': 'print', 'pos': 3, 'line': 2, 'desc': 'Defines which files will be printed and timestep', 'type': 'string', 'default': 'print.prt'},
-                    {'field': 'obj_prt', 'pos': 4, 'line': 2, 'desc': 'User defined output files', 'type': 'string', 'default': 'object.prt'},
-                    {'field': 'obj_cnt', 'pos': 5, 'line': 2, 'desc': 'Spatial object counts', 'type': 'string', 'default': 'object.cnt'},
-                    {'field': 'cs_db', 'pos': 6, 'line': 2, 'desc': 'Constituents files', 'type': 'string', 'default': 'constituents.cs'},
-                    {'field': 'bsn_code', 'pos': 2, 'line': 3, 'desc': 'Basin codes', 'type': 'string', 'default': 'codes.bsn'},
-                    {'field': 'bsn_parm', 'pos': 3, 'line': 3, 'desc': 'Basin parameters', 'type': 'string', 'default': 'parameters.bsn'},
+                    # Line 2: Core simulation files
+                    {'field': 'time_sim', 'pos': 2, 'line': 2, 'desc': 'Defines simulation period', 'type': 'string', 'default': 'time.sim', 'code_type': 'in_sim'},
+                    {'field': 'print', 'pos': 3, 'line': 2, 'desc': 'Defines which files will be printed and timestep', 'type': 'string', 'default': 'print.prt', 'code_type': 'in_sim'},
+                    {'field': 'obj_prt', 'pos': 4, 'line': 2, 'desc': 'User defined output files', 'type': 'string', 'default': 'object.prt', 'code_type': 'in_sim'},
+                    {'field': 'obj_cnt', 'pos': 5, 'line': 2, 'desc': 'Spatial object counts', 'type': 'string', 'default': 'object.cnt', 'code_type': 'in_sim'},
+                    {'field': 'cs_db', 'pos': 6, 'line': 2, 'desc': 'Constituents files', 'type': 'string', 'default': 'constituents.cs', 'code_type': 'in_sim'},
+                    
+                    # Line 3: Basin files
+                    {'field': 'bsn_code', 'pos': 2, 'line': 3, 'desc': 'Basin codes', 'type': 'string', 'default': 'codes.bsn', 'code_type': 'in_basin'},
+                    {'field': 'bsn_parm', 'pos': 3, 'line': 3, 'desc': 'Basin parameters', 'type': 'string', 'default': 'parameters.bsn', 'code_type': 'in_basin'},
+                    
+                    # Line 4: Climate files
+                    {'field': 'wst_dat', 'pos': 2, 'line': 4, 'desc': 'Weather stations', 'type': 'string', 'default': 'weather-sta.cli', 'code_type': 'in_cli'},
+                    {'field': 'wgn_dat', 'pos': 3, 'line': 4, 'desc': 'Weather generator data', 'type': 'string', 'default': 'weather-wgn.cli', 'code_type': 'in_cli'},
+                    {'field': 'pet_dat', 'pos': 4, 'line': 4, 'desc': 'Potential evaporation data', 'type': 'string', 'default': 'wind-dir.cli', 'code_type': 'in_cli'},
+                    
+                    # Line 5: Connection files
+                    {'field': 'hru_con', 'pos': 2, 'line': 5, 'desc': 'HRU connection data', 'type': 'string', 'default': 'hru.con', 'code_type': 'in_connect'},
+                    {'field': 'hru_data', 'pos': 3, 'line': 5, 'desc': 'HRU data file', 'type': 'string', 'default': 'hru-data.hru', 'code_type': 'in_connect'},
+                    {'field': 'cha_con', 'pos': 4, 'line': 5, 'desc': 'Channel connection data', 'type': 'string', 'default': 'channel.con', 'code_type': 'in_connect'},
+                    {'field': 'cha_data', 'pos': 5, 'line': 5, 'desc': 'Channel data file', 'type': 'string', 'default': 'channel.cha', 'code_type': 'in_connect'},
+                    {'field': 'res_con', 'pos': 6, 'line': 5, 'desc': 'Reservoir connection data', 'type': 'string', 'default': 'reservoir.con', 'code_type': 'in_connect'},
+                    {'field': 'res_data', 'pos': 7, 'line': 5, 'desc': 'Reservoir data file', 'type': 'string', 'default': 'reservoir.res', 'code_type': 'in_connect'},
+                    
+                    # Line 6: Land use and management files
+                    {'field': 'lum_data', 'pos': 2, 'line': 6, 'desc': 'Land use management', 'type': 'string', 'default': 'landuse.lum', 'code_type': 'in_lum'},
+                    {'field': 'mgt_data', 'pos': 3, 'line': 6, 'desc': 'Management operations', 'type': 'string', 'default': 'management.sch', 'code_type': 'in_mgt'},
+                    {'field': 'sol_data', 'pos': 4, 'line': 6, 'desc': 'Soil data file', 'type': 'string', 'default': 'soils.sol', 'code_type': 'in_sol'},
+                    {'field': 'nut_data', 'pos': 5, 'line': 6, 'desc': 'Nutrients data', 'type': 'string', 'default': 'nutrients.nut', 'code_type': 'in_nut'},
+                    
+                    # Line 7-10: Plant and database files
+                    {'field': 'plt_data', 'pos': 2, 'line': 7, 'desc': 'Plant database', 'type': 'string', 'default': 'plants.plt', 'code_type': 'in_plt'},
+                    {'field': 'til_data', 'pos': 3, 'line': 7, 'desc': 'Tillage database', 'type': 'string', 'default': 'tillage.til', 'code_type': 'in_til'},
+                    {'field': 'frt_data', 'pos': 4, 'line': 7, 'desc': 'Fertilizer database', 'type': 'string', 'default': 'fertilizer.frt', 'code_type': 'in_frt'},
+                    {'field': 'pst_data', 'pos': 5, 'line': 7, 'desc': 'Pesticide database', 'type': 'string', 'default': 'pesticide.pst', 'code_type': 'in_pst'},
+                    {'field': 'urb_data', 'pos': 6, 'line': 7, 'desc': 'Urban database', 'type': 'string', 'default': 'urban.urb', 'code_type': 'in_urb'},
+                    {'field': 'sep_data', 'pos': 7, 'line': 7, 'desc': 'Septic database', 'type': 'string', 'default': 'septic.sep', 'code_type': 'in_sep'},
+                    
+                    # Line 8-15: Additional model components
+                    {'field': 'cal_data', 'pos': 2, 'line': 8, 'desc': 'Calibration data', 'type': 'string', 'default': 'calibration.cal', 'code_type': 'in_cal'},
+                    {'field': 'rte_data', 'pos': 3, 'line': 8, 'desc': 'Routing parameters', 'type': 'string', 'default': 'routing.rte', 'code_type': 'in_rte'},
+                    {'field': 'ops_data', 'pos': 4, 'line': 8, 'desc': 'Operations data', 'type': 'string', 'default': 'operations.ops', 'code_type': 'in_ops'},
+                    {'field': 'lte_data', 'pos': 5, 'line': 8, 'desc': 'LTE data file', 'type': 'string', 'default': 'lte.dat', 'code_type': 'in_lte'},
+                    
+                    # Lines 9-26: Regional definitions for different components
+                    {'field': 'hru_reg_def', 'pos': 2, 'line': 9, 'desc': 'HRU regional definitions', 'type': 'string', 'default': 'hru_reg.def', 'code_type': 'in_regs'},
+                    {'field': 'hru_catunit_def', 'pos': 3, 'line': 9, 'desc': 'HRU catchment unit definitions', 'type': 'string', 'default': 'hru_catunit.def', 'code_type': 'in_regs'},
+                    {'field': 'hru_catunit_ele', 'pos': 4, 'line': 9, 'desc': 'HRU catchment unit elements', 'type': 'string', 'default': 'hru_catunit.ele', 'code_type': 'in_regs'},
+                    
+                    {'field': 'cha_reg_def', 'pos': 2, 'line': 10, 'desc': 'Channel regional definitions', 'type': 'string', 'default': 'cha_reg.def', 'code_type': 'in_regs'},
+                    {'field': 'cha_catunit_def', 'pos': 3, 'line': 10, 'desc': 'Channel catchment unit definitions', 'type': 'string', 'default': 'cha_catunit.def', 'code_type': 'in_regs'},
+                    {'field': 'cha_catunit_ele', 'pos': 4, 'line': 10, 'desc': 'Channel catchment unit elements', 'type': 'string', 'default': 'cha_catunit.ele', 'code_type': 'in_regs'},
+                    
+                    {'field': 'res_reg_def', 'pos': 2, 'line': 11, 'desc': 'Reservoir regional definitions', 'type': 'string', 'default': 'res_reg.def', 'code_type': 'in_regs'},
+                    {'field': 'res_catunit_def', 'pos': 3, 'line': 11, 'desc': 'Reservoir catchment unit definitions', 'type': 'string', 'default': 'res_catunit.def', 'code_type': 'in_regs'},
+                    {'field': 'res_catunit_ele', 'pos': 4, 'line': 11, 'desc': 'Reservoir catchment unit elements', 'type': 'string', 'default': 'res_catunit.ele', 'code_type': 'in_regs'},
+                    
+                    # Lines 12-26: More regional components
+                    {'field': 'aqu_reg_def', 'pos': 2, 'line': 12, 'desc': 'Aquifer regional definitions', 'type': 'string', 'default': 'aqu_reg.def', 'code_type': 'in_regs'},
+                    {'field': 'aqu_catunit_def', 'pos': 3, 'line': 12, 'desc': 'Aquifer catchment unit definitions', 'type': 'string', 'default': 'aqu_catunit.def', 'code_type': 'in_regs'},
+                    {'field': 'aqu_catunit_ele', 'pos': 4, 'line': 12, 'desc': 'Aquifer catchment unit elements', 'type': 'string', 'default': 'aqu_catunit.ele', 'code_type': 'in_regs'},
+                    
+                    {'field': 'cha_lte_reg_def', 'pos': 2, 'line': 13, 'desc': 'Channel LTE regional definitions', 'type': 'string', 'default': 'cha_lte_reg.def', 'code_type': 'in_regs'},
+                    {'field': 'cha_lte_catunit_def', 'pos': 3, 'line': 13, 'desc': 'Channel LTE catchment unit definitions', 'type': 'string', 'default': 'cha_lte_catunit.def', 'code_type': 'in_regs'},
+                    {'field': 'cha_lte_catunit_ele', 'pos': 4, 'line': 13, 'desc': 'Channel LTE catchment unit elements', 'type': 'string', 'default': 'cha_lte_catunit.ele', 'code_type': 'in_regs'},
+                    
+                    # Lines 27-31: Path configurations
+                    {'field': 'path_pcp', 'pos': 2, 'line': 27, 'desc': 'Directory path for pcp file', 'type': 'string', 'default': 'null', 'code_type': 'in_path_pcp'},
+                    {'field': 'path_tmp', 'pos': 2, 'line': 28, 'desc': 'Directory path for tmp file', 'type': 'string', 'default': 'null', 'code_type': 'in_path_tmp'},
+                    {'field': 'path_slr', 'pos': 2, 'line': 29, 'desc': 'Directory path for slr file', 'type': 'string', 'default': 'null', 'code_type': 'in_path_slr'},
+                    {'field': 'path_hmd', 'pos': 2, 'line': 30, 'desc': 'Directory path for hmd file', 'type': 'string', 'default': 'null', 'code_type': 'in_path_hmd'},
+                    {'field': 'path_wnd', 'pos': 2, 'line': 31, 'desc': 'Directory path for wnd file', 'type': 'string', 'default': 'null', 'code_type': 'in_path_wnd'},
                 ]
             },
             {
@@ -415,20 +480,20 @@ class EnhancedModularDatabaseGenerator:
                     'SWAT_File': file_params['file'],
                     'database_table': file_params['table'],
                     'DATABASE_FIELD_NAME': param['field'],
-                    'SWAT_Header_Name': param['field'],
-                    'Text_File_Structure': 'delimited',
+                    'SWAT_Header_Name': '*',
+                    'Text_File_Structure': 'Unique',
                     'Position_in_File': param['pos'],
                     'Line_in_file': param['line'],
-                    'Swat_code_type': file_params['file'].replace('.', '_'),
-                    'SWAT_Code_Variable_Name': param['field'],
+                    'Swat_code_type': param.get('code_type', file_params['file'].replace('.', '_')),
+                    'SWAT_Code_Variable_Name': '*',
                     'Description': param['desc'],
                     'Core': 'core',
-                    'Units': param.get('units', 'none'),
+                    'Units': param.get('units', '*'),
                     'Data_Type': param['type'],
-                    'Minimum_Range': param.get('min_range', '0'),
-                    'Maximum_Range': param.get('max_range', '999'),
-                    'Default_Value': param.get('default', '0'),
-                    'Use_in_DB': 'yes'
+                    'Minimum_Range': '*',
+                    'Maximum_Range': '*',
+                    'Default_Value': param.get('default', '*'),
+                    'Use_in_DB': '*'
                 }
                 
                 self.parameters.append(param_entry)
