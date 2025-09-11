@@ -3,34 +3,23 @@
 ## Overview
 
 This modular database was automatically generated from FORD source code analysis.
-It contains 10813 parameters extracted from 5909 unique variables
+It contains 1187 parameters extracted from 5909 unique variables
 across 262 procedures with I/O operations.
 
 ## Database Structure
 
 ### Parameters
-- **Total Parameters**: 10813
+- **Total Parameters**: 1187
 - **Unique Variables**: 5909
 - **Procedures with I/O**: 262
 
 ### Classifications
-- **AQUIFER**: 270 parameters
-- **BASIN**: 585 parameters
-- **CALIBRATION**: 131 parameters
-- **CHANNEL**: 122 parameters
-- **CLIMATE**: 346 parameters
-- **GENERAL**: 6542 parameters
-- **HRU**: 940 parameters
-- **INPUT_FILE**: 153 parameters
-- **MANAGEMENT**: 325 parameters
-- **NUTRIENT**: 116 parameters
-- **OUTPUT_FILE**: 39 parameters
-- **PESTICIDE**: 94 parameters
-- **PLANT**: 72 parameters
-- **RESERVOIR**: 447 parameters
-- **SIMULATION**: 115 parameters
-- **SOIL**: 262 parameters
-- **WETLAND**: 254 parameters
+- **CHANNEL**: 35 parameters
+- **CONNECT**: 26 parameters
+- **GENERAL**: 975 parameters
+- **HRU**: 43 parameters
+- **PLANT**: 30 parameters
+- **SIMULATION**: 78 parameters
 
 
 ## Files Generated

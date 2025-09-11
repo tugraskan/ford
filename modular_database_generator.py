@@ -575,6 +575,128 @@ class ModularDatabaseGenerator:
                     {'field': 'cdfout', 'pos': 13, 'line': 1, 'desc': 'NetCDF output flag', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'n'},
                     {'field': 'soilout', 'pos': 14, 'line': 1, 'desc': 'Soil output flag', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'n'},
                 ]
+            },
+            
+            # PLANTS.PLT - Plant database (PLANT category) - Major coverage expansion
+            {
+                'file': 'plants.plt',
+                'table': 'plants_plt',
+                'classification': 'PLANT',
+                'parameters': [
+                    {'field': 'name', 'pos': 1, 'line': 1, 'desc': 'Plant name', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'plant1'},
+                    {'field': 'plnt_typ', 'pos': 2, 'line': 1, 'desc': 'Plant type', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'warm_annual'},
+                    {'field': 'gro_trig', 'pos': 3, 'line': 1, 'desc': 'Growth trigger', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'heat_unit'},
+                    {'field': 'lai_pot', 'pos': 4, 'line': 1, 'desc': 'Potential leaf area index', 'type': 'real', 'units': 'm2/m2', 'min': '0.5', 'max': '12', 'default': '3'},
+                    {'field': 'harv_idx', 'pos': 5, 'line': 1, 'desc': 'Harvest index', 'type': 'real', 'units': 'fraction', 'min': '0.01', 'max': '1', 'default': '0.5'},
+                    {'field': 'plnt_hu', 'pos': 6, 'line': 1, 'desc': 'Heat units to maturity', 'type': 'real', 'units': 'heat units', 'min': '500', 'max': '4000', 'default': '1800'},
+                    {'field': 'lai_min', 'pos': 7, 'line': 1, 'desc': 'Minimum leaf area index', 'type': 'real', 'units': 'm2/m2', 'min': '0', 'max': '10', 'default': '0.75'},
+                    {'field': 'vpd2', 'pos': 8, 'line': 1, 'desc': 'Vapor pressure deficit', 'type': 'real', 'units': 'kPa', 'min': '0.5', 'max': '4', 'default': '4'},
+                    {'field': 'frac_hu1', 'pos': 9, 'line': 1, 'desc': 'Fraction of heat units to emergence', 'type': 'real', 'units': 'fraction', 'min': '0.01', 'max': '0.2', 'default': '0.15'},
+                    {'field': 'frac_hu2', 'pos': 10, 'line': 1, 'desc': 'Fraction of heat units to 50% maturity', 'type': 'real', 'units': 'fraction', 'min': '0.4', 'max': '0.8', 'default': '0.5'},
+                    {'field': 'lai_decl1', 'pos': 11, 'line': 1, 'desc': 'LAI decline rate 1', 'type': 'real', 'units': 'fraction', 'min': '0.6', 'max': '1', 'default': '1'},
+                    {'field': 'lai_decl2', 'pos': 12, 'line': 1, 'desc': 'LAI decline rate 2', 'type': 'real', 'units': 'fraction', 'min': '0.6', 'max': '1', 'default': '0.99'},
+                    {'field': 'ext_co', 'pos': 13, 'line': 1, 'desc': 'Light extinction coefficient', 'type': 'real', 'units': 'none', 'min': '0.1', 'max': '1', 'default': '0.65'},
+                    {'field': 'bm_dieoff', 'pos': 14, 'line': 1, 'desc': 'Biomass dieoff fraction', 'type': 'real', 'units': 'fraction', 'min': '0', 'max': '1', 'default': '0.05'},
+                    {'field': 'rt_st_bm', 'pos': 15, 'line': 1, 'desc': 'Root to shoot biomass ratio', 'type': 'real', 'units': 'none', 'min': '0.1', 'max': '2', 'default': '0.4'},
+                    {'field': 'rsd_pct', 'pos': 16, 'line': 1, 'desc': 'Residue percent remaining', 'type': 'real', 'units': 'percent', 'min': '10', 'max': '99', 'default': '50'},
+                    {'field': 'co2_hi', 'pos': 17, 'line': 1, 'desc': 'CO2 harvest index response', 'type': 'real', 'units': 'none', 'min': '0', 'max': '2', 'default': '100'},
+                    {'field': 'bm_e', 'pos': 18, 'line': 1, 'desc': 'Biomass energy ratio', 'type': 'real', 'units': 'kg/ha kPa-1 mm-1', 'min': '10', 'max': '80', 'default': '35'},
+                    {'field': 'n_fix1', 'pos': 19, 'line': 1, 'desc': 'Nitrogen fixation parameter 1', 'type': 'real', 'units': 'kg N/kg biomass', 'min': '0', 'max': '0.2', 'default': '0.003'},
+                    {'field': 'n_fix2', 'pos': 20, 'line': 1, 'desc': 'Nitrogen fixation parameter 2', 'type': 'real', 'units': 'kg N/kg biomass', 'min': '0', 'max': '2', 'default': '1'},
+                    {'field': 'n_fr1', 'pos': 21, 'line': 1, 'desc': 'Nitrogen fraction in plant 1', 'type': 'real', 'units': 'kg N/kg biomass', 'min': '0.005', 'max': '0.1', 'default': '0.024'},
+                    {'field': 'n_fr2', 'pos': 22, 'line': 1, 'desc': 'Nitrogen fraction in plant 2', 'type': 'real', 'units': 'kg N/kg biomass', 'min': '0.005', 'max': '0.1', 'default': '0.009'},
+                    {'field': 'n_fr3', 'pos': 23, 'line': 1, 'desc': 'Nitrogen fraction in plant 3', 'type': 'real', 'units': 'kg N/kg biomass', 'min': '0.005', 'max': '0.1', 'default': '0.007'},
+                    {'field': 'p_fr1', 'pos': 24, 'line': 1, 'desc': 'Phosphorus fraction in plant 1', 'type': 'real', 'units': 'kg P/kg biomass', 'min': '0.001', 'max': '0.01', 'default': '0.003'},
+                    {'field': 'p_fr2', 'pos': 25, 'line': 1, 'desc': 'Phosphorus fraction in plant 2', 'type': 'real', 'units': 'kg P/kg biomass', 'min': '0.001', 'max': '0.01', 'default': '0.0012'},
+                    {'field': 'p_fr3', 'pos': 26, 'line': 1, 'desc': 'Phosphorus fraction in plant 3', 'type': 'real', 'units': 'kg P/kg biomass', 'min': '0.001', 'max': '0.01', 'default': '0.001'},
+                    {'field': 'wsyf', 'pos': 27, 'line': 1, 'desc': 'Water stress yield factor', 'type': 'real', 'units': 'none', 'min': '0', 'max': '1', 'default': '0.01'},
+                    {'field': 'usle_c', 'pos': 28, 'line': 1, 'desc': 'USLE crop factor', 'type': 'real', 'units': 'none', 'min': '0.001', 'max': '0.5', 'default': '0.001'},
+                    {'field': 'gstemn', 'pos': 29, 'line': 1, 'desc': 'Growth stress temperature min', 'type': 'real', 'units': 'degrees C', 'min': '-10', 'max': '30', 'default': '12'},
+                    {'field': 'gstemx', 'pos': 30, 'line': 1, 'desc': 'Growth stress temperature max', 'type': 'real', 'units': 'degrees C', 'min': '25', 'max': '60', 'default': '40'},
+                ]
+            },
+            
+            # PARAMETERS.BSN - Basin parameters (SIMULATION category) - Major coverage expansion
+            {
+                'file': 'parameters.bsn',
+                'table': 'parameters_bsn',
+                'classification': 'SIMULATION',
+                'parameters': [
+                    {'field': 'name', 'pos': 1, 'line': 1, 'desc': 'Basin parameter set name', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'basin1'},
+                    {'field': 'pet', 'pos': 2, 'line': 1, 'desc': 'Potential evapotranspiration method', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'hargreaves'},
+                    {'field': 'pet_co', 'pos': 3, 'line': 1, 'desc': 'PET coefficient', 'type': 'real', 'units': 'none', 'min': '0.01', 'max': '2', 'default': '1'},
+                    {'field': 'evt_lyr', 'pos': 4, 'line': 1, 'desc': 'Evaporation layer depth', 'type': 'real', 'units': 'mm', 'min': '0', 'max': '300', 'default': '20'},
+                    {'field': 'rtu_wq', 'pos': 5, 'line': 1, 'desc': 'Routing unit water quality', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'none'},
+                    {'field': 'wq_cha', 'pos': 6, 'line': 1, 'desc': 'Channel water quality', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'none'},
+                    {'field': 'wq_res', 'pos': 7, 'line': 1, 'desc': 'Reservoir water quality', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'none'},
+                    {'field': 'wq_hru', 'pos': 8, 'line': 1, 'desc': 'HRU water quality', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'none'},
+                    {'field': 'sed_cha', 'pos': 9, 'line': 1, 'desc': 'Channel sediment', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'none'},
+                    {'field': 'sed_res', 'pos': 10, 'line': 1, 'desc': 'Reservoir sediment', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'none'},
+                    {'field': 'nut_cha', 'pos': 11, 'line': 1, 'desc': 'Channel nutrients', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'none'},
+                    {'field': 'nut_res', 'pos': 12, 'line': 1, 'desc': 'Reservoir nutrients', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'none'},
+                    {'field': 'carbon', 'pos': 13, 'line': 1, 'desc': 'Carbon modeling', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'none'},
+                    {'field': 'rtu_def', 'pos': 14, 'line': 1, 'desc': 'Default routing unit', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'elem'},
+                    {'field': 'rtu_sub', 'pos': 15, 'line': 1, 'desc': 'Subbasin routing unit', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'elem'},
+                    {'field': 'day_lag_max', 'pos': 16, 'line': 1, 'desc': 'Maximum lag days', 'type': 'real', 'units': 'days', 'min': '0.1', 'max': '100', 'default': '3'},
+                    {'field': 'cn_froz', 'pos': 17, 'line': 1, 'desc': 'Curve number frozen soil', 'type': 'real', 'units': 'none', 'min': '0', 'max': '1', 'default': '0'},
+                    {'field': 'dorm_hr', 'pos': 18, 'line': 1, 'desc': 'Dormant hour threshold', 'type': 'real', 'units': 'hours', 'min': '0', 'max': '10', 'default': '8'},
+                    {'field': 'hyd_hru', 'pos': 19, 'line': 1, 'desc': 'HRU hydrology', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'none'},
+                    {'field': 'sw_init', 'pos': 20, 'line': 1, 'desc': 'Initial soil water', 'type': 'real', 'units': 'fraction', 'min': '0', 'max': '1', 'default': '0.5'},
+                    {'field': 'gw_init', 'pos': 21, 'line': 1, 'desc': 'Initial groundwater', 'type': 'real', 'units': 'mm', 'min': '0', 'max': '1000', 'default': '1000'},
+                    {'field': 'sol_bd', 'pos': 22, 'line': 1, 'desc': 'Bulk density', 'type': 'real', 'units': 'Mg/m3', 'min': '1.1', 'max': '2.5', 'default': '1.3'},
+                    {'field': 'sol_k', 'pos': 23, 'line': 1, 'desc': 'Saturated hydraulic conductivity', 'type': 'real', 'units': 'mm/hr', 'min': '0', 'max': '2000', 'default': '10'},
+                    {'field': 'sol_cbn', 'pos': 24, 'line': 1, 'desc': 'Organic carbon content', 'type': 'real', 'units': 'percent', 'min': '0.05', 'max': '10', 'default': '1.5'},
+                    {'field': 'sol_ph', 'pos': 25, 'line': 1, 'desc': 'Soil pH', 'type': 'real', 'units': 'none', 'min': '3.5', 'max': '10', 'default': '6.5'},
+                ]
+            },
+            
+            # HRU-DATA.HRU - HRU land surface data (HRU category) - Major coverage expansion  
+            {
+                'file': 'hru-data.hru',
+                'table': 'hru_data',
+                'classification': 'HRU',
+                'parameters': [
+                    {'field': 'name', 'pos': 1, 'line': 1, 'desc': 'HRU data name', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'hru_data1'},
+                    {'field': 'topo', 'pos': 2, 'line': 1, 'desc': 'Topography pointer', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'topo1'},
+                    {'field': 'hydro', 'pos': 3, 'line': 1, 'desc': 'Hydrology pointer', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'hydro1'},
+                    {'field': 'soil', 'pos': 4, 'line': 1, 'desc': 'Soil pointer', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'soil1'},
+                    {'field': 'lu_mgt', 'pos': 5, 'line': 1, 'desc': 'Land use management pointer', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'lumgt1'},
+                    {'field': 'soil_plant_init', 'pos': 6, 'line': 1, 'desc': 'Soil plant initial conditions', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'plant_init1'},
+                    {'field': 'surf_stor', 'pos': 7, 'line': 1, 'desc': 'Surface storage pointer', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'null'},
+                    {'field': 'snow', 'pos': 8, 'line': 1, 'desc': 'Snow parameters pointer', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'null'},
+                    {'field': 'field', 'pos': 9, 'line': 1, 'desc': 'Field pointer', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'null'},
+                ]
+            },
+            
+            # CHANNEL.OUT - Channel output specifications (CHANNEL category) - Major coverage expansion
+            {
+                'file': 'channel.out',
+                'table': 'channel_out',
+                'classification': 'CHANNEL',
+                'parameters': [
+                    {'field': 'id', 'pos': 1, 'line': 1, 'desc': 'Channel output identifier', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '9999', 'default': '1'},
+                    {'field': 'name', 'pos': 2, 'line': 1, 'desc': 'Channel output name', 'type': 'string', 'units': 'none', 'min': '', 'max': '', 'default': 'channel1'},
+                    {'field': 'gis_id', 'pos': 3, 'line': 1, 'desc': 'GIS identifier', 'type': 'integer', 'units': 'none', 'min': '1', 'max': '999999', 'default': '1'},
+                    {'field': 'area', 'pos': 4, 'line': 1, 'desc': 'Drainage area', 'type': 'real', 'units': 'km2', 'min': '0.01', 'max': '50000', 'default': '1'},
+                    {'field': 'precip', 'pos': 5, 'line': 1, 'desc': 'Precipitation', 'type': 'real', 'units': 'mm', 'min': '0', 'max': '2000', 'default': '0'},
+                    {'field': 'snofall', 'pos': 6, 'line': 1, 'desc': 'Snowfall', 'type': 'real', 'units': 'mm', 'min': '0', 'max': '1000', 'default': '0'},
+                    {'field': 'snomlt', 'pos': 7, 'line': 1, 'desc': 'Snow melt', 'type': 'real', 'units': 'mm', 'min': '0', 'max': '1000', 'default': '0'},
+                    {'field': 'surq_gen', 'pos': 8, 'line': 1, 'desc': 'Surface runoff generation', 'type': 'real', 'units': 'mm', 'min': '0', 'max': '500', 'default': '0'},
+                    {'field': 'latq_gen', 'pos': 9, 'line': 1, 'desc': 'Lateral flow generation', 'type': 'real', 'units': 'mm', 'min': '0', 'max': '200', 'default': '0'},
+                    {'field': 'wateryld', 'pos': 10, 'line': 1, 'desc': 'Water yield', 'type': 'real', 'units': 'mm', 'min': '0', 'max': '1000', 'default': '0'},
+                    {'field': 'perc', 'pos': 11, 'line': 1, 'desc': 'Percolation', 'type': 'real', 'units': 'mm', 'min': '0', 'max': '500', 'default': '0'},
+                    {'field': 'et', 'pos': 12, 'line': 1, 'desc': 'Evapotranspiration', 'type': 'real', 'units': 'mm', 'min': '0', 'max': '1500', 'default': '0'},
+                    {'field': 'tloss', 'pos': 13, 'line': 1, 'desc': 'Transmission losses', 'type': 'real', 'units': 'mm', 'min': '0', 'max': '100', 'default': '0'},
+                    {'field': 'sed_out', 'pos': 14, 'line': 1, 'desc': 'Sediment output', 'type': 'real', 'units': 'tons', 'min': '0', 'max': '100000', 'default': '0'},
+                    {'field': 'sed_conc', 'pos': 15, 'line': 1, 'desc': 'Sediment concentration', 'type': 'real', 'units': 'mg/L', 'min': '0', 'max': '100000', 'default': '0'},
+                    {'field': 'orgn_out', 'pos': 16, 'line': 1, 'desc': 'Organic nitrogen output', 'type': 'real', 'units': 'kg N', 'min': '0', 'max': '10000', 'default': '0'},
+                    {'field': 'orgp_out', 'pos': 17, 'line': 1, 'desc': 'Organic phosphorus output', 'type': 'real', 'units': 'kg P', 'min': '0', 'max': '1000', 'default': '0'},
+                    {'field': 'no3_out', 'pos': 18, 'line': 1, 'desc': 'Nitrate output', 'type': 'real', 'units': 'kg N', 'min': '0', 'max': '10000', 'default': '0'},
+                    {'field': 'solp_out', 'pos': 19, 'line': 1, 'desc': 'Soluble phosphorus output', 'type': 'real', 'units': 'kg P', 'min': '0', 'max': '1000', 'default': '0'},
+                    {'field': 'nh3_out', 'pos': 20, 'line': 1, 'desc': 'Ammonia output', 'type': 'real', 'units': 'kg N', 'min': '0', 'max': '1000', 'default': '0'},
+                    {'field': 'no2_out', 'pos': 21, 'line': 1, 'desc': 'Nitrite output', 'type': 'real', 'units': 'kg N', 'min': '0', 'max': '1000', 'default': '0'},
+                    {'field': 'chla_out', 'pos': 22, 'line': 1, 'desc': 'Chlorophyll-a output', 'type': 'real', 'units': 'mg/L', 'min': '0', 'max': '1000', 'default': '0'},
+                ]
             }
         ]
         
