@@ -414,8 +414,15 @@ class ModularDatabaseGenerator:
         """Add comprehensive input file parameters based on SWAT+ file structure (like the original database)"""
         print("Adding SWAT+ input file parameters...")
         
+        # Check if we should use dynamic templates
+        if self._should_use_dynamic_templates():
+            self._add_dynamic_templates()
+            return
+        
         # This focuses on user-facing input file parameters, not internal code variables
         # Based on the original SWAT+ Modular Database structure
+    def _add_static_swat_templates(self) -> None:
+        """Add static SWAT+ templates (fallback method)"""
         
         input_file_params = [
             # FILE.CIO - Master configuration file (SIMULATION category)
@@ -1079,6 +1086,39 @@ class ModularDatabaseGenerator:
                 unique_id += 1
         
         print(f"Added {len(self.parameters)} input file parameters")
+    
+    def _should_use_dynamic_templates(self) -> bool:
+        """Check if we should use dynamic templates instead of static ones"""
+        # Use dynamic templates if we have sufficient I/O analysis data
+        return len(self.io_operations) > 50  # Threshold for meaningful analysis
+    
+    def _add_dynamic_templates(self) -> None:
+        """Add parameters using dynamic template analysis"""
+        print("Using dynamic template generation from FORD I/O analysis...")
+        
+        # Import dynamic generator 
+        try:
+            from dynamic_modular_database_generator import DynamicModularDatabaseGenerator
+            
+            # Create temporary dynamic generator
+            dynamic_gen = DynamicModularDatabaseGenerator(str(self.json_outputs_dir), "temp_dynamic")
+            dynamic_gen.load_and_analyze_json_files()
+            dynamic_gen.generate_dynamic_templates()
+            
+            # Import the dynamic parameters
+            unique_id_offset = len(self.parameters) + 1
+            for param in dynamic_gen.parameters:
+                param['Unique_ID'] = param['Unique_ID'] + unique_id_offset - 1
+                self.parameters.append(param)
+            
+            print(f"Added {len(dynamic_gen.parameters)} dynamically generated parameters")
+            
+        except ImportError:
+            print("Dynamic generator not available, falling back to static templates")
+            self._add_static_swat_templates()
+    
+    def _add_static_swat_templates(self) -> None:
+        """Add static SWAT+ templates (fallback method)"""
     
     def _add_io_derived_parameters(self, start_id: int) -> None:
         """Add additional parameters derived from I/O analysis (complementary to input file params)"""
