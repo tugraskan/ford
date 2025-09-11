@@ -2,7 +2,7 @@
 
 ## Generated Database Statistics
 
-**Total Parameters**: 1187
+**Total Parameters**: 1462
 
 ### Parameters by Classification
 
@@ -10,8 +10,10 @@
 - **CONNECT**: 26 parameters
 - **GENERAL**: 975 parameters
 - **HRU**: 43 parameters
-- **PLANT**: 30 parameters
+- **PLANT**: 120 parameters
+- **RESERVOIR**: 91 parameters
 - **SIMULATION**: 78 parameters
+- **WATER**: 94 parameters
 
 ## Correlation with Original SWAT+ Database
 
@@ -23,7 +25,7 @@
 
 ### Content Coverage
 📊 **Original SWAT+**: ~3,330 parameters
-📊 **Generated**: 1187 parameters
+📊 **Generated**: 1462 parameters
 📈 **Coverage Focus**: Core simulation, connection, and data files
 
 ### Key Improvements Needed for Full SWAT+ Compatibility

@@ -3,13 +3,13 @@
 ## Overview
 
 This modular database was automatically generated from FORD source code analysis.
-It contains 1187 parameters extracted from 5909 unique variables
+It contains 1462 parameters extracted from 5909 unique variables
 across 262 procedures with I/O operations.
 
 ## Database Structure
 
 ### Parameters
-- **Total Parameters**: 1187
+- **Total Parameters**: 1462
 - **Unique Variables**: 5909
 - **Procedures with I/O**: 262
 
@@ -18,8 +18,10 @@ across 262 procedures with I/O operations.
 - **CONNECT**: 26 parameters
 - **GENERAL**: 975 parameters
 - **HRU**: 43 parameters
-- **PLANT**: 30 parameters
+- **PLANT**: 120 parameters
+- **RESERVOIR**: 91 parameters
 - **SIMULATION**: 78 parameters
+- **WATER**: 94 parameters
 
 
 ## Files Generated
