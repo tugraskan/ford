@@ -569,7 +569,20 @@ def main(proj_data: ProjectSettings, proj_docs: str):
                 
                 # Generate modular database with dynamic templates
                 modular_db_dir = proj_data.output_dir / "modular_database"
-                generator = DynamicModularDatabaseGenerator(str(json_outputs_dir), str(modular_db_dir))
+                
+                # Enhanced: Try to find input_file_module.f90 for enhanced discovery
+                fortran_src_dir = None
+                for src_dir in proj_data.src_dir:
+                    input_module_path = Path(src_dir) / "input_file_module.f90"
+                    if input_module_path.exists():
+                        fortran_src_dir = str(src_dir)
+                        break
+                
+                generator = DynamicModularDatabaseGenerator(
+                    str(json_outputs_dir), 
+                    str(modular_db_dir),
+                    fortran_src_dir=fortran_src_dir
+                )
                 generator.generate_all()
                 
                 modular_db_end = time.time()

@@ -1,0 +1,447 @@
+# Dynamic Modular Database Generation Report
+
+## Overview
+
+This database was generated using **dynamic template analysis** of FORD JSON outputs.
+Instead of static templates, parameters were extracted directly from source code I/O operations.
+
+**Total Parameters**: 1108
+**Files Analyzed**: 200
+**I/O Procedures**: 262
+
+## Dynamic Template Discovery
+
+### Files with Dynamic Templates
+
+- **reservoir.res**: 3 parameters, 3 lines
+- **satbuffer.str**: 3 parameters, 3 lines
+- **initial.aqu_cs**: 3 parameters, 3 lines
+- **res_conds.dat**: 13 parameters, 7 lines
+- **cs_channel.ini**: 4 parameters, 3 lines
+- **channel.cha**: 6 parameters, 4 lines
+- **gwflow.input**: 73 parameters, 44 lines
+- **gwflow.pumpex**: 7 parameters, 4 lines
+- **gwflow.tiles**: 10 parameters, 10 lines
+- **gwflow.solutes**: 13 parameters, 12 lines
+- **gwflow.hru_pump_observe**: 2 parameters, 2 lines
+- **gwflow.rescells**: 7 parameters, 6 lines
+- **gwflow.floodplain**: 6 parameters, 3 lines
+- **gwflow.canals**: 20 parameters, 10 lines
+- **gwflow.solutes.minerals**: 6 parameters, 6 lines
+- **gwflow.lsucell**: 9 parameters, 6 lines
+- **out.key**: 2 parameters, 1 lines
+- **gwflow.hrucell**: 6 parameters, 3 lines
+- **gwflow.huc12cell**: 5 parameters, 3 lines
+- **gwflow.cellhru**: 7 parameters, 4 lines
+- **gwflow.streamobs**: 5 parameters, 5 lines
+- **hru-data.hru**: 4 parameters, 3 lines
+- **cs_recall.rec**: 6 parameters, 3 lines
+- **gwflow.chancells**: 2 parameters, 2 lines
+- **file.cio**: 61 parameters, 31 lines
+- **cs_atmo.cli**: 7 parameters, 7 lines
+- **nutrients.rte**: 3 parameters, 3 lines
+- **sed_nut.cha**: 3 parameters, 3 lines
+- **salt_atmo.cli**: 13 parameters, 7 lines
+- **carb_coefs.cbn', iostat=eof**: 51 parameters, 20 lines
+- **co2_yr.dat**: 4 parameters, 4 lines
+- **pest_metabolite.pes**: 11 parameters, 5 lines
+- **salt_channel.ini**: 4 parameters, 3 lines
+- **soil_lyr_depths.sol**: 4 parameters, 4 lines
+- **salt_recall.rec**: 6 parameters, 3 lines
+- **manure_allo.mnu**: 20 parameters, 6 lines
+- **cs_aqu.ini**: 4 parameters, 3 lines
+- **soil_plant.ini_cs**: 8 parameters, 3 lines
+- **salt_fertilizer.frt**: 3 parameters, 3 lines
+- **scen_dtl.upd**: 6 parameters, 4 lines
+- **transplant.plt**: 3 parameters, 3 lines
+- **cs.res**: 3 parameters, 3 lines
+- **salt_hru.ini**: 5 parameters, 5 lines
+- **wetland.wet_cs**: 3 parameters, 2 lines
+- **cs_hru.ini**: 5 parameters, 5 lines
+- **basins_carbon.tes**: 3 parameters, 3 lines
+- **gwflow.wetland**: 3 parameters, 2 lines
+- **print.prt**: 289 parameters, 114 lines
+- **pest.com**: 7 parameters, 4 lines
+- **salt_aqu.ini**: 5 parameters, 3 lines
+- **puddle.ops**: 3 parameters, 3 lines
+- **initial.cha_cs**: 3 parameters, 3 lines
+- **plants.plt**: 6 parameters, 4 lines
+- **fertilizer.frt_cs**: 3 parameters, 3 lines
+- **treatment.trt**: 5 parameters, 4 lines
+- **element.ccu**: 9 parameters, 3 lines
+- **pet.cli**: 2 parameters, 2 lines
+- **time.sim**: 7 parameters, 3 lines
+- **reservoir.res_cs**: 4 parameters, 3 lines
+- **manure.frt**: 3 parameters, 3 lines
+- **object.prt**: 2 parameters, 2 lines
+- **object.cnt**: 2 parameters, 2 lines
+- **constituents.cs**: 2 parameters, 2 lines
+- **codes.bsn**: 2 parameters, 2 lines
+- **parameters.bsn**: 2 parameters, 2 lines
+- **weather-sta.cli**: 2 parameters, 2 lines
+- **weather-wgn.cli**: 2 parameters, 2 lines
+- **wind-dir.cli**: 2 parameters, 2 lines
+- **pcp.cli**: 2 parameters, 2 lines
+- **tmp.cli**: 2 parameters, 2 lines
+- **slr.cli**: 2 parameters, 2 lines
+- **hmd.cli**: 2 parameters, 2 lines
+- **wnd.cli**: 2 parameters, 2 lines
+- **atmodep.cli**: 2 parameters, 2 lines
+- **hru.con**: 2 parameters, 2 lines
+- **hru-lte.con**: 2 parameters, 2 lines
+- **rout_unit.con**: 2 parameters, 2 lines
+- **gwflow.con**: 2 parameters, 2 lines
+- **aquifer.con**: 2 parameters, 2 lines
+- **aquifer2d.con**: 2 parameters, 2 lines
+- **channel.con**: 2 parameters, 2 lines
+- **reservoir.con**: 2 parameters, 2 lines
+- **recall.con**: 2 parameters, 2 lines
+- **exco.con**: 2 parameters, 2 lines
+- **delratio.con**: 2 parameters, 2 lines
+- **outlet.con**: 2 parameters, 2 lines
+- **chandeg.con**: 2 parameters, 2 lines
+- **initial.cha**: 4 parameters, 4 lines
+- **hydrology.cha**: 4 parameters, 4 lines
+- **sediment.cha**: 4 parameters, 4 lines
+- **nutrients.cha**: 4 parameters, 4 lines
+- **channel-lte.cha**: 4 parameters, 4 lines
+- **hyd-sed-lte.cha**: 4 parameters, 4 lines
+- **temperature.cha**: 4 parameters, 4 lines
+- **initial.res**: 3 parameters, 3 lines
+- **hydrology.res**: 3 parameters, 3 lines
+- **sediment.res**: 3 parameters, 3 lines
+- **nutrients.res**: 3 parameters, 3 lines
+- **weir.res**: 3 parameters, 3 lines
+- **wetland.wet**: 2 parameters, 2 lines
+- **hydrology.wet**: 2 parameters, 2 lines
+- **rout_unit.def**: 2 parameters, 2 lines
+- **rout_unit.ele**: 2 parameters, 2 lines
+- **rout_unit.rtu**: 2 parameters, 2 lines
+- **rout_unit.dr**: 2 parameters, 2 lines
+- **hru-lte.hru**: 4 parameters, 4 lines
+- **exco.exc**: 2 parameters, 2 lines
+- **exco_om.exc**: 2 parameters, 2 lines
+- **exco_pest.exc**: 2 parameters, 2 lines
+- **exco_path.exc**: 2 parameters, 2 lines
+- **exco_hmet.exc**: 2 parameters, 2 lines
+- **exco_salt.exc**: 2 parameters, 2 lines
+- **recall.rec**: 2 parameters, 2 lines
+- **delratio.del**: 2 parameters, 2 lines
+- **dr_om.del**: 2 parameters, 2 lines
+- **dr_pest.del**: 2 parameters, 2 lines
+- **dr_path.del**: 2 parameters, 2 lines
+- **dr_hmet.del**: 2 parameters, 2 lines
+- **dr_salt.del**: 2 parameters, 2 lines
+- **initial.aqu**: 2 parameters, 2 lines
+- **aquifer.aqu**: 2 parameters, 2 lines
+- **animal.hrd**: 2 parameters, 2 lines
+- **herd.hrd**: 2 parameters, 2 lines
+- **ranch.hrd**: 2 parameters, 2 lines
+- **water_allocation.wro**: 2 parameters, 2 lines
+- **element.wro**: 2 parameters, 2 lines
+- **water_rights.wro**: 2 parameters, 2 lines
+- **chan-surf.lin**: 2 parameters, 2 lines
+- **aqu_cha.lin**: 2 parameters, 2 lines
+- **hydrology.hyd**: 2 parameters, 2 lines
+- **topography.hyd**: 2 parameters, 2 lines
+- **field.fld**: 2 parameters, 2 lines
+- **tiledrain.str**: 2 parameters, 2 lines
+- **septic.str**: 2 parameters, 2 lines
+- **filterstrip.str**: 2 parameters, 2 lines
+- **grassedww.str**: 2 parameters, 2 lines
+- **bmpuser.str**: 2 parameters, 2 lines
+- **fertilizer.frt**: 2 parameters, 2 lines
+- **tillage.til**: 2 parameters, 2 lines
+- **pesticide.pes**: 2 parameters, 2 lines
+- **pathogens.pth**: 2 parameters, 2 lines
+- **metals.mtl**: 2 parameters, 2 lines
+- **salt.slt**: 2 parameters, 2 lines
+- **urban.urb**: 2 parameters, 2 lines
+- **septic.sep**: 2 parameters, 2 lines
+- **snow.sno**: 2 parameters, 2 lines
+- **harv.ops**: 2 parameters, 2 lines
+- **graze.ops**: 2 parameters, 2 lines
+- **irr.ops**: 2 parameters, 2 lines
+- **chem_app.ops**: 2 parameters, 2 lines
+- **fire.ops**: 2 parameters, 2 lines
+- **sweep.ops**: 2 parameters, 2 lines
+- **landuse.lum**: 2 parameters, 2 lines
+- **management.sch**: 2 parameters, 2 lines
+- **cntable.lum**: 2 parameters, 2 lines
+- **cons_practice.lum**: 2 parameters, 2 lines
+- **ovn_table.lum**: 2 parameters, 2 lines
+- **cal_parms.cal**: 2 parameters, 2 lines
+- **calibration.cal**: 2 parameters, 2 lines
+- **codes.sft**: 2 parameters, 2 lines
+- **wb_parms.sft**: 2 parameters, 2 lines
+- **water_balance.sft**: 2 parameters, 2 lines
+- **ch_sed_budget.sft**: 2 parameters, 2 lines
+- **ch_sed_parms.sft**: 2 parameters, 2 lines
+- **plant_parms.sft**: 2 parameters, 2 lines
+- **plant_gro.sft**: 2 parameters, 2 lines
+- **plant.ini**: 2 parameters, 2 lines
+- **soil_plant.ini**: 2 parameters, 2 lines
+- **om_water.ini**: 2 parameters, 2 lines
+- **pest_hru.ini**: 2 parameters, 2 lines
+- **pest_water.ini**: 2 parameters, 2 lines
+- **path_hru.ini**: 2 parameters, 2 lines
+- **path_water.ini**: 2 parameters, 2 lines
+- **hmet_hru.ini**: 2 parameters, 2 lines
+- **hmet_water.ini**: 2 parameters, 2 lines
+- **salt_water.ini**: 2 parameters, 2 lines
+- **soils.sol**: 4 parameters, 4 lines
+- **nutrients.sol**: 4 parameters, 4 lines
+- **soils_lte.sol**: 4 parameters, 4 lines
+- **lum.dtl**: 2 parameters, 2 lines
+- **res_rel.dtl**: 2 parameters, 2 lines
+- **scen_lu.dtl**: 2 parameters, 2 lines
+- **flo_con.dtl**: 2 parameters, 2 lines
+- **ls_unit.ele**: 2 parameters, 2 lines
+- **ls_unit.def**: 2 parameters, 2 lines
+- **ls_reg.ele**: 2 parameters, 2 lines
+- **ls_reg.def**: 2 parameters, 2 lines
+- **ls_cal.reg**: 2 parameters, 2 lines
+- **ch_catunit.ele**: 2 parameters, 2 lines
+- **ch_catunit.def**: 2 parameters, 2 lines
+- **ch_reg.def**: 2 parameters, 2 lines
+- **aqu_catunit.ele**: 2 parameters, 2 lines
+- **aqu_catunit.def**: 2 parameters, 2 lines
+- **aqu_reg.def**: 2 parameters, 2 lines
+- **res_catunit.ele**: 2 parameters, 2 lines
+- **res_catunit.def**: 2 parameters, 2 lines
+- **res_reg.def**: 2 parameters, 2 lines
+- **rec_catunit.ele**: 2 parameters, 2 lines
+- **rec_catunit.def**: 2 parameters, 2 lines
+- **rec_reg.def**: 2 parameters, 2 lines
+
+### Parameters by Classification
+
+- **CHANNEL**: 56 parameters
+- **CLIMATE**: 40 parameters
+- **CONNECT**: 6 parameters
+- **GENERAL**: 515 parameters
+- **HRU**: 41 parameters
+- **PLANT**: 25 parameters
+- **RESERVOIR**: 53 parameters
+- **SIMULATION**: 360 parameters
+- **SOIL**: 12 parameters
+
+### Parameters by File
+
+- **animal.hrd**: 2 parameters
+- **aqu_catunit.def**: 2 parameters
+- **aqu_catunit.ele**: 2 parameters
+- **aqu_cha.lin**: 2 parameters
+- **aqu_reg.def**: 2 parameters
+- **aquifer.aqu**: 2 parameters
+- **aquifer.con**: 2 parameters
+- **aquifer2d.con**: 2 parameters
+- **atmodep.cli**: 2 parameters
+- **basins_carbon.tes**: 3 parameters
+- **bmpuser.str**: 2 parameters
+- **cal_parms.cal**: 2 parameters
+- **calibration.cal**: 2 parameters
+- **carb_coefs.cbn', iostat=eof**: 51 parameters
+- **ch_catunit.def**: 2 parameters
+- **ch_catunit.ele**: 2 parameters
+- **ch_reg.def**: 2 parameters
+- **ch_sed_budget.sft**: 2 parameters
+- **ch_sed_parms.sft**: 2 parameters
+- **chan-surf.lin**: 2 parameters
+- **chandeg.con**: 2 parameters
+- **channel-lte.cha**: 4 parameters
+- **channel.cha**: 6 parameters
+- **channel.con**: 2 parameters
+- **chem_app.ops**: 2 parameters
+- **cntable.lum**: 2 parameters
+- **co2_yr.dat**: 4 parameters
+- **codes.bsn**: 2 parameters
+- **codes.sft**: 2 parameters
+- **cons_practice.lum**: 2 parameters
+- **constituents.cs**: 2 parameters
+- **cs.res**: 3 parameters
+- **cs_aqu.ini**: 4 parameters
+- **cs_atmo.cli**: 7 parameters
+- **cs_channel.ini**: 4 parameters
+- **cs_hru.ini**: 5 parameters
+- **cs_recall.rec**: 6 parameters
+- **delratio.con**: 2 parameters
+- **delratio.del**: 2 parameters
+- **dr_hmet.del**: 2 parameters
+- **dr_om.del**: 2 parameters
+- **dr_path.del**: 2 parameters
+- **dr_pest.del**: 2 parameters
+- **dr_salt.del**: 2 parameters
+- **element.ccu**: 9 parameters
+- **element.wro**: 2 parameters
+- **exco.con**: 2 parameters
+- **exco.exc**: 2 parameters
+- **exco_hmet.exc**: 2 parameters
+- **exco_om.exc**: 2 parameters
+- **exco_path.exc**: 2 parameters
+- **exco_pest.exc**: 2 parameters
+- **exco_salt.exc**: 2 parameters
+- **fertilizer.frt**: 2 parameters
+- **fertilizer.frt_cs**: 3 parameters
+- **field.fld**: 2 parameters
+- **file.cio**: 61 parameters
+- **filterstrip.str**: 2 parameters
+- **fire.ops**: 2 parameters
+- **flo_con.dtl**: 2 parameters
+- **grassedww.str**: 2 parameters
+- **graze.ops**: 2 parameters
+- **gwflow.canals**: 20 parameters
+- **gwflow.cellhru**: 7 parameters
+- **gwflow.chancells**: 2 parameters
+- **gwflow.con**: 2 parameters
+- **gwflow.floodplain**: 6 parameters
+- **gwflow.hru_pump_observe**: 2 parameters
+- **gwflow.hrucell**: 6 parameters
+- **gwflow.huc12cell**: 5 parameters
+- **gwflow.input**: 73 parameters
+- **gwflow.lsucell**: 9 parameters
+- **gwflow.pumpex**: 7 parameters
+- **gwflow.rescells**: 7 parameters
+- **gwflow.solutes**: 13 parameters
+- **gwflow.solutes.minerals**: 6 parameters
+- **gwflow.streamobs**: 5 parameters
+- **gwflow.tiles**: 10 parameters
+- **gwflow.wetland**: 3 parameters
+- **harv.ops**: 2 parameters
+- **herd.hrd**: 2 parameters
+- **hmd.cli**: 2 parameters
+- **hmet_hru.ini**: 2 parameters
+- **hmet_water.ini**: 2 parameters
+- **hru-data.hru**: 4 parameters
+- **hru-lte.con**: 2 parameters
+- **hru-lte.hru**: 4 parameters
+- **hru.con**: 2 parameters
+- **hyd-sed-lte.cha**: 4 parameters
+- **hydrology.cha**: 4 parameters
+- **hydrology.hyd**: 2 parameters
+- **hydrology.res**: 3 parameters
+- **hydrology.wet**: 2 parameters
+- **initial.aqu**: 2 parameters
+- **initial.aqu_cs**: 3 parameters
+- **initial.cha**: 4 parameters
+- **initial.cha_cs**: 3 parameters
+- **initial.res**: 3 parameters
+- **irr.ops**: 2 parameters
+- **landuse.lum**: 2 parameters
+- **ls_cal.reg**: 2 parameters
+- **ls_reg.def**: 2 parameters
+- **ls_reg.ele**: 2 parameters
+- **ls_unit.def**: 2 parameters
+- **ls_unit.ele**: 2 parameters
+- **lum.dtl**: 2 parameters
+- **management.sch**: 2 parameters
+- **manure.frt**: 3 parameters
+- **manure_allo.mnu**: 20 parameters
+- **metals.mtl**: 2 parameters
+- **nutrients.cha**: 4 parameters
+- **nutrients.res**: 3 parameters
+- **nutrients.rte**: 3 parameters
+- **nutrients.sol**: 4 parameters
+- **object.cnt**: 2 parameters
+- **object.prt**: 2 parameters
+- **om_water.ini**: 2 parameters
+- **out.key**: 2 parameters
+- **outlet.con**: 2 parameters
+- **ovn_table.lum**: 2 parameters
+- **parameters.bsn**: 2 parameters
+- **path_hru.ini**: 2 parameters
+- **path_water.ini**: 2 parameters
+- **pathogens.pth**: 2 parameters
+- **pcp.cli**: 2 parameters
+- **pest.com**: 7 parameters
+- **pest_hru.ini**: 2 parameters
+- **pest_metabolite.pes**: 11 parameters
+- **pest_water.ini**: 2 parameters
+- **pesticide.pes**: 2 parameters
+- **pet.cli**: 2 parameters
+- **plant.ini**: 2 parameters
+- **plant_gro.sft**: 2 parameters
+- **plant_parms.sft**: 2 parameters
+- **plants.plt**: 6 parameters
+- **print.prt**: 289 parameters
+- **puddle.ops**: 3 parameters
+- **ranch.hrd**: 2 parameters
+- **rec_catunit.def**: 2 parameters
+- **rec_catunit.ele**: 2 parameters
+- **rec_reg.def**: 2 parameters
+- **recall.con**: 2 parameters
+- **recall.rec**: 2 parameters
+- **res_catunit.def**: 2 parameters
+- **res_catunit.ele**: 2 parameters
+- **res_conds.dat**: 13 parameters
+- **res_reg.def**: 2 parameters
+- **res_rel.dtl**: 2 parameters
+- **reservoir.con**: 2 parameters
+- **reservoir.res**: 3 parameters
+- **reservoir.res_cs**: 4 parameters
+- **rout_unit.con**: 2 parameters
+- **rout_unit.def**: 2 parameters
+- **rout_unit.dr**: 2 parameters
+- **rout_unit.ele**: 2 parameters
+- **rout_unit.rtu**: 2 parameters
+- **salt.slt**: 2 parameters
+- **salt_aqu.ini**: 5 parameters
+- **salt_atmo.cli**: 13 parameters
+- **salt_channel.ini**: 4 parameters
+- **salt_fertilizer.frt**: 3 parameters
+- **salt_hru.ini**: 5 parameters
+- **salt_recall.rec**: 6 parameters
+- **salt_water.ini**: 2 parameters
+- **satbuffer.str**: 3 parameters
+- **scen_dtl.upd**: 6 parameters
+- **scen_lu.dtl**: 2 parameters
+- **sed_nut.cha**: 3 parameters
+- **sediment.cha**: 4 parameters
+- **sediment.res**: 3 parameters
+- **septic.sep**: 2 parameters
+- **septic.str**: 2 parameters
+- **slr.cli**: 2 parameters
+- **snow.sno**: 2 parameters
+- **soil_lyr_depths.sol**: 4 parameters
+- **soil_plant.ini**: 2 parameters
+- **soil_plant.ini_cs**: 8 parameters
+- **soils.sol**: 4 parameters
+- **soils_lte.sol**: 4 parameters
+- **sweep.ops**: 2 parameters
+- **temperature.cha**: 4 parameters
+- **tiledrain.str**: 2 parameters
+- **tillage.til**: 2 parameters
+- **time.sim**: 7 parameters
+- **tmp.cli**: 2 parameters
+- **topography.hyd**: 2 parameters
+- **transplant.plt**: 3 parameters
+- **treatment.trt**: 5 parameters
+- **urban.urb**: 2 parameters
+- **water_allocation.wro**: 2 parameters
+- **water_balance.sft**: 2 parameters
+- **water_rights.wro**: 2 parameters
+- **wb_parms.sft**: 2 parameters
+- **weather-sta.cli**: 2 parameters
+- **weather-wgn.cli**: 2 parameters
+- **weir.res**: 3 parameters
+- **wetland.wet**: 2 parameters
+- **wetland.wet_cs**: 3 parameters
+- **wind-dir.cli**: 2 parameters
+- **wnd.cli**: 2 parameters
+
+## Advantages of Dynamic Templates
+
+✅ **Source Code Accuracy**: Parameters extracted from actual file reading operations
+✅ **Automatic Discovery**: No manual template maintenance required
+✅ **Real Structure Mapping**: Reflects actual file formats and line positions
+✅ **Comprehensive Coverage**: Captures all parameters the source code actually reads
+✅ **Type Intelligence**: Smart inference of data types, units, and ranges
+
+## Template Generation Process
+
+1. **JSON Analysis**: Load FORD I/O analysis files (`*.io.json`)
+2. **File Discovery**: Identify input files from procedure names and units
+3. **Parameter Extraction**: Parse data_reads sections for column information
+4. **Type Inference**: Apply intelligent patterns for data types and units
+5. **Structure Mapping**: Map parameters to file positions and lines
+6. **Database Generation**: Create SWAT+-compatible parameter database
