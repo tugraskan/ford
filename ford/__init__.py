@@ -554,24 +554,48 @@ def main(proj_data: ProjectSettings, proj_docs: str):
     # Generate modular database if enabled
     if proj_data.modular_database:
         try:
-            from modular_database_generator import ModularDatabaseGenerator
-            print("  Generating modular database...")
-            modular_db_start = time.time()
-            
-            # Generate JSON outputs for modular database
-            json_outputs_dir = proj_data.output_dir / "json_outputs"
-            json_outputs_dir.mkdir(exist_ok=True)
-            
-            # Export project analysis to JSON files for modular database processing
-            _export_project_to_json(project, json_outputs_dir)
-            
-            # Generate modular database
-            modular_db_dir = proj_data.output_dir / "modular_database"
-            generator = ModularDatabaseGenerator(str(json_outputs_dir), str(modular_db_dir))
-            generator.generate_all()
-            
-            modular_db_end = time.time()
-            print(f"  ...modular database generated in {modular_db_end - modular_db_start:5.3f}s")
+            # Try dynamic generator first, fallback to static if not available
+            try:
+                from dynamic_modular_database_generator import DynamicModularDatabaseGenerator
+                print("  Generating modular database (dynamic templates)...")
+                modular_db_start = time.time()
+                
+                # Generate JSON outputs for modular database
+                json_outputs_dir = proj_data.output_dir / "json_outputs"
+                json_outputs_dir.mkdir(exist_ok=True)
+                
+                # Export project analysis to JSON files for modular database processing
+                _export_project_to_json(project, json_outputs_dir)
+                
+                # Generate modular database with dynamic templates
+                modular_db_dir = proj_data.output_dir / "modular_database"
+                generator = DynamicModularDatabaseGenerator(str(json_outputs_dir), str(modular_db_dir))
+                generator.generate_all()
+                
+                modular_db_end = time.time()
+                print(f"  ...dynamic modular database generated in {modular_db_end - modular_db_start:5.3f}s")
+                
+            except ImportError:
+                # Fallback to static generator
+                from modular_database_generator import ModularDatabaseGenerator
+                print("  Generating modular database (static templates - fallback)...")
+                modular_db_start = time.time()
+                
+                # Generate JSON outputs for modular database
+                json_outputs_dir = proj_data.output_dir / "json_outputs"
+                json_outputs_dir.mkdir(exist_ok=True)
+                
+                # Export project analysis to JSON files for modular database processing
+                _export_project_to_json(project, json_outputs_dir)
+                
+                # Generate modular database
+                modular_db_dir = proj_data.output_dir / "modular_database"
+                generator = ModularDatabaseGenerator(str(json_outputs_dir), str(modular_db_dir))
+                generator.generate_all()
+                
+                modular_db_end = time.time()
+                print(f"  ...static modular database generated in {modular_db_end - modular_db_start:5.3f}s")
+                
         except ImportError:
             warn("modular_database_generator.py not found in path, skipping modular database generation")
         except Exception as e:

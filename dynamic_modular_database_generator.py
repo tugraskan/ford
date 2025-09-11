@@ -419,7 +419,7 @@ class DynamicModularDatabaseGenerator:
         """Export dynamic parameter database to CSV"""
         print("Exporting dynamic modular database to CSV...")
         
-        csv_file = self.output_dir / 'dynamic_modular_database.csv'
+        csv_file = self.output_dir / 'modular_database.csv'
         
         # SWAT+ compatible field order
         fieldnames = [
