@@ -242,16 +242,16 @@ class ModularDatabase5_15_24_NBSGenerator:
         return parameters
     
     def _clean_parameter_name(self, param_name: str) -> str:
-        """Clean parameter names to extract meaningful variable names"""
+        """Clean parameter names to extract meaningful variable names while preserving full paths"""
         if not param_name:
             return ""
         
-        # Remove array indices and complex expressions
+        # Keep the full parameter name including % paths like time%day_start
+        # Only remove array indices in parentheses but preserve % component access
         param_name = re.sub(r'\([^)]*\)', '', param_name)
-        param_name = re.sub(r'%.*', '', param_name)
         param_name = param_name.strip()
         
-        # Skip very generic or empty names
+        # Skip very generic or empty names but allow structured names with %
         if param_name in ['k', 'i', 'j', 'ii', 'ires', 'ich', 'name'] or len(param_name) <= 1:
             return ""
         
@@ -392,16 +392,123 @@ class ModularDatabase5_15_24_NBSGenerator:
         else:
             return 'GENERAL'
     
+    def _add_file_cio_parameters(self):
+        """Add file.cio parameters first in the database"""
+        print("   📁 Adding file.cio parameters...")
+        
+        file_cio_data = self.file_cio_structure.get("file.cio", {})
+        summary = file_cio_data.get("summary", {})
+        
+        # Add header parameter
+        headers = summary.get("headers", [])
+        for header in headers:
+            self._create_file_cio_record(header, "titldum", "GENERAL", 1)
+        
+        # Add all data_reads parameters from file.cio
+        data_reads = summary.get("data_reads", [])
+        line_number = 2  # Start after header
+        
+        for read_section in data_reads:
+            columns = read_section.get("columns", [])
+            for col in columns:
+                # Create record for file.cio parameter
+                self._create_file_cio_record(col, col, self._classify_file_cio_parameter(col), line_number)
+                line_number += 1
+        
+        print(f"   ✅ Added {len(self.database_records)} file.cio parameters")
+    
+    def _create_file_cio_record(self, variable_name, swat_code_name, classification, line_number):
+        """Create a database record for file.cio parameter"""
+        record = {
+            'Unique_ID': self.unique_id_counter,
+            'Broad_Classification': classification,
+            'SWAT_File': 'file.cio',
+            'database_table': 'simulation',
+            'DATABASE_FIELD_NAME': variable_name,
+            'SWAT_Header_Name': variable_name,
+            'Text_File_Structure': 'delimited',
+            'Position_in_File': line_number,
+            'Line_in_file': line_number,
+            'Swat_code_type': 'simulation',
+            'SWAT_Code_Variable_Name': swat_code_name,  # Preserve full path here
+            'Description': f'{variable_name} parameter from file.cio',
+            'Core': 'yes' if variable_name in ['titldum'] or variable_name.startswith('in_') else 'no',
+            'Units': self._get_file_cio_units(variable_name),
+            'Data_Type': self._get_file_cio_data_type(variable_name),
+            'Minimum_Range': '0',
+            'Maximum_Range': '999' if variable_name == 'titldum' else '1',
+            'Default_Value': 'default' if variable_name == 'titldum' else '1',
+            'Use_in_DB': 'yes'
+        }
+        
+        self.database_records.append(record)
+        self.unique_id_counter += 1
+    
+    def _classify_file_cio_parameter(self, param_name):
+        """Classify file.cio parameters"""
+        if param_name == 'titldum':
+            return 'SIMULATION'
+        elif param_name.startswith('in_sim'):
+            return 'SIMULATION'
+        elif param_name.startswith('in_basin'):
+            return 'BASIN'
+        elif param_name.startswith('in_cli'):
+            return 'CLIMATE'
+        elif param_name.startswith('in_con'):
+            return 'CONNECT'
+        elif param_name.startswith('in_cha'):
+            return 'CHANNEL'
+        elif param_name.startswith('in_res'):
+            return 'RESERVOIR'
+        elif param_name.startswith('in_hru'):
+            return 'HRU'
+        elif param_name.startswith('in_aqu'):
+            return 'AQUIFER'
+        else:
+            return 'GENERAL'
+    
+    def _get_file_cio_units(self, param_name):
+        """Get units for file.cio parameters"""
+        if param_name == 'titldum':
+            return 'none'
+        else:
+            return 'filename'
+    
+    def _get_file_cio_data_type(self, param_name):
+        """Get data type for file.cio parameters"""
+        if param_name == 'titldum':
+            return 'string'
+        else:
+            return 'string'
+
     def generate_database_records(self):
         """Generate database records in Modular Database_5_15_24_nbs format"""
         print("\n📊 Generating modular database records...")
         
-        # Get all files from mapping
+        # FIRST: Add file.cio parameters
+        self._add_file_cio_parameters()
+        
+        # Get all files from mapping in file.cio order
+        ordered_files = []
+        
+        # First, add files in file.cio variable order
+        for file_var in self.file_variables:
+            if file_var in self.file_mapping:
+                for filename in self.file_mapping[file_var]:
+                    if filename and filename.strip() and filename not in ordered_files:
+                        ordered_files.append(filename)
+        
+        # Then add any remaining files
         all_files = set()
         for file_list in self.file_mapping.values():
             all_files.update([f for f in file_list if f and f.strip()])
         
         for filename in sorted(all_files):
+            if filename not in ordered_files:
+                ordered_files.append(filename)
+        
+        # Process files in proper order
+        for filename in ordered_files:
             self._process_file_for_records(filename)
         
         print(f"✅ Generated {len(self.database_records)} database records")
@@ -458,7 +565,7 @@ class ModularDatabase5_15_24_NBSGenerator:
             'Position_in_File': position,
             'Line_in_file': line,
             'Swat_code_type': swat_code_type,
-            'SWAT_Code_Variable_Name': param['name'],
+            'SWAT_Code_Variable_Name': param.get('original_name', param['name']),  # Use original full name
             'Description': f"{param['name']} parameter from {filename} via {procedure}",
             'Core': 'no',
             'Units': units,
