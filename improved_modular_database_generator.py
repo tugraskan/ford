@@ -1,0 +1,626 @@
+#!/usr/bin/env python3
+"""
+Improved Modular Database Generator Based on User Insights
+
+This generator implements the detailed structure insights provided by @tugraskan:
+- Broad_classification from first column of file.cio or input_file_module broken down by "!!" before types
+- SWAT_file from input_file_module 
+- Text_file_Structure: "simple" for single structure, "unique" for multiple structures
+- Position_in_file: column being read from input
+- Line_in_file: line it's read from input file
+- SWAT_code_type: type being read from input
+- SWAT_code_Variable_Name: attribute from read statement (preserving full paths like time%day_start)
+- Description: from comments of attribute in source code
+- Units: from source code
+- Data_type: from source code or inferred
+"""
+
+import json
+import csv
+import os
+import sys
+import re
+import argparse
+from pathlib import Path
+from typing import Dict, List, Any, Optional, Set, Tuple
+from collections import defaultdict
+
+class ImprovedModularDatabaseGenerator:
+    """
+    Generate improved modular database following user specifications
+    """
+    
+    def __init__(self, json_outputs_dir: str, src_dir: str = None):
+        self.json_outputs_dir = Path(json_outputs_dir)
+        self.src_dir = Path(src_dir) if src_dir else None
+        
+        # Core data structures
+        self.file_cio_structure = {}
+        self.file_variables = []
+        self.input_file_module = {}
+        self.classification_mapping = {}
+        self.file_mapping = {}
+        self.io_files = {}
+        
+        # Database records
+        self.database_records = []
+        self.unique_id_counter = 1
+    
+    def load_input_file_module_with_classifications(self):
+        """Parse input_file_module.f90 for classifications and file mappings"""
+        if not self.src_dir:
+            return True
+            
+        input_module_path = self.src_dir / "input_file_module.f90"
+        if not input_module_path.exists():
+            print(f"⚠️  input_file_module.f90 not found at {input_module_path}")
+            return True
+            
+        try:
+            with open(input_module_path, 'r') as f:
+                content = f.read()
+            
+            # Parse type definitions with their classification comments
+            lines = content.split('\n')
+            current_classification = "GENERAL"
+            
+            for i, line in enumerate(lines):
+                # Look for classification comments with !!
+                if line.strip().startswith('!!'):
+                    classification_text = line.strip()[2:].strip()
+                    # Map common SWAT+ classifications
+                    current_classification = self._map_classification(classification_text)
+                
+                # Look for type definitions
+                type_match = re.match(r'\s*type input_(\w+)', line)
+                if type_match:
+                    type_name = type_match.group(1)
+                    var_name = f"in_{type_name}"
+                    
+                    # Store classification
+                    self.classification_mapping[var_name] = current_classification
+                    
+                    # Extract file mappings from type definition
+                    self.input_file_module[var_name] = {}
+                    
+                    # Look for end of type and extract character definitions
+                    j = i + 1
+                    while j < len(lines) and not lines[j].strip().startswith(f'end type input_{type_name}'):
+                        char_match = re.match(r'\s*character\(len=\d+\)\s*::\s*(\w+)\s*=\s*"([^"]+)"', lines[j])
+                        if char_match:
+                            var_name_inner, filename = char_match.groups()
+                            self.input_file_module[var_name][var_name_inner] = filename
+                        j += 1
+            
+            print(f"✅ Loaded input_file_module.f90 with {len(self.input_file_module)} types and classifications")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error parsing input_file_module.f90: {e}")
+            return True
+    
+    def _map_classification(self, classification_text: str) -> str:
+        """Map classification comments to SWAT+ standard classifications"""
+        text_lower = classification_text.lower()
+        
+        if 'simulation' in text_lower or 'file.cio' in text_lower:
+            return "SIMULATION"
+        elif 'basin' in text_lower:
+            return "BASIN" 
+        elif 'climate' in text_lower:
+            return "CLIMATE"
+        elif 'connect' in text_lower:
+            return "CONNECT"
+        elif 'channel' in text_lower:
+            return "CHANNEL"
+        elif 'reservoir' in text_lower:
+            return "RESERVOIR"
+        elif 'routing unit' in text_lower or 'routing' in text_lower:
+            return "ROUTING"
+        elif 'hru' in text_lower:
+            return "HRU"
+        elif 'aquifer' in text_lower:
+            return "AQUIFER"
+        elif 'plant' in text_lower:
+            return "PLANT"
+        elif 'soil' in text_lower:
+            return "SOIL"
+        elif 'management' in text_lower:
+            return "MANAGEMENT"
+        elif 'water' in text_lower:
+            return "WATER"
+        elif 'salt' in text_lower:
+            return "SALT"
+        else:
+            return "GENERAL"
+    
+    def load_file_cio_structure(self):
+        """Load and parse readcio_read.io.json for file.cio parameters"""
+        readcio_path = self.json_outputs_dir / "readcio_read.io.json"
+        
+        if not readcio_path.exists():
+            print(f"❌ Error: {readcio_path} not found")
+            return False
+            
+        try:
+            with open(readcio_path, 'r') as f:
+                self.file_cio_structure = json.load(f)
+            
+            # Extract file variables
+            file_cio_data = self.file_cio_structure.get("file.cio", {})
+            data_reads = file_cio_data.get("summary", {}).get("data_reads", [])
+            
+            for read_section in data_reads:
+                columns = read_section.get("columns", [])
+                for col in columns:
+                    if col.startswith("in_"):
+                        if col not in self.file_variables:
+                            self.file_variables.append(col)
+            
+            print(f"✅ Loaded file.cio structure with {len(self.file_variables)} variables")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error loading file.cio structure: {e}")
+            return False
+    
+    def scan_available_io_files(self):
+        """Scan and categorize all I/O JSON files"""
+        io_pattern = re.compile(r'(.+)\.io\.json$')
+        
+        for json_file in self.json_outputs_dir.glob("*.io.json"):
+            match = io_pattern.match(json_file.name)
+            if match:
+                procedure_name = match.group(1)
+                
+                try:
+                    with open(json_file, 'r') as f:
+                        data = json.load(f)
+                    
+                    # Extract parameters from I/O data with enhanced metadata
+                    parameters = self._extract_parameters_with_metadata(data, procedure_name)
+                    
+                    self.io_files[procedure_name] = {
+                        'file_path': json_file,
+                        'data': data,
+                        'parameters': parameters,
+                        'parameter_count': len(parameters)
+                    }
+                    
+                except Exception as e:
+                    print(f"⚠️  Error loading {json_file}: {e}")
+        
+        print(f"📊 Found {len(self.io_files)} I/O analysis files")
+        return True
+    
+    def _extract_parameters_with_metadata(self, io_data: Dict[str, Any], procedure_name: str) -> List[Dict[str, Any]]:
+        """Extract parameters with enhanced metadata following user specifications"""
+        parameters = []
+        
+        for file_key, file_info in io_data.items():
+            if not isinstance(file_info, dict):
+                continue
+                
+            summary = file_info.get('summary', {})
+            if not isinstance(summary, dict):
+                continue
+                
+            data_reads = summary.get('data_reads', [])
+            
+            for read_idx, read_section in enumerate(data_reads):
+                columns = read_section.get('columns', [])
+                line_number = read_section.get('line_number', read_idx + 1)
+                
+                # Determine Text_File_Structure
+                total_reads = len(data_reads)
+                text_file_structure = "unique" if total_reads > 1 else "simple"
+                
+                for col_idx, col in enumerate(columns):
+                    clean_col = self._clean_parameter_name_preserve_paths(col)
+                    if clean_col:
+                        # Infer data type and other metadata
+                        data_type = self._infer_enhanced_data_type(clean_col, col)
+                        units = self._infer_units(clean_col)
+                        description = self._generate_description(clean_col, procedure_name, file_key)
+                        
+                        parameters.append({
+                            'name': clean_col,
+                            'original_name': col,
+                            'procedure': procedure_name,
+                            'file_context': file_key,
+                            'position_in_file': col_idx + 1,
+                            'line_in_file': line_number,
+                            'text_file_structure': text_file_structure,
+                            'data_type': data_type,
+                            'units': units,
+                            'description': description,
+                            'swat_code_type': self._infer_swat_code_type(clean_col, data_type),
+                            'classification': self._classify_parameter_by_procedure(procedure_name)
+                        })
+        
+        return parameters
+    
+    def _clean_parameter_name_preserve_paths(self, param_name: str) -> str:
+        """Clean parameter names while preserving full paths like time%day_start"""
+        if not param_name:
+            return ""
+        
+        # Remove array indices but preserve % component access and structure paths
+        param_name = re.sub(r'\([^)]*\)', '', param_name)
+        param_name = param_name.strip()
+        
+        # Skip very generic names but allow structured names with %
+        if param_name in ['k', 'i', 'j', 'ii', 'ires', 'ich'] or len(param_name) <= 1:
+            return ""
+        
+        # Allow 'name' only in file.cio context, skip elsewhere to avoid duplication
+        if param_name == 'name':
+            return ""
+        
+        return param_name
+    
+    def _infer_enhanced_data_type(self, param_name: str, original_name: str) -> str:
+        """Infer data type with enhanced logic"""
+        param_lower = param_name.lower()
+        
+        # Date/time parameters
+        if any(word in param_lower for word in ['day', 'yrc', 'yr', 'mo', 'jday', 'date', 'time']):
+            return "int"
+        
+        # ID parameters
+        if param_lower.endswith('_id') or param_lower in ['id', 'numb', 'num']:
+            return "int"
+        
+        # Name/description parameters
+        if any(word in param_lower for word in ['name', 'desc', 'title', 'titl']):
+            return "string"
+        
+        # Area/distance parameters
+        if any(word in param_lower for word in ['area', 'lat', 'lon', 'elev', 'slope', 'len']):
+            return "real"
+        
+        # Flow/concentration parameters
+        if any(word in param_lower for word in ['flo', 'conc', 'vol', 'mass', 'rate']):
+            return "real"
+        
+        # Flag/option parameters
+        if param_lower.startswith('i') and len(param_lower) <= 4:
+            return "int"
+        
+        # Default based on original format
+        if '%' in original_name:
+            return "derived"
+        
+        return "real"
+    
+    def _infer_units(self, param_name: str) -> str:
+        """Infer units based on parameter name"""
+        param_lower = param_name.lower()
+        
+        if 'area' in param_lower:
+            return "ha"
+        elif any(word in param_lower for word in ['lat', 'lon']):
+            return "deg"
+        elif any(word in param_lower for word in ['elev', 'dep', 'len']):
+            return "m"
+        elif 'slope' in param_lower:
+            return "%"
+        elif any(word in param_lower for word in ['flo', 'rate']):
+            return "m3/s"
+        elif 'conc' in param_lower:
+            return "mg/L"
+        elif any(word in param_lower for word in ['day', 'yr', 'jday']):
+            return "day"
+        elif any(word in param_lower for word in ['name', 'desc', 'title']):
+            return "text"
+        else:
+            return "none"
+    
+    def _generate_description(self, param_name: str, procedure: str, file_context: str) -> str:
+        """Generate description based on parameter context"""
+        return f"{param_name} parameter from {file_context} via {procedure}"
+    
+    def _infer_swat_code_type(self, param_name: str, data_type: str) -> str:
+        """Infer SWAT code type from parameter characteristics"""
+        if data_type == "string":
+            return "character"
+        elif data_type == "int":
+            return "integer"
+        elif data_type == "real":
+            return "real"
+        elif data_type == "derived":
+            return "derived_type"
+        else:
+            return "real"
+    
+    def _classify_parameter_by_procedure(self, procedure_name: str) -> str:
+        """Classify parameter based on procedure name"""
+        proc_lower = procedure_name.lower()
+        
+        if 'readcio' in proc_lower or 'cio' in proc_lower:
+            return "SIMULATION"
+        elif any(word in proc_lower for word in ['hru', 'lum']):
+            return "HRU"
+        elif any(word in proc_lower for word in ['ch', 'chan', 'channel']):
+            return "CHANNEL"
+        elif any(word in proc_lower for word in ['res', 'reservoir']):
+            return "RESERVOIR"
+        elif any(word in proc_lower for word in ['aqu', 'aquifer']):
+            return "AQUIFER"
+        elif any(word in proc_lower for word in ['cli', 'weather', 'climate']):
+            return "CLIMATE"
+        elif any(word in proc_lower for word in ['con', 'connect']):
+            return "CONNECT"
+        elif any(word in proc_lower for word in ['basin', 'bsn']):
+            return "BASIN"
+        elif any(word in proc_lower for word in ['plant', 'plt']):
+            return "PLANT"
+        elif any(word in proc_lower for word in ['sol', 'soil']):
+            return "SOIL"
+        elif any(word in proc_lower for word in ['salt', 'slt']):
+            return "SALT"
+        else:
+            return "GENERAL"
+    
+    def create_file_cio_parameters(self):
+        """Create file.cio parameters as first entries following user specifications"""
+        print("\n📋 Creating file.cio parameters...")
+        
+        # Add file.cio parameters first, following order in file.cio
+        file_cio_data = self.file_cio_structure.get("file.cio", {})
+        summary = file_cio_data.get("summary", {})
+        
+        line_number = 1
+        position = 1
+        
+        # First add headers (like titldum)
+        headers = summary.get("headers", [])
+        for header in headers:
+            if header:  # titldum and other headers
+                record = {
+                    'Unique_ID': self.unique_id_counter,
+                    'Broad_Classification': "SIMULATION",
+                    'SWAT_File': 'file.cio',
+                    'database_table': 'simulation',
+                    'DATABASE_FIELD_NAME': header,
+                    'SWAT_Header_Name': header,
+                    'Text_File_Structure': 'delimited',
+                    'Position_in_File': position,
+                    'Line_in_file': line_number,
+                    'Swat_code_type': 'character',
+                    'SWAT_Code_Variable_Name': header,
+                    'Description': f"{header} parameter from file.cio header",
+                    'Core': 'yes',
+                    'Units': 'text',
+                    'Data_Type': 'string',
+                    'Minimum_Range': '0',
+                    'Maximum_Range': '999',
+                    'Default_Value': 'default',
+                    'Use_in_DB': 'yes'
+                }
+                
+                self.database_records.append(record)
+                self.unique_id_counter += 1
+                line_number += 1
+        
+        # Then add data_reads sections
+        data_reads = summary.get("data_reads", [])
+        
+        for read_section in data_reads:
+            columns = read_section.get("columns", [])
+            
+            for col_idx, col in enumerate(columns):
+                clean_col = self._clean_parameter_name_preserve_paths(col)
+                if clean_col:
+                    
+                    # Get classification from input_file_module or default to SIMULATION
+                    classification = self.classification_mapping.get(clean_col, "SIMULATION")
+                    
+                    record = {
+                        'Unique_ID': self.unique_id_counter,
+                        'Broad_Classification': classification,
+                        'SWAT_File': 'file.cio',
+                        'database_table': 'simulation',
+                        'DATABASE_FIELD_NAME': clean_col,
+                        'SWAT_Header_Name': clean_col,
+                        'Text_File_Structure': 'delimited',
+                        'Position_in_File': col_idx + 1,
+                        'Line_in_file': line_number,
+                        'Swat_code_type': self._infer_swat_code_type(clean_col, self._infer_enhanced_data_type(clean_col, col)),
+                        'SWAT_Code_Variable_Name': clean_col,
+                        'Description': f"{clean_col} parameter from file.cio",
+                        'Core': 'yes' if clean_col.startswith('in_') else 'no',
+                        'Units': self._infer_units(clean_col),
+                        'Data_Type': self._infer_enhanced_data_type(clean_col, col),
+                        'Minimum_Range': '0',
+                        'Maximum_Range': '1',
+                        'Default_Value': '1',
+                        'Use_in_DB': 'yes'
+                    }
+                    
+                    self.database_records.append(record)
+                    self.unique_id_counter += 1
+                
+                line_number += 1
+        
+        print(f"✅ Created {len(self.database_records)} file.cio parameters")
+    
+    def create_input_file_parameters(self):
+        """Create parameters for input files based on file.cio order and I/O analysis"""
+        print("\n📊 Creating input file parameters...")
+        
+        # Process files in file.cio order
+        for file_var in self.file_variables:
+            if file_var in self.input_file_module:
+                var_files = self.input_file_module[file_var]
+                classification = self.classification_mapping.get(file_var, "GENERAL")
+                
+                for var_name, filename in var_files.items():
+                    if filename and filename.strip():
+                        self._process_input_file(filename, classification, file_var)
+        
+        print(f"✅ Total database records: {len(self.database_records)}")
+    
+    def _process_input_file(self, filename: str, classification: str, file_var: str):
+        """Process individual input file parameters"""
+        # Find matching I/O procedures
+        matching_procedures = self._find_matching_procedures(filename)
+        
+        if matching_procedures:
+            for procedure_name in matching_procedures:
+                if procedure_name in self.io_files:
+                    parameters = self.io_files[procedure_name]['parameters']
+                    
+                    for param in parameters:
+                        record = {
+                            'Unique_ID': self.unique_id_counter,
+                            'Broad_Classification': classification,
+                            'SWAT_File': filename,
+                            'database_table': filename.replace('.', '_'),
+                            'DATABASE_FIELD_NAME': param['name'],
+                            'SWAT_Header_Name': param['name'],
+                            'Text_File_Structure': param['text_file_structure'],
+                            'Position_in_File': param['position_in_file'],
+                            'Line_in_file': param['line_in_file'],
+                            'Swat_code_type': param['swat_code_type'],
+                            'SWAT_Code_Variable_Name': param['name'],
+                            'Description': param['description'],
+                            'Core': 'yes' if any(word in param['name'].lower() for word in ['id', 'name', 'area']) else 'no',
+                            'Units': param['units'],
+                            'Data_Type': param['data_type'],
+                            'Minimum_Range': self._get_min_range(param),
+                            'Maximum_Range': self._get_max_range(param),
+                            'Default_Value': self._get_default_value(param),
+                            'Use_in_DB': 'yes'
+                        }
+                        
+                        self.database_records.append(record)
+                        self.unique_id_counter += 1
+    
+    def _find_matching_procedures(self, filename: str) -> List[str]:
+        """Find I/O procedures that match the filename"""
+        matches = []
+        base_name = os.path.splitext(filename)[0]
+        extension = os.path.splitext(filename)[1][1:] if '.' in filename else ''
+        
+        for procedure_name in self.io_files.keys():
+            # Direct filename match
+            if filename.lower() in procedure_name.lower() or base_name.lower() in procedure_name.lower():
+                matches.append(procedure_name)
+            # Extension-based matching
+            elif extension and extension in procedure_name:
+                matches.append(procedure_name)
+        
+        return list(set(matches))
+    
+    def _get_min_range(self, param: Dict) -> str:
+        """Get minimum range for parameter"""
+        if param['data_type'] == 'int':
+            return "0"
+        elif param['data_type'] == 'real':
+            return "0.0"
+        else:
+            return "0"
+    
+    def _get_max_range(self, param: Dict) -> str:
+        """Get maximum range for parameter"""
+        param_lower = param['name'].lower()
+        
+        if 'id' in param_lower:
+            return "9999"
+        elif 'area' in param_lower:
+            return "99999.0"
+        elif any(word in param_lower for word in ['lat', 'lon']):
+            return "180.0"
+        else:
+            return "999"
+    
+    def _get_default_value(self, param: Dict) -> str:
+        """Get default value for parameter"""
+        if param['data_type'] == 'string':
+            return "default"
+        elif param['data_type'] == 'int':
+            return "1"
+        else:
+            return "1.0"
+    
+    def generate_database(self, output_file: str = "Improved_Modular_Database_5_15_24_nbs.csv"):
+        """Generate the complete modular database"""
+        print("\n🚀 Generating Improved Modular Database...")
+        
+        # Load all data
+        if not self.load_file_cio_structure():
+            return False
+        
+        if not self.load_input_file_module_with_classifications():
+            return False
+        
+        if not self.scan_available_io_files():
+            return False
+        
+        # Create parameters
+        self.create_file_cio_parameters()
+        self.create_input_file_parameters()
+        
+        # Write output
+        output_path = Path(output_file)
+        
+        with open(output_path, 'w', newline='', encoding='utf-8') as csvfile:
+            fieldnames = [
+                'Unique_ID', 'Broad_Classification', 'SWAT_File', 'database_table',
+                'DATABASE_FIELD_NAME', 'SWAT_Header_Name', 'Text_File_Structure',
+                'Position_in_File', 'Line_in_file', 'Swat_code_type',
+                'SWAT_Code_Variable_Name', 'Description', 'Core', 'Units',
+                'Data_Type', 'Minimum_Range', 'Maximum_Range', 'Default_Value', 'Use_in_DB'
+            ]
+            
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            
+            for record in self.database_records:
+                writer.writerow(record)
+        
+        print(f"✅ Generated {output_file} with {len(self.database_records)} parameters")
+        
+        # Generate summary
+        self._generate_summary()
+        
+        return True
+    
+    def _generate_summary(self):
+        """Generate summary statistics"""
+        print("\n📊 Database Summary:")
+        print(f"   Total Parameters: {len(self.database_records)}")
+        
+        # Count by classification
+        classification_counts = defaultdict(int)
+        file_counts = defaultdict(int)
+        
+        for record in self.database_records:
+            classification_counts[record['Broad_Classification']] += 1
+            file_counts[record['SWAT_File']] += 1
+        
+        print("\n   By Classification:")
+        for classification, count in sorted(classification_counts.items()):
+            print(f"     {classification}: {count}")
+            
+        print(f"\n   Files Covered: {len(file_counts)}")
+        print("   Top Files by Parameter Count:")
+        for filename, count in sorted(file_counts.items(), key=lambda x: x[1], reverse=True)[:10]:
+            print(f"     {filename}: {count}")
+
+def main():
+    parser = argparse.ArgumentParser(description='Generate improved modular database')
+    parser.add_argument('--json-dir', default='json_outputs', help='JSON outputs directory')
+    parser.add_argument('--src-dir', default='test_data/src', help='Source code directory')
+    parser.add_argument('--output', default='Improved_Modular_Database_5_15_24_nbs.csv', help='Output file')
+    
+    args = parser.parse_args()
+    
+    generator = ImprovedModularDatabaseGenerator(args.json_dir, args.src_dir)
+    success = generator.generate_database(args.output)
+    
+    return 0 if success else 1
+
+if __name__ == '__main__':
+    sys.exit(main())
