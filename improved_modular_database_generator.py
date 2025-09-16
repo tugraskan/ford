@@ -592,11 +592,29 @@ class ImprovedModularDatabaseGenerator:
         matching_procedures = self._find_matching_procedures(filename)
         
         if matching_procedures:
+            # Find the correct variable name for this filename
+            target_var_name = None
+            for var_name, mapped_filename in self.input_file_module.get(file_var, {}).items():
+                if mapped_filename == filename:
+                    target_var_name = var_name
+                    break
+            
             for procedure_name in matching_procedures:
                 if procedure_name in self.io_files:
                     parameters = self.io_files[procedure_name]['parameters']
                     
                     for param in parameters:
+                        # Only include parameters that come from the correct file context
+                        file_context = param.get('file_context', '')
+                        
+                        # Check if this parameter is from the correct file context for our filename
+                        if target_var_name and file_context.startswith(f"{file_var}%"):
+                            context_var = file_context.split('%')[1] if '%' in file_context else ''
+                            if context_var != target_var_name:
+                                continue  # Skip parameters from other file contexts in the same procedure
+                        elif not file_context.startswith(f"{file_var}%"):
+                            continue  # Skip parameters not from our target file variable
+                        
                         record = {
                             'Unique_ID': self.unique_id_counter,
                             'Broad_Classification': classification,
@@ -625,18 +643,48 @@ class ImprovedModularDatabaseGenerator:
                         self.unique_id_counter += 1
     
     def _find_matching_procedures(self, filename: str) -> List[str]:
-        """Find I/O procedures that match the filename"""
+        """Find I/O procedures that match the filename using proper file context mapping"""
         matches = []
-        base_name = os.path.splitext(filename)[0]
-        extension = os.path.splitext(filename)[1][1:] if '.' in filename else ''
         
-        for procedure_name in self.io_files.keys():
-            # Direct filename match
-            if filename.lower() in procedure_name.lower() or base_name.lower() in procedure_name.lower():
-                matches.append(procedure_name)
-            # Extension-based matching
-            elif extension and extension in procedure_name:
-                matches.append(procedure_name)
+        # Find the file variable and var_name that corresponds to this filename
+        target_file_var = None
+        target_var_name = None
+        
+        for file_var, var_files in self.input_file_module.items():
+            for var_name, mapped_filename in var_files.items():
+                if mapped_filename == filename:
+                    target_file_var = file_var
+                    target_var_name = var_name
+                    break
+            if target_file_var:
+                break
+        
+        if not target_file_var:
+            # Fallback to basename matching if no exact mapping found
+            base_name = os.path.splitext(filename)[0]
+            for procedure_name in self.io_files.keys():
+                if base_name.lower() in procedure_name.lower():
+                    matches.append(procedure_name)
+            return matches
+        
+        # Look for procedures that have file contexts matching our target
+        for procedure_name, procedure_data in self.io_files.items():
+            for param in procedure_data['parameters']:
+                file_context = param.get('file_context', '')
+                
+                # Check if this file context matches our target
+                if file_context.startswith(f"{target_file_var}%"):
+                    # Extract the variable part after %
+                    context_var = file_context.split('%')[1] if '%' in file_context else ''
+                    
+                    # Match if the context variable corresponds to our target
+                    if context_var == target_var_name:
+                        matches.append(procedure_name)
+                        break
+                    # Also handle cases where context is more complex (like in_cli%weat_sta for weather-sta.cli)
+                    elif target_var_name in context_var or context_var in target_var_name:
+                        matches.append(procedure_name)
+                        break
         
         return list(set(matches))
     
