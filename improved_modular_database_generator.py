@@ -211,13 +211,42 @@ class ImprovedModularDatabaseGenerator:
             if not isinstance(summary, dict):
                 continue
                 
-            # Count actual header reads from timeline
-            header_count = self._count_actual_header_reads(file_info)
+            # Process headers first
+            headers = summary.get('headers', [])
+            current_line = 1
             
+            # Add header parameters
+            for header_idx, header in enumerate(headers):
+                if header and header.strip():
+                    clean_header = self._clean_parameter_name_preserve_paths(header)
+                    if clean_header:
+                        data_type = self._infer_enhanced_data_type(clean_header, header)
+                        units = self._infer_units(clean_header)
+                        description = self._generate_description(clean_header, procedure_name, file_key, is_header=True)
+                        source_module = self._infer_source_module(procedure_name, file_key)
+                        is_local_var = self._is_local_variable(clean_header, header)
+                        
+                        parameters.append({
+                            'name': clean_header,
+                            'original_name': header,
+                            'procedure': procedure_name,
+                            'file_context': file_key,
+                            'position_in_file': 1,  # Headers are typically in column 1
+                            'line_in_file': current_line,
+                            'text_file_structure': "simple",  # Headers are usually simple
+                            'data_type': data_type,
+                            'units': units,
+                            'description': description,
+                            'swat_code_type': self._infer_swat_code_type(clean_header, data_type),
+                            'classification': self._classify_parameter_by_procedure(procedure_name),
+                            'source_module': source_module,
+                            'is_local_variable': is_local_var
+                        })
+                    
+                    current_line += 1
+            
+            # Now process data_reads sections
             data_reads = summary.get('data_reads', [])
-            
-            # Calculate cumulative line position accounting for actual header reads
-            current_line = header_count + 1  # Start after all header reads
             
             for read_idx, read_section in enumerate(data_reads):
                 columns = read_section.get('columns', [])
@@ -234,7 +263,7 @@ class ImprovedModularDatabaseGenerator:
                         # Infer data type and other metadata
                         data_type = self._infer_enhanced_data_type(clean_col, col)
                         units = self._infer_units(clean_col)
-                        description = self._generate_description(clean_col, procedure_name, file_key)
+                        description = self._generate_description(clean_col, procedure_name, file_key, is_header=False)
                         source_module = self._infer_source_module(procedure_name, file_key)
                         is_local_var = self._is_local_variable(clean_col, col)
                         
@@ -273,10 +302,7 @@ class ImprovedModularDatabaseGenerator:
         if param_name in ['k', 'i', 'j', 'ii', 'ires', 'ich'] or len(param_name) <= 1:
             return ""
         
-        # Allow 'name' only in file.cio context, skip elsewhere to avoid duplication
-        if param_name == 'name':
-            return ""
-        
+        # Keep header/title variables like 'name', 'header', 'titldum'
         return param_name
     
     def _infer_enhanced_data_type(self, param_name: str, original_name: str) -> str:
@@ -336,9 +362,12 @@ class ImprovedModularDatabaseGenerator:
         else:
             return "none"
     
-    def _generate_description(self, param_name: str, procedure: str, file_context: str) -> str:
+    def _generate_description(self, param_name: str, procedure: str, file_context: str, is_header: bool = False) -> str:
         """Generate description based on parameter context"""
-        return f"{param_name} parameter from {file_context} via {procedure}"
+        if is_header:
+            return f"{param_name} header from {file_context} via {procedure}"
+        else:
+            return f"{param_name} parameter from {file_context} via {procedure}"
     
     def _infer_swat_code_type(self, param_name: str, data_type: str) -> str:
         """Infer SWAT code type from parameter characteristics"""
