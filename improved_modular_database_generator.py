@@ -603,35 +603,77 @@ class ImprovedModularDatabaseGenerator:
                 clean_col = self._clean_parameter_name_preserve_paths(col)
                 if clean_col:
                     
-                    # Get classification from input_file_module or default to SIMULATION
-                    classification = self.classification_mapping.get(clean_col, "SIMULATION")
-                    
-                    record = {
-                        'Unique_ID': self.unique_id_counter,
-                        'Broad_Classification': classification,
-                        'SWAT_File': 'file.cio',
-                        'database_table': 'simulation',
-                        'DATABASE_FIELD_NAME': clean_col,
-                        'SWAT_Header_Name': clean_col,
-                        'Text_File_Structure': 'delimited',
-                        'Position_in_File': col_idx + 1,
-                        'Line_in_file': line_number,
-                        'Swat_code_type': self._infer_swat_code_type(clean_col, self._infer_enhanced_data_type(clean_col, col)),
-                        'SWAT_Code_Variable_Name': clean_col,
-                        'Description': f"{clean_col} parameter from file.cio",
-                        'Core': 'yes' if clean_col.startswith('in_') else 'no',
-                        'Units': self._infer_units(clean_col),
-                        'Data_Type': self._infer_enhanced_data_type(clean_col, col),
-                        'Minimum_Range': '0',
-                        'Maximum_Range': '1',
-                        'Default_Value': '1',
-                        'Use_in_DB': 'yes',
-                        'Source_Module': 'input_file_module',
-                        'Is_Local_Variable': self._is_local_variable(clean_col, col)
-                    }
-                    
-                    self.database_records.append(record)
-                    self.unique_id_counter += 1
+                    # Check if this is a type that should be expanded (like in_sim, in_basin, etc.)
+                    if clean_col.startswith('in_') and clean_col in self.input_file_module:
+                        # This is a type that should be expanded into its components
+                        components = self.input_file_module[clean_col]
+                        component_position = 1
+                        
+                        for component_name, component_file in components.items():
+                            # Create expanded parameter like in_sim%time
+                            expanded_param = f"{clean_col}%{component_name}"
+                            
+                            # Get classification from input_file_module or default to SIMULATION
+                            classification = self.classification_mapping.get(clean_col, "SIMULATION")
+                            
+                            record = {
+                                'Unique_ID': self.unique_id_counter,
+                                'Broad_Classification': classification,
+                                'SWAT_File': 'file.cio',
+                                'database_table': 'simulation',
+                                'DATABASE_FIELD_NAME': expanded_param,
+                                'SWAT_Header_Name': expanded_param,
+                                'Text_File_Structure': 'delimited',
+                                'Position_in_File': component_position,
+                                'Line_in_file': line_number,
+                                'Swat_code_type': 'character',  # Components are file names (character)
+                                'SWAT_Code_Variable_Name': expanded_param,
+                                'Description': f"{expanded_param} component from file.cio (references {component_file})",
+                                'Core': 'yes',  # Type components are core parameters
+                                'Units': 'filename',
+                                'Data_Type': 'string',
+                                'Minimum_Range': '0',
+                                'Maximum_Range': '1',
+                                'Default_Value': component_file,
+                                'Use_in_DB': 'yes',
+                                'Source_Module': 'input_file_module',
+                                'Is_Local_Variable': 'n'  # Type components are not local variables
+                            }
+                            
+                            self.database_records.append(record)
+                            self.unique_id_counter += 1
+                            component_position += 1
+                    else:
+                        # Regular parameter (like name headers)
+                        # Get classification from input_file_module or default to SIMULATION
+                        classification = self.classification_mapping.get(clean_col, "SIMULATION")
+                        
+                        record = {
+                            'Unique_ID': self.unique_id_counter,
+                            'Broad_Classification': classification,
+                            'SWAT_File': 'file.cio',
+                            'database_table': 'simulation',
+                            'DATABASE_FIELD_NAME': clean_col,
+                            'SWAT_Header_Name': clean_col,
+                            'Text_File_Structure': 'delimited',
+                            'Position_in_File': col_idx + 1,
+                            'Line_in_file': line_number,
+                            'Swat_code_type': self._infer_swat_code_type(clean_col, self._infer_enhanced_data_type(clean_col, col)),
+                            'SWAT_Code_Variable_Name': clean_col,
+                            'Description': f"{clean_col} parameter from file.cio",
+                            'Core': 'yes' if clean_col.startswith('in_') else 'no',
+                            'Units': self._infer_units(clean_col),
+                            'Data_Type': self._infer_enhanced_data_type(clean_col, col),
+                            'Minimum_Range': '0',
+                            'Maximum_Range': '1',
+                            'Default_Value': '1',
+                            'Use_in_DB': 'yes',
+                            'Source_Module': 'input_file_module',
+                            'Is_Local_Variable': self._is_local_variable(clean_col, col)
+                        }
+                        
+                        self.database_records.append(record)
+                        self.unique_id_counter += 1
                 
                 line_number += 1
         
