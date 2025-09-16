@@ -235,6 +235,8 @@ class ImprovedModularDatabaseGenerator:
                         data_type = self._infer_enhanced_data_type(clean_col, col)
                         units = self._infer_units(clean_col)
                         description = self._generate_description(clean_col, procedure_name, file_key)
+                        source_module = self._infer_source_module(procedure_name, file_key)
+                        is_local_var = self._is_local_variable(clean_col, col)
                         
                         parameters.append({
                             'name': clean_col,
@@ -248,7 +250,9 @@ class ImprovedModularDatabaseGenerator:
                             'units': units,
                             'description': description,
                             'swat_code_type': self._infer_swat_code_type(clean_col, data_type),
-                            'classification': self._classify_parameter_by_procedure(procedure_name)
+                            'classification': self._classify_parameter_by_procedure(procedure_name),
+                            'source_module': source_module,
+                            'is_local_variable': is_local_var
                         })
                 
                 # Move to next line position after processing this read section
@@ -378,6 +382,78 @@ class ImprovedModularDatabaseGenerator:
         else:
             return "GENERAL"
     
+    def _infer_source_module(self, procedure_name: str, file_key: str) -> str:
+        """Infer the source module based on procedure name and file context"""
+        proc_lower = procedure_name.lower()
+        
+        # Map procedure names to likely modules
+        if 'basin' in proc_lower:
+            return "basin_module"
+        elif 'gwflow' in proc_lower:
+            return "gwflow_module"
+        elif 'climate' in proc_lower or 'cli_' in proc_lower:
+            return "climate_module"
+        elif 'channel' in proc_lower or 'ch_' in proc_lower:
+            return "channel_module"
+        elif 'reservoir' in proc_lower or 'res_' in proc_lower:
+            return "reservoir_module"
+        elif 'hru' in proc_lower:
+            return "hru_module"
+        elif 'aquifer' in proc_lower or 'aqu_' in proc_lower:
+            return "aquifer_module"
+        elif 'plant' in proc_lower or 'pl_' in proc_lower:
+            return "plant_module"
+        elif 'soil' in proc_lower:
+            return "soil_module"
+        elif 'salt' in proc_lower:
+            return "salt_module"
+        elif 'time' in proc_lower:
+            return "time_module"
+        elif 'readcio' in proc_lower or 'cio' in proc_lower:
+            return "input_file_module"
+        elif 'output' in proc_lower:
+            return "output_module"
+        else:
+            # Try to infer from file context
+            if 'file.cio' in file_key:
+                return "input_file_module"
+            elif any(word in file_key.lower() for word in ['time', 'print', 'obj']):
+                return "simulation_module"
+            else:
+                return "unknown_module"
+    
+    def _is_local_variable(self, clean_name: str, original_name: str) -> str:
+        """Determine if a variable is local (y/n)"""
+        # Variables that are typically local/temporary
+        local_indicators = {
+            'titldum', 'header', 'name', 'dum', 'dum1', 'dum2', 'dum3',
+            'i', 'j', 'k', 'ii', 'jj', 'kk', 'eof', 'iostat',
+            'title', 'text', 'comment', 'line'
+        }
+        
+        # Check if it's a simple local variable
+        if clean_name.lower() in local_indicators:
+            return "y"
+        
+        # Check if it contains local variable patterns
+        if any(indicator in clean_name.lower() for indicator in ['dum', 'temp', 'tmp']):
+            return "y"
+        
+        # Variables with % are typically structured (not local)
+        if '%' in original_name:
+            return "n"
+        
+        # Array variables are typically not local
+        if '(' in original_name and ')' in original_name:
+            return "n"
+        
+        # Simple variable names without structure are often local
+        if len(clean_name) <= 4 and clean_name.lower() not in {'area', 'lat', 'lon', 'elev'}:
+            return "y"
+        
+        # Default to not local for structured/meaningful variables
+        return "n"
+    
     def create_file_cio_parameters(self):
         """Create file.cio parameters as first entries following user specifications"""
         print("\n📋 Creating file.cio parameters...")
@@ -412,7 +488,9 @@ class ImprovedModularDatabaseGenerator:
                     'Minimum_Range': '0',
                     'Maximum_Range': '999',
                     'Default_Value': 'default',
-                    'Use_in_DB': 'yes'
+                    'Use_in_DB': 'yes',
+                    'Source_Module': 'input_file_module',
+                    'Is_Local_Variable': self._is_local_variable(header, header)
                 }
                 
                 self.database_records.append(record)
@@ -451,7 +529,9 @@ class ImprovedModularDatabaseGenerator:
                         'Minimum_Range': '0',
                         'Maximum_Range': '1',
                         'Default_Value': '1',
-                        'Use_in_DB': 'yes'
+                        'Use_in_DB': 'yes',
+                        'Source_Module': 'input_file_module',
+                        'Is_Local_Variable': self._is_local_variable(clean_col, col)
                     }
                     
                     self.database_records.append(record)
@@ -507,7 +587,9 @@ class ImprovedModularDatabaseGenerator:
                             'Minimum_Range': self._get_min_range(param),
                             'Maximum_Range': self._get_max_range(param),
                             'Default_Value': self._get_default_value(param),
-                            'Use_in_DB': 'yes'
+                            'Use_in_DB': 'yes',
+                            'Source_Module': param.get('source_module', 'unknown_module'),
+                            'Is_Local_Variable': param.get('is_local_variable', 'n')
                         }
                         
                         self.database_records.append(record)
@@ -587,7 +669,8 @@ class ImprovedModularDatabaseGenerator:
                 'DATABASE_FIELD_NAME', 'SWAT_Header_Name', 'Text_File_Structure',
                 'Position_in_File', 'Line_in_file', 'Swat_code_type',
                 'SWAT_Code_Variable_Name', 'Description', 'Core', 'Units',
-                'Data_Type', 'Minimum_Range', 'Maximum_Range', 'Default_Value', 'Use_in_DB'
+                'Data_Type', 'Minimum_Range', 'Maximum_Range', 'Default_Value', 'Use_in_DB',
+                'Source_Module', 'Is_Local_Variable'
             ]
             
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
