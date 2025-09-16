@@ -193,6 +193,12 @@ class ImprovedModularDatabaseGenerator:
         print(f"📊 Found {len(self.io_files)} I/O analysis files")
         return True
     
+    def _count_actual_header_reads(self, file_info: Dict[str, Any]) -> int:
+        """Count actual header reads using headers field as primary source"""
+        summary = file_info.get('summary', {})
+        headers = summary.get('headers', [])
+        return len(headers)
+
     def _extract_parameters_with_metadata(self, io_data: Dict[str, Any], procedure_name: str) -> List[Dict[str, Any]]:
         """Extract parameters with enhanced metadata following user specifications"""
         parameters = []
@@ -205,14 +211,13 @@ class ImprovedModularDatabaseGenerator:
             if not isinstance(summary, dict):
                 continue
                 
-            # Get headers to account for header lines
-            headers = summary.get('headers', [])
-            header_count = len(headers)
+            # Count actual header reads from timeline
+            header_count = self._count_actual_header_reads(file_info)
             
             data_reads = summary.get('data_reads', [])
             
-            # Calculate cumulative line position accounting for headers and previous reads
-            current_line = header_count + 1  # Start after headers
+            # Calculate cumulative line position accounting for actual header reads
+            current_line = header_count + 1  # Start after all header reads
             
             for read_idx, read_section in enumerate(data_reads):
                 columns = read_section.get('columns', [])
