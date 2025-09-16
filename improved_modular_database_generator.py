@@ -205,16 +205,24 @@ class ImprovedModularDatabaseGenerator:
             if not isinstance(summary, dict):
                 continue
                 
+            # Get headers to account for header lines
+            headers = summary.get('headers', [])
+            header_count = len(headers)
+            
             data_reads = summary.get('data_reads', [])
+            
+            # Calculate cumulative line position accounting for headers and previous reads
+            current_line = header_count + 1  # Start after headers
             
             for read_idx, read_section in enumerate(data_reads):
                 columns = read_section.get('columns', [])
-                line_number = read_section.get('line_number', read_idx + 1)
+                rows = read_section.get('rows', 1)  # Default to 1 row if not specified
                 
                 # Determine Text_File_Structure
                 total_reads = len(data_reads)
                 text_file_structure = "unique" if total_reads > 1 else "simple"
                 
+                # Process each column in this read section
                 for col_idx, col in enumerate(columns):
                     clean_col = self._clean_parameter_name_preserve_paths(col)
                     if clean_col:
@@ -229,7 +237,7 @@ class ImprovedModularDatabaseGenerator:
                             'procedure': procedure_name,
                             'file_context': file_key,
                             'position_in_file': col_idx + 1,
-                            'line_in_file': line_number,
+                            'line_in_file': current_line,
                             'text_file_structure': text_file_structure,
                             'data_type': data_type,
                             'units': units,
@@ -237,6 +245,9 @@ class ImprovedModularDatabaseGenerator:
                             'swat_code_type': self._infer_swat_code_type(clean_col, data_type),
                             'classification': self._classify_parameter_by_procedure(procedure_name)
                         })
+                
+                # Move to next line position after processing this read section
+                current_line += rows
         
         return parameters
     
