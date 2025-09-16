@@ -200,7 +200,7 @@ class ImprovedModularDatabaseGenerator:
         return len(headers)
 
     def _extract_parameters_with_metadata(self, io_data: Dict[str, Any], procedure_name: str) -> List[Dict[str, Any]]:
-        """Extract parameters with enhanced metadata following user specifications"""
+        """Extract parameters with enhanced metadata following user specifications with proper section handling"""
         parameters = []
         
         for file_key, file_info in io_data.items():
@@ -245,7 +245,7 @@ class ImprovedModularDatabaseGenerator:
                     
                     current_line += 1
             
-            # Now process data_reads sections
+            # Now process data_reads sections with proper unique file handling
             data_reads = summary.get('data_reads', [])
             
             for read_idx, read_section in enumerate(data_reads):
@@ -256,16 +256,33 @@ class ImprovedModularDatabaseGenerator:
                 total_reads = len(data_reads)
                 text_file_structure = "unique" if total_reads > 1 else "simple"
                 
+                # Check if this section has a local header (like 'name' in print.prt sections)
+                section_has_local_header = self._section_has_local_header(columns)
+                section_start_line = current_line
+                
                 # Process each column in this read section
                 for col_idx, col in enumerate(columns):
                     clean_col = self._clean_parameter_name_preserve_paths(col)
                     if clean_col:
+                        # Determine if this is a local section header
+                        is_local_section_header = (col_idx == 0 and section_has_local_header and 
+                                                 self._is_local_section_header_name(clean_col))
+                        
                         # Infer data type and other metadata
                         data_type = self._infer_enhanced_data_type(clean_col, col)
                         units = self._infer_units(clean_col)
-                        description = self._generate_description(clean_col, procedure_name, file_key, is_header=False)
+                        description = self._generate_description(clean_col, procedure_name, file_key, 
+                                                              is_header=is_local_section_header)
                         source_module = self._infer_source_module(procedure_name, file_key)
-                        is_local_var = self._is_local_variable(clean_col, col)
+                        is_local_var = self._is_local_variable(clean_col, col) or is_local_section_header
+                        
+                        # Calculate proper line position for unique files
+                        if is_local_section_header:
+                            # Local section header gets its own line
+                            line_position = current_line
+                        else:
+                            # Data parameters come after local header if present
+                            line_position = current_line + (1 if section_has_local_header else 0)
                         
                         parameters.append({
                             'name': clean_col,
@@ -273,7 +290,7 @@ class ImprovedModularDatabaseGenerator:
                             'procedure': procedure_name,
                             'file_context': file_key,
                             'position_in_file': col_idx + 1,
-                            'line_in_file': current_line,
+                            'line_in_file': line_position,
                             'text_file_structure': text_file_structure,
                             'data_type': data_type,
                             'units': units,
@@ -284,10 +301,60 @@ class ImprovedModularDatabaseGenerator:
                             'is_local_variable': is_local_var
                         })
                 
-                # Move to next line position after processing this read section
-                current_line += rows
+                # Move to next line position accounting for section structure
+                if section_has_local_header:
+                    # Section header + data rows
+                    current_line += 1 + rows
+                else:
+                    # Just data rows
+                    current_line += rows
         
         return parameters
+    
+    def _is_correct_file_context(self, target_file: str, context_key: str) -> bool:
+        """Check if the context key matches the target file with enhanced accuracy"""
+        if context_key in ['unit_*', 'line_number']:
+            return False
+        
+        # Direct match
+        if target_file.lower() == context_key.lower():
+            return True
+        
+        # Check if context_key contains file reference patterns
+        context_lower = context_key.lower()
+        target_lower = target_file.lower()
+        
+        # Remove extensions for comparison
+        context_base = context_lower.replace('.txt', '').replace('.dat', '').replace('.cli', '').replace('.bsn', '').replace('.prt', '')
+        target_base = target_lower.replace('.txt', '').replace('.dat', '').replace('.cli', '').replace('.bsn', '').replace('.prt', '')
+        
+        # Check for basename match
+        if context_base == target_base:
+            return True
+        
+        # Check for pattern matches like in_sim%prt -> print.prt
+        if 'prt' in context_lower and 'print' in target_lower:
+            return True
+        if 'codes_bas' in context_lower and 'codes.bsn' in target_lower:
+            return True
+        if 'weat_sta' in context_lower and 'weather-sta.cli' in target_lower:
+            return True
+        
+        return False
+    
+    def _section_has_local_header(self, columns: List[str]) -> bool:
+        """Check if a data_reads section has a local header like 'name'"""
+        if not columns:
+            return False
+        
+        # Check if first column is a typical local section header
+        first_col = columns[0].lower().strip()
+        return first_col in ['name', 'header', 'title', 'desc']
+    
+    def _is_local_section_header_name(self, param_name: str) -> bool:
+        """Check if parameter name is a local section header"""
+        param_lower = param_name.lower().strip()
+        return param_lower in ['name', 'header', 'title', 'desc']
     
     def _clean_parameter_name_preserve_paths(self, param_name: str) -> str:
         """Clean parameter names while preserving full paths like time%day_start"""
