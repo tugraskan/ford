@@ -1,0 +1,450 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for SWAT+">
+    <meta name="author" content="" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>pl_mortality.f90 &ndash; SWAT+</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">SWAT+ <small>@SWAT_VERSION@</small></a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>pl_mortality.f90
+      <small>Source File</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 0.0% of total for sourcefile.">36 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/pl_mortality.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+            <li class="breadcrumb-item active" aria-current="page">pl_mortality.f90</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+        <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#subs-0"
+         aria-expanded="false" aria-controls="subs-0">
+         <h4 class="card-header bg-primary text-white">Subroutines</h4>
+      </a>
+      <div id="subs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../proc/pl_mortality.html">pl_mortality</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../sourcefile/pl_mortality.f90.html#src">pl_mortality.f90</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    <div class="col-md-9" id='text'>
+      
+      <br>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">This file depends on</h3>
+          </div>
+          <div class="card-body">
+            <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: sourcefile~~pl_mortality.f90~~EfferentGraph Pages: 1 -->
+<svg id="sourcefilepl_mortalityf90EfferentGraph" width="489pt" height="280pt"
+ viewBox="0.00 0.00 489.00 280.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 276)">
+<title>sourcefile~~pl_mortality.f90~~EfferentGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-276 485,-276 485,4 -4,4"/>
+<!-- sourcefile~pl_mortality.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_node1" class="node">
+<title>sourcefile~pl_mortality.f90</title>
+<polygon fill="none" stroke="black" points="481,-150 387,-150 387,-126 481,-126 481,-150"/>
+<text text-anchor="middle" x="434" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50">pl_mortality.f90</text>
+</g>
+<!-- sourcefile~basin_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_node2" class="node">
+<title>sourcefile~basin_module.f90</title>
+<g id="a_sourcefile~~pl_mortality.f90~~EfferentGraph_node2"><a xlink:href="../sourcefile/basin_module.f90.html" xlink:title="basin_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="305,-272 198,-272 198,-248 305,-248 305,-272"/>
+<text text-anchor="middle" x="251.5" y="-257.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">basin_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_mortality.f90&#45;&gt;sourcefile~basin_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_edge1" class="edge">
+<title>sourcefile~pl_mortality.f90&#45;&gt;sourcefile~basin_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M426.1,-150.08C413.76,-170.58 385.89,-212.08 351,-234 340.13,-240.83 327.5,-245.88 314.99,-249.6"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="313.75,-246.32 305.02,-252.32 315.58,-253.07 313.75,-246.32"/>
+</g>
+<!-- sourcefile~carbon_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_node3" class="node">
+<title>sourcefile~carbon_module.f90</title>
+<g id="a_sourcefile~~pl_mortality.f90~~EfferentGraph_node3"><a xlink:href="../sourcefile/carbon_module.f90.html" xlink:title="carbon_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="116,-150 0,-150 0,-126 116,-126 116,-150"/>
+<text text-anchor="middle" x="58" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">carbon_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_mortality.f90&#45;&gt;sourcefile~carbon_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_edge2" class="edge">
+<title>sourcefile~pl_mortality.f90&#45;&gt;sourcefile~carbon_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M422.25,-150.16C407.83,-165.46 380.58,-190.95 351,-201 267.26,-229.45 236.55,-226.94 152,-201 124.12,-192.45 97.08,-172.39 79.41,-157.19"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="81.33,-154.21 71.53,-150.19 76.68,-159.44 81.33,-154.21"/>
+</g>
+<!-- sourcefile~hru_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_node4" class="node">
+<title>sourcefile~hru_module.f90</title>
+<g id="a_sourcefile~~pl_mortality.f90~~EfferentGraph_node4"><a xlink:href="../sourcefile/hru_module.f90.html" xlink:title="hru_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="300,-192 203,-192 203,-168 300,-168 300,-192"/>
+<text text-anchor="middle" x="251.5" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hru_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_mortality.f90&#45;&gt;sourcefile~hru_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_edge3" class="edge">
+<title>sourcefile~pl_mortality.f90&#45;&gt;sourcefile~hru_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M387.11,-150.1C375.36,-153.1 362.73,-156.25 351,-159 337.84,-162.09 323.65,-165.22 310.25,-168.1"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="309.23,-164.74 300.18,-170.24 310.69,-171.58 309.23,-164.74"/>
+</g>
+<!-- sourcefile~organic_mineral_mass_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_node5" class="node">
+<title>sourcefile~organic_mineral_mass_module.f90</title>
+<g id="a_sourcefile~~pl_mortality.f90~~EfferentGraph_node5"><a xlink:href="../sourcefile/organic_mineral_mass_module.f90.html" xlink:title="organic_mineral_mass_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="351,-150 152,-150 152,-126 351,-126 351,-150"/>
+<text text-anchor="middle" x="251.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">organic_mineral_mass_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_mortality.f90&#45;&gt;sourcefile~organic_mineral_mass_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_edge4" class="edge">
+<title>sourcefile~pl_mortality.f90&#45;&gt;sourcefile~organic_mineral_mass_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M386.99,-138C378.94,-138 370.27,-138 361.35,-138"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="361.19,-134.5 351.19,-138 361.19,-141.5 361.19,-134.5"/>
+</g>
+<!-- sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_node6" class="node">
+<title>sourcefile~plant_data_module.f90</title>
+<g id="a_sourcefile~~pl_mortality.f90~~EfferentGraph_node6"><a xlink:href="../sourcefile/plant_data_module.f90.html" xlink:title="plant_data_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="319,-108 184,-108 184,-84 319,-84 319,-108"/>
+<text text-anchor="middle" x="251.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">plant_data_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_mortality.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_edge5" class="edge">
+<title>sourcefile~pl_mortality.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M387.11,-125.9C375.36,-122.9 362.73,-119.75 351,-117 341.3,-114.72 331.03,-112.42 320.94,-110.21"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="321.44,-106.74 310.92,-108.05 319.95,-113.58 321.44,-106.74"/>
+</g>
+<!-- sourcefile~plant_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_node7" class="node">
+<title>sourcefile~plant_module.f90</title>
+<g id="a_sourcefile~~pl_mortality.f90~~EfferentGraph_node7"><a xlink:href="../sourcefile/plant_module.f90.html" xlink:title="plant_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="304.5,-66 198.5,-66 198.5,-42 304.5,-42 304.5,-66"/>
+<text text-anchor="middle" x="251.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">plant_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_mortality.f90&#45;&gt;sourcefile~plant_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_edge6" class="edge">
+<title>sourcefile~pl_mortality.f90&#45;&gt;sourcefile~plant_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M420.84,-125.78C405.78,-111.38 378.71,-87.79 351,-75 339.6,-69.74 326.85,-65.77 314.4,-62.8"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="315.03,-59.35 304.51,-60.61 313.52,-66.19 315.03,-59.35"/>
+</g>
+<!-- sourcefile~soil_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_node8" class="node">
+<title>sourcefile~soil_module.f90</title>
+<g id="a_sourcefile~~pl_mortality.f90~~EfferentGraph_node8"><a xlink:href="../sourcefile/soil_module.f90.html" xlink:title="soil_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="300,-24 203,-24 203,0 300,0 300,-24"/>
+<text text-anchor="middle" x="251.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">soil_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_mortality.f90&#45;&gt;sourcefile~soil_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_edge7" class="edge">
+<title>sourcefile~pl_mortality.f90&#45;&gt;sourcefile~soil_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M427.07,-125.66C415.67,-103.34 388.45,-56.43 351,-33 338.83,-25.39 324.34,-20.5 310.27,-17.37"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="310.62,-13.87 300.13,-15.39 309.28,-20.74 310.62,-13.87"/>
+</g>
+<!-- sourcefile~organic_mineral_mass_module.f90&#45;&gt;sourcefile~carbon_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_edge8" class="edge">
+<title>sourcefile~organic_mineral_mass_module.f90&#45;&gt;sourcefile~carbon_module.f90</title>
+<path fill="none" stroke="#00ff91" stroke-dasharray="5,2" d="M151.95,-138C143.21,-138 134.52,-138 126.14,-138"/>
+<polygon fill="#00ff91" stroke="#00ff91" points="126.1,-134.5 116.1,-138 126.1,-141.5 126.1,-134.5"/>
+</g>
+<!-- sourcefile~soil_module.f90&#45;&gt;sourcefile~carbon_module.f90 -->
+<g id="sourcefile~~pl_mortality.f90~~EfferentGraph_edge9" class="edge">
+<title>sourcefile~soil_module.f90&#45;&gt;sourcefile~carbon_module.f90</title>
+<path fill="none" stroke="#ff00da" stroke-dasharray="5,2" d="M202.93,-15.94C185.99,-18.91 167.33,-24.06 152,-33 116.37,-53.78 87.18,-93.02 71.5,-117.2"/>
+<polygon fill="#ff00da" stroke="#ff00da" points="68.54,-115.34 66.17,-125.66 74.46,-119.07 68.54,-115.34"/>
+</g>
+</g>
+</svg>
+</div>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#EfferentGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="EfferentGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="202pt" height="32pt"
+ viewBox="0.00 0.00 201.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 197.5,-28 197.5,4 -4,4"/>
+<!-- Source File -->
+<g id="node1" class="node">
+<title>Source File</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="70,-24 0,-24 0,0 70,0 70,-24"/>
+<text text-anchor="middle" x="35" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Source File</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node2" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="193.5,-24 88.5,-24 88.5,0 193.5,0 193.5,-24"/>
+<text text-anchor="middle" x="141" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a file to a file which it depends on. A file
+is dependent upon another if the latter must be compiled before the former
+can be.
+</p>
+ Where possible, edges connecting nodes are
+given different colours to make them easier to distinguish in
+large graphs.</div>
+            </div>
+          </div>
+        </div>
+          </div>
+        </div>
+<br>
+      <section>
+        <h2><span class="anchor" id="src"></span>Source Code</h2>
+        <div class="hl codehilite"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="w">      </span><span class="k">subroutine </span><span class="n">pl_mortality</span>
+<a id="ln-2" name="ln-2" href="#ln-2"></a><span class="w">      </span>
+<a id="ln-3" name="ln-3" href="#ln-3"></a><span class="w">      </span><span class="k">use </span><span class="n">plant_data_module</span>
+<a id="ln-4" name="ln-4" href="#ln-4"></a><span class="w">      </span><span class="k">use </span><span class="n">basin_module</span>
+<a id="ln-5" name="ln-5" href="#ln-5"></a><span class="w">      </span><span class="k">use </span><span class="n">hru_module</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ihru</span><span class="p">,</span><span class="w"> </span><span class="n">ipl</span>
+<a id="ln-6" name="ln-6" href="#ln-6"></a><span class="w">      </span><span class="k">use </span><span class="n">plant_module</span>
+<a id="ln-7" name="ln-7" href="#ln-7"></a><span class="w">      </span><span class="k">use </span><span class="n">carbon_module</span>
+<a id="ln-8" name="ln-8" href="#ln-8"></a><span class="w">      </span><span class="k">use </span><span class="n">organic_mineral_mass_module</span>
+<a id="ln-9" name="ln-9" href="#ln-9"></a><span class="w">      </span><span class="k">use </span><span class="n">soil_module</span>
+<a id="ln-10" name="ln-10" href="#ln-10"></a><span class="w">      </span>
+<a id="ln-11" name="ln-11" href="#ln-11"></a><span class="w">      </span><span class="k">implicit none </span>
+<a id="ln-12" name="ln-12" href="#ln-12"></a><span class="k">      </span>
+<a id="ln-13" name="ln-13" href="#ln-13"></a><span class="k">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">          </span><span class="c">!none               |HRU number</span>
+<a id="ln-14" name="ln-14" href="#ln-14"></a><span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">idp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">        </span><span class="c">!                   |</span>
+<a id="ln-15" name="ln-15" href="#ln-15"></a><span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">         </span><span class="c">!                   |soil layer number</span>
+<a id="ln-16" name="ln-16" href="#ln-16"></a><span class="w">      </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bm_dieoff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span>
+<a id="ln-17" name="ln-17" href="#ln-17"></a><span class="w">      </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span>
+<a id="ln-18" name="ln-18" href="#ln-18"></a><span class="w">      </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rto1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span>
+<a id="ln-19" name="ln-19" href="#ln-19"></a><span class="w">               </span>
+<a id="ln-20" name="ln-20" href="#ln-20"></a><span class="w">      </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ihru</span>
+<a id="ln-21" name="ln-21" href="#ln-21"></a><span class="w">      </span><span class="n">idp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pcom</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">plcur</span><span class="p">(</span><span class="n">ipl</span><span class="p">)%</span><span class="n">idplt</span>
+<a id="ln-22" name="ln-22" href="#ln-22"></a>
+<a id="ln-23" name="ln-23" href="#ln-23"></a><span class="w">      </span><span class="c">!keep biomass below maximum - excess to residue (need to include c, n and p adjustments)</span>
+<a id="ln-24" name="ln-24" href="#ln-24"></a><span class="w">      </span><span class="n">bm_dieoff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">pldb</span><span class="p">(</span><span class="n">idp</span><span class="p">)%</span><span class="n">bm_dieoff</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">ab_gr</span><span class="p">(</span><span class="n">ipl</span><span class="p">)%</span><span class="n">m</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">pldb</span><span class="p">(</span><span class="n">idp</span><span class="p">)%</span><span class="n">bmx_peren</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="mf">0.</span><span class="p">))</span><span class="w">  </span><span class="c">!t/ha -&gt; kg/ha</span>
+<a id="ln-25" name="ln-25" href="#ln-25"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bm_dieoff</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1.e-6</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">ab_gr</span><span class="p">(</span><span class="n">ipl</span><span class="p">)%</span><span class="n">m</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">bm_dieoff</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<a id="ln-26" name="ln-26" href="#ln-26"></a>
+<a id="ln-27" name="ln-27" href="#ln-27"></a><span class="w">        </span><span class="c">!! partition all plant components by above ground ratio</span>
+<a id="ln-28" name="ln-28" href="#ln-28"></a>
+<a id="ln-29" name="ln-29" href="#ln-29"></a><span class="w">        </span><span class="n">rto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bm_dieoff</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">ab_gr</span><span class="p">(</span><span class="n">ipl</span><span class="p">)%</span><span class="n">m</span><span class="w">  </span><span class="c">! Fraction of dead biomass</span>
+<a id="ln-30" name="ln-30" href="#ln-30"></a>
+<a id="ln-31" name="ln-31" href="#ln-31"></a><span class="w">        </span><span class="n">rto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">amin1</span><span class="w"> </span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="n">rto</span><span class="p">)</span>
+<a id="ln-32" name="ln-32" href="#ln-32"></a>
+<a id="ln-33" name="ln-33" href="#ln-33"></a><span class="w">        </span><span class="c">!! add dead material to residue</span>
+<a id="ln-34" name="ln-34" href="#ln-34"></a><span class="w">        </span><span class="n">rto1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">rto</span><span class="w">  </span><span class="c">! Fraction remaining of living biomass</span>
+<a id="ln-35" name="ln-35" href="#ln-35"></a><span class="w">        </span><span class="n">rto1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="w"> </span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="w"> </span><span class="n">rto1</span><span class="p">)</span>
+<a id="ln-36" name="ln-36" href="#ln-36"></a><span class="w">        </span>
+<a id="ln-37" name="ln-37" href="#ln-37"></a><span class="w">        </span><span class="c">!! add above ground biomass that has died off to surface residue pools</span>
+<a id="ln-38" name="ln-38" href="#ln-38"></a><span class="w">        </span><span class="n">soil1</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">rsd</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">soil1</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">rsd</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rto</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">ab_gr</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span>
+<a id="ln-39" name="ln-39" href="#ln-39"></a><span class="w">        </span>
+<a id="ln-40" name="ln-40" href="#ln-40"></a><span class="w">        </span><span class="c">!! add dead roots to soil residue pools</span>
+<a id="ln-41" name="ln-41" href="#ln-41"></a><span class="w">        </span><span class="c">! if (bsn_cc%cswat == 2) then</span>
+<a id="ln-42" name="ln-42" href="#ln-42"></a><span class="w">          </span><span class="k">do </span><span class="n">ly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">soil</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">nly</span>
+<a id="ln-43" name="ln-43" href="#ln-43"></a><span class="w">            </span><span class="n">soil1</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">rsd</span><span class="p">(</span><span class="n">ly</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">soil1</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">rsd</span><span class="p">(</span><span class="n">ly</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rto</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">soil</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">ly</span><span class="p">(</span><span class="n">ly</span><span class="p">)%</span><span class="n">rtfr</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">root</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span>
+<a id="ln-44" name="ln-44" href="#ln-44"></a><span class="w">          </span><span class="k">end do</span>
+<a id="ln-45" name="ln-45" href="#ln-45"></a><span class="w">        </span><span class="c">! end if</span>
+<a id="ln-46" name="ln-46" href="#ln-46"></a>
+<a id="ln-47" name="ln-47" href="#ln-47"></a><span class="w">        </span><span class="c">! Reduce remaining living biomass  </span>
+<a id="ln-48" name="ln-48" href="#ln-48"></a><span class="w">        </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">tot</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rto1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">tot</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span>
+<a id="ln-49" name="ln-49" href="#ln-49"></a><span class="w">        </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">ab_gr</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rto1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">ab_gr</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span>
+<a id="ln-50" name="ln-50" href="#ln-50"></a><span class="w">        </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">leaf</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rto1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">leaf</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span>
+<a id="ln-51" name="ln-51" href="#ln-51"></a><span class="w">        </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">stem</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rto1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">stem</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span>
+<a id="ln-52" name="ln-52" href="#ln-52"></a><span class="w">        </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">seed</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rto1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">seed</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span>
+<a id="ln-53" name="ln-53" href="#ln-53"></a><span class="w">        </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">root</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rto1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pl_mass</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">root</span><span class="p">(</span><span class="n">ipl</span><span class="p">)</span>
+<a id="ln-54" name="ln-54" href="#ln-54"></a><span class="w">        </span>
+<a id="ln-55" name="ln-55" href="#ln-55"></a><span class="w">      </span><span class="k">end if</span>
+<a id="ln-56" name="ln-56" href="#ln-56"></a>
+<a id="ln-57" name="ln-57" href="#ln-57"></a><span class="k">      return</span>
+<a id="ln-58" name="ln-58" href="#ln-58"></a><span class="k">      end subroutine </span><span class="n">pl_mortality</span>
+</pre></div>
+
+      </section>
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              SWAT+
+              &copy; 2025 
+<br /><small>@SWAT_VERSION@</small></p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-09-05             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

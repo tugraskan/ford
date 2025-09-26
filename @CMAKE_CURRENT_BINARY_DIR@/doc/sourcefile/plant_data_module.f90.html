@@ -1,0 +1,1360 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for SWAT+">
+    <meta name="author" content="" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>plant_data_module.f90 &ndash; SWAT+</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">SWAT+ <small>@SWAT_VERSION@</small></a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>plant_data_module.f90
+      <small>Source File</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 0.1% of total for sourcefile.">107 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/plant_data_module.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+            <li class="breadcrumb-item active" aria-current="page">plant_data_module.f90</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+        <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#mods-0"
+         aria-expanded="false" aria-controls="mods-0">
+         <h4 class="card-header bg-primary text-white">Modules</h4>
+      </a>
+      <div id="mods-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/plant_data_module.html">plant_data_module</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../sourcefile/plant_data_module.f90.html#src">plant_data_module.f90</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    <div class="col-md-9" id='text'>
+      
+      <br>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Files dependent on this one</h3>
+          </div>
+          <div class="card-body">
+            <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: sourcefile~~plant_data_module.f90~~AfferentGraph Pages: 1 -->
+<svg id="sourcefileplant_data_modulef90AfferentGraph" width="333pt" height="2636pt"
+ viewBox="0.00 0.00 333.00 2636.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 2632)">
+<title>sourcefile~~plant_data_module.f90~~AfferentGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-2632 329,-2632 329,4 -4,4"/>
+<!-- sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node1" class="node">
+<title>sourcefile~plant_data_module.f90</title>
+<polygon fill="none" stroke="black" points="135,-1326 0,-1326 0,-1302 135,-1302 135,-1326"/>
+<text text-anchor="middle" x="67.5" y="-1311.6" font-family="Helvetica,sans-Serif" font-size="10.50">plant_data_module.f90</text>
+</g>
+<!-- sourcefile~actions.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node2" class="node">
+<title>sourcefile~actions.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node2"><a xlink:href="../sourcefile/actions.f90.html" xlink:title="actions.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="283.5,-2628 212.5,-2628 212.5,-2604 283.5,-2604 283.5,-2628"/>
+<text text-anchor="middle" x="248" y="-2613.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">actions.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~actions.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge1" class="edge">
+<title>sourcefile~actions.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M212.36,-2614.95C197.38,-2612.61 181.03,-2607.14 171,-2595 87.56,-2494.01 70.95,-1500.12 68.77,-1336.69"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.27,-1336.34 68.64,-1326.38 65.27,-1336.43 72.27,-1336.34"/>
+</g>
+<!-- sourcefile~aqu_pesticide_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node3" class="node">
+<title>sourcefile~aqu_pesticide_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node3"><a xlink:href="../sourcefile/aqu_pesticide_output.f90.html" xlink:title="aqu_pesticide_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="321,-2586 175,-2586 175,-2562 321,-2562 321,-2586"/>
+<text text-anchor="middle" x="248" y="-2571.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">aqu_pesticide_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~aqu_pesticide_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge2" class="edge">
+<title>sourcefile~aqu_pesticide_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M181.02,-2561.88C177.28,-2559.41 173.88,-2556.48 171,-2553 90.23,-2455.51 71.42,-1496.03 68.84,-1336.44"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.33,-1336.3 68.68,-1326.36 65.33,-1336.41 72.33,-1336.3"/>
+</g>
+<!-- sourcefile~basin_aqu_pest_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node4" class="node">
+<title>sourcefile~basin_aqu_pest_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node4"><a xlink:href="../sourcefile/basin_aqu_pest_output.f90.html" xlink:title="basin_aqu_pest_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="325,-2544 171,-2544 171,-2520 325,-2520 325,-2544"/>
+<text text-anchor="middle" x="248" y="-2529.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">basin_aqu_pest_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~basin_aqu_pest_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge3" class="edge">
+<title>sourcefile~basin_aqu_pest_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M181.04,-2519.87C177.29,-2517.4 173.89,-2514.47 171,-2511 92.97,-2417.1 71.93,-1493.66 68.91,-1336.64"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.4,-1336.25 68.71,-1326.31 65.4,-1336.38 72.4,-1336.25"/>
+</g>
+<!-- sourcefile~basin_ch_pest_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node5" class="node">
+<title>sourcefile~basin_ch_pest_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node5"><a xlink:href="../sourcefile/basin_ch_pest_output.f90.html" xlink:title="basin_ch_pest_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="321.5,-2502 174.5,-2502 174.5,-2478 321.5,-2478 321.5,-2502"/>
+<text text-anchor="middle" x="248" y="-2487.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">basin_ch_pest_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~basin_ch_pest_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge4" class="edge">
+<title>sourcefile~basin_ch_pest_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M181.05,-2477.86C177.3,-2475.39 173.89,-2472.47 171,-2469 95.63,-2378.58 72.42,-1489.22 68.97,-1336.32"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.47,-1336.17 68.75,-1326.25 65.47,-1336.33 72.47,-1336.17"/>
+</g>
+<!-- sourcefile~basin_ls_pest_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node6" class="node">
+<title>sourcefile~basin_ls_pest_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node6"><a xlink:href="../sourcefile/basin_ls_pest_output.f90.html" xlink:title="basin_ls_pest_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="319,-2460 177,-2460 177,-2436 319,-2436 319,-2460"/>
+<text text-anchor="middle" x="248" y="-2445.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">basin_ls_pest_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~basin_ls_pest_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge5" class="edge">
+<title>sourcefile~basin_ls_pest_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M181.06,-2435.85C177.31,-2433.39 173.9,-2430.47 171,-2427 98.35,-2340.14 72.97,-1486.37 69.06,-1336.42"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.55,-1336.07 68.79,-1326.16 65.55,-1336.25 72.55,-1336.07"/>
+</g>
+<!-- sourcefile~basin_res_pest_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node7" class="node">
+<title>sourcefile~basin_res_pest_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node7"><a xlink:href="../sourcefile/basin_res_pest_output.f90.html" xlink:title="basin_res_pest_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="323,-2418 173,-2418 173,-2394 323,-2394 323,-2418"/>
+<text text-anchor="middle" x="248" y="-2403.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">basin_res_pest_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~basin_res_pest_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge6" class="edge">
+<title>sourcefile~basin_res_pest_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M181.07,-2393.83C177.32,-2391.38 173.9,-2388.46 171,-2385 101.07,-2301.69 73.53,-1483.24 69.14,-1336.47"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.63,-1335.95 68.84,-1326.06 65.63,-1336.15 72.63,-1335.95"/>
+</g>
+<!-- sourcefile~cal_allo_init.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node8" class="node">
+<title>sourcefile~cal_allo_init.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node8"><a xlink:href="../sourcefile/cal_allo_init.f90.html" xlink:title="cal_allo_init.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="295.5,-2376 200.5,-2376 200.5,-2352 295.5,-2352 295.5,-2376"/>
+<text text-anchor="middle" x="248" y="-2361.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">cal_allo_init.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~cal_allo_init.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge7" class="edge">
+<title>sourcefile~cal_allo_init.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M200.21,-2360.21C189.14,-2357.08 178.41,-2351.79 171,-2343 103.77,-2263.22 74.12,-1479.9 69.24,-1336.49"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.73,-1336.15 68.89,-1326.27 65.73,-1336.38 72.73,-1336.15"/>
+</g>
+<!-- sourcefile~cal_conditions.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node9" class="node">
+<title>sourcefile~cal_conditions.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node9"><a xlink:href="../sourcefile/cal_conditions.f90.html" xlink:title="cal_conditions.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="302.5,-2334 193.5,-2334 193.5,-2310 302.5,-2310 302.5,-2334"/>
+<text text-anchor="middle" x="248" y="-2319.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">cal_conditions.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~cal_conditions.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge8" class="edge">
+<title>sourcefile~cal_conditions.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M193.19,-2315.86C184.72,-2312.63 176.84,-2307.9 171,-2301 106.46,-2224.74 74.72,-1476.23 69.33,-1336.43"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.82,-1335.97 68.94,-1326.11 65.82,-1336.23 72.82,-1335.97"/>
+</g>
+<!-- sourcefile~cal_parm_select.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node10" class="node">
+<title>sourcefile~cal_parm_select.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node10"><a xlink:href="../sourcefile/cal_parm_select.f90.html" xlink:title="cal_parm_select.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="307.5,-2292 188.5,-2292 188.5,-2268 307.5,-2268 307.5,-2292"/>
+<text text-anchor="middle" x="248" y="-2277.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">cal_parm_select.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~cal_parm_select.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge9" class="edge">
+<title>sourcefile~cal_parm_select.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M188.29,-2271.75C181.71,-2268.67 175.7,-2264.53 171,-2259 109.14,-2186.24 75.34,-1472.34 69.44,-1336.32"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.93,-1336.09 69.01,-1326.25 65.94,-1336.39 72.93,-1336.09"/>
+</g>
+<!-- sourcefile~calsoft_read_codes.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node11" class="node">
+<title>sourcefile~calsoft_read_codes.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node11"><a xlink:href="../sourcefile/calsoft_read_codes.f90.html" xlink:title="calsoft_read_codes.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="315,-2250 181,-2250 181,-2226 315,-2226 315,-2250"/>
+<text text-anchor="middle" x="248" y="-2235.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">calsoft_read_codes.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_read_codes.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge10" class="edge">
+<title>sourcefile~calsoft_read_codes.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M181.49,-2226C177.58,-2223.51 174.02,-2220.54 171,-2217 111.8,-2147.72 75.98,-1468.13 69.55,-1336.14"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="73.04,-1335.85 69.06,-1326.03 66.04,-1336.18 73.04,-1335.85"/>
+</g>
+<!-- sourcefile~ch_cs_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node12" class="node">
+<title>sourcefile~ch_cs_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node12"><a xlink:href="../sourcefile/ch_cs_output.f90.html" xlink:title="ch_cs_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="299,-2208 197,-2208 197,-2184 299,-2184 299,-2208"/>
+<text text-anchor="middle" x="248" y="-2193.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ch_cs_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~ch_cs_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge11" class="edge">
+<title>sourcefile~ch_cs_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M196.78,-2191.03C186.98,-2187.81 177.69,-2182.79 171,-2175 114.52,-2109.26 76.71,-1465 69.68,-1336.3"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="73.17,-1335.89 69.13,-1326.09 66.18,-1336.26 73.17,-1335.89"/>
+</g>
+<!-- sourcefile~ch_pathogen_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node13" class="node">
+<title>sourcefile~ch_pathogen_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node13"><a xlink:href="../sourcefile/ch_pathogen_output.f90.html" xlink:title="ch_pathogen_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="319,-2166 177,-2166 177,-2142 319,-2142 319,-2166"/>
+<text text-anchor="middle" x="248" y="-2151.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ch_pathogen_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~ch_pathogen_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge12" class="edge">
+<title>sourcefile~ch_pathogen_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M181.53,-2141.96C177.62,-2139.48 174.04,-2136.52 171,-2133 63.98,-2009.21 66.33,-1454.47 68.08,-1336.22"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="71.59,-1336.22 68.25,-1326.16 64.59,-1336.11 71.59,-1336.22"/>
+</g>
+<!-- sourcefile~ch_salt_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node14" class="node">
+<title>sourcefile~ch_salt_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node14"><a xlink:href="../sourcefile/ch_salt_output.f90.html" xlink:title="ch_salt_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="302.5,-2124 193.5,-2124 193.5,-2100 302.5,-2100 302.5,-2124"/>
+<text text-anchor="middle" x="248" y="-2109.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ch_salt_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~ch_salt_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge13" class="edge">
+<title>sourcefile~ch_salt_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M193.35,-2105.73C184.86,-2102.51 176.93,-2097.81 171,-2091 69.31,-1974.17 67.42,-1450.6 68.25,-1336.15"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="71.75,-1336.14 68.34,-1326.11 64.75,-1336.08 71.75,-1336.14"/>
+</g>
+<!-- sourcefile~cha_pesticide_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node15" class="node">
+<title>sourcefile~cha_pesticide_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node15"><a xlink:href="../sourcefile/cha_pesticide_output.f90.html" xlink:title="cha_pesticide_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="320.5,-2082 175.5,-2082 175.5,-2058 320.5,-2058 320.5,-2082"/>
+<text text-anchor="middle" x="248" y="-2067.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">cha_pesticide_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~cha_pesticide_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge14" class="edge">
+<title>sourcefile~cha_pesticide_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M181.59,-2057.91C177.66,-2055.44 174.07,-2052.5 171,-2049 74.71,-1939.18 68.58,-1447.37 68.44,-1336.33"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="71.94,-1336 68.44,-1326 64.94,-1336 71.94,-1336"/>
+</g>
+<!-- sourcefile~cs_uptake.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node16" class="node">
+<title>sourcefile~cs_uptake.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node16"><a xlink:href="../sourcefile/cs_uptake.f90.html" xlink:title="cs_uptake.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="291,-2040 205,-2040 205,-2016 291,-2016 291,-2040"/>
+<text text-anchor="middle" x="248" y="-2025.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">cs_uptake.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~cs_uptake.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge15" class="edge">
+<title>sourcefile~cs_uptake.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M204.85,-2025.09C192.3,-2022.15 179.61,-2016.74 171,-2007 80.06,-1904.15 69.8,-1443.7 68.65,-1336.4"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.14,-1336.08 68.55,-1326.11 65.14,-1336.14 72.14,-1336.08"/>
+</g>
+<!-- sourcefile~dtbl_lum_read.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node17" class="node">
+<title>sourcefile~dtbl_lum_read.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node17"><a xlink:href="../sourcefile/dtbl_lum_read.f90.html" xlink:title="dtbl_lum_read.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="302,-1998 194,-1998 194,-1974 302,-1974 302,-1998"/>
+<text text-anchor="middle" x="248" y="-1983.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dtbl_lum_read.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~dtbl_lum_read.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge16" class="edge">
+<title>sourcefile~dtbl_lum_read.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M193.88,-1979.75C185.22,-1976.54 177.11,-1971.84 171,-1965 85.36,-1869.05 71.09,-1439.54 68.88,-1336.35"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.38,-1336.08 68.68,-1326.15 65.38,-1336.22 72.38,-1336.08"/>
+</g>
+<!-- sourcefile~ero_cfactor.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node18" class="node">
+<title>sourcefile~ero_cfactor.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node18"><a xlink:href="../sourcefile/ero_cfactor.f90.html" xlink:title="ero_cfactor.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="293.5,-1956 202.5,-1956 202.5,-1932 293.5,-1932 293.5,-1956"/>
+<text text-anchor="middle" x="248" y="-1941.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ero_cfactor.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~ero_cfactor.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge17" class="edge">
+<title>sourcefile~ero_cfactor.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M202.19,-1940.29C190.57,-1937.22 179.07,-1931.94 171,-1923 90.61,-1833.89 72.44,-1434.9 69.14,-1336.16"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.64,-1336 68.82,-1326.11 65.64,-1336.22 72.64,-1336"/>
+</g>
+<!-- sourcefile~et_pot.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node19" class="node">
+<title>sourcefile~et_pot.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node19"><a xlink:href="../sourcefile/et_pot.f90.html" xlink:title="et_pot.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="281,-1914 215,-1914 215,-1890 281,-1890 281,-1914"/>
+<text text-anchor="middle" x="248" y="-1899.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">et_pot.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~et_pot.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge18" class="edge">
+<title>sourcefile~et_pot.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M214.82,-1900.79C199.47,-1898.5 182.08,-1893.13 171,-1881 95.97,-1798.84 73.94,-1431.32 69.45,-1336.42"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.94,-1336.07 68.99,-1326.24 65.95,-1336.38 72.94,-1336.07"/>
+</g>
+<!-- sourcefile~hru_carbon_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node20" class="node">
+<title>sourcefile~hru_carbon_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node20"><a xlink:href="../sourcefile/hru_carbon_output.f90.html" xlink:title="hru_carbon_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="314.5,-1872 181.5,-1872 181.5,-1848 314.5,-1848 314.5,-1872"/>
+<text text-anchor="middle" x="248" y="-1857.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hru_carbon_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~hru_carbon_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge19" class="edge">
+<title>sourcefile~hru_carbon_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M182.15,-1847.93C178.04,-1845.46 174.26,-1842.52 171,-1839 101.26,-1763.69 75.54,-1427.01 69.81,-1336.48"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="73.29,-1336.02 69.18,-1326.25 66.3,-1336.45 73.29,-1336.02"/>
+</g>
+<!-- sourcefile~hru_control.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node21" class="node">
+<title>sourcefile~hru_control.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node21"><a xlink:href="../sourcefile/hru_control.f90.html" xlink:title="hru_control.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="294.5,-1830 201.5,-1830 201.5,-1806 294.5,-1806 294.5,-1830"/>
+<text text-anchor="middle" x="248" y="-1815.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hru_control.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~hru_control.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge20" class="edge">
+<title>sourcefile~hru_control.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M201.25,-1813.75C190.03,-1810.63 178.98,-1805.47 171,-1797 106.48,-1728.45 77.22,-1421.99 70.21,-1336.32"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="73.68,-1335.84 69.4,-1326.15 66.71,-1336.4 73.68,-1335.84"/>
+</g>
+<!-- sourcefile~hru_lte_read.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node22" class="node">
+<title>sourcefile~hru_lte_read.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node22"><a xlink:href="../sourcefile/hru_lte_read.f90.html" xlink:title="hru_lte_read.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="297.5,-1788 198.5,-1788 198.5,-1764 297.5,-1764 297.5,-1788"/>
+<text text-anchor="middle" x="248" y="-1773.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hru_lte_read.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~hru_lte_read.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge21" class="edge">
+<title>sourcefile~hru_lte_read.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M198.2,-1770.71C188.08,-1767.54 178.3,-1762.61 171,-1755 111.74,-1693.25 79.13,-1417.47 70.71,-1336.45"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="74.18,-1335.95 69.68,-1326.35 67.21,-1336.66 74.18,-1335.95"/>
+</g>
+<!-- sourcefile~hru_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node23" class="node">
+<title>sourcefile~hru_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node23"><a xlink:href="../sourcefile/hru_output.f90.html" xlink:title="hru_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="293.5,-1746 202.5,-1746 202.5,-1722 293.5,-1722 293.5,-1746"/>
+<text text-anchor="middle" x="248" y="-1731.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hru_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~hru_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge22" class="edge">
+<title>sourcefile~hru_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M202.28,-1729.74C190.79,-1726.64 179.34,-1721.5 171,-1713 117.02,-1658.03 81.3,-1413 71.34,-1336.73"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="74.75,-1335.84 70.01,-1326.37 67.81,-1336.74 74.75,-1335.84"/>
+</g>
+<!-- sourcefile~hru_pathogen_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node24" class="node">
+<title>sourcefile~hru_pathogen_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node24"><a xlink:href="../sourcefile/hru_pathogen_output.f90.html" xlink:title="hru_pathogen_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="321.5,-1704 174.5,-1704 174.5,-1680 321.5,-1680 321.5,-1704"/>
+<text text-anchor="middle" x="248" y="-1689.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hru_pathogen_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~hru_pathogen_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge23" class="edge">
+<title>sourcefile~hru_pathogen_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M182.85,-1679.81C178.52,-1677.37 174.5,-1674.47 171,-1671 75.45,-1576.4 67.55,-1399.05 67.91,-1336.52"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="71.41,-1336.28 68.05,-1326.23 64.41,-1336.18 71.41,-1336.28"/>
+</g>
+<!-- sourcefile~hru_pesticide_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node25" class="node">
+<title>sourcefile~hru_pesticide_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node25"><a xlink:href="../sourcefile/hru_pesticide_output.f90.html" xlink:title="hru_pesticide_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="320,-1662 176,-1662 176,-1638 320,-1638 320,-1662"/>
+<text text-anchor="middle" x="248" y="-1647.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hru_pesticide_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~hru_pesticide_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge24" class="edge">
+<title>sourcefile~hru_pesticide_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M183.34,-1637.87C178.85,-1635.43 174.66,-1632.5 171,-1629 85.46,-1547.22 71.21,-1393.38 68.91,-1336.17"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="72.4,-1335.95 68.59,-1326.06 65.41,-1336.17 72.4,-1335.95"/>
+</g>
+<!-- sourcefile~hydro_init.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node26" class="node">
+<title>sourcefile~hydro_init.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node26"><a xlink:href="../sourcefile/hydro_init.f90.html" xlink:title="hydro_init.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="290.5,-1620 205.5,-1620 205.5,-1596 290.5,-1596 290.5,-1620"/>
+<text text-anchor="middle" x="248" y="-1605.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hydro_init.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~hydro_init.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge25" class="edge">
+<title>sourcefile~hydro_init.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M205.23,-1603.75C193,-1600.71 180.4,-1595.59 171,-1587 95.63,-1518.1 75.4,-1388.3 70.21,-1336.34"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="73.68,-1335.85 69.29,-1326.21 66.71,-1336.49 73.68,-1335.85"/>
+</g>
+<!-- sourcefile~landuse_read.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node27" class="node">
+<title>sourcefile~landuse_read.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node27"><a xlink:href="../sourcefile/landuse_read.f90.html" xlink:title="landuse_read.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="300,-1578 196,-1578 196,-1554 300,-1554 300,-1578"/>
+<text text-anchor="middle" x="248" y="-1563.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">landuse_read.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~landuse_read.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge26" class="edge">
+<title>sourcefile~landuse_read.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M195.65,-1558.49C186.72,-1555.41 178.05,-1551.08 171,-1545 105.6,-1488.63 80.18,-1382.44 71.92,-1336.32"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="75.33,-1335.48 70.21,-1326.2 68.42,-1336.64 75.33,-1335.48"/>
+</g>
+<!-- sourcefile~lsreg_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node28" class="node">
+<title>sourcefile~lsreg_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node28"><a xlink:href="../sourcefile/lsreg_output.f90.html" xlink:title="lsreg_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="297,-1536 199,-1536 199,-1512 297,-1512 297,-1536"/>
+<text text-anchor="middle" x="248" y="-1521.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">lsreg_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~lsreg_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge27" class="edge">
+<title>sourcefile~lsreg_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M198.8,-1516.93C188.89,-1513.84 179.04,-1509.39 171,-1503 115.33,-1458.74 85.75,-1375.67 74.26,-1336.08"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="77.6,-1335.04 71.55,-1326.35 70.86,-1336.92 77.6,-1335.04"/>
+</g>
+<!-- sourcefile~mgt_harvbiomass.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node29" class="node">
+<title>sourcefile~mgt_harvbiomass.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node29"><a xlink:href="../sourcefile/mgt_harvbiomass.f90.html" xlink:title="mgt_harvbiomass.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="311.5,-1494 184.5,-1494 184.5,-1470 311.5,-1470 311.5,-1494"/>
+<text text-anchor="middle" x="248" y="-1479.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_harvbiomass.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_harvbiomass.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge28" class="edge">
+<title>sourcefile~mgt_harvbiomass.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M187.47,-1469.97C181.64,-1467.51 176.03,-1464.56 171,-1461 124.71,-1428.25 92.37,-1367.61 77.59,-1335.4"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="80.67,-1333.73 73.41,-1326.02 74.28,-1336.58 80.67,-1333.73"/>
+</g>
+<!-- sourcefile~mgt_harvgrain.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node30" class="node">
+<title>sourcefile~mgt_harvgrain.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node30"><a xlink:href="../sourcefile/mgt_harvgrain.f90.html" xlink:title="mgt_harvgrain.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="303.5,-1452 192.5,-1452 192.5,-1428 303.5,-1428 303.5,-1452"/>
+<text text-anchor="middle" x="248" y="-1437.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_harvgrain.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_harvgrain.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge29" class="edge">
+<title>sourcefile~mgt_harvgrain.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M192.4,-1428.71C184.95,-1426.1 177.6,-1422.9 171,-1419 133.85,-1397.06 100.99,-1358.19 83.01,-1334.4"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="85.62,-1332.05 76.87,-1326.08 79.99,-1336.21 85.62,-1332.05"/>
+</g>
+<!-- sourcefile~mgt_harvtuber.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node31" class="node">
+<title>sourcefile~mgt_harvtuber.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node31"><a xlink:href="../sourcefile/mgt_harvtuber.f90.html" xlink:title="mgt_harvtuber.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="303,-1410 193,-1410 193,-1386 303,-1386 303,-1410"/>
+<text text-anchor="middle" x="248" y="-1395.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_harvtuber.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_harvtuber.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge30" class="edge">
+<title>sourcefile~mgt_harvtuber.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M195.62,-1385.93C187.25,-1383.36 178.78,-1380.39 171,-1377 142.8,-1364.73 113.14,-1345.74 93.02,-1331.81"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="94.95,-1328.89 84.75,-1326 90.92,-1334.62 94.95,-1328.89"/>
+</g>
+<!-- sourcefile~mgt_plantop.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node32" class="node">
+<title>sourcefile~mgt_plantop.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node32"><a xlink:href="../sourcefile/mgt_plantop.f90.html" xlink:title="mgt_plantop.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="298,-1368 198,-1368 198,-1344 298,-1344 298,-1368"/>
+<text text-anchor="middle" x="248" y="-1353.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_plantop.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_plantop.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge31" class="edge">
+<title>sourcefile~mgt_plantop.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M197.75,-1344.41C176.72,-1339.46 151.96,-1333.64 129.76,-1328.41"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="130.3,-1324.95 119.77,-1326.06 128.7,-1331.76 130.3,-1324.95"/>
+</g>
+<!-- sourcefile~mgt_sched.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node33" class="node">
+<title>sourcefile~mgt_sched.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node33"><a xlink:href="../sourcefile/mgt_sched.f90.html" xlink:title="mgt_sched.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="293.5,-1326 202.5,-1326 202.5,-1302 293.5,-1302 293.5,-1326"/>
+<text text-anchor="middle" x="248" y="-1311.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_sched.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_sched.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge32" class="edge">
+<title>sourcefile~mgt_sched.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M202.42,-1314C185.09,-1314 164.75,-1314 145.22,-1314"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="145.1,-1310.5 135.1,-1314 145.1,-1317.5 145.1,-1310.5"/>
+</g>
+<!-- sourcefile~mgt_transplant.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node34" class="node">
+<title>sourcefile~mgt_transplant.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node34"><a xlink:href="../sourcefile/mgt_transplant.f90.html" xlink:title="mgt_transplant.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="304.5,-1284 191.5,-1284 191.5,-1260 304.5,-1260 304.5,-1284"/>
+<text text-anchor="middle" x="248" y="-1269.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">mgt_transplant.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~mgt_transplant.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge33" class="edge">
+<title>sourcefile~mgt_transplant.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M195.85,-1284.04C175.12,-1288.91 151.02,-1294.58 129.4,-1299.67"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="128.59,-1296.27 119.66,-1301.96 130.19,-1303.08 128.59,-1296.27"/>
+</g>
+<!-- sourcefile~pl_biomass_gro.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node35" class="node">
+<title>sourcefile~pl_biomass_gro.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node35"><a xlink:href="../sourcefile/pl_biomass_gro.f90.html" xlink:title="pl_biomass_gro.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="305,-1242 191,-1242 191,-1218 305,-1218 305,-1242"/>
+<text text-anchor="middle" x="248" y="-1227.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_biomass_gro.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_biomass_gro.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge34" class="edge">
+<title>sourcefile~pl_biomass_gro.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M195.62,-1242.07C187.25,-1244.64 178.78,-1247.61 171,-1251 142.8,-1263.27 113.14,-1282.26 93.02,-1296.19"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="90.92,-1293.38 84.75,-1302 94.95,-1299.11 90.92,-1293.38"/>
+</g>
+<!-- sourcefile~pl_community.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node36" class="node">
+<title>sourcefile~pl_community.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node36"><a xlink:href="../sourcefile/pl_community.f90.html" xlink:title="pl_community.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="301,-1200 195,-1200 195,-1176 301,-1176 301,-1200"/>
+<text text-anchor="middle" x="248" y="-1185.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_community.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_community.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge35" class="edge">
+<title>sourcefile~pl_community.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M194.8,-1198.47C186.53,-1201.23 178.31,-1204.68 171,-1209 133.85,-1230.94 100.99,-1269.81 83.01,-1293.6"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="79.99,-1291.79 76.87,-1301.92 85.62,-1295.95 79.99,-1291.79"/>
+</g>
+<!-- sourcefile~pl_grow.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node37" class="node">
+<title>sourcefile~pl_grow.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node37"><a xlink:href="../sourcefile/pl_grow.f90.html" xlink:title="pl_grow.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="284.5,-1158 211.5,-1158 211.5,-1134 284.5,-1134 284.5,-1158"/>
+<text text-anchor="middle" x="248" y="-1143.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_grow.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_grow.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge36" class="edge">
+<title>sourcefile~pl_grow.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M211.5,-1150.55C197.91,-1153.58 182.85,-1158.62 171,-1167 124.71,-1199.75 92.37,-1260.39 77.59,-1292.6"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="74.28,-1291.42 73.41,-1301.98 80.67,-1294.27 74.28,-1291.42"/>
+</g>
+<!-- sourcefile~pl_leaf_gro.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node38" class="node">
+<title>sourcefile~pl_leaf_gro.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node38"><a xlink:href="../sourcefile/pl_leaf_gro.f90.html" xlink:title="pl_leaf_gro.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="293,-1116 203,-1116 203,-1092 293,-1092 293,-1116"/>
+<text text-anchor="middle" x="248" y="-1101.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_leaf_gro.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_leaf_gro.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge37" class="edge">
+<title>sourcefile~pl_leaf_gro.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M202.76,-1109.9C191.55,-1113.01 180.11,-1117.76 171,-1125 115.33,-1169.26 85.75,-1252.33 74.26,-1291.92"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="70.86,-1291.08 71.55,-1301.65 77.6,-1292.96 70.86,-1291.08"/>
+</g>
+<!-- sourcefile~pl_leaf_senes.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node39" class="node">
+<title>sourcefile~pl_leaf_senes.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node39"><a xlink:href="../sourcefile/pl_leaf_senes.f90.html" xlink:title="pl_leaf_senes.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="300,-1074 196,-1074 196,-1050 300,-1050 300,-1074"/>
+<text text-anchor="middle" x="248" y="-1059.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_leaf_senes.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_leaf_senes.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge38" class="edge">
+<title>sourcefile~pl_leaf_senes.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M195.65,-1069.51C186.72,-1072.59 178.05,-1076.92 171,-1083 105.6,-1139.37 80.18,-1245.56 71.92,-1291.68"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="68.42,-1291.36 70.21,-1301.8 75.33,-1292.52 68.42,-1291.36"/>
+</g>
+<!-- sourcefile~pl_mortality.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node40" class="node">
+<title>sourcefile~pl_mortality.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node40"><a xlink:href="../sourcefile/pl_mortality.f90.html" xlink:title="pl_mortality.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="295,-1032 201,-1032 201,-1008 295,-1008 295,-1032"/>
+<text text-anchor="middle" x="248" y="-1017.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_mortality.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_mortality.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge39" class="edge">
+<title>sourcefile~pl_mortality.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M200.88,-1025.42C190.06,-1028.55 179.28,-1033.43 171,-1041 95.63,-1109.9 75.4,-1239.7 70.21,-1291.66"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="66.71,-1291.51 69.29,-1301.79 73.68,-1292.15 66.71,-1291.51"/>
+</g>
+<!-- sourcefile~pl_nfix.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node41" class="node">
+<title>sourcefile~pl_nfix.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node41"><a xlink:href="../sourcefile/pl_nfix.f90.html" xlink:title="pl_nfix.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="281.5,-990 214.5,-990 214.5,-966 281.5,-966 281.5,-990"/>
+<text text-anchor="middle" x="248" y="-975.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_nfix.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_nfix.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge40" class="edge">
+<title>sourcefile~pl_nfix.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M214.35,-980.06C199.45,-982.6 182.58,-987.93 171,-999 85.46,-1080.78 71.21,-1234.62 68.91,-1291.83"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.41,-1291.83 68.59,-1301.94 72.4,-1292.05 65.41,-1291.83"/>
+</g>
+<!-- sourcefile~pl_nup.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node42" class="node">
+<title>sourcefile~pl_nup.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node42"><a xlink:href="../sourcefile/pl_nup.f90.html" xlink:title="pl_nup.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="282,-948 214,-948 214,-924 282,-924 282,-948"/>
+<text text-anchor="middle" x="248" y="-933.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_nup.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_nup.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge41" class="edge">
+<title>sourcefile~pl_nup.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M213.8,-937.95C198.95,-940.47 182.28,-945.83 171,-957 75.45,-1051.6 67.55,-1228.95 67.91,-1291.48"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="64.41,-1291.82 68.05,-1301.77 71.41,-1291.72 64.41,-1291.82"/>
+</g>
+<!-- sourcefile~pl_nupd.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node43" class="node">
+<title>sourcefile~pl_nupd.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node43"><a xlink:href="../sourcefile/pl_nupd.f90.html" xlink:title="pl_nupd.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="285.5,-906 210.5,-906 210.5,-882 285.5,-882 285.5,-906"/>
+<text text-anchor="middle" x="248" y="-891.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_nupd.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_nupd.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge42" class="edge">
+<title>sourcefile~pl_nupd.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M210.16,-896.44C196.22,-899.17 181.26,-904.55 171,-915 117.02,-969.97 81.3,-1215 71.34,-1291.27"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="67.81,-1291.26 70.01,-1301.63 74.75,-1292.16 67.81,-1291.26"/>
+</g>
+<!-- sourcefile~pl_nut_demand.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node44" class="node">
+<title>sourcefile~pl_nut_demand.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node44"><a xlink:href="../sourcefile/pl_nut_demand.f90.html" xlink:title="pl_nut_demand.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="305.5,-864 190.5,-864 190.5,-840 305.5,-840 305.5,-864"/>
+<text text-anchor="middle" x="248" y="-849.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_nut_demand.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_nut_demand.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge43" class="edge">
+<title>sourcefile~pl_nut_demand.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M190.42,-860.13C183.17,-863.21 176.4,-867.37 171,-873 111.74,-934.75 79.13,-1210.53 70.71,-1291.55"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="67.21,-1291.34 69.68,-1301.65 74.18,-1292.05 67.21,-1291.34"/>
+</g>
+<!-- sourcefile~pl_partition.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node45" class="node">
+<title>sourcefile~pl_partition.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node45"><a xlink:href="../sourcefile/pl_partition.f90.html" xlink:title="pl_partition.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="294.5,-822 201.5,-822 201.5,-798 294.5,-798 294.5,-822"/>
+<text text-anchor="middle" x="248" y="-807.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_partition.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_partition.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge44" class="edge">
+<title>sourcefile~pl_partition.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M201.25,-814.25C190.03,-817.37 178.98,-822.53 171,-831 106.48,-899.55 77.22,-1206.01 70.21,-1291.68"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="66.71,-1291.6 69.4,-1301.85 73.68,-1292.16 66.71,-1291.6"/>
+</g>
+<!-- sourcefile~pl_pupd.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node46" class="node">
+<title>sourcefile~pl_pupd.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node46"><a xlink:href="../sourcefile/pl_pupd.f90.html" xlink:title="pl_pupd.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="285.5,-780 210.5,-780 210.5,-756 285.5,-756 285.5,-780"/>
+<text text-anchor="middle" x="248" y="-765.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_pupd.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_pupd.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge45" class="edge">
+<title>sourcefile~pl_pupd.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M210.24,-770.06C196.14,-772.72 181.04,-778.15 171,-789 101.26,-864.31 75.54,-1200.99 69.81,-1291.52"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="66.3,-1291.55 69.18,-1301.75 73.29,-1291.98 66.3,-1291.55"/>
+</g>
+<!-- sourcefile~pl_root_gro.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node47" class="node">
+<title>sourcefile~pl_root_gro.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node47"><a xlink:href="../sourcefile/pl_root_gro.f90.html" xlink:title="pl_root_gro.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="293.5,-738 202.5,-738 202.5,-714 293.5,-714 293.5,-738"/>
+<text text-anchor="middle" x="248" y="-723.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_root_gro.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_root_gro.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge46" class="edge">
+<title>sourcefile~pl_root_gro.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M202.26,-729.77C190.64,-732.84 179.12,-738.1 171,-747 95.97,-829.16 73.94,-1196.68 69.45,-1291.58"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.95,-1291.62 68.99,-1301.76 72.94,-1291.93 65.95,-1291.62"/>
+</g>
+<!-- sourcefile~pl_tstr.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node48" class="node">
+<title>sourcefile~pl_tstr.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node48"><a xlink:href="../sourcefile/pl_tstr.f90.html" xlink:title="pl_tstr.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="280,-696 216,-696 216,-672 280,-672 280,-696"/>
+<text text-anchor="middle" x="248" y="-681.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_tstr.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_tstr.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge47" class="edge">
+<title>sourcefile~pl_tstr.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M215.91,-684.99C200.26,-687.16 182.28,-692.5 171,-705 90.61,-794.11 72.44,-1193.1 69.14,-1291.84"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.64,-1291.78 68.82,-1301.89 72.64,-1292 65.64,-1291.78"/>
+</g>
+<!-- sourcefile~pl_waterup.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node49" class="node">
+<title>sourcefile~pl_waterup.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node49"><a xlink:href="../sourcefile/pl_waterup.f90.html" xlink:title="pl_waterup.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="293.5,-654 202.5,-654 202.5,-630 293.5,-630 293.5,-654"/>
+<text text-anchor="middle" x="248" y="-639.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">pl_waterup.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~pl_waterup.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge48" class="edge">
+<title>sourcefile~pl_waterup.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M202.13,-645.65C190.51,-648.72 179.02,-654.01 171,-663 85.36,-758.95 71.09,-1188.46 68.88,-1291.65"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.38,-1291.78 68.68,-1301.85 72.38,-1291.92 65.38,-1291.78"/>
+</g>
+<!-- sourcefile~plant_all_init.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node50" class="node">
+<title>sourcefile~plant_all_init.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node50"><a xlink:href="../sourcefile/plant_all_init.f90.html" xlink:title="plant_all_init.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="298,-612 198,-612 198,-588 298,-588 298,-612"/>
+<text text-anchor="middle" x="248" y="-597.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">plant_all_init.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~plant_all_init.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge49" class="edge">
+<title>sourcefile~plant_all_init.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M197.73,-604.86C187.64,-608.06 177.98,-613.1 171,-621 80.06,-723.85 69.8,-1184.3 68.65,-1291.6"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.14,-1291.86 68.55,-1301.89 72.14,-1291.92 65.14,-1291.86"/>
+</g>
+<!-- sourcefile~plant_init.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node51" class="node">
+<title>sourcefile~plant_init.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node51"><a xlink:href="../sourcefile/plant_init.f90.html" xlink:title="plant_init.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="289,-570 207,-570 207,-546 289,-546 289,-570"/>
+<text text-anchor="middle" x="248" y="-555.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">plant_init.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~plant_init.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge50" class="edge">
+<title>sourcefile~plant_init.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M206.78,-560.42C193.6,-563.25 180.03,-568.71 171,-579 74.71,-688.82 68.58,-1180.63 68.44,-1291.67"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="64.94,-1292 68.44,-1302 71.94,-1292 64.94,-1292"/>
+</g>
+<!-- sourcefile~plant_parm_read.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node52" class="node">
+<title>sourcefile~plant_parm_read.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node52"><a xlink:href="../sourcefile/plant_parm_read.f90.html" xlink:title="plant_parm_read.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="309.5,-528 186.5,-528 186.5,-504 309.5,-504 309.5,-528"/>
+<text text-anchor="middle" x="248" y="-513.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">plant_parm_read.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~plant_parm_read.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge51" class="edge">
+<title>sourcefile~plant_parm_read.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M186.19,-525.43C180.46,-528.37 175.22,-532.15 171,-537 69.31,-653.83 67.42,-1177.4 68.25,-1291.85"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="64.75,-1291.92 68.34,-1301.89 71.75,-1291.86 64.75,-1291.92"/>
+</g>
+<!-- sourcefile~plant_transplant_read.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node53" class="node">
+<title>sourcefile~plant_transplant_read.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node53"><a xlink:href="../sourcefile/plant_transplant_read.f90.html" xlink:title="plant_transplant_read.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="322,-486 174,-486 174,-462 322,-462 322,-486"/>
+<text text-anchor="middle" x="248" y="-471.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">plant_transplant_read.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~plant_transplant_read.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge52" class="edge">
+<title>sourcefile~plant_transplant_read.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M181.53,-486.04C177.62,-488.52 174.04,-491.48 171,-495 63.98,-618.79 66.33,-1173.53 68.08,-1291.78"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="64.59,-1291.89 68.25,-1301.84 71.59,-1291.78 64.59,-1291.89"/>
+</g>
+<!-- sourcefile~plantparm_init.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node54" class="node">
+<title>sourcefile~plantparm_init.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node54"><a xlink:href="../sourcefile/plantparm_init.f90.html" xlink:title="plantparm_init.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="303,-444 193,-444 193,-420 303,-420 303,-444"/>
+<text text-anchor="middle" x="248" y="-429.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">plantparm_init.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~plantparm_init.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge53" class="edge">
+<title>sourcefile~plantparm_init.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M192.89,-438.36C184.55,-441.58 176.8,-446.25 171,-453 114.52,-518.74 76.71,-1163 69.68,-1291.7"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="66.18,-1291.74 69.13,-1301.91 73.17,-1292.11 66.18,-1291.74"/>
+</g>
+<!-- sourcefile~read_mgtops.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node55" class="node">
+<title>sourcefile~read_mgtops.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node55"><a xlink:href="../sourcefile/read_mgtops.f90.html" xlink:title="read_mgtops.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="299,-402 197,-402 197,-378 299,-378 299,-402"/>
+<text text-anchor="middle" x="248" y="-387.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">read_mgtops.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~read_mgtops.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge54" class="edge">
+<title>sourcefile~read_mgtops.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M196.75,-394.94C186.95,-398.16 177.67,-403.19 171,-411 111.8,-480.28 75.98,-1159.87 69.55,-1291.86"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="66.04,-1291.82 69.06,-1301.97 73.04,-1292.15 66.04,-1291.82"/>
+</g>
+<!-- sourcefile~readpcom.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node56" class="node">
+<title>sourcefile~readpcom.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node56"><a xlink:href="../sourcefile/readpcom.f90.html" xlink:title="readpcom.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="291.5,-360 204.5,-360 204.5,-336 291.5,-336 291.5,-360"/>
+<text text-anchor="middle" x="248" y="-345.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">readpcom.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~readpcom.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge55" class="edge">
+<title>sourcefile~readpcom.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M204.23,-350.81C191.8,-353.76 179.33,-359.2 171,-369 109.14,-441.76 75.34,-1155.66 69.44,-1291.68"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.94,-1291.61 69.01,-1301.75 72.93,-1291.91 65.94,-1291.61"/>
+</g>
+<!-- sourcefile~res_cs_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node57" class="node">
+<title>sourcefile~res_cs_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node57"><a xlink:href="../sourcefile/res_cs_output.f90.html" xlink:title="res_cs_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="300.5,-318 195.5,-318 195.5,-294 300.5,-294 300.5,-318"/>
+<text text-anchor="middle" x="248" y="-303.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">res_cs_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~res_cs_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge56" class="edge">
+<title>sourcefile~res_cs_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M195.13,-311.43C185.92,-314.66 177.28,-319.58 171,-327 106.46,-403.26 74.72,-1151.77 69.33,-1291.57"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.82,-1291.77 68.94,-1301.89 72.82,-1292.03 65.82,-1291.77"/>
+</g>
+<!-- sourcefile~res_pesticide_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node58" class="node">
+<title>sourcefile~res_pesticide_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node58"><a xlink:href="../sourcefile/res_pesticide_output.f90.html" xlink:title="res_pesticide_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="319,-276 177,-276 177,-252 319,-252 319,-276"/>
+<text text-anchor="middle" x="248" y="-261.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">res_pesticide_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~res_pesticide_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge57" class="edge">
+<title>sourcefile~res_pesticide_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M181.09,-276.18C177.33,-278.63 173.91,-281.55 171,-285 103.77,-364.78 74.12,-1148.1 69.24,-1291.51"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.73,-1291.62 68.89,-1301.73 72.73,-1291.85 65.73,-1291.62"/>
+</g>
+<!-- sourcefile~res_salt_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node59" class="node">
+<title>sourcefile~res_salt_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node59"><a xlink:href="../sourcefile/res_salt_output.f90.html" xlink:title="res_salt_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="304,-234 192,-234 192,-210 304,-210 304,-234"/>
+<text text-anchor="middle" x="248" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">res_salt_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~res_salt_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge58" class="edge">
+<title>sourcefile~res_salt_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M192,-228.55C183.96,-231.77 176.54,-236.39 171,-243 101.07,-326.31 73.53,-1144.76 69.14,-1291.53"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.63,-1291.85 68.84,-1301.94 72.63,-1292.05 65.63,-1291.85"/>
+</g>
+<!-- sourcefile~rsd_decomp.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node60" class="node">
+<title>sourcefile~rsd_decomp.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node60"><a xlink:href="../sourcefile/rsd_decomp.f90.html" xlink:title="rsd_decomp.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="297,-192 199,-192 199,-168 297,-168 297,-192"/>
+<text text-anchor="middle" x="248" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">rsd_decomp.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~rsd_decomp.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge59" class="edge">
+<title>sourcefile~rsd_decomp.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M198.98,-184.1C188.33,-187.27 178.11,-192.49 171,-201 98.35,-287.86 72.97,-1141.63 69.06,-1291.58"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.55,-1291.75 68.79,-1301.84 72.55,-1291.93 65.55,-1291.75"/>
+</g>
+<!-- sourcefile~salt_uptake.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node61" class="node">
+<title>sourcefile~salt_uptake.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node61"><a xlink:href="../sourcefile/salt_uptake.f90.html" xlink:title="salt_uptake.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="295,-150 201,-150 201,-126 295,-126 295,-150"/>
+<text text-anchor="middle" x="248" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">salt_uptake.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~salt_uptake.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge60" class="edge">
+<title>sourcefile~salt_uptake.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M200.94,-141.52C189.59,-144.62 178.54,-149.96 171,-159 95.63,-249.42 72.42,-1138.78 68.97,-1291.68"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.47,-1291.67 68.75,-1301.75 72.47,-1291.83 65.47,-1291.67"/>
+</g>
+<!-- sourcefile~time_control.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node62" class="node">
+<title>sourcefile~time_control.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node62"><a xlink:href="../sourcefile/time_control.f90.html" xlink:title="time_control.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="297.5,-108 198.5,-108 198.5,-84 297.5,-84 297.5,-108"/>
+<text text-anchor="middle" x="248" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">time_control.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~time_control.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge61" class="edge">
+<title>sourcefile~time_control.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M198.16,-100.31C187.79,-103.5 177.91,-108.68 171,-117 92.97,-210.9 71.93,-1134.34 68.91,-1291.36"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.4,-1291.62 68.71,-1301.69 72.4,-1291.75 65.4,-1291.62"/>
+</g>
+<!-- sourcefile~wet_cs_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node63" class="node">
+<title>sourcefile~wet_cs_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node63"><a xlink:href="../sourcefile/wet_cs_output.f90.html" xlink:title="wet_cs_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="302,-66 194,-66 194,-42 302,-42 302,-66"/>
+<text text-anchor="middle" x="248" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">wet_cs_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~wet_cs_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge62" class="edge">
+<title>sourcefile~wet_cs_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M193.85,-59.74C185.08,-62.99 176.94,-67.83 171,-75 90.23,-172.49 71.42,-1131.97 68.84,-1291.56"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.33,-1291.59 68.68,-1301.64 72.33,-1291.7 65.33,-1291.59"/>
+</g>
+<!-- sourcefile~wet_salt_output.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_node64" class="node">
+<title>sourcefile~wet_salt_output.f90</title>
+<g id="a_sourcefile~~plant_data_module.f90~~AfferentGraph_node64"><a xlink:href="../sourcefile/wet_salt_output.f90.html" xlink:title="wet_salt_output.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="305.5,-24 190.5,-24 190.5,0 305.5,0 305.5,-24"/>
+<text text-anchor="middle" x="248" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">wet_salt_output.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~wet_salt_output.f90&#45;&gt;sourcefile~plant_data_module.f90 -->
+<g id="sourcefile~~plant_data_module.f90~~AfferentGraph_edge63" class="edge">
+<title>sourcefile~wet_salt_output.f90&#45;&gt;sourcefile~plant_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M190.39,-19.11C182.95,-22.3 176.14,-26.77 171,-33 87.56,-133.99 70.95,-1127.88 68.77,-1291.31"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="65.27,-1291.57 68.64,-1301.62 72.27,-1291.66 65.27,-1291.57"/>
+</g>
+</g>
+</svg>
+</div>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#AfferentGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="AfferentGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="202pt" height="32pt"
+ viewBox="0.00 0.00 201.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 197.5,-28 197.5,4 -4,4"/>
+<!-- Source File -->
+<g id="node1" class="node">
+<title>Source File</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="70,-24 0,-24 0,0 70,0 70,-24"/>
+<text text-anchor="middle" x="35" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Source File</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node2" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="193.5,-24 88.5,-24 88.5,0 193.5,0 193.5,-24"/>
+<text text-anchor="middle" x="141" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a file to a file which it depends on. A file
+is dependent upon another if the latter must be compiled before the former
+can be.
+</p>
+ Where possible, edges connecting nodes are
+given different colours to make them easier to distinguish in
+large graphs.</div>
+            </div>
+          </div>
+        </div>
+          </div>
+        </div>
+<br>
+      <section>
+        <h2><span class="anchor" id="src"></span>Source Code</h2>
+        <div class="hl codehilite"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="w">      </span><span class="k">module </span><span class="n">plant_data_module</span>
+<a id="ln-2" name="ln-2" href="#ln-2"></a><span class="w">    </span>
+<a id="ln-3" name="ln-3" href="#ln-3"></a><span class="w">      </span><span class="k">implicit none</span>
+<a id="ln-4" name="ln-4" href="#ln-4"></a><span class="k">      </span>
+<a id="ln-5" name="ln-5" href="#ln-5"></a><span class="k">      </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="w"> </span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">plts_bsn</span><span class="w">     </span><span class="c">!!none      |plant names simulated in current run</span>
+<a id="ln-6" name="ln-6" href="#ln-6"></a><span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">25</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pl_class</span><span class="w">      </span><span class="c">!!none      |plant class - row crop, tree, grass, etc</span>
+<a id="ln-7" name="ln-7" href="#ln-7"></a><span class="w">      </span><span class="k">type </span><span class="n">plant_db</span>
+<a id="ln-8" name="ln-8" href="#ln-8"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">plantnm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w">  </span><span class="c">!!none              |crop name</span>
+<a id="ln-9" name="ln-9" href="#ln-9"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">typ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w">    </span><span class="c">!!none              |plant category</span>
+<a id="ln-10" name="ln-10" href="#ln-10"></a><span class="w">                                         </span><span class="c">!                  |warm_annual</span>
+<a id="ln-11" name="ln-11" href="#ln-11"></a><span class="w">                                         </span><span class="c">!                  |cold_annual</span>
+<a id="ln-12" name="ln-12" href="#ln-12"></a><span class="w">                                         </span><span class="c">!                  |warm_annual_tuber</span>
+<a id="ln-13" name="ln-13" href="#ln-13"></a><span class="w">                                         </span><span class="c">!                  |cold_annual_tuber</span>
+<a id="ln-14" name="ln-14" href="#ln-14"></a><span class="w">                                         </span><span class="c">!                  |perennial</span>
+<a id="ln-15" name="ln-15" href="#ln-15"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w">   </span><span class="c">!!none              |phenology trigger</span>
+<a id="ln-16" name="ln-16" href="#ln-16"></a><span class="w">                                         </span><span class="c">!                  |moisture_gro</span>
+<a id="ln-17" name="ln-17" href="#ln-17"></a><span class="w">                                         </span><span class="c">!                  |temp_gro</span>
+<a id="ln-18" name="ln-18" href="#ln-18"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nfix_co</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">             </span><span class="c">!!none              |n fixation coefficient (0.5 legume; 0 non-legume)</span>
+<a id="ln-19" name="ln-19" href="#ln-19"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">days_mat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">110</span><span class="w">        </span><span class="c">!!days              |days to maturity - if zero use hu for entire growing season</span>
+<a id="ln-20" name="ln-20" href="#ln-20"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bio_e</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="mf">5.0</span><span class="w">             </span><span class="c">!!(kg/ha/(MJ/m**2)  |biomass-energy ratio</span>
+<a id="ln-21" name="ln-21" href="#ln-21"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hvsti</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.76</span><span class="w">             </span><span class="c">!!(kg/ha)/(kg/ha)   |harvest index: crop yield/aboveground biomass</span>
+<a id="ln-22" name="ln-22" href="#ln-22"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">blai</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">5.0</span><span class="w">               </span><span class="c">!!none              |max (potential) leaf area index</span>
+<a id="ln-23" name="ln-23" href="#ln-23"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">frgrw1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="w">            </span><span class="c">!!none              |fraction of the growing season corresponding to the</span>
+<a id="ln-24" name="ln-24" href="#ln-24"></a><span class="w">                                         </span><span class="c">!                  |  1st point on optimal leaf area development curve</span>
+<a id="ln-25" name="ln-25" href="#ln-25"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">laimx1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="w">            </span><span class="c">!!none              |frac of max leaf area index corresponding to the </span>
+<a id="ln-26" name="ln-26" href="#ln-26"></a><span class="w">                                         </span><span class="c">!                  |  1st point on optimal leaf area development curve</span>
+<a id="ln-27" name="ln-27" href="#ln-27"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">frgrw2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w">             </span><span class="c">!!none              |fraction of the growing season corresponding to the </span>
+<a id="ln-28" name="ln-28" href="#ln-28"></a><span class="w">                                         </span><span class="c">!                  |  2nd point on optimal leaf area development curve </span>
+<a id="ln-29" name="ln-29" href="#ln-29"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">laimx2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.95</span><span class="w">            </span><span class="c">!!none              |fraction of max leaf area index corresponding to the</span>
+<a id="ln-30" name="ln-30" href="#ln-30"></a><span class="w">                                         </span><span class="c">!                  |  2nd point on optimal leaf area development curve</span>
+<a id="ln-31" name="ln-31" href="#ln-31"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dlai</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.99</span><span class="w">              </span><span class="c">!!none              |frac of growing season when leaf are declines</span>
+<a id="ln-32" name="ln-32" href="#ln-32"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dlai_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w">           </span><span class="c">!!none              |exponent that governs lai decline rate</span>
+<a id="ln-33" name="ln-33" href="#ln-33"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">chtmx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">6.0</span><span class="w">              </span><span class="c">!!m                 |maximum canopy height</span>
+<a id="ln-34" name="ln-34" href="#ln-34"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rdmx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.5</span><span class="w">               </span><span class="c">!!m                 |maximum root depth</span>
+<a id="ln-35" name="ln-35" href="#ln-35"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t_opt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="mf">0.</span><span class="w">              </span><span class="c">!!deg C             |optimal temp for plant growth</span>
+<a id="ln-36" name="ln-36" href="#ln-36"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t_base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="mf">0.</span><span class="w">             </span><span class="c">!!deg C             |minimum temp for plant growth</span>
+<a id="ln-37" name="ln-37" href="#ln-37"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cnyld</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0015</span><span class="w">           </span><span class="c">!!kg N/kg yld       |frac of nitrogen in yield</span>
+<a id="ln-38" name="ln-38" href="#ln-38"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cpyld</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0003</span><span class="w">           </span><span class="c">!!kg P/kg yld       |frac of phosphorus in yield</span>
+<a id="ln-39" name="ln-39" href="#ln-39"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pltnfr1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.006</span><span class="w">          </span><span class="c">!!kg N/kg biomass   |nitrogen uptake parm #1</span>
+<a id="ln-40" name="ln-40" href="#ln-40"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pltnfr2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.002</span><span class="w">          </span><span class="c">!!kg N/kg biomass   |nitrogen uptake parm #2 </span>
+<a id="ln-41" name="ln-41" href="#ln-41"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pltnfr3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0015</span><span class="w">         </span><span class="c">!!kg N/kg/biomass   |nitrogen uptake parm #3</span>
+<a id="ln-42" name="ln-42" href="#ln-42"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pltpfr1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0007</span><span class="w">         </span><span class="c">!!kg P/kg/biomass   |phoshorus uptake parm #1</span>
+<a id="ln-43" name="ln-43" href="#ln-43"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pltpfr2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0004</span><span class="w">         </span><span class="c">!!kg P/kg/biomass   |phoshorus uptake parm #2</span>
+<a id="ln-44" name="ln-44" href="#ln-44"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pltpfr3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0003</span><span class="w">         </span><span class="c">!!kg P/kg/biomass   |phoshorus uptake parm #3</span>
+<a id="ln-45" name="ln-45" href="#ln-45"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wsyf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01</span><span class="w">              </span><span class="c">!!(kg/ha)/(kg/ha)   |value of harvest index bet 0 and HVSTI</span>
+<a id="ln-46" name="ln-46" href="#ln-46"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">usle_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.001</span><span class="w">           </span><span class="c">!!none              |minimum value of the USLE C factor for water erosion</span>
+<a id="ln-47" name="ln-47" href="#ln-47"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">gsi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.002</span><span class="w">              </span><span class="c">!!m/s               |maximum stomatal conductance</span>
+<a id="ln-48" name="ln-48" href="#ln-48"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vpdfr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.</span><span class="w">               </span><span class="c">!!kPa               |vapor pressure deficit at which GMAXFR is valid</span>
+<a id="ln-49" name="ln-49" href="#ln-49"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">gmaxfr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.75</span><span class="w">            </span><span class="c">!!none              |fraction of max stomatal conductance that is </span>
+<a id="ln-50" name="ln-50" href="#ln-50"></a><span class="w">                                         </span><span class="c">!                    achieved at the vapor pressure deficit defined by VPDFR</span>
+<a id="ln-51" name="ln-51" href="#ln-51"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wavp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">8.</span><span class="w">                </span><span class="c">!!none              |rate of decline in radiation use efficiency</span>
+<a id="ln-52" name="ln-52" href="#ln-52"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">co2hi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">66</span><span class="mf">0.</span><span class="w">             </span><span class="c">!!uL CO2/L air      |CO2 concentration higher than the ambient corresponding</span>
+<a id="ln-53" name="ln-53" href="#ln-53"></a><span class="w">                                         </span><span class="c">!                    to the 2nd point on radiation use efficiency curve             </span>
+<a id="ln-54" name="ln-54" href="#ln-54"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bioehi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="mf">6.</span><span class="w">             </span><span class="c">!!(kg/ha)/(MJ/m**2) |biomass-energy ratio when plant is in an environment with </span>
+<a id="ln-55" name="ln-55" href="#ln-55"></a><span class="w">                                         </span><span class="c">!                    CO2 level equal to the value of CO2HI.</span>
+<a id="ln-56" name="ln-56" href="#ln-56"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rsdco_pl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="w">          </span><span class="c">!!none              |plant residue decomposition coeff</span>
+<a id="ln-57" name="ln-57" href="#ln-57"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">alai_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.75</span><span class="w">          </span><span class="c">!!m**2/m**2         |min LAI during winter dormant period</span>
+<a id="ln-58" name="ln-58" href="#ln-58"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">laixco_tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span><span class="w">        </span><span class="c">!!none              |coefficient to estimate max lai during tree growth</span>
+<a id="ln-59" name="ln-59" href="#ln-59"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mat_yrs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="w">          </span><span class="c">!!years             |years to maturity  </span>
+<a id="ln-60" name="ln-60" href="#ln-60"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bmx_peren</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="mf">0.</span><span class="w">        </span><span class="c">!!metric tons/ha    |max biomass for forest</span>
+<a id="ln-61" name="ln-61" href="#ln-61"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ext_coef</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.65</span><span class="w">          </span><span class="c">!!                  |light extinction coefficient</span>
+<a id="ln-62" name="ln-62" href="#ln-62"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">leaf_tov_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="mf">2.</span><span class="w">       </span><span class="c">!!months            |perennial leaf turnover rate with minimum stress (complete turnover in 12 mon)</span>
+<a id="ln-63" name="ln-63" href="#ln-63"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">leaf_tov_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.</span><span class="w">        </span><span class="c">!!months            |perennial leaf turnover rate with maximum stress (complete turnover in 3 mon)</span>
+<a id="ln-64" name="ln-64" href="#ln-64"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bm_dieoff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">           </span><span class="c">!!frac              |above ground biomass that dies off at dormancy</span>
+<a id="ln-65" name="ln-65" href="#ln-65"></a><span class="w">        </span><span class="c">!real :: leaf_frac_mx             !frac              |max fraction of above ground biomass that is leaf (assume constant over life of perennial)</span>
+<a id="ln-66" name="ln-66" href="#ln-66"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rsr1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!!frac              |initial root to shoot ratio at the beg of growing season</span>
+<a id="ln-67" name="ln-67" href="#ln-67"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rsr2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!!frac              |root to shoot ratio at the end of the growing season</span>
+<a id="ln-68" name="ln-68" href="#ln-68"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pop1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!!plants/m^2        |plant population corresponding to the 1st point on the</span>
+<a id="ln-69" name="ln-69" href="#ln-69"></a><span class="w">                                         </span><span class="c">!                             population lai curve</span>
+<a id="ln-70" name="ln-70" href="#ln-70"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">frlai1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">              </span><span class="c">!!frac              |frac of max leaf area index corresponding to the 1st </span>
+<a id="ln-71" name="ln-71" href="#ln-71"></a><span class="w">                                         </span><span class="c">!                     point on the leaf area development curve</span>
+<a id="ln-72" name="ln-72" href="#ln-72"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pop2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                </span><span class="c">!!plants/m^2        |plant population corresponding to the 2nd point on the</span>
+<a id="ln-73" name="ln-73" href="#ln-73"></a><span class="w">                                         </span><span class="c">!                             population lai curve</span>
+<a id="ln-74" name="ln-74" href="#ln-74"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">frlai2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">              </span><span class="c">!!frac              |frac of max leaf area index corresponding to the 2nd </span>
+<a id="ln-75" name="ln-75" href="#ln-75"></a><span class="w">                                         </span><span class="c">!                     point on the leaf area development curve</span>
+<a id="ln-76" name="ln-76" href="#ln-76"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">frsw_gro</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="mi">5</span><span class="w">            </span><span class="c">!!frac              |30 day sum of P-PET to initiate growth of tropical </span>
+<a id="ln-77" name="ln-77" href="#ln-77"></a><span class="w">                                         </span><span class="c">!                     plants during monsoon season - pcom()%plcur()%iseason</span>
+<a id="ln-78" name="ln-78" href="#ln-78"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">aeration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.2</span><span class="w">           </span><span class="c">!!                  |aeration stress factor</span>
+<a id="ln-79" name="ln-79" href="#ln-79"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rsd_pctcov</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">          </span><span class="c">!!                  |residue factor for percent cover equation</span>
+<a id="ln-80" name="ln-80" href="#ln-80"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rsd_covfac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">          </span><span class="c">!!                  |residue factor for surface cover (C factor) equation</span>
+<a id="ln-81" name="ln-81" href="#ln-81"></a><span class="w">        </span><span class="c">!character(len=45) :: desc = &quot;unknown&quot;</span>
+<a id="ln-82" name="ln-82" href="#ln-82"></a><span class="w">      </span><span class="k">end type </span><span class="n">plant_db</span>
+<a id="ln-83" name="ln-83" href="#ln-83"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">plant_db</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">target</span><span class="p">,</span><span class="w"> </span><span class="k">save</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pldb</span>
+<a id="ln-84" name="ln-84" href="#ln-84"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">plant_db</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pl_db</span>
+<a id="ln-85" name="ln-85" href="#ln-85"></a><span class="w">         </span>
+<a id="ln-86" name="ln-86" href="#ln-86"></a><span class="w">      </span><span class="k">type </span><span class="n">plant_cp</span>
+<a id="ln-87" name="ln-87" href="#ln-87"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">popsc1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span>
+<a id="ln-88" name="ln-88" href="#ln-88"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">popsc2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span>
+<a id="ln-89" name="ln-89" href="#ln-89"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">leaf1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">       </span><span class="c">!!none      |1st shape parameter for leaf area</span>
+<a id="ln-90" name="ln-90" href="#ln-90"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">leaf2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">       </span><span class="c">!!none      |2nd leaf parameter for leaf area</span>
+<a id="ln-91" name="ln-91" href="#ln-91"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ruc1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!none      |1st shape parameter for radiation use efficiency equation</span>
+<a id="ln-92" name="ln-92" href="#ln-92"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ruc2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!none      |2nd shape parameter for radiation use efficiency equation</span>
+<a id="ln-93" name="ln-93" href="#ln-93"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nup1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!none      |1st shape parameter for plant N uptake equation      </span>
+<a id="ln-94" name="ln-94" href="#ln-94"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nup2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!none      |2nd shape parameter for plant N uptake equation</span>
+<a id="ln-95" name="ln-95" href="#ln-95"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pup1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!none      |1st shape parameter for plant P uptake equation</span>
+<a id="ln-96" name="ln-96" href="#ln-96"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pup2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!none      |2nd shape parameter for plant P uptake equation</span>
+<a id="ln-97" name="ln-97" href="#ln-97"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">gmaxfr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">      </span><span class="c">!!none      |fraction of max stomatal conductance that is </span>
+<a id="ln-98" name="ln-98" href="#ln-98"></a><span class="w">                                 </span><span class="c">!            achieved at the vapor pressure deficit defined by VPDFR</span>
+<a id="ln-99" name="ln-99" href="#ln-99"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vpdfr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">       </span><span class="c">!!kPa       |vapor pressure deficit at which GMAXFR is valid</span>
+<a id="ln-100" name="ln-100" href="#ln-100"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cvm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">         </span><span class="c">!!frac      |fraction of the maximum leaf area index corresponding</span>
+<a id="ln-101" name="ln-101" href="#ln-101"></a><span class="w">                                 </span><span class="c">!            to the second point of the optimal leaf area dev curve</span>
+<a id="ln-102" name="ln-102" href="#ln-102"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vpd2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">        </span><span class="c">!!kPa       |vapor pressure deficit corresponding to the second point</span>
+<a id="ln-103" name="ln-103" href="#ln-103"></a><span class="w">                                 </span><span class="c">!            on the stomatal conductance curve</span>
+<a id="ln-104" name="ln-104" href="#ln-104"></a><span class="w">      </span><span class="k">end type </span><span class="n">plant_cp</span>
+<a id="ln-105" name="ln-105" href="#ln-105"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">plant_cp</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">target</span><span class="p">,</span><span class="w"> </span><span class="k">save</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">plcp</span>
+<a id="ln-106" name="ln-106" href="#ln-106"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">plant_cp</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pl_cp</span>
+<a id="ln-107" name="ln-107" href="#ln-107"></a><span class="w">            </span>
+<a id="ln-108" name="ln-108" href="#ln-108"></a><span class="w">      </span><span class="k">type </span><span class="n">plant_init_db</span>
+<a id="ln-109" name="ln-109" href="#ln-109"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cpnm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;frsd&quot;</span>
+<a id="ln-110" name="ln-110" href="#ln-110"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">db_num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w">               </span><span class="c">!!           |plant object</span>
+<a id="ln-111" name="ln-111" href="#ln-111"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">igro</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;y&quot;</span><span class="w">      </span><span class="c">!!           |land cover status</span>
+<a id="ln-112" name="ln-112" href="#ln-112"></a><span class="w">                                            </span><span class="c">!           |n = no land cover growing</span>
+<a id="ln-113" name="ln-113" href="#ln-113"></a><span class="w">                                            </span><span class="c">!           |y = land cover growing</span>
+<a id="ln-114" name="ln-114" href="#ln-114"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lai</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                    </span><span class="c">!!m**2/m**2  |leaf area index</span>
+<a id="ln-115" name="ln-115" href="#ln-115"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bioms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                  </span><span class="c">!!kg/ha      |land cover/crop biomass</span>
+<a id="ln-116" name="ln-116" href="#ln-116"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">phuacc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                 </span><span class="c">!!           |frac of plant heat unit acc.</span>
+<a id="ln-117" name="ln-117" href="#ln-117"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span>
+<a id="ln-118" name="ln-118" href="#ln-118"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fr_yrmat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w">               </span><span class="c">!!years      |fraction of current year of growth to years to maturity </span>
+<a id="ln-119" name="ln-119" href="#ln-119"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rsdin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="mf">0.</span><span class="w">              </span><span class="c">!!kg/ha      |initial residue cover</span>
+<a id="ln-120" name="ln-120" href="#ln-120"></a><span class="w">      </span><span class="k">end type </span><span class="n">plant_init_db</span>
+<a id="ln-121" name="ln-121" href="#ln-121"></a><span class="w">      </span>
+<a id="ln-122" name="ln-122" href="#ln-122"></a><span class="w">      </span><span class="k">type </span><span class="n">plant_community_db</span><span class="w">   </span>
+<a id="ln-123" name="ln-123" href="#ln-123"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;frsd_frsd&quot;</span>
+<a id="ln-124" name="ln-124" href="#ln-124"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">plants_com</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<a id="ln-125" name="ln-125" href="#ln-125"></a><span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rot_yr_ini</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<a id="ln-126" name="ln-126" href="#ln-126"></a><span class="w">        </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">plant_init_db</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pl</span>
+<a id="ln-127" name="ln-127" href="#ln-127"></a><span class="w">      </span><span class="k">end type </span><span class="n">plant_community_db</span>
+<a id="ln-128" name="ln-128" href="#ln-128"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">plant_community_db</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pcomdb</span>
+<a id="ln-129" name="ln-129" href="#ln-129"></a><span class="w">                          </span>
+<a id="ln-130" name="ln-130" href="#ln-130"></a><span class="w">      </span><span class="k">type </span><span class="n">plant_transplant_db</span>
+<a id="ln-131" name="ln-131" href="#ln-131"></a><span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;frsd&quot;</span>
+<a id="ln-132" name="ln-132" href="#ln-132"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lai</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                    </span><span class="c">!!m**2/m**2      |leaf area index</span>
+<a id="ln-133" name="ln-133" href="#ln-133"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bioms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                  </span><span class="c">!!kg/ha          |land cover/crop biomass</span>
+<a id="ln-134" name="ln-134" href="#ln-134"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">phuacc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                 </span><span class="c">!!frac           |frac of plant heat unit acc.</span>
+<a id="ln-135" name="ln-135" href="#ln-135"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fr_yrmat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="w">             </span><span class="c">!!years          |fraction of current year of growth to years to maturity </span>
+<a id="ln-136" name="ln-136" href="#ln-136"></a><span class="w">        </span><span class="kt">real</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">                    </span><span class="c">!!plants/m^2     |plant population </span>
+<a id="ln-137" name="ln-137" href="#ln-137"></a><span class="w">      </span><span class="k">end type </span><span class="n">plant_transplant_db</span>
+<a id="ln-138" name="ln-138" href="#ln-138"></a><span class="w">      </span><span class="k">type</span><span class="w"> </span><span class="p">(</span><span class="n">plant_transplant_db</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">transpl</span>
+<a id="ln-139" name="ln-139" href="#ln-139"></a><span class="w">    </span>
+<a id="ln-140" name="ln-140" href="#ln-140"></a><span class="w">      </span><span class="k">end module </span><span class="n">plant_data_module</span><span class="w"> </span>
+</pre></div>
+
+      </section>
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              SWAT+
+              &copy; 2025 
+<br /><small>@SWAT_VERSION@</small></p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-09-05             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

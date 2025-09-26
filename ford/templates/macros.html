@@ -807,3 +807,224 @@
     </dl>
   {% endif %}
 {% endmacro %}
+
+
+{% macro outside_variables_list(variables) %}
+  {% if variables %}
+    {% set types_dict = {} %}
+    {% for var in variables %}
+      {% set type_key = var.full_type | string %}
+      {% if type_key not in types_dict %}
+        {% set _ = types_dict.update({type_key: {'vars': [], 'module': var.parent.name if var.parent else 'Unknown'}}) %}
+      {% endif %}
+      {% set _ = types_dict[type_key]['vars'].append(var) %}
+    {% endfor %}
+    
+    <div class="accordion" id="outsideVarsAccordion">
+      {% for type_name, type_data in types_dict.items() %}
+        {% set type_id = type_name | replace(' ', '_') | replace('(', '_') | replace(')', '_') | replace('<', '_') | replace('>', '_') | replace(',', '_') | replace('[', '_') | replace(']', '_') | replace('%', '_pct_') | replace('.', '_') | replace('/', '_') | replace('\\', '_') | replace(':', '_') | replace(';', '_') | replace('"', '_') | replace("'", '_') | replace('|', '_') | replace('*', '_') | replace('+', '_') | replace('=', '_') | replace('@', '_') | replace('#', '_') | replace('$', '_') | replace('!', '_') | replace('&', '_') | replace('^', '_') | replace('~', '_') | replace('`', '_') %}
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="heading{{ type_id }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapse{{ type_id }}" aria-expanded="false" 
+                    aria-controls="collapse{{ type_id }}">
+              {{ type_name | relurl(page_url) }}
+              <small class="text-muted ms-2">({{ type_data.vars | length }} attribute{{ 's' if type_data.vars | length != 1 }} from {{ type_data.module }})</small>
+            </button>
+          </h3>
+          <div id="collapse{{ type_id }}" class="accordion-collapse collapse" 
+               aria-labelledby="heading{{ type_id }}" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for var in type_data.vars %}
+                    <tr>
+                      <td><strong>{{ var.name }}</strong>{{ var.dimension }}</td>
+                      <td>{{ var | meta('summary') }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <em>None</em>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro io_operations_list(io_data, procedure=None) %}
+  {% if io_data and io_data.keys() %}
+    <!-- First, collect all conditions across all units -->
+    {% set all_conditions = {} %}
+    {% for unit, operations in io_data.items() %}
+      {% if operations.timeline %}
+        {% for op in operations.timeline %}
+          {% set condition_key = op.condition.text if op.condition else "no_condition" %}
+          {% set condition_line = op.condition.line if op.condition else None %}
+          {% if condition_key not in all_conditions %}
+            {% set _ = all_conditions.update({condition_key: {'operations': [], 'line': condition_line, 'units': {}}}) %}
+          {% endif %}
+          
+          <!-- Group by unit within this condition -->
+          {% if unit not in all_conditions[condition_key]['units'] %}
+            {% set _ = all_conditions[condition_key]['units'].update({unit: []}) %}
+          {% endif %}
+          {% set _ = all_conditions[condition_key]['units'][unit].append(op) %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+    
+    <div class="accordion" id="ioConditionsAccordion">
+      {% for condition_key, condition_data in all_conditions.items() %}
+        {% set condition_id = condition_key | replace(' ', '_') | replace('(', '_') | replace(')', '_') | replace('<', '_') | replace('>', '_') | replace(',', '_') | replace('[', '_') | replace(']', '_') | replace('%', '_pct_') | replace('.', '_') | replace('/', '_') | replace('\\', '_') | replace(':', '_') | replace(';', '_') | replace('"', '_') | replace("'", '_') | replace('|', '_') | replace('*', '_') | replace('+', '_') | replace('=', '_') | replace('@', '_') | replace('#', '_') | replace('$', '_') | replace('!', '_') | replace('&', '_') | replace('^', '_') | replace('~', '_') | replace('`', '_') | replace('==', '_eq_') | replace('!=', '_neq_') | replace('>', '_gt_') | replace('<', '_lt_') | replace('>=', '_gte_') | replace('<=', '_lte_') %}
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingCond{{ condition_id }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseCond{{ condition_id }}" aria-expanded="false" 
+                    aria-controls="collapseCond{{ condition_id }}">
+              {% if condition_key != "no_condition" %}
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>{{ condition_key }}</strong>
+                {% if condition_data.line %}
+                  <small class="text-muted ms-2">(line {{ condition_data.line }})</small>
+                {% endif %}
+              {% else %}
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>Unconditional Operations</strong>
+              {% endif %}
+            </button>
+          </h3>
+          <div id="collapseCond{{ condition_id }}" class="accordion-collapse collapse" 
+               aria-labelledby="headingCond{{ condition_id }}" data-bs-parent="#ioConditionsAccordion">
+            <div class="accordion-body">
+              {% for unit, unit_ops in condition_data.units.items() %}
+                <div class="unit-section mb-3">
+                  <h6 class="text-secondary">
+                    <i class="fa fa-file-o me-1"></i>
+                    <strong>Unit {{ unit }}</strong>
+                    {% set unit_filename = io_data[unit].filename if unit in io_data and io_data[unit].filename %}
+                    {% if unit_filename %}
+                      - {{ unit_filename }}
+                    {% endif %}
+                  </h6>
+                  <div class="ms-3">
+                    <table class="table table-sm">
+                      <thead>
+                        <tr>
+                          <th>Operation</th>
+                          <th>Details</th>
+                          <th>Variable Defaults</th>
+                          <th>Line</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for op in unit_ops %}
+                          <tr>
+                            <td><span class="badge bg-primary">{{ op.kind }}</span></td>
+                            <td><code>{{ op.raw }}</code></td>
+                            <td>
+                              {% if op.variable_defaults %}
+                                {% for var_name, var_value in op.variable_defaults.items() %}
+                                  <small><code>{{ var_name }} = {{ var_value }}</code></small>{% if not loop.last %}<br>{% endif %}
+                                {% endfor %}
+                              {% else %}
+                                <small class="text-muted">-</small>
+                              {% endif %}
+                            </td>
+                            <td>{{ op.line if op.line else '-' }}</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <em>No I/O operations detected</em>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro allocation_operations_list(allocation_data) %}
+  {% if allocation_data and allocation_data.keys() %}
+    <div class="accordion" id="allocationConditionsAccordion">
+      {% for condition_key, condition_data in allocation_data.items() %}
+        {% set condition_id = condition_key | replace(' ', '_') | replace('(', '_') | replace(')', '_') | replace('<', '_') | replace('>', '_') | replace(',', '_') | replace('[', '_') | replace(']', '_') | replace('%', '_pct_') | replace('.', '_') | replace('/', '_') | replace('\\', '_') | replace(':', '_') | replace(';', '_') | replace('"', '_') | replace("'", '_') | replace('|', '_') | replace('*', '_') | replace('+', '_') | replace('=', '_') | replace('@', '_') | replace('#', '_') | replace('$', '_') | replace('!', '_') | replace('&', '_') | replace('^', '_') | replace('~', '_') | replace('`', '_') | replace('==', '_eq_') | replace('!=', '_neq_') | replace('>', '_gt_') | replace('<', '_lt_') | replace('>=', '_gte_') | replace('<=', '_lte_') %}
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingAlloc{{ condition_id }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseAlloc{{ condition_id }}" aria-expanded="false" 
+                    aria-controls="collapseAlloc{{ condition_id }}">
+              {% if condition_key != "no_condition" %}
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>{{ condition_key }}</strong>
+                {% if condition_data.line %}
+                  <small class="text-muted ms-2">(line {{ condition_data.line }})</small>
+                {% endif %}
+              {% else %}
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>Unconditional Allocations</strong>
+              {% endif %}
+            </button>
+          </h3>
+          <div id="collapseAlloc{{ condition_id }}" class="accordion-collapse collapse" 
+               aria-labelledby="headingAlloc{{ condition_id }}" data-bs-parent="#allocationConditionsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Variables</th>
+                    <th>Details</th>
+                    <th>Line</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for op in condition_data.operations %}
+                    <tr>
+                      <td>
+                        {% if op.kind == 'allocate' %}
+                          <span class="badge bg-success">{{ op.kind }}</span>
+                        {% else %}
+                          <span class="badge bg-warning">{{ op.kind }}</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if op.variables %}
+                          {% for var in op.variables %}
+                            <code>{{ var }}</code>{% if not loop.last %}, {% endif %}
+                          {% endfor %}
+                        {% else %}
+                          -
+                        {% endif %}
+                      </td>
+                      <td><code>{{ op.raw }}</code></td>
+                      <td>{{ op.line if op.line else '-' }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <em>No allocation operations detected</em>
+  {% endif %}
+{% endmacro %}

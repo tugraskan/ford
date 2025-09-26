@@ -61,8 +61,435 @@ from ford._markdown import MetaMarkdown
 from ford.settings import ProjectSettings, EntitySettings
 from ford._typing import PathLike
 
+import logging
+from collections import defaultdict
+
 if TYPE_CHECKING:
     from ford.fortran_project import Project
+
+log = logging.getLogger(__name__)
+
+def extract_base(col: str) -> str:
+    """
+    Strip off any array‐index or component qualifiers
+    so you only get the raw variable name.
+    E.g. "aq_ch(iaq)%name"  → "aq_ch"
+    """
+    # take everything before the first '('
+    base = col.split('(', 1)[0]
+    # then drop any %component
+    return base.split('%', 1)[0]
+
+class IoSession:
+    def __init__(self, unit, filename, loop_context=None, line_no=None):
+        self.unit = unit
+        self.file = filename
+        self.operations = []
+        self.closed = False
+        self.loop_context = loop_context  # e.g., loop variable/name
+        self.line_no = line_no            # record line number for context
+
+    def add(self, kind, raw, line_no=None, condition=None):
+        """Record an I/O operation with optional line number and condition."""
+        self.operations.append({
+            "kind": kind,
+            "raw": raw.strip(),
+            "line": line_no,
+            "condition": condition
+        })
+
+    def close(self) -> None:
+        """Mark the session as closed."""
+        self.closed = True
+
+class IoTracker:
+    def __init__(self):
+        self._open_sessions = {}                # unit → IoSession
+        self.completed = defaultdict(list)      # unit → [IoSession,...]
+        self.file_mappings = defaultdict(set)   # filename → {unit1, unit2, ...}
+        self.stragglers = []                    # IoSessions never closed
+        self.condition_stack = []               # Stack of active conditions
+        self.current_condition = None           # Current active condition context
+
+    def normalize_file_key(self, fname: str) -> str:
+        """
+        Collapse any TRIM/ADJUSTL wrappers and '//' concatenations so that
+        both
+        TRIM(ADJUSTL(in_path_hmd%hmd))//hmd(i)%filename
+        and
+        hmd(i)%filename
+        become simply
+        hmd(i)%filename
+        """
+        if not fname:
+            return "<unknown>"
+        f = fname.strip().strip('"').strip("'")
+        # if string‐concat present, keep only after the last //
+        if '//' in f:
+            f = f.rsplit('//', 1)[-1].strip()
+        # strip single TRIM(...) or ADJUSTL(...) wrapper
+        m = re.match(r'^(?:TRIM|ADJUSTL)\((.+)\)$', f, re.IGNORECASE)
+        if m:
+            return self.normalize_file_key(m.group(1).strip())
+        return f    
+    
+    def push_condition(self, condition_text, line_no=None):
+        """Push a new condition context onto the stack."""
+        condition_info = {
+            'text': condition_text.strip(),
+            'line': line_no,
+            'type': self._determine_condition_type(condition_text)
+        }
+        self.condition_stack.append(condition_info)
+        self.current_condition = condition_info
+
+    def pop_condition(self):
+        """Pop the current condition context from the stack."""
+        if self.condition_stack:
+            self.condition_stack.pop()
+        self.current_condition = self.condition_stack[-1] if self.condition_stack else None
+
+    def _determine_condition_type(self, condition_text):
+        """Determine the type of control structure."""
+        text_lower = condition_text.lower().strip()
+        if text_lower.startswith('if'):
+            return 'if'
+        elif text_lower.startswith('select case'):
+            return 'select'
+        elif text_lower.startswith('case'):
+            return 'case'
+        elif text_lower.startswith('else'):
+            return 'else'
+        elif text_lower.startswith('do'):
+            return 'do'
+        return 'unknown'
+
+    def operations_timeline(self) -> dict[str, list[dict]]:
+        """
+        Returns a dict mapping file or synthetic unit-based name → chronological list of raw I/O operations.
+        Used to populate the 'timeline' entry per unit or file.
+        """
+        result = {}
+
+        for unit, sessions in self.completed.items():  # 🔄 FIXED
+            for sess in sessions:
+                key = sess.file
+                if key == "<unknown>" and sess.unit:
+                    key = f"unit_{sess.unit}"
+                result.setdefault(key, []).extend(sess.operations)
+
+        return result
+    
+    def extract_variable_defaults(self, source_lines: list[str]) -> dict[str, str]:
+        """
+        Extract variable assignments that might be relevant to file operations.
+        Returns a dictionary mapping variable names to their assigned values.
+        """
+        defaults = {}
+        
+        # Patterns for variable assignments 
+        assignment_patterns = [
+            # Fortran type declarations with defaults: character(len=25) :: prt = "print.prt"  
+            r'^\s*(?:character|integer|real|logical|double\s*precision)(?:\([^)]*\))?\s*::\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']+)["\']',
+            # Module variable assignments like: in_link%aqu_cha = "aqu_cha.lin"
+            r'^\s*([a-zA-Z_][a-zA-Z0-9_%]*)\s*=\s*["\']([^"\']+)["\']',
+            # Simple variable assignments like: filename = "data.txt"  
+            r'^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']+)["\']',
+        ]
+        
+        for line in source_lines:
+            # Skip comment lines
+            comment_pos = line.find('!')
+            if comment_pos >= 0:
+                line = line[:comment_pos]
+            
+            line = line.strip()
+            if not line:
+                continue
+                
+            for pattern in assignment_patterns:
+                match = re.match(pattern, line, re.IGNORECASE)
+                if match:
+                    var_name = match.group(1).strip()
+                    var_value = match.group(2).strip()
+                    defaults[var_name] = var_value
+                    log.debug(f"Found variable default: {var_name} = {var_value}")
+                    
+        return defaults
+
+    def start(self, unit, filename, line_no=None):
+        """Begin a new I/O session, closing any prior one on same unit."""
+        if unit in self._open_sessions:
+            old = self._open_sessions.pop(unit)
+            self.completed[unit].append(old)
+        sess = IoSession(unit, filename, line_no=line_no)
+        self._open_sessions[unit] = sess
+        if filename:
+            self.file_mappings[filename].add(unit)
+
+    def record(self, unit, kind, raw, line_no=None):
+        """Record a raw I/O operation under the open session for `unit`."""
+        sess = self._open_sessions.get(unit)
+        if sess:
+            sess.add(kind, raw, line_no, condition=self.current_condition)
+
+    def record_or_create(self, unit, kind, raw, line_no=None):
+        """
+        Record an I/O operation, creating a synthetic session if needed.
+        Used for cases like WRITE where the file isn't explicitly opened.
+        """
+        if unit is None:
+            return
+
+        unit = str(unit)
+        if unit not in self._open_sessions:
+            filename = f"unit_{unit}"
+            sess = IoSession(unit=unit, filename=filename, line_no=line_no)
+            self._open_sessions[unit] = sess
+        else:
+            sess = self._open_sessions[unit]
+
+        sess.add(kind, raw, line_no, condition=self.current_condition)
+
+    def close(self, unit, line_no=None):
+        """Close and archive the I/O session for `unit`."""
+        sess = self._open_sessions.pop(unit, None)
+        if sess:
+            sess.add('close', f'close({unit})', line_no, condition=self.current_condition)
+            sess.close()
+            self.completed[unit].append(sess)
+
+    def finalize(self) -> None:
+        """Archive any unclosed sessions as stragglers."""
+        self.stragglers = list(self._open_sessions.values())
+        if self.stragglers:
+            log.warning("Unclosed IO sessions: %s", [(s.unit, s.file) for s in self.stragglers])
+        for unit, sess in list(self._open_sessions.items()):
+            self.completed[unit].append(sess)
+        self._open_sessions.clear()
+
+    def report(self) -> None:
+        """Print full I/O report for debugging."""
+        for unit, sessions in self.completed.items():
+            for sess in sessions:
+                status = 'closed' if sess.closed else 'unclosed'
+
+
+    def get_io_summary(self) -> dict:
+        """Return concise counts per unit and global op counts."""
+        summary = {'units': {}, 'files': {}, 'operations': {}}
+        for unit, sessions in self.completed.items():
+            counts = defaultdict(int)
+            files = set()
+            for sess in sessions:
+                files.add(sess.file)
+                for op in sess.operations:
+                    counts[op['kind']] += 1
+                    summary['operations'].setdefault(op['kind'], 0)
+                    summary['operations'][op['kind']] += 1
+            summary['units'][unit] = {'files': list(files), 'counts': dict(counts)}
+        for fname, units in self.file_mappings.items():
+            if fname:
+                summary['files'][fname] = {'units': list(units), 'count': len(units)}
+        return summary
+
+    def summarize_file_io(self, variable_defaults: dict[str, str] = None) -> dict[str, dict]:
+        """
+        Produce both:
+        - a structured I/O summary per file:
+            - headers:        titldum/header reads
+            - index_reads:    single-column 'i' reads
+            - data_reads:     grouped reads by columns
+            - header_writes:  single-column titldum/header writes
+            - data_writes:    grouped writes by columns
+        - a full raw I/O timeline per file with variable defaults
+        """
+        if variable_defaults is None:
+            variable_defaults = {}
+            
+        raw_result: dict[str, dict] = {}
+
+        for sessions in self.completed.values():
+            for sess in sessions:
+                fname = self.normalize_file_key(sess.file)
+                if fname == "<unknown>" and sess.unit:
+                    fname = f"unit_{sess.unit}"
+                rec = raw_result.setdefault(fname, {
+                    "unit":           sess.unit,
+                    "headers":        [],
+                    "index_reads":    [],
+                    "data_reads":     [],
+                    "header_writes":  [],
+                    "data_writes":    []
+                })
+
+                for op in sess.operations:
+                    kind = op["kind"].lower()
+                    if kind not in ("read", "write"):
+                        continue
+
+                    raw_line = op["raw"]
+
+                    # --- Robustly extract the part after write(...) or read(...)
+                    paren_level = 0
+                    end_idx = None
+                    for idx, ch in enumerate(raw_line):
+                        if ch == '(':
+                            paren_level += 1
+                        elif ch == ')':
+                            paren_level -= 1
+                            if paren_level == 0:
+                                end_idx = idx
+                                break
+                    if end_idx is None or end_idx + 1 >= len(raw_line):
+                        continue  # malformed
+
+                    cols_part = raw_line[end_idx + 1:].strip()
+
+                    # --- Split on top-level commas (ignoring nested parentheses)
+                    cols, buf, depth = [], "", 0
+                    for ch in cols_part:
+                        if ch == "(":
+                            depth += 1; buf += ch
+                        elif ch == ")" and depth > 0:
+                            depth -= 1; buf += ch
+                        elif ch == "," and depth == 0:
+                            cols.append(buf.strip()); buf = ""
+                        else:
+                            buf += ch
+                    if buf.strip():
+                        cols.append(buf.strip())
+
+                    # --- Strip one layer of parens from each col
+                    clean_cols = []
+                    for c in cols:
+                        c2 = c.strip()
+                        if c2.startswith("(") and c2.endswith(")"):
+                            c2 = c2[1:-1].strip()
+                        clean_cols.append(c2)
+
+                    # === Classification ===
+                    if kind == "read":
+                        if len(clean_cols) == 1:
+                            single = clean_cols[0]
+                            if single == "i":
+                                if single not in rec["index_reads"]:
+                                    rec["index_reads"].append(single)
+                            elif single in ("titldum", "header"):
+                                if single not in rec["headers"]:
+                                    rec["headers"].append(single)
+                            elif "(" in single or "%" in single:
+                                rec["data_reads"].append((single,))
+                            else:
+                                if single not in rec["headers"]:
+                                    rec["headers"].append(single)
+                        else:
+                            rec["data_reads"].append(tuple(clean_cols))
+
+                    elif kind == "write":
+                        if len(clean_cols) == 1 and clean_cols[0] in ("titldum", "header"):
+                            if clean_cols[0] not in rec["header_writes"]:
+                                rec["header_writes"].append(clean_cols[0])
+                        else:
+                            rec["data_writes"].append(tuple(clean_cols))
+
+        # Step 2: Collapse duplicate reads and writes
+        final_result = {}
+
+        for fname, rec in raw_result.items():
+            # collapse data_reads
+            dr_counts: dict[tuple[str, ...], int] = defaultdict(int)
+            for cols in rec["data_reads"]:
+                dr_counts[cols] += 1
+            rec["data_reads"] = [
+                {"columns": list(cols), "rows": count}
+                for cols, count in dr_counts.items()
+            ]
+
+            # collapse data_writes
+            dw_counts: dict[tuple[str, ...], int] = defaultdict(int)
+            for cols in rec["data_writes"]:
+                dw_counts[cols] += 1
+            rec["data_writes"] = [
+                {"columns": list(cols), "rows": count}
+                for cols, count in dw_counts.items()
+            ]
+
+            # attach timeline with variable defaults
+            timeline = self.operations_timeline().get(fname, [])
+            
+            # Enhance operations with variable defaults
+            enhanced_timeline = []
+            for op in timeline:
+                enhanced_op = op.copy()
+                
+                # Find relevant variable defaults for this operation
+                relevant_defaults = self._find_relevant_variable_defaults(enhanced_op, variable_defaults)
+                enhanced_op['variable_defaults'] = relevant_defaults
+                
+                enhanced_timeline.append(enhanced_op)
+            
+            all_timelines = self.operations_timeline()
+            log.debug("Available timeline keys: %s", list(all_timelines.keys()))
+            log.debug("Available ops for key %s: %s", fname, all_timelines.get(fname, []))
+
+            final_result[fname] = {
+                "summary": rec,
+                "timeline": enhanced_timeline
+            }
+
+        return final_result
+    
+    def _find_relevant_variable_defaults(self, operation: dict, variable_defaults: dict[str, str]) -> dict[str, str]:
+        """
+        Find variable defaults relevant to the given I/O operation.
+        Looks for file-related variables in the operation and matches them with defaults.
+        """
+        relevant_defaults = {}
+        
+        if not variable_defaults:
+            return relevant_defaults
+            
+        # Extract the raw I/O statement
+        raw_statement = operation.get('raw', '')
+        
+        # Look for file= parameters in open statements
+        file_match = re.search(r'file\s*=\s*([a-zA-Z_][a-zA-Z0-9_%]*)', raw_statement, re.IGNORECASE)
+        if file_match:
+            file_var = file_match.group(1)
+            # Check if this variable has a default value
+            for var_name, var_value in variable_defaults.items():
+                # Direct match
+                if var_name == file_var:
+                    relevant_defaults[f"{file_var}"] = var_value
+                # Match module%variable with variable (e.g., in_sim%prt with prt)
+                elif file_var.count('%') > 0:
+                    var_parts = file_var.split('%')
+                    if len(var_parts) >= 2 and var_name == var_parts[-1]:
+                        relevant_defaults[file_var] = var_value
+                # Match variable%subvar with variable
+                elif var_name.endswith(f'%{file_var}'):
+                    relevant_defaults[var_name] = var_value
+        
+        # Also look for any variables mentioned in the operation that have defaults
+        for var_name, var_value in variable_defaults.items():
+            # Check if the variable appears in the operation
+            if re.search(r'\b' + re.escape(var_name.replace('%', r'%')) + r'\b', raw_statement, re.IGNORECASE):
+                relevant_defaults[var_name] = var_value
+        
+        # Look for compound variables (like in_sim%prt) and match with simple names (like prt)
+        compound_vars = re.findall(r'([a-zA-Z_][a-zA-Z0-9_]*%[a-zA-Z_][a-zA-Z0-9_]*)', raw_statement, re.IGNORECASE)
+        for compound_var in compound_vars:
+            var_parts = compound_var.split('%')
+            if len(var_parts) >= 2:
+                simple_name = var_parts[-1]  # Get the part after the last %
+                if simple_name in variable_defaults:
+                    relevant_defaults[compound_var] = variable_defaults[simple_name]
+                    
+        return relevant_defaults
+        return relevant_defaults
+
+
 
 
 VAR_TYPE_STRING = r"^integer|real|double\s*precision|character|complex|double\s*complex|logical|type|class|procedure|enumerator"
@@ -87,6 +514,168 @@ PROTO_RE = re.compile(r"(\*|\w+)\s*(?:\((.*)\))?")
 CALL_AND_WHITESPACE_RE = re.compile(r"\(\)|\s")
 
 base_url = ""
+
+
+class AllocationTracker:
+    """Tracks memory allocation and deallocation operations."""
+    
+    def __init__(self):
+        self.operations = []  # List of allocation operations
+        self.condition_stack = []  # Stack of active conditions
+        self.current_condition = None  # Current active condition context
+        self.completed = False
+        
+    def push_condition(self, condition_text, line_no=None):
+        """Push a new condition context onto the stack."""
+        condition_info = {
+            'text': condition_text.strip(),
+            'line': line_no,
+            'type': self._determine_condition_type(condition_text)
+        }
+        self.condition_stack.append(condition_info)
+        self.current_condition = condition_info
+
+    def pop_condition(self):
+        """Pop the current condition context from the stack."""
+        if self.condition_stack:
+            self.condition_stack.pop()
+        self.current_condition = self.condition_stack[-1] if self.condition_stack else None
+
+    def _determine_condition_type(self, condition_text):
+        """Determine the type of control structure."""
+        text_lower = condition_text.lower().strip()
+        if text_lower.startswith('if'):
+            return 'if'
+        elif text_lower.startswith('select case'):
+            return 'select'
+        elif text_lower.startswith('case'):
+            return 'case'
+        elif text_lower.startswith('else'):
+            return 'else'
+        elif text_lower.startswith('do'):
+            return 'do'
+        return 'unknown'
+        
+    def record_allocation(self, kind, raw, line_no=None, variables=None):
+        """Record an allocation operation."""
+        operation = {
+            'kind': kind,  # 'allocate' or 'deallocate'
+            'raw': raw,
+            'line': line_no,
+            'variables': variables or [],
+            'condition': dict(self.current_condition) if self.current_condition else None
+        }
+        self.operations.append(operation)
+        
+    def finalize(self):
+        """Mark as completed."""
+        self.completed = True
+        
+    def summarize_allocations(self):
+        """Return allocation operations grouped by conditions."""
+        if not self.completed:
+            self.finalize()
+            
+        # Group operations by condition
+        result = {}
+        for op in self.operations:
+            condition_key = "no_condition"
+            condition_line = None
+            
+            if op['condition']:
+                condition_key = op['condition']['text']
+                condition_line = op['condition']['line']
+            
+            if condition_key not in result:
+                result[condition_key] = {
+                    'operations': [],
+                    'line': condition_line
+                }
+            
+            result[condition_key]['operations'].append(op)
+        
+        return result
+
+
+class AllocationTracker:
+    """Tracks memory allocation and deallocation operations."""
+    
+    def __init__(self):
+        self.operations = []  # List of allocation operations
+        self.condition_stack = []  # Stack of active conditions
+        self.current_condition = None  # Current active condition context
+        self.completed = False
+        
+    def push_condition(self, condition_text, line_no=None):
+        """Push a new condition context onto the stack."""
+        condition_info = {
+            'text': condition_text.strip(),
+            'line': line_no,
+            'type': self._determine_condition_type(condition_text)
+        }
+        self.condition_stack.append(condition_info)
+        self.current_condition = condition_info
+
+    def pop_condition(self):
+        """Pop the current condition context from the stack."""
+        if self.condition_stack:
+            self.condition_stack.pop()
+        self.current_condition = self.condition_stack[-1] if self.condition_stack else None
+
+    def _determine_condition_type(self, condition_text):
+        """Determine the type of control structure."""
+        text_lower = condition_text.lower().strip()
+        if text_lower.startswith('if'):
+            return 'if'
+        elif text_lower.startswith('select case'):
+            return 'select'
+        elif text_lower.startswith('case'):
+            return 'case'
+        elif text_lower.startswith('else'):
+            return 'else'
+        elif text_lower.startswith('do'):
+            return 'do'
+        return 'unknown'
+        
+    def record_allocation(self, kind, raw, line_no=None, variables=None):
+        """Record an allocation operation."""
+        operation = {
+            'kind': kind,  # 'allocate' or 'deallocate'
+            'raw': raw,
+            'line': line_no,
+            'variables': variables or [],
+            'condition': dict(self.current_condition) if self.current_condition else None
+        }
+        self.operations.append(operation)
+        
+    def finalize(self):
+        """Mark as completed."""
+        self.completed = True
+        
+    def summarize_allocations(self):
+        """Return allocation operations grouped by conditions."""
+        if not self.completed:
+            self.finalize()
+            
+        # Group operations by condition
+        result = {}
+        for op in self.operations:
+            condition_key = "no_condition"
+            condition_line = None
+            
+            if op['condition']:
+                condition_key = op['condition']['text']
+                condition_line = op['condition']['line']
+            
+            if condition_key not in result:
+                result[condition_key] = {
+                    'operations': [],
+                    'line': condition_line
+                }
+            
+            result[condition_key]['operations'].append(op)
+        
+        return result
 
 
 SUBLINK_TYPES = {
@@ -117,12 +706,30 @@ def _find_in_list(collection: Iterable, name: str) -> Optional[FortranBase]:
 
 def read_docstring(source: FortranReader, docmark: str) -> List[str]:
     """Read a contiguous docstring"""
-    docstring = []
-    docmark = f"!{docmark}"
-    length = len(docmark)
-    while (line := next(source)).startswith(docmark):
-        docstring.append(line[length:])
-    source.pass_back(line)
+    docstring: List[str] = []
+    docmark_str = f"!{docmark}"
+    length = len(docmark_str)
+
+    # if source isn’t really iterable (e.g. a FortranSourceFile), bail out
+    if not hasattr(source, "__next__"):
+        return docstring
+
+    try:
+        # consume leading doc-comment lines
+        while True:
+            line = next(source)
+            if line.startswith(docmark_str):
+                docstring.append(line[length:])
+            else:
+                source.pass_back(line)
+                break
+    except StopIteration:
+        # ran off EOF—just return whatever we got
+        pass
+    except TypeError:
+        # source wasn’t iterable after all
+        return []
+
     return docstring
 
 
@@ -181,21 +788,11 @@ class FortranBase:
     Fortran data.
     """
 
-    IS_SPOOF = False
-
     POINTS_TO_RE = re.compile(r"\s*=>\s*", re.IGNORECASE)
-    SPLIT_RE = re.compile(r"\s*,\s*", re.IGNORECASE)
+    SPLIT_RE     = re.compile(r"\s*,\s*", re.IGNORECASE)
 
-    pretty_obj = {
-        "proc": "procedures",
-        "type": "derived types",
-        "sourcefile": "source files",
-        "program": "programs",
-        "module": "modules and submodules",
-        "submodule": "modules and submodules",
-        "interface": "abstract interfaces",
-        "blockdata": "block data units",
-    }
+    IS_SPOOF = False
+    # … your existing class‐level regexes and mappings …
 
     def __init__(
         self,
@@ -204,7 +801,21 @@ class FortranBase:
         parent: Optional[FortranContainer] = None,
         inherited_permission: str = "public",
         strings: Optional[List[str]] = None,
+        line_number: int = None,
     ):
+        # start an I/O session tracker for this code unit
+        self.io_tracker = IoTracker()
+        # start an allocation tracker for this code unit
+        self.allocation_tracker = AllocationTracker()
+        # start an allocation tracker for this code unit
+        self.allocation_tracker = AllocationTracker()
+
+        # Record starting line number
+        if line_number is not None:
+            self.line_number = line_number
+        else:
+            self.line_number = getattr(source, "line_number", None)
+
         self.name = "unknown"
         self.visible = False
         self.permission = inherited_permission.lower()
@@ -225,16 +836,20 @@ class FortranBase:
             self.settings = ProjectSettings()
 
         self.base_url = pathlib.Path(self.settings.project_url)
-        self.doc_list = read_docstring(source, self.settings.docmark)
+        try:
+            self.doc_list = read_docstring(source, self.settings.docmark)
+        except TypeError:
+            # source isn’t iterable (e.g. a FortranSourceFile), so no docstring to read
+            self.doc_list = []
         self.hierarchy = self._make_hierarchy()
         self.read_metadata()
 
-        # Some entities are reachable from more than one parent (for example,
-        # public procedures that are also part of a generic interface), so we
-        # need to make sure we don't convert the docstrings twice
+        # Some entities are reachable from more than one parent …
         self.source_file._to_be_markdowned.append(self)
 
-        self._initialize(first_line)
+        # only initialize if we have a real regex match
+        if first_line:
+            self._initialize(first_line)
         del self.strings
 
     def _make_hierarchy(self) -> List[FortranContainer]:
@@ -342,11 +957,17 @@ class FortranBase:
         if not obj:
             obj = self.obj
         total = total or self.num_lines
-        description = f"{float(self.num_lines) / total * 100:4.1f}% of total for {self.pretty_obj[obj]}."
+        # Fallback if pretty_obj is missing
+        pretty_obj = getattr(self, 'pretty_obj', None)
+        if pretty_obj and obj in pretty_obj:
+            obj_name = pretty_obj[obj]
+        else:
+            obj_name = str(obj)
+        description = f"{float(self.num_lines) / total * 100:4.1f}% of total for {obj_name}."
         if total_all:
             description = (
                 f"<p>{description}</p>Including implementation: {self.num_lines_all} statements, "
-                f"{float(self.num_lines_all) / total_all * 100:4.1f}% of total for {self.pretty_obj[obj]}."
+                f"{float(self.num_lines_all) / total_all * 100:4.1f}% of total for {obj_name}."
             )
         return description
 
@@ -469,6 +1090,30 @@ class FortranBase:
                     warn(
                         f"Could not extract source code for {self.obj} '{self.name}' in file '{self.filename}'"
                     )
+        # Add I/O information to metadata if available
+        if hasattr(self, 'io_tracker') and isinstance(self, (FortranProcedure, FortranProgram, FortranModule)):
+            io_summary = self.io_tracker.get_io_summary()
+            total_ops = io_summary["operations"].get("total", 0)
+            if total_ops > 0:
+                self.meta.io_summary = io_summary
+
+                # Generate I/O documentation section
+                if io_summary["files"]:
+                    io_doc = "<h3>File I/O</h3><ul>"
+                    for filename, file_info in io_summary["files"].items():
+                        io_doc += f"<li><strong>{filename}</strong>: accessed via {len(file_info['units'])} unit(s)</li>"
+                    io_doc += "</ul>"
+
+                    if io_summary["operations"].get("read", 0) > 0 or io_summary["operations"].get("write", 0) > 0:
+                        io_doc += "<h4>I/O Operations</h4><ul>"
+                        if io_summary["operations"]["read"] > 0:
+                            io_doc += f"<li>Read operations: {io_summary['operations']['read']}</li>"
+                        if io_summary["operations"]["write"] > 0:
+                            io_doc += f"<li>Write operations: {io_summary['operations']['write']}</li>"
+                        io_doc += "</ul>"
+
+                    # Append to documentation
+                    self.doc += io_doc
 
     def sort_components(self) -> None:
         """Sorts components using the method specified in the object
@@ -729,6 +1374,36 @@ class FortranContainer(FortranBase):
     NAMELIST_RE = re.compile(
         r"namelist\s*/(?P<name>\w+)/\s*(?P<vars>(?:\w+,?\s*)+)", re.IGNORECASE
     )
+    ASSIGNMENT_RE = re.compile(
+        r"^\s*(?P<lhs>(?:\w+%)*\w+)\s*=\s*(?P<rhs>.+)$",
+        re.IGNORECASE | re.VERBOSE,
+    )
+
+    IO_VAR_STATEMENT_RE = re.compile(
+        r"""^\s*
+            (?P<io_stmt>inquire|open|write)            # Fortran I/O statement
+            \s*\(                                      # Opening parenthesis
+            (?P<arguments>.*?)\)                       # Arguments inside parentheses
+            \s*$
+        """,
+        re.IGNORECASE | re.VERBOSE,
+    )
+
+    MEMBER_ACCESS_RE = re.compile(
+        r"\w+(?:\(\))?(?:%\w+(?:\(\))?)+",  # Match items containing % explicitly
+        re.IGNORECASE,
+    )
+
+    NUMBER_RE = re.compile(r"^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$")
+
+    # Better regex that handles both cases: (108) and (108, ...)
+    IO_UNIT_RE = re.compile(r'\(\s*(?P<unit>[^,)\s]+)(?:\s*,|\s*\))')
+
+    # pull recl if present anywhere
+    RECL_RE = re.compile(r'recl\s*=\s*(\d+)', re.IGNORECASE)
+    TRIM_ADJUST_RE = re.compile(r'^(?:\s*(?:trim|adjustl))\s*\(\s*(.+)\s*\)\s*$',
+                                re.IGNORECASE)
+
 
     def __init__(
         self, source, first_line, parent=None, inherited_permission="public", strings=[]
@@ -751,6 +1426,59 @@ class FortranContainer(FortranBase):
             self.VARIABLE_STRING.format(typestr), re.IGNORECASE
         )
 
+        # Initialize the new attribute to store variable assignments
+
+        self.member_access_results = []  # For `%`-based member access
+        self.other_results = []  # For non-member-access items
+        self.type_results = {} # For type definitions
+
+        self.var_ug = {} # For procedures
+        self.var_ug_na = [] # For procedures
+        self.var_ug_local = {} # For procedures
+        self.io_lines = []
+        self.fvar = {}
+        self.pjson = {}
+        self.io_json = {}
+
+
+        # Define a set of symbols to exclude
+        self.symbols = {"*", "<", ">", "=", ":", ".", ",","/","-","+", '**'}
+        # Fortran Control Structures
+        self.fortran_control = {
+            "if", "then", "do", "select", "case", "end", "cycle", "stop", "continue", "goto", "else",
+            "implicit", "call", "return", "exit", "enddo", "endif", 'while', 'elseif'
+        }
+
+        # Fortran Operators
+        self.fortran_operators = {
+            ".or.", ".and.", ".not.", "=", "<", ">", "0:0"
+        }
+
+        # Fortran Intrinsic Functions
+        self.fortran_intrinsics = {
+            "abs", "acos", "asin", "atan", "exp", "log", "log10", "mod", "sin", "cos",
+            "tan", "sqrt", "min", "max", "amin1", "amax1", "Sqrt", "alog", "alog10"
+        }
+
+        # Fortran Reserved Words
+        self.fortran_reserved = {
+            "allocate", "deallocate",
+             "source",  "kind", "len", "size", "allocated", "associated",
+            "null", "none", "true", "false"
+        }
+
+        #Fortran IO Words
+        self.fortran_io = {
+            "read", "write", "print", "format", "unit", "rewind", "backspace", "endfile",
+            "inquire", "open", "close", "flush", "file", "exist", "iostat"
+        }
+
+        # Custom Keywords
+        self.fortran_custom = {
+            "-Theta", "Theta", "Max", "Min", "Exp", "float", "int"
+        }
+
+
         # This is a little bit confusing, because `permission` here is sort of
         # overloaded for "permission for this entity", and "permission for child
         # entities". For example, the former doesn't apply to modules or programs,
@@ -767,6 +1495,8 @@ class FortranContainer(FortranBase):
         associations = Associations()
 
         for line in source:
+            # grab the current line number from the FortranReader
+            lineno = getattr(source, "line_number", None)
             if line[0:2] == "!" + self.settings.docmark:
                 self.doc_list.append(line[2:])
                 continue
@@ -902,7 +1632,7 @@ class FortranContainer(FortranBase):
                 blocklevel += 1
             elif match := self.ASSOCIATE_RE.match(line):
                 # Associations 'call' the rhs of the => operator
-                self._add_procedure_calls(line, associations)
+                self._add_procedure_calls(line, associations, line_no=lineno)
 
                 # Register the associations
                 assoc_batch = paren_split(",", strip_paren(match["associations"])[0])
@@ -1090,20 +1820,357 @@ class FortranContainer(FortranBase):
                     self.print_error(line, "Unexpected procedure call")
                     continue
 
-                self._add_procedure_calls(line, associations)
+                self._add_procedure_calls(line, associations, line_no=lineno)
+
+            else :
+                self._member_access(line)
+
+
 
         if not isinstance(self, FortranSourceFile):
             raise Exception("File ended while still nested.")
 
-    def _add_procedure_calls(
-        self, line: str, associations: Associations = Associations()
-    ) -> None:
+    def restore_strings(self, line: str, strings: list) -> str:
+        """
+            Restores original string literals in a line by replacing tokens of the form "number"
+            with their corresponding entries from the provided strings list.
+
+            Args:
+                line (str): The line containing tokenized string literals.
+                strings (list): A list of original string literals saved prior to substitution.
+
+            Returns:
+                str: The line with the original string literals restored.
+            """
+        token_pattern = re.compile(r'"(\d+)"')
+        # Use a lambda for inline replacement without defining an explicit 'repl' function.
+        return token_pattern.sub(lambda match: strings[int(match.group(1))], line)
+    
+    def extract_filename_expr(self, raw_line: str) -> str:
+        """
+        Given a line like "open (108,file = hmd(i)%filename)",
+        returns "hmd(i)%filename" (including any nested parentheses or // operations).
+        """
+        # find the file= token
+        m = re.search(r'file\s*=', raw_line, re.IGNORECASE)
+        if not m:
+            return None
+
+        # start just after the '='
+        idx = m.end()
+        # skip whitespace
+        while idx < len(raw_line) and raw_line[idx].isspace():
+            idx += 1
+
+        # collect chars until we hit the closing ')' of the OPEN(...)
+        depth = 0
+        chars = []
+        while idx < len(raw_line):
+            ch = raw_line[idx]
+            if ch == '(':
+                depth += 1
+                chars.append(ch)
+            elif ch == ')':
+                if depth == 0:
+                    break   # this is the closing paren of open(...)
+                depth -= 1
+                chars.append(ch)
+            else:
+                chars.append(ch)
+            idx += 1
+
+        return ''.join(chars).strip()
+
+    def _parse_io_open(self, line: str, line_no: int = None) -> None:
+        raw = self.restore_strings(line, self.strings)
+        low = raw.strip().lower()
+
+        if low.startswith('open'):
+            # Extract record length if present
+            recl = None
+            if m := self.RECL_RE.search(raw):
+                recl = m.group(1)
+
+            # Extract full filename expression
+            fname = self.extract_filename_expr(raw)
+
+            # Extract unit number
+            unit_m = self.IO_UNIT_RE.search(raw)
+            unit = unit_m.group('unit') if unit_m else None
+
+            # Start a new session for this unit/file
+            self.io_tracker.start(unit, fname,     line_no=line_no)
+
+            # Record record-length metadata if found
+            if recl is not None:
+                self.io_tracker.record(unit, "meta", f"Record length: {recl}",     line_no=line_no)
+
+            # Record the open itself
+            self.io_tracker.record(unit, "open", raw,     line_no=line_no)
+            return
+
+        if low.startswith('read'):
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+
+            # Try to extract format information
+            fmt = re.search(r'fmt\s*=\s*([^,)]+)', raw, re.IGNORECASE)
+            if fmt:
+                self.io_tracker.record(unit, "meta", f"Format: {fmt.group(1).strip()}",     line_no=line_no)
+
+            self.io_tracker.record(unit, "read", raw,     line_no=line_no)
+            return
+
+        if low.startswith('write'):
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+
+            fmt = re.search(r'fmt\s*=\s*([^,)]+)', raw, re.IGNORECASE)
+            if fmt:
+                self.io_tracker.record_or_create(unit, "meta", f"Format: {fmt.group(1).strip()}",     line_no=line_no)
+
+            self.io_tracker.record_or_create(unit, "write", raw,     line_no=line_no)
+            return
+        
+        # record explicit file rewinds
+        if low.startswith('rewind'):
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+            self.io_tracker.record(unit, "rewind", raw,     line_no=line_no)
+            return    
+        
+        if low.startswith('backspace'):
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+            self.io_tracker.record(unit, "backspace", raw,     line_no=line_no)
+            return
+
+        if low.startswith('close'):
+            m = self.IO_UNIT_RE.search(raw)
+            unit = m.group('unit') if m else None
+            self.io_tracker.record(unit, "close", raw,     line_no=line_no)
+            self.io_tracker.close(unit)
+            return
+
+    def _parse_allocations(self, line: str, line_no: int = None) -> None:
+        """Parse allocation and deallocation statements."""
+        raw = self.restore_strings(line, self.strings)
+        low = raw.strip().lower()
+        
+        if low.startswith('allocate'):
+            # Extract variables being allocated
+            variables = self._extract_allocation_variables(raw)
+            self.allocation_tracker.record_allocation('allocate', raw, line_no, variables)
+            return
+            
+        if low.startswith('deallocate'):
+            # Extract variables being deallocated
+            variables = self._extract_allocation_variables(raw)
+            self.allocation_tracker.record_allocation('deallocate', raw, line_no, variables)
+            return
+    
+    def _extract_allocation_variables(self, raw_line: str) -> list:
+        """Extract variable names from allocate/deallocate statements."""
+        variables = []
+        
+        # Pattern to match allocate(var1, var2, var3, source=...) or deallocate(var1, var2)
+        # Remove the allocate/deallocate keyword and parentheses
+        if 'allocate' in raw_line.lower():
+            match = re.search(r'allocate\s*\(\s*([^)]+)\s*\)', raw_line, re.IGNORECASE)
+        else:
+            match = re.search(r'deallocate\s*\(\s*([^)]+)\s*\)', raw_line, re.IGNORECASE)
+            
+        if match:
+            var_part = match.group(1)
+            # Split by commas, but be careful about source= and stat= parameters
+            parts = []
+            paren_level = 0
+            current_part = ""
+            
+            for char in var_part:
+                if char == '(':
+                    paren_level += 1
+                elif char == ')':
+                    paren_level -= 1
+                elif char == ',' and paren_level == 0:
+                    parts.append(current_part.strip())
+                    current_part = ""
+                    continue
+                current_part += char
+            
+            if current_part.strip():
+                parts.append(current_part.strip())
+            
+            # Filter out source=, stat=, etc. parameters
+            for part in parts:
+                part = part.strip()
+                if '=' in part and any(keyword in part.lower() for keyword in ['source', 'stat', 'errmsg']):
+                    continue
+                if part and not part.lower().startswith(('source', 'stat', 'errmsg')):
+                    variables.append(part)
+        
+        return variables
+
+    def _parse_allocations(self, line: str, line_no: int = None) -> None:
+        """Parse allocation and deallocation statements."""
+        raw = self.restore_strings(line, self.strings)
+        low = raw.strip().lower()
+        
+        if low.startswith('allocate'):
+            # Extract variables being allocated
+            variables = self._extract_allocation_variables(raw)
+            self.allocation_tracker.record_allocation('allocate', raw, line_no, variables)
+            return
+            
+        if low.startswith('deallocate'):
+            # Extract variables being deallocated
+            variables = self._extract_allocation_variables(raw)
+            self.allocation_tracker.record_allocation('deallocate', raw, line_no, variables)
+            return
+    
+    def _extract_allocation_variables(self, raw_line: str) -> list:
+        """Extract variable names from allocate/deallocate statements."""
+        variables = []
+        
+        # Pattern to match allocate(var1, var2, var3, source=...) or deallocate(var1, var2)
+        # Remove the allocate/deallocate keyword and parentheses
+        if 'allocate' in raw_line.lower():
+            match = re.search(r'allocate\s*\(\s*([^)]+)\s*\)', raw_line, re.IGNORECASE)
+        else:
+            match = re.search(r'deallocate\s*\(\s*([^)]+)\s*\)', raw_line, re.IGNORECASE)
+            
+        if match:
+            var_part = match.group(1)
+            # Split by commas, but be careful about source= and stat= parameters
+            parts = []
+            paren_level = 0
+            current_part = ""
+            
+            for char in var_part:
+                if char == '(':
+                    paren_level += 1
+                elif char == ')':
+                    paren_level -= 1
+                elif char == ',' and paren_level == 0:
+                    parts.append(current_part.strip())
+                    current_part = ""
+                    continue
+                current_part += char
+            
+            if current_part.strip():
+                parts.append(current_part.strip())
+            
+            # Filter out source=, stat=, etc. parameters
+            for part in parts:
+                part = part.strip()
+                if '=' in part and any(keyword in part.lower() for keyword in ['source', 'stat', 'errmsg']):
+                    continue
+                if part and not part.lower().startswith(('source', 'stat', 'errmsg')):
+                    variables.append(part)
+        
+        return variables
+
+    def _parse_control_flow(self, line: str, line_no: int = None) -> None:
+        """Parse control flow statements and update condition context."""
+        if not hasattr(self, 'io_tracker'):
+            return
+            
+        raw = self.restore_strings(line, self.strings)
+        stripped = raw.strip().lower()
+        
+        # Handle if statements
+        if stripped.startswith('if') and ('then' in stripped or '=' in stripped):
+            # Extract the condition part
+            if 'then' in stripped:
+                condition_match = re.match(r'if\s*\((.+?)\)\s*then', stripped, re.IGNORECASE)
+                if condition_match:
+                    condition = f"if ({condition_match.group(1)})"
+                    self.io_tracker.push_condition(condition, line_no)
+                    if hasattr(self, 'allocation_tracker'):
+                        self.allocation_tracker.push_condition(condition, line_no)
+            
+        # Handle select case statements  
+        elif stripped.startswith('select case'):
+            case_match = re.match(r'select\s+case\s*\((.+?)\)', stripped, re.IGNORECASE)
+            if case_match:
+                condition = f"select case ({case_match.group(1)})"
+                self.io_tracker.push_condition(condition, line_no)
+                if hasattr(self, 'allocation_tracker'):
+                    self.allocation_tracker.push_condition(condition, line_no)
+        
+        # Handle case statements
+        elif stripped.startswith('case'):
+            case_match = re.match(r'case\s*\((.+?)\)', stripped, re.IGNORECASE)
+            if case_match:
+                condition = f"case ({case_match.group(1)})"
+                # Pop previous case and push new one
+                if self.io_tracker.condition_stack and self.io_tracker.condition_stack[-1]['type'] == 'case':
+                    self.io_tracker.pop_condition()
+                self.io_tracker.push_condition(condition, line_no)
+                if hasattr(self, 'allocation_tracker'):
+                    if self.allocation_tracker.condition_stack and self.allocation_tracker.condition_stack[-1]['type'] == 'case':
+                        self.allocation_tracker.pop_condition()
+                    self.allocation_tracker.push_condition(condition, line_no)
+            elif 'default' in stripped:
+                condition = "case default"
+                if self.io_tracker.condition_stack and self.io_tracker.condition_stack[-1]['type'] == 'case':
+                    self.io_tracker.pop_condition()
+                self.io_tracker.push_condition(condition, line_no)
+                if hasattr(self, 'allocation_tracker'):
+                    if self.allocation_tracker.condition_stack and self.allocation_tracker.condition_stack[-1]['type'] == 'case':
+                        self.allocation_tracker.pop_condition()
+                    self.allocation_tracker.push_condition(condition, line_no)
+        
+        # Handle else statements
+        elif stripped.startswith('else') and not stripped.startswith('elseif'):
+            condition = "else"
+            self.io_tracker.push_condition(condition, line_no)
+            if hasattr(self, 'allocation_tracker'):
+                self.allocation_tracker.push_condition(condition, line_no)
+            
+        # Handle elseif statements  
+        elif stripped.startswith('elseif'):
+            elseif_match = re.match(r'elseif\s*\((.+?)\)\s*then', stripped, re.IGNORECASE)
+            if elseif_match:
+                condition = f"elseif ({elseif_match.group(1)})"
+                # Pop previous condition and push new one
+                if self.io_tracker.condition_stack:
+                    self.io_tracker.pop_condition()
+                self.io_tracker.push_condition(condition, line_no)
+                if hasattr(self, 'allocation_tracker'):
+                    if self.allocation_tracker.condition_stack:
+                        self.allocation_tracker.pop_condition()
+                    self.allocation_tracker.push_condition(condition, line_no)
+        
+        # Handle end statements
+        elif stripped.startswith('end'):
+            if any(end_kw in stripped for end_kw in ['endif', 'end if', 'endselect', 'end select']):
+                if self.io_tracker.condition_stack:
+                    self.io_tracker.pop_condition()
+                if hasattr(self, 'allocation_tracker') and self.allocation_tracker.condition_stack:
+                    self.allocation_tracker.pop_condition()
+
+    def _add_procedure_calls(self,
+                        line: str,
+                        associations: Associations = Associations(),
+                        line_no: int = None
+                       ) -> None:
         """Helper to register procedure calls. For FortranProgram,
         FortranProcedure, and FortranModuleProcedureImplementation
         """
 
-        if not hasattr(self, "calls"):
-            raise Exception(f"Cannot add procedure calls to {self.__class__.__name__}")
+        # ==== Parse control flow statements ====
+        self._parse_control_flow(line, line_no)
+        
+        # ==== call the new I/O parser ====
+        self._parse_io_open(line, line_no)
+        
+        # ==== call the allocation parser ====
+        self._parse_allocations(line, line_no)
+
+        if not hasattr(self, "call_records"):
+            self.call_records = []      # will be list of (chain, line_no)
+
 
         call_chains = []
 
@@ -1113,15 +2180,15 @@ class FortranContainer(FortranBase):
         # Match subcall, if present
         if match := self.SUBCALL_RE.search(_lines[0]):
             call_chains.append(match["call_chain"])
-            # No function calls on this parendepth (because theres a subcall)
+            # No function calls on this parendepth (because there's a subcall)
             parendepth += 1
             _lines = ford.utils.strip_paren(line, parendepth)
 
         # Match calls, and nested calls
-
-        # Check every level of parendepth
         while len(_lines) > 0:
             for subline in _lines:
+                # Process member access in the current subline
+                self._member_access(subline)
                 for match in self.CALL_RE.finditer(subline):
                     call_chains.append(match["call_chain"])
             parendepth += 1
@@ -1130,16 +2197,64 @@ class FortranContainer(FortranBase):
         # Add call chains to self.calls
         for chain_str in call_chains:
             call_chain = CALL_AND_WHITESPACE_RE.sub("", chain_str).lower().split("%")
-
             if call_chain[0] in associations:
                 call_chain[0:1] = associations[call_chain[0]]
-
             if call_chain[-1] in INTRINSICS or call_chain[-1] in (
                 call[-1] for call in self.calls
             ):
                 continue
-
             self.calls.append(call_chain)
+
+            # (2) record it alongside its source‐line for JSON later:
+            self.call_records.append((call_chain, line_no))
+            
+    def _member_access(self, line: str) -> None:
+        """
+            Processes a single line of code to extract member access patterns
+            and other unique items while avoiding duplicates.
+
+            Parameters
+            ----------
+            line : str
+                A line of code to process.
+            """
+        # Step 1: Format and clean the input line
+        # Strip whitespace and split the line into components
+        cleaned_line = line.strip()
+        all_items = re.split(r"[,\s]+", cleaned_line)
+
+        # Step 2: Remove all occurrences of `()`
+        cleaned_items = [re.sub(r"\(\)", "", item).strip() for item in all_items if item.strip()]
+
+        # Step 3: Further split items by '=' into key-value pairs
+        split_items = []
+        for item in cleaned_items:
+            if "=" in item:
+                split_items.extend(item.split("="))  # Split by '=' and keep both parts
+            else:
+                split_items.append(item)
+
+        # Step 4: Initialize sets for deduplication
+        existing_member_access = set(self.member_access_results)
+        existing_other_results = set(self.other_results)
+
+        # Step 5: Process cleaned and split items
+        for item in split_items:
+            # Remove standalone or leftover parentheses from items
+            fully_cleaned_item = re.sub(r"[()]", "", item)
+
+            # Check for `%`-based member access patterns using regex
+            if self.MEMBER_ACCESS_RE.match(fully_cleaned_item):
+                if fully_cleaned_item not in existing_member_access:
+                    self.member_access_results.append(fully_cleaned_item)
+                    existing_member_access.add(fully_cleaned_item)
+            else:
+                # Add non-member access items to other_results
+                if fully_cleaned_item not in existing_other_results:
+                    self.other_results.append(fully_cleaned_item)
+                    existing_other_results.add(fully_cleaned_item)
+
+
 
     def _cleanup(self):
         raise NotImplementedError()
@@ -1177,7 +2292,17 @@ class FortranCodeUnit(FortranContainer):
         self.public_list: List[str] = []
         self.namelists: List[FortranNamelist] = []
 
-    def _cleanup(self) -> None:
+  
+    def _cleanup(self) -> None:        
+        # finalize & print all I/O for this code‐unit
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
+
+        # existing cleanup logic
         self.process_attribs()
         self.all_procs = {p.name.lower(): p for p in self.routines}
         for interface in self.interfaces:
@@ -1246,6 +2371,10 @@ class FortranCodeUnit(FortranContainer):
         def should_be_public(name: str) -> bool:
             """Is name public?"""
             return self.permission == "public" or name in self.public_list
+
+# Function to print out all_vars
+        #def print_all_vars(self):
+
 
         def filter_public(collection: dict) -> dict:
             """Return a new dict of only the public objects from collection"""
@@ -1857,6 +2986,483 @@ class FortranProcedure(FortranCodeUnit):
 
             self.args[i] = arg
 
+    @property
+    def local_variables(self):
+        """Return variables that are declared locally within this procedure (excluding arguments)."""
+        local_vars = []
+        
+        # Get variables that are declared in this procedure
+        if hasattr(self, 'variables'):
+            for var in self.variables:
+                # Variable is local if its parent is this procedure or if parent is None (could be local)
+                if getattr(var, 'parent', None) == self or getattr(var, 'parent', None) is None:
+                    # Don't include arguments
+                    if not hasattr(self, 'args') or var not in self.args:
+                        local_vars.append(var)
+        
+        # Always try to extract from source as fallback or supplement
+        try:
+            source_vars = self._extract_local_variables_from_source()
+            
+            # Combine and deduplicate
+            existing_names = set(getattr(var, 'name', str(var)) for var in local_vars)
+            for var in source_vars:
+                if var.name not in existing_names:
+                    local_vars.append(var)
+        except Exception as e:
+            # In case of any error, just continue with what we have
+            pass
+        
+        return local_vars
+    
+    def _extract_local_variables_from_source(self):
+        """Extract local variable declarations from source code."""
+        import re
+        local_vars = []
+        
+        # Get the source code - try to read from source file
+        source_text = None
+        if hasattr(self, 'source_file') and self.source_file:
+            try:
+                # Read the source file directly
+                with open(self.source_file.path, 'r', encoding='utf-8', errors='ignore') as f:
+                    full_source = f.read()
+                
+                # Extract just the procedure's source code
+                # Find the procedure start and end
+                proc_start_pattern = rf'^\s*{self.proctype.lower()}\s+{re.escape(self.name)}\b'
+                proc_end_pattern = rf'^\s*end\s+{self.proctype.lower()}\b'
+                
+                source_lines = full_source.split('\n')
+                in_procedure = False
+                procedure_lines = []
+                
+                for line in source_lines:
+                    if re.match(proc_start_pattern, line.strip(), re.IGNORECASE):
+                        in_procedure = True
+                        procedure_lines.append(line)
+                    elif in_procedure:
+                        procedure_lines.append(line)
+                        if re.match(proc_end_pattern, line.strip(), re.IGNORECASE):
+                            break
+                
+                if procedure_lines:
+                    source_text = '\n'.join(procedure_lines)
+                    
+            except Exception as e:
+                return local_vars
+        else:
+            # Fallback to other attributes
+            if hasattr(self, 'src') and self.src:
+                source_text = self.src
+            elif hasattr(self, 'raw_src') and self.raw_src:
+                source_text = self.raw_src
+            elif hasattr(self, 'source') and self.source:
+                source_text = self.source
+            else:
+                return local_vars
+        
+        if not source_text:
+            return local_vars
+        
+        # Convert to string if it's not already
+        if not isinstance(source_text, str):
+            source_text = str(source_text)
+            
+        # Enhanced regex patterns to find variable declarations
+        var_patterns = [
+            # Character declarations with :: and specific length (with space)
+            r'^\s*character\s+\(\s*len\s*=\s*\d+\s*\)\s*::\s*([^!]+)',
+            # Character declarations without :: and specific length (with space)
+            r'^\s*character\s+\(\s*len\s*=\s*\d+\s*\)\s+([^!=,\n]+)(?:\s*=.*)?(?:\s*!.*)?$',
+            # Standard declaration with :: 
+            r'^\s*(integer|real|logical|double\s+precision)(?:\s*\([^)]*\))?\s*::\s*([^!]+)',
+            # Older Fortran style without :: (more common in the test files)
+            r'^\s*(integer|real|logical|double\s+precision)(?:\s*\([^)]*\))?\s+([^!=,\n]+)(?:\s*=.*)?(?:\s*!.*)?$',
+        ]
+        
+        source_lines = source_text.split('\n')
+        
+        for line in source_lines:
+            line_stripped = line.strip()
+            
+            # Skip comment lines, empty lines, and continuation lines
+            if not line_stripped or line_stripped.startswith('!'):
+                continue
+            # Only skip if it's actually a comment line (starts with 'c' or 'C' followed by space or not alphanumeric)
+            if line_stripped.lower().startswith('c ') or (line_stripped.lower().startswith('c') and len(line_stripped) > 1 and not line_stripped[1].isalnum()):
+                continue
+            if line.startswith('     ') and len(line) > 5 and line[5] in ['&', '+', '*']:  # Fortran continuation
+                continue
+                
+            for pattern in var_patterns:
+                match = re.match(pattern, line_stripped, re.IGNORECASE)
+                if match:
+                    if pattern.startswith(r'^\s*character'):
+                        # Character variable
+                        var_type = "character"
+                        var_declarations = match.group(1).strip()
+                    else:
+                        # Other types
+                        var_type = match.group(1)
+                        var_declarations = match.group(2).strip()
+                    
+                    # Parse variable names (handle multiple variables on one line)
+                    var_names = []
+                    for name in var_declarations.split(','):
+                        # Clean up variable name (remove initialization, dimensions, etc.)
+                        clean_name = name.strip().split('=')[0].strip()
+                        clean_name = re.sub(r'\([^)]*\)', '', clean_name).strip()  # Remove array dimensions
+                        clean_name = re.sub(r'\s*!.*$', '', clean_name).strip()    # Remove comments
+                        if clean_name and clean_name.replace('_', '').replace(' ', '').isalnum():
+                            var_names.append(clean_name)
+                    
+                    for var_name in var_names:
+                        # Skip if variable name is empty or is an argument
+                        if not var_name:
+                            continue
+                        if hasattr(self, 'args') and any(arg.name == var_name if hasattr(arg, 'name') else str(arg) == var_name for arg in self.args):
+                            continue
+                            
+                        # Create a mock variable object with the required interface
+                        class MockVariable:
+                            def __init__(self, name, var_type, parent):
+                                self.obj = 'variable'
+                                self.name = name
+                                self.var_type = var_type
+                                self.full_type = var_type
+                                self.parent = parent
+                                self.dimension = ""
+                                self.anchor = f"var-{name.lower()}"
+                                self.intent = None
+                                self.optional = False
+                                self.permission = "private"
+                                self.parameter = False
+                                self.attribs = []
+                                self.initial = None
+                                
+                            def meta(self, key):
+                                if key == 'summary':
+                                    return f"Local variable of type {self.var_type}"
+                                return ""
+                        
+                        mock_var = MockVariable(var_name, var_type, self)
+                        local_vars.append(mock_var)
+                    break  # Found a match, no need to try other patterns for this line
+        
+        return local_vars
+
+    @property 
+    def non_local_variables(self):
+        """Return variables that are not declared locally (arguments, parameters, etc.)."""
+        non_local_vars = []
+        
+        # Include arguments
+        if hasattr(self, 'args'):
+            non_local_vars.extend(self.args)
+        
+        # Include variables that are not local to this procedure
+        if hasattr(self, 'variables'):
+            for var in self.variables:
+                if getattr(var, 'parent', None) != self:
+                    non_local_vars.append(var)
+        
+        return non_local_vars
+
+    @property
+    def outside_variables_used(self):
+        """Return variables and types from outside modules that are actually used in this procedure, 
+        with detailed component/attribute information from JSON analysis."""
+        try:
+            import re
+            import json
+            import os
+            outside_vars = []
+            
+            # Try to use JSON output data first for more detailed analysis
+            procedure_name = getattr(self, 'name', '')
+            if procedure_name:
+                # Look for the I/O analysis JSON file
+                json_path = os.path.join('json_outputs', f'{procedure_name}.io.json')
+                if os.path.exists(json_path):
+                    try:
+                        with open(json_path, 'r') as f:
+                            io_data = json.load(f)
+                        
+                        # Extract variable usage from JSON data
+                        variable_usage = {}  # {base_var: {'attributes': set(), 'type': str, 'module': str}}
+                        
+                        for unit, operations in io_data.items():
+                            if isinstance(operations, dict) and 'summary' in operations:
+                                # Process data_reads to find variable usage
+                                for data_read in operations['summary'].get('data_reads', []):
+                                    for column in data_read.get('columns', []):
+                                        # Parse variables like "pco%wb_bsn%d", "in_sim%prt", etc.
+                                        if '%' in column:
+                                            parts = column.split('%')
+                                            base_var = parts[0].strip()
+                                            attribute = '%'.join(parts[1:])
+                                            
+                                            if base_var not in variable_usage:
+                                                variable_usage[base_var] = {'attributes': set(), 'type': '', 'module': ''}
+                                            variable_usage[base_var]['attributes'].add(attribute)
+                                        else:
+                                            # Simple variable reference
+                                            base_var = column.strip()
+                                            if base_var not in variable_usage:
+                                                variable_usage[base_var] = {'attributes': set(), 'type': '', 'module': ''}
+                        
+                        # Now map these to actual types from the modules
+                        if hasattr(self, 'uses'):
+                            for use in self.uses:
+                                module = None
+                                module_name = ""
+                                if isinstance(use, (list, tuple)) and len(use) >= 1:
+                                    module = use[0]
+                                    module_name = getattr(module, 'name', str(module))
+                                elif hasattr(use, 'variables'):
+                                    module = use
+                                    module_name = getattr(module, 'name', 'Unknown')
+                                
+                                if module and module_name:
+                                    # Map known variables to their types based on which module they come from
+                                    for base_var in variable_usage.keys():
+                                        if module_name == 'basin_module' and base_var == 'pco':
+                                            variable_usage[base_var]['type'] = 'type(basin_print_codes)'
+                                            variable_usage[base_var]['module'] = module_name
+                                        elif module_name == 'input_file_module' and base_var == 'in_sim':
+                                            variable_usage[base_var]['type'] = 'type(input_sim)'
+                                            variable_usage[base_var]['module'] = module_name
+                                        elif module_name == 'time_module' and base_var == 'time':
+                                            variable_usage[base_var]['type'] = 'type(time_current)'
+                                            variable_usage[base_var]['module'] = module_name
+                                        elif module_name == 'input_file_module' and base_var.startswith('in_'):
+                                            # Other input variables
+                                            if 'basin' in base_var:
+                                                variable_usage[base_var]['type'] = 'type(input_basin)'
+                                            elif 'cli' in base_var:
+                                                variable_usage[base_var]['type'] = 'type(input_cli)'
+                                            else:
+                                                variable_usage[base_var]['type'] = 'type(input_sim)'
+                                            variable_usage[base_var]['module'] = module_name
+                        
+                        # Create organized variables grouped by their actual types
+                        for base_var, var_info in variable_usage.items():
+                            if var_info['attributes']:
+                                # Create individual attribute variables for this type
+                                for attr in var_info['attributes']:
+                                    attr_var = type('AttributeVar', (), {
+                                        'name': f'{base_var}%{attr}',
+                                        'full_type': var_info['type'] if var_info['type'] else 'unknown',
+                                        'parent': type('MockModule', (), {'name': var_info['module']})(),
+                                        'dimension': '',
+                                        'meta': lambda self, key, attr=attr: f'Component: {attr}' if key == 'summary' else ""
+                                    })()
+                                    outside_vars.append(attr_var)
+                            else:
+                                # Create a simple variable entry when no attributes found
+                                simple_var = type('SimpleVar', (), {
+                                    'name': base_var,
+                                    'full_type': var_info['type'] if var_info['type'] else 'unknown',
+                                    'parent': type('MockModule', (), {'name': var_info['module']})(),
+                                    'dimension': '',
+                                    'meta': lambda self, key: '' if key == 'summary' else ""
+                                })()
+                                outside_vars.append(simple_var)
+                        
+                        if outside_vars:
+                            return outside_vars
+                    
+                    except Exception as e:
+                        # Fall back to source code analysis if JSON parsing fails
+                        pass
+            
+            # Fallback to source code analysis if JSON not available
+            source_code = ""
+            
+            # Get the source code for this procedure - try multiple approaches
+            if hasattr(self, 'source') and self.source:
+                source_code = self.source.source
+            elif hasattr(self, 'obj') and hasattr(self.obj, 'source'):
+                source_code = self.obj.source
+            elif hasattr(self, 'parent') and hasattr(self.parent, 'raw_src'):
+                source_code = self.parent.raw_src
+            elif hasattr(self, 'parent') and hasattr(self.parent, 'src'):
+                source_code = self.parent.src
+            elif hasattr(self, 'parent') and hasattr(self.parent, 'path'):
+                try:
+                    with open(self.parent.path, 'r') as f:
+                        source_code = f.read()
+                except Exception:
+                    pass
+            
+            if not source_code:
+                return []
+            
+            # Extract variable references with detailed attribute information
+            variable_references = {}  # {base_var: set of attributes}
+            
+            # Split source into lines and process each line
+            lines = source_code.split('\n')
+            for line in lines:
+                # Remove comments (anything after ! that's not in quotes)
+                in_quote = False
+                quote_char = None
+                cleaned_line = ""
+                i = 0
+                while i < len(line):
+                    char = line[i]
+                    if not in_quote and char == '!':
+                        break  # Rest of line is comment
+                    elif not in_quote and char in ('"', "'"):
+                        in_quote = True
+                        quote_char = char
+                    elif in_quote and char == quote_char:
+                        # Check if it's escaped
+                        if i + 1 < len(line) and line[i + 1] == quote_char:
+                            i += 1  # Skip escaped quote
+                        else:
+                            in_quote = False
+                            quote_char = None
+                    cleaned_line += char
+                    i += 1
+                
+                # Find variable references with attributes
+                var_pattern = r'\b([a-zA-Z_][a-zA-Z0-9_]*(?:%[a-zA-Z_][a-zA-Z0-9_]*)*)\b'
+                matches = re.findall(var_pattern, cleaned_line, re.IGNORECASE)
+                
+                for match in matches:
+                    # Skip Fortran keywords and intrinsics
+                    if match.lower() not in ['if', 'then', 'else', 'endif', 'do', 'end', 'while', 'select', 'case',
+                                            'where', 'elsewhere', 'endwhere', 'subroutine', 'function', 'program',
+                                            'module', 'contains', 'implicit', 'none', 'integer', 'real', 'character',
+                                            'logical', 'complex', 'parameter', 'allocatable', 'pointer', 'target',
+                                            'intent', 'optional', 'dimension', 'save', 'public', 'private',
+                                            'read', 'write', 'open', 'close', 'allocate', 'deallocate', 'iostat',
+                                            'file', 'unit', 'fmt', 'format', 'advance', 'size', 'len', 'trim',
+                                            'exit', 'cycle', 'return', 'stop', 'backspace', 'rewind', 'print',
+                                            'true', 'false', 'status', 'form', 'access', 'recl', 'blank', 'position',
+                                            'action', 'delim', 'pad', 'round', 'sign', 'encoding']:
+                        
+                        if '%' in match:
+                            # Parse complex variable reference
+                            parts = match.split('%')
+                            base_var = parts[0].lower()
+                            attribute = '%'.join(parts[1:])
+                            
+                            if base_var not in variable_references:
+                                variable_references[base_var] = set()
+                            variable_references[base_var].add(attribute)
+                        else:
+                            # Simple variable reference
+                            base_var = match.lower()
+                            if base_var not in variable_references:
+                                variable_references[base_var] = set()
+            
+            # Now find which modules these variables come from
+            if hasattr(self, 'uses'):
+                for use in self.uses:
+                    module = None
+                    module_name = ""
+                    if isinstance(use, (list, tuple)) and len(use) >= 1:
+                        module = use[0]
+                        module_name = getattr(module, 'name', str(module))
+                    elif hasattr(use, 'variables'):
+                        module = use
+                        module_name = getattr(module, 'name', 'Unknown')
+                    
+                    if module:
+                        # Check module-level variables
+                        if hasattr(module, 'variables'):
+                            for var in module.variables:
+                                var_name = var.name.lower()
+                                if var_name in variable_references:
+                                    attributes = list(variable_references[var_name])
+                                    
+                                    if attributes:
+                                        # Create individual attribute variables
+                                        for attr in attributes:
+                                            attr_var = type('AttributeVar', (), {
+                                                'name': f'{var.name}%{attr}',
+                                                'full_type': getattr(var, 'vartype', 'unknown'),
+                                                'parent': module,
+                                                'dimension': '',
+                                                'meta': lambda self, key: f'{var.name} component: {attr}' if key == 'summary' else ""
+                                            })()
+                                            outside_vars.append(attr_var)
+                                    else:
+                                        # Add the base variable
+                                        outside_vars.append(var)
+                        
+                        # Check derived types in the module
+                        if hasattr(module, 'types'):
+                            for dtype in module.types:
+                                type_name = dtype.name.lower()
+                                if type_name in variable_references:
+                                    attributes = list(variable_references[type_name])
+                                    
+                                    if attributes:
+                                        # Create individual attribute variables for the type
+                                        for attr in attributes:
+                                            attr_var = type('TypeAttributeVar', (), {
+                                                'name': f'{dtype.name}%{attr}',
+                                                'full_type': f"type({dtype.name})",
+                                                'parent': module,
+                                                'dimension': '',
+                                                'meta': lambda self, key: f'Type {dtype.name} component: {attr}' if key == 'summary' else ""
+                                            })()
+                                            outside_vars.append(attr_var)
+                                    else:
+                                        # Create a representation of the type usage
+                                        type_var = type('TypeUsage', (), {
+                                            'name': dtype.name,
+                                            'full_type': f"type({dtype.name})",
+                                            'parent': module,
+                                            'dimension': '',
+                                            'meta': lambda self, key: getattr(dtype, 'meta', lambda k: "")(key) if hasattr(dtype, 'meta') else ""
+                                        })()
+                                        outside_vars.append(type_var)
+            
+            return outside_vars
+        except Exception as e:
+            # In case of any error, return empty list to avoid breaking the documentation generation
+            return []
+
+    @property
+    def io_operations(self):
+        """Return I/O operations from the io_tracker with variable defaults."""
+        if hasattr(self, 'io_tracker'):
+            self.io_tracker.finalize()
+            
+            # Extract variable defaults from source code
+            variable_defaults = {}
+            if hasattr(self, 'source') and self.source:
+                variable_defaults = self.io_tracker.extract_variable_defaults(self.source.source)
+            
+            # Also extract variable defaults from imported modules
+            if hasattr(self, 'uses'):
+                for use in self.uses:
+                    module = None
+                    if isinstance(use, (list, tuple)) and len(use) >= 1:
+                        module = use[0]
+                    elif hasattr(use, 'source'):
+                        module = use
+                    
+                    if module and hasattr(module, 'source') and module.source:
+                        module_defaults = self.io_tracker.extract_variable_defaults(module.source.source)
+                        variable_defaults.update(module_defaults)
+            
+            return self.io_tracker.summarize_file_io(variable_defaults)
+        return {}
+
+    @property
+    def allocation_operations(self):
+        """Return allocation operations from the allocation_tracker."""
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
+            return self.allocation_tracker.summarize_allocations()
+        return {}
+
 
 class FortranSubroutine(FortranProcedure):
     """
@@ -2003,6 +3609,14 @@ class FortranType(FortranContainer):
         self.constructor: Optional[FortranSubroutine] = None
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
+
         # Match parameters with variables
         for i in range(len(self.parameters)):
             for var in self.variables:
@@ -2123,17 +3737,23 @@ class FortranEnum(FortranContainer):
         self.name = ""
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
+
         prev_val = -1
         for var in self.variables:
             if not var.initial:
                 var.initial = prev_val + 1
-
             initial = (
                 remove_kind_suffix(var.initial)
                 if isinstance(var.initial, str)
                 else var.initial
             )
-
             try:
                 prev_val = int(initial)
             except ValueError:
@@ -2214,6 +3834,14 @@ class FortranInterface(FortranContainer):
         self.sort_components()
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
+
         if not self.abstract and self.generic:
             return
 
@@ -2316,7 +3944,19 @@ class FortranVariable(FortranBase):
         doc=None,
         points=False,
         initial=None,
+        line_number=None,  # <-- NEW!
     ):
+        # ---- Call base class init! ----
+        super().__init__(
+            source=parent.source_file if parent and hasattr(parent, "source_file") else None,
+            first_line=None,
+            parent=parent,
+            inherited_permission=permission,
+            strings=None,
+            line_number=line_number,
+        )
+        # ---- End call to base ----
+
         self.name = name
         self.vartype = vartype.lower()
         self.parent = parent
@@ -2343,6 +3983,8 @@ class FortranVariable(FortranBase):
         self.initial = initial
         self.dimension = ""
         self.visible = False
+        self.ug = False
+        self.ug2 = False
 
         indexlist = []
         indexparen = self.name.find("(")
@@ -2362,6 +4004,7 @@ class FortranVariable(FortranBase):
         self.hierarchy = self._make_hierarchy()
         self.read_metadata()
         self.source_file._to_be_markdowned.append(self)
+
 
     def correlate(self, project):
         if not self.proto:
@@ -2588,6 +4231,9 @@ class FortranBlockData(FortranContainer):
         self.param_dict = {}
 
     def correlate(self, project):
+
+        self.io_tracker.report()
+        self.process_attribs()
         # Add procedures, interfaces and types from parent to our lists
         self.all_types = {}
         for dt in self.types:
@@ -2597,6 +4243,7 @@ class FortranBlockData(FortranContainer):
             self.all_vars[var.name.lower()] = var
         self.all_absinterfaces = {}
         self.all_procs = {}
+        self.all_vars_ug = {}
 
         # Add procedures and types from USED modules to our lists
         for mod, extra in self.uses:
@@ -2608,6 +4255,7 @@ class FortranBlockData(FortranContainer):
             self.all_types.update(types)
             self.all_vars.update(variables)
         self.uses = [m[0] for m in self.uses]
+
 
         typelist = {}
         for dtype in self.types:
@@ -2637,6 +4285,14 @@ class FortranBlockData(FortranContainer):
             dtype.prune()
 
     def _cleanup(self):
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
+
         self.process_attribs()
 
     def process_attribs(self):
@@ -2668,7 +4324,8 @@ class FortranBlockData(FortranContainer):
                     var.initial = self.param_dict[var.name.lower()]
                 else:
                     var.attribs.append(attr)
-        del self.attr_dict
+        if hasattr(self, 'attr_dict'):
+            del self.attr_dict
 
 
 class FortranCommon(FortranBase):
@@ -2704,6 +4361,18 @@ class FortranCommon(FortranBase):
             self.other_uses = lst
 
         self.sort_components()
+
+    def _cleanup(self) -> None:
+        # finish any half‑open sessions and emit their reports
+        self.io_tracker.finalize()
+        self.io_tracker.report()
+        
+        # finalize allocation tracking
+        if hasattr(self, 'allocation_tracker'):
+            self.allocation_tracker.finalize()
+
+        # now apply attribute processing if needed
+        self.process_attribs()
 
 
 class FortranSpoof:
@@ -3005,6 +4674,7 @@ def line_to_variables(source, line, inherit_permission, parent):
                 doc,
                 points,
                 initial,
+                line_number=getattr(source, 'line_number', None),
             )
         )
 

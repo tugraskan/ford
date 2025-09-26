@@ -9,7 +9,10 @@ from urllib.parse import urljoin
 
 from ford.sourceform import (
     FortranBase,
+    FortranModule,
     FortranType,
+    FortranVariable,
+    FortranSubroutine,
     ExternalModule,
     ExternalFunction,
     ExternalSubroutine,
@@ -147,11 +150,13 @@ def dump_modules(project, path="."):
     """Dump modules to JSON file"""
 
     modules = [obj2dict(module) for module in project.modules]
+    metadata = [get_module_metadata(module) for module in project.modules]
     data = {
         METADATA_NAME: {
             "version": __version__,
         },
         "modules": modules,
+        "metadata": metadata,
     }
     (pathlib.Path(path) / "modules.json").write_text(json.dumps(data))
 
@@ -186,3 +191,84 @@ def load_external_modules(project):
         # convert modules defined in the JSON database to module objects
         for extModule in extModules:
             dict2obj(project, extModule, url, remote=remote)
+
+
+def get_module_metadata(module: FortranModule) -> dict:
+    """
+    Extract comprehensive metadata for a given Fortran module.
+    
+    This function processes module variables, derived types, and usage patterns
+    to create a structured metadata representation.
+    
+    Args:
+        module: The Fortran module to extract metadata from.
+        
+    Returns:
+        Dictionary containing metadata including variables, types, and subroutine usage.
+    """
+    metadata = {
+        "all_vars": [],
+        "all_types": [],
+        "subroutine_usage": [],
+    }
+
+    # Extract module variables
+    if hasattr(module, "all_vars"):
+        for var_name, var in module.all_vars.items():
+            # Extract derived type name from full_type if it's a derived type reference
+            derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", var.full_type)
+            derived_type = derived_type_match.group(1) if derived_type_match else var.full_type
+
+            metadata["all_vars"].append({
+                "ident": var.name,
+                "type": derived_type,
+                "initial": var.initial,
+                "doc": var.doc_list,
+            })
+
+    # Extract metadata for derived types
+    if hasattr(module, "all_types"):
+        for type_name, dtype in module.all_types.items():
+            vars_metadata = []
+
+            # Iterate through variables in the derived type
+            for variable in dtype.variables:
+                # Use a regular expression to extract the type if it's a derived type
+                derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", variable.full_type)
+                derived_type = derived_type_match.group(1) if derived_type_match else variable.full_type
+                vars_metadata.append({
+                    "ident": variable.name,
+                    "type": derived_type,
+                    "initial": getattr(variable, "initial", None),  # Handle missing attributes safely
+                    "doc": getattr(variable, "doc_list", []),  # Default to an empty list
+                })
+
+            # Append the metadata for the derived type
+            metadata["all_types"].append({
+                "name": dtype.name,
+                "variables": vars_metadata,  # Include the list of variables metadata
+                "doc": getattr(dtype, "doc_list", []),  # Optional documentation for the derived type
+            })
+
+        # Populate the subroutines list for each module
+    #for subroutine in project.subroutines:
+        #if subroutine.uses == 'x':
+           # continue
+
+    # Identify derived types and specific variables used in subroutines
+    for subroutine in module.subroutines:
+        subroutine_usage = {
+            "subroutine_name": subroutine.name,
+            "used_derived_types": [],
+            "used_variables": [],
+        }
+
+        for call in subroutine.calls:
+            if isinstance(call, FortranType):
+                subroutine_usage["used_derived_types"].append(call.name)
+            elif isinstance(call, FortranVariable):
+                subroutine_usage["used_variables"].append(call.name)
+
+        metadata["subroutine_usage"].append(subroutine_usage)
+
+    return metadata

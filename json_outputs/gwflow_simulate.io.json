@@ -1,0 +1,2728 @@
+{
+  "unit_out_gw": {
+    "summary": {
+      "unit": "out_gw",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'gwflow subroutine called:'",
+            "time%yrc",
+            "time%day"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw,*) 'gwflow subroutine called:',time%yrc,time%day",
+        "line": 166
+      }
+    ]
+  },
+  "unit_out_hru_pump_obs": {
+    "summary": {
+      "unit": "out_hru_pump_obs",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "time%day",
+            "hru_pump_obs(i),i=1,num_hru_pump_obs"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_hru_pump_obs,119) time%yrc,time%day, (hru_pump_obs(i),i=1,num_hru_pump_obs)",
+        "line": 212
+      }
+    ]
+  },
+  "unit_out_tile_cells": {
+    "summary": {
+      "unit": "out_tile_cells",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%day",
+            "time%yrc",
+            "sum_tile(i),i=1,gw_tile_num_group",
+            "c_tile(i,1),i=1,gw_tile_num_group",
+            "c_tile(i,2),i=1,gw_tile_num_group"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "time%day",
+            "time%yrc",
+            "sum_tile(i),i=1,gw_tile_num_group"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_tile_cells,102) time%day,time%yrc, (sum_tile(i),i=1,gw_tile_num_group), (c_tile(i,1),i=1,gw_tile_num_group), (c_tile(i,2),i=1,gw_tile_num_group)",
+        "line": 256
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_tile_cells,102) time%day,time%yrc, (sum_tile(i),i=1,gw_tile_num_group)",
+        "line": 259
+      }
+    ]
+  },
+  "unit_out_gwheads": {
+    "summary": {
+      "unit": "out_gwheads",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Groundwater Head for:'",
+            "time%yrc",
+            "time%day"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_state(i)%head,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gwheads,*) 'Groundwater Head for:',time%yrc,time%day",
+        "line": 620
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwheads,100) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 631
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwheads,120) (gw_state(i)%head,i=1,ncell)",
+        "line": 634
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwheads,*)",
+        "line": 636
+      }
+    ]
+  },
+  "unit_out_gwconc": {
+    "summary": {
+      "unit": "out_gwconc",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'concentration for:'",
+            "time%yrc",
+            "time%day"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_state(i)%solute(s)%conc,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gwconc,*) gwsol_nm(s),'concentration for:',time%yrc,time%day",
+        "line": 639
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwconc,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 650
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwconc,120) (gwsol_state(i)%solute(s)%conc,i=1,ncell)",
+        "line": 653
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwconc,*)",
+        "line": 655
+      }
+    ]
+  },
+  "unit_out_gwobs": {
+    "summary": {
+      "unit": "out_gwobs",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "time%day",
+            "gw_obs_head(k),k=1,gw_num_obs_wells"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs,119) time%yrc,time%day,(gw_obs_head(k),k=1,gw_num_obs_wells)",
+        "line": 686
+      }
+    ]
+  },
+  "unit_out_gwobs_sol": {
+    "summary": {
+      "unit": "out_gwobs_sol",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "time%day",
+            "gw_obs_solute(k,1),k=1,gw_num_obs_wells",
+            "gw_obs_solute(k,2),k=1,gw_num_obs_wells"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_sol,119) time%yrc,time%day,(gw_obs_solute(k,1),k=1,gw_num_obs_wells), (gw_obs_solute(k,2),k=1,gw_num_obs_wells)",
+        "line": 689
+      }
+    ]
+  },
+  "unit_out_gwbal": {
+    "summary": {
+      "unit": "out_gwbal",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "time%day",
+            "gw_time_step",
+            "vbef_grid",
+            "vaft_grid",
+            "rech_grid",
+            "gwet_grid",
+            "gwsw_grid",
+            "swgw_grid",
+            "satx_grid",
+            "soil_grid",
+            "latl_grid",
+            "bndr_grid",
+            "ppag_grid",
+            "ppex_grid",
+            "tile_grid",
+            "resv_grid",
+            "wetl_grid",
+            "canl_grid",
+            "fpln_grid",
+            "mass_error",
+            "frac_sat",
+            "depth_wt_avg",
+            "ppdf_grid"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gwbal,102) time%yrc,time%day,gw_time_step,vbef_grid,vaft_grid,rech_grid,gwet_grid,gwsw_grid,swgw_grid, satx_grid,soil_grid,latl_grid,bndr_grid,ppag_grid,ppex_grid, tile_grid,resv_grid,wetl_grid,canl_grid,fpln_grid, mass_error,frac_sat,depth_wt_avg,ppdf_grid",
+        "line": 866
+      }
+    ]
+  },
+  "unit_out_solbal_dy+s": {
+    "summary": {
+      "unit": "out_solbal_dy+s",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "time%day",
+            "gw_time_step",
+            "sol_grid_mbef",
+            "sol_grid_maft",
+            "sol_grid_rech",
+            "sol_grid_gwsw",
+            "sol_grid_swgw",
+            "sol_grid_satx",
+            "sol_grid_soil",
+            "sol_grid_advn",
+            "sol_grid_disp",
+            "sol_grid_rcti",
+            "sol_grid_rcto",
+            "sol_grid_minl",
+            "sol_grid_sorb",
+            "sol_grid_ppag",
+            "sol_grid_ppex",
+            "sol_grid_tile",
+            "sol_grid_resv",
+            "sol_grid_wetl",
+            "sol_grid_canl",
+            "sol_grid_fpln",
+            "mass_error"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_solbal_dy+s,102) time%yrc,time%day,gw_time_step, sol_grid_mbef,sol_grid_maft,sol_grid_rech,sol_grid_gwsw,sol_grid_swgw, sol_grid_satx,sol_grid_soil,sol_grid_advn,sol_grid_disp, sol_grid_rcti,sol_grid_rcto,sol_grid_minl, sol_grid_sorb,sol_grid_ppag,sol_grid_ppex,sol_grid_tile,sol_grid_resv, sol_grid_wetl,sol_grid_canl,sol_grid_fpln, mass_error",
+        "line": 973
+      }
+    ]
+  },
+  "unit_out_huc12wb_mo": {
+    "summary": {
+      "unit": "out_huc12wb_mo",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "time%mo",
+            "huc12(n)",
+            "gw_huc12_wb_mo(i,n),i=1,15"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_huc12wb_mo,125) time%yrc,time%mo,huc12(n),(gw_huc12_wb_mo(i,n),i=1,15)",
+        "line": 1026
+      }
+    ]
+  },
+  "unit_out_head_mo": {
+    "summary": {
+      "unit": "out_head_mo",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "time%mo"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_state(i)%hdmo,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_head_mo,*) time%yrc,time%mo",
+        "line": 1034
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_head_mo,100) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1045
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_head_mo,121) (gw_state(i)%hdmo,i=1,ncell)",
+        "line": 1048
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_head_mo,*)",
+        "line": 1050
+      }
+    ]
+  },
+  "unit_out_conc_mo": {
+    "summary": {
+      "unit": "out_conc_mo",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "time%mo"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_nm(s)"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_state(i)%solute(s)%cnmo,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_conc_mo,*) time%yrc,time%mo",
+        "line": 1057
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_conc_mo,*) gwsol_nm(s)",
+        "line": 1064
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_conc_mo,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1075
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_conc_mo,121) (gwsol_state(i)%solute(s)%cnmo,i=1,ncell)",
+        "line": 1078
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_conc_mo,*)",
+        "line": 1085
+      }
+    ]
+  },
+  "unit_out_head_yr": {
+    "summary": {
+      "unit": "out_head_yr",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_state(i)%hdyr,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_head_yr,*) time%yrc",
+        "line": 1103
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_head_yr,100) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1114
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_head_yr,121) (gw_state(i)%hdyr,i=1,ncell)",
+        "line": 1117
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_head_yr,*)",
+        "line": 1119
+      }
+    ]
+  },
+  "unit_out_conc_yr": {
+    "summary": {
+      "unit": "out_conc_yr",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_nm(s)"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_state(i)%solute(s)%cnyr,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_conc_yr,*) time%yrc",
+        "line": 1126
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_conc_yr,*) gwsol_nm(s)",
+        "line": 1133
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_conc_yr,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1144
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_conc_yr,121) (gwsol_state(i)%solute(s)%cnyr,i=1,ncell)",
+        "line": 1147
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_conc_yr,*)",
+        "line": 1154
+      }
+    ]
+  },
+  "unit_out_gw_rech": {
+    "summary": {
+      "unit": "out_gw_rech",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Recharge for year (m3/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%rech,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_rech,*) 'Recharge for year (m3/day):',time%yrc",
+        "line": 1203
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_rech,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1214
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_rech,121) (gw_ss_sum(i)%rech,i=1,ncell)",
+        "line": 1217
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_rech,*)",
+        "line": 1219
+      }
+    ]
+  },
+  "unit_out_sol_rech": {
+    "summary": {
+      "unit": "out_sol_rech",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'recharge flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%rech,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rech,*) gwsol_nm(s),'recharge flux for year (kg/day):',time%yrc",
+        "line": 1222
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rech,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1233
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rech,121) (gwsol_ss_sum(i)%solute(s)%rech,i=1,ncell)",
+        "line": 1236
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rech,*)",
+        "line": 1238
+      }
+    ]
+  },
+  "unit_out_gw_et": {
+    "summary": {
+      "unit": "out_gw_et",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Groundwater ET for year:'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%gwet,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_et,*) 'Groundwater ET for year:',time%yrc",
+        "line": 1242
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_et,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1253
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_et,121) (gw_ss_sum(i)%gwet,i=1,ncell)",
+        "line": 1256
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_et,*)",
+        "line": 1258
+      }
+    ]
+  },
+  "unit_out_gwsw": {
+    "summary": {
+      "unit": "out_gwsw",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'GW-SW Exchange Rates for year:'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%gwsw,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gwsw,*) 'GW-SW Exchange Rates for year:',time%yrc",
+        "line": 1260
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwsw,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1271
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwsw,121) (gw_ss_sum(i)%gwsw,i=1,ncell)",
+        "line": 1274
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwsw,*)",
+        "line": 1276
+      }
+    ]
+  },
+  "unit_out_sol_gwsw": {
+    "summary": {
+      "unit": "out_sol_gwsw",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'gw-channel flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%gwsw,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_gwsw,*) gwsol_nm(s),'gw-channel flux for year (kg/day):',time%yrc",
+        "line": 1279
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_gwsw,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1290
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_gwsw,121) (gwsol_ss_sum(i)%solute(s)%gwsw,i=1,ncell)",
+        "line": 1293
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_gwsw,*)",
+        "line": 1295
+      }
+    ]
+  },
+  "unit_out_gw_satex": {
+    "summary": {
+      "unit": "out_gw_satex",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Saturation Excess Volumes for:'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%satx,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_satex,*) 'Saturation Excess Volumes for:',time%yrc",
+        "line": 1300
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_satex,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1311
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_satex,121) (gw_ss_sum(i)%satx,i=1,ncell)",
+        "line": 1314
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_satex,*)",
+        "line": 1316
+      }
+    ]
+  },
+  "unit_out_sol_satx": {
+    "summary": {
+      "unit": "out_sol_satx",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'sat. excess flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%satx,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_satx,*) gwsol_nm(s),'sat. excess flux for year (kg/day):',time%yrc",
+        "line": 1319
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_satx,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1330
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_satx,121) (gwsol_ss_sum(i)%solute(s)%satx,i=1,ncell)",
+        "line": 1333
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_satx,*)",
+        "line": 1335
+      }
+    ]
+  },
+  "unit_out_gw_soil": {
+    "summary": {
+      "unit": "out_gw_soil",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Groundwater --> Soil Transfer for:'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%soil,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_soil,*) 'Groundwater --> Soil Transfer for:',time%yrc",
+        "line": 1341
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_soil,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1352
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_soil,121) (gw_ss_sum(i)%soil,i=1,ncell)",
+        "line": 1355
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_soil,*)",
+        "line": 1357
+      }
+    ]
+  },
+  "unit_out_sol_soil": {
+    "summary": {
+      "unit": "out_sol_soil",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'gw-->soil flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%soil,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_soil,*) gwsol_nm(s),'gw-->soil flux for year (kg/day):',time%yrc",
+        "line": 1360
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_soil,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1371
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_soil,121) (gwsol_ss_sum(i)%solute(s)%soil,i=1,ncell)",
+        "line": 1374
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_soil,*)",
+        "line": 1376
+      }
+    ]
+  },
+  "unit_out_lateral": {
+    "summary": {
+      "unit": "out_lateral",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Lateral flow for year:'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%latl,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_lateral,*) 'Lateral flow for year:',time%yrc",
+        "line": 1381
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_lateral,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1392
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_lateral,121) (gw_ss_sum(i)%latl,i=1,ncell)",
+        "line": 1395
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_lateral,*)",
+        "line": 1397
+      }
+    ]
+  },
+  "unit_out_gw_tile": {
+    "summary": {
+      "unit": "out_gw_tile",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Tile Drain Outflow Volumes for:'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%tile,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_tile,*) 'Tile Drain Outflow Volumes for:',time%yrc",
+        "line": 1400
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_tile,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1411
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_tile,121) (gw_ss_sum(i)%tile,i=1,ncell)",
+        "line": 1414
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_tile,*)",
+        "line": 1416
+      }
+    ]
+  },
+  "unit_out_sol_tile": {
+    "summary": {
+      "unit": "out_sol_tile",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'tile drain flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%tile,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_tile,*) gwsol_nm(s),'tile drain flux for year (kg/day):',time%yrc",
+        "line": 1419
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_tile,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1430
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_tile,121) (gwsol_ss_sum(i)%solute(s)%tile,i=1,ncell)",
+        "line": 1433
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_tile,*)",
+        "line": 1435
+      }
+    ]
+  },
+  "unit_out_gw_pumpag": {
+    "summary": {
+      "unit": "out_gw_pumpag",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Pumping rate for year (m3/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%ppag,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpag,*) 'Pumping rate for year (m3/day):',time%yrc",
+        "line": 1440
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpag,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1451
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpag,121) (gw_ss_sum(i)%ppag,i=1,ncell)",
+        "line": 1454
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpag,*)",
+        "line": 1456
+      }
+    ]
+  },
+  "unit_out_sol_ppag": {
+    "summary": {
+      "unit": "out_sol_ppag",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'ag pumping flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%ppag,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_ppag,*) gwsol_nm(s),'ag pumping flux for year (kg/day):',time%yrc",
+        "line": 1459
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_ppag,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1470
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_ppag,121) (gwsol_ss_sum(i)%solute(s)%ppag,i=1,ncell)",
+        "line": 1473
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_ppag,*)",
+        "line": 1475
+      }
+    ]
+  },
+  "unit_out_gw_pumpdef": {
+    "summary": {
+      "unit": "out_gw_pumpdef",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Pumping rate not satisfied for year (m3/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%ppdf,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpdef,*) 'Pumping rate not satisfied for year (m3/day):',time%yrc",
+        "line": 1484
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpdef,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1495
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpdef,121) (gw_ss_sum(i)%ppdf,i=1,ncell)",
+        "line": 1498
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpdef,*)",
+        "line": 1500
+      }
+    ]
+  },
+  "unit_out_gw_pumpex": {
+    "summary": {
+      "unit": "out_gw_pumpex",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Pumping rate for year (m3/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%ppex,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpex,*) 'Pumping rate for year (m3/day):',time%yrc",
+        "line": 1503
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpex,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1514
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpex,121) (gw_ss_sum(i)%ppex,i=1,ncell)",
+        "line": 1517
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_pumpex,*)",
+        "line": 1519
+      }
+    ]
+  },
+  "unit_out_sol_ppex": {
+    "summary": {
+      "unit": "out_sol_ppex",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'ex pumping flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%ppex,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_ppex,*) gwsol_nm(s),'ex pumping flux for year (kg/day):',time%yrc",
+        "line": 1522
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_ppex,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1533
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_ppex,121) (gwsol_ss_sum(i)%solute(s)%ppex,i=1,ncell)",
+        "line": 1536
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_ppex,*)",
+        "line": 1538
+      }
+    ]
+  },
+  "unit_out_gw_res": {
+    "summary": {
+      "unit": "out_gw_res",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Groundwater-Reservoir Exchange Volumes for:'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%resv,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_res,*) 'Groundwater-Reservoir Exchange Volumes for:',time%yrc",
+        "line": 1544
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_res,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1555
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_res,121) (gw_ss_sum(i)%resv,i=1,ncell)",
+        "line": 1558
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_res,*)",
+        "line": 1560
+      }
+    ]
+  },
+  "unit_out_sol_resv": {
+    "summary": {
+      "unit": "out_sol_resv",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'gw-reservoir flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%resv,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_resv,*) gwsol_nm(s),'gw-reservoir flux for year (kg/day):',time%yrc",
+        "line": 1563
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_resv,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1574
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_resv,121) (gwsol_ss_sum(i)%solute(s)%resv,i=1,ncell)",
+        "line": 1577
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_resv,*)",
+        "line": 1579
+      }
+    ]
+  },
+  "unit_out_gw_wet": {
+    "summary": {
+      "unit": "out_gw_wet",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Groundwater outflow to wetlands for:'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%wetl,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_wet,*) 'Groundwater outflow to wetlands for:',time%yrc",
+        "line": 1585
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_wet,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1596
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_wet,121) (gw_ss_sum(i)%wetl,i=1,ncell)",
+        "line": 1599
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_wet,*)",
+        "line": 1601
+      }
+    ]
+  },
+  "unit_out_sol_wetl": {
+    "summary": {
+      "unit": "out_sol_wetl",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'gw-wetland flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%wetl,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_wetl,*) gwsol_nm(s),'gw-wetland flux for year (kg/day):',time%yrc",
+        "line": 1604
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_wetl,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1615
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_wetl,121) (gwsol_ss_sum(i)%solute(s)%wetl,i=1,ncell)",
+        "line": 1618
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_wetl,*)",
+        "line": 1620
+      }
+    ]
+  },
+  "unit_out_gw_canal": {
+    "summary": {
+      "unit": "out_gw_canal",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Groundwater-Canal Exchange Volumes for:'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%canl,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_canal,*) 'Groundwater-Canal Exchange Volumes for:',time%yrc",
+        "line": 1626
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_canal,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1637
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_canal,121) (gw_ss_sum(i)%canl,i=1,ncell)",
+        "line": 1640
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_canal,*)",
+        "line": 1642
+      }
+    ]
+  },
+  "unit_out_sol_canl": {
+    "summary": {
+      "unit": "out_sol_canl",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'gw-canal flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%canl,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_canl,*) gwsol_nm(s),'gw-canal flux for year (kg/day):',time%yrc",
+        "line": 1645
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_canl,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1656
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_canl,121) (gwsol_ss_sum(i)%solute(s)%canl,i=1,ncell)",
+        "line": 1659
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_canl,*)",
+        "line": 1661
+      }
+    ]
+  },
+  "unit_out_gw_fp": {
+    "summary": {
+      "unit": "out_gw_fp",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Floodplain Exchange Volumes for:'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gw_ss_sum(i)%fpln,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gw_fp,*) 'Floodplain Exchange Volumes for:',time%yrc",
+        "line": 1667
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_fp,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1678
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_fp,121) (gw_ss_sum(i)%fpln,i=1,ncell)",
+        "line": 1681
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gw_fp,*)",
+        "line": 1683
+      }
+    ]
+  },
+  "unit_out_sol_fpln": {
+    "summary": {
+      "unit": "out_sol_fpln",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'gw-floodplain flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%fpln,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_fpln,*) gwsol_nm(s),'gw-floodplain flux for year (kg/day):',time%yrc",
+        "line": 1686
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_fpln,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1697
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_fpln,121) (gwsol_ss_sum(i)%solute(s)%fpln,i=1,ncell)",
+        "line": 1700
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_fpln,*)",
+        "line": 1702
+      }
+    ]
+  },
+  "unit_out_sol_rcti": {
+    "summary": {
+      "unit": "out_sol_rcti",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'chem. reaction flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%rcti,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rcti,*) gwsol_nm(s),'chem. reaction flux for year (kg/day):',time%yrc",
+        "line": 1709
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rcti,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1720
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rcti,121) (gwsol_ss_sum(i)%solute(s)%rcti,i=1,ncell)",
+        "line": 1723
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rcti,*)",
+        "line": 1725
+      }
+    ]
+  },
+  "unit_out_sol_rcto": {
+    "summary": {
+      "unit": "out_sol_rcto",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'chem. reaction flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%rcto,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rcto,*) gwsol_nm(s),'chem. reaction flux for year (kg/day):',time%yrc",
+        "line": 1731
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rcto,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1742
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rcto,121) (gwsol_ss_sum(i)%solute(s)%rcto,i=1,ncell)",
+        "line": 1745
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_rcto,*)",
+        "line": 1747
+      }
+    ]
+  },
+  "unit_out_sol_minl": {
+    "summary": {
+      "unit": "out_sol_minl",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'mineral dissolved mass for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%minl,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_minl,*) gwsol_nm(s),'mineral dissolved mass for year (kg/day):',time%yrc",
+        "line": 1753
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_minl,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1764
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_minl,121) (gwsol_ss_sum(i)%solute(s)%minl,i=1,ncell)",
+        "line": 1767
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_minl,*)",
+        "line": 1769
+      }
+    ]
+  },
+  "unit_out_sol_sorb": {
+    "summary": {
+      "unit": "out_sol_sorb",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "gwsol_nm(s)",
+            "'sorption flux for year (kg/day):'",
+            "time%yrc"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "grid_val(i,j),j=1,grid_ncol"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "gwsol_ss_sum(i)%solute(s)%sorb,i=1,ncell"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_sol_sorb,*) gwsol_nm(s),'sorption flux for year (kg/day):',time%yrc",
+        "line": 1775
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_sorb,101) (grid_val(i,j),j=1,grid_ncol)",
+        "line": 1786
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_sorb,121) (gwsol_ss_sum(i)%solute(s)%sorb,i=1,ncell)",
+        "line": 1789
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_sol_sorb,*)",
+        "line": 1791
+      }
+    ]
+  },
+  "unit_out_gwbal_yr": {
+    "summary": {
+      "unit": "out_gwbal_yr",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "ss_grid_yr%chng",
+            "ss_grid_yr%rech",
+            "ss_grid_yr%gwet",
+            "ss_grid_yr%gwsw",
+            "ss_grid_yr%swgw",
+            "ss_grid_yr%satx",
+            "ss_grid_yr%soil",
+            "ss_grid_yr%latl",
+            "ss_grid_yr%bndr",
+            "ss_grid_yr%ppag",
+            "ss_grid_yr%ppex",
+            "ss_grid_yr%tile",
+            "ss_grid_yr%resv",
+            "ss_grid_yr%wetl",
+            "ss_grid_yr%canl",
+            "ss_grid_yr%fpln",
+            "ss_grid_yr%ppdf"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gwbal_yr,105) time%yrc, ss_grid_yr%chng,ss_grid_yr%rech,ss_grid_yr%gwet,ss_grid_yr%gwsw,ss_grid_yr%swgw, ss_grid_yr%satx,ss_grid_yr%soil,ss_grid_yr%latl,ss_grid_yr%bndr,ss_grid_yr%ppag, ss_grid_yr%ppex,ss_grid_yr%tile,ss_grid_yr%resv,ss_grid_yr%wetl,ss_grid_yr%canl, ss_grid_yr%fpln,ss_grid_yr%ppdf",
+        "line": 1843
+      }
+    ]
+  },
+  "unit_out_solbal_yr+s": {
+    "summary": {
+      "unit": "out_solbal_yr+s",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "sol_grid_chng_yr",
+            "sol_grid_rech_yr",
+            "sol_grid_gwsw_yr",
+            "sol_grid_swgw_yr",
+            "sol_grid_satx_yr",
+            "sol_grid_soil_yr",
+            "sol_grid_advn_yr",
+            "sol_grid_disp_yr",
+            "sol_grid_rcti_yr",
+            "sol_grid_rcto_yr",
+            "sol_grid_minl_yr",
+            "sol_grid_sorb_yr",
+            "sol_grid_ppag_yr",
+            "sol_grid_ppex_yr",
+            "sol_grid_tile_yr",
+            "sol_grid_resv_yr",
+            "sol_grid_wetl_yr",
+            "sol_grid_canl_yr",
+            "sol_grid_fpln_yr"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_solbal_yr+s,105) time%yrc, sol_grid_chng_yr,sol_grid_rech_yr,sol_grid_gwsw_yr,sol_grid_swgw_yr,sol_grid_satx_yr, sol_grid_soil_yr,sol_grid_advn_yr,sol_grid_disp_yr, sol_grid_rcti_yr,sol_grid_rcto_yr,sol_grid_minl_yr,sol_grid_sorb_yr, sol_grid_ppag_yr,sol_grid_ppex_yr,sol_grid_tile_yr,sol_grid_resv_yr,sol_grid_wetl_yr, sol_grid_canl_yr,sol_grid_fpln_yr",
+        "line": 1890
+      }
+    ]
+  },
+  "unit_out_hru_pump_mo": {
+    "summary": {
+      "unit": "out_hru_pump_mo",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "i",
+            "hru_pump_mo_all(i,j),j=1,num_months"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_hru_pump_mo,105) i,(hru_pump_mo_all(i,j),j=1,num_months)",
+        "line": 1924
+      }
+    ]
+  },
+  "unit_out_hru_pump_yr": {
+    "summary": {
+      "unit": "out_hru_pump_yr",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "i",
+            "hru_pump_yr_all(i,j),j=1,time%nbyr"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_hru_pump_yr,105) i,(hru_pump_yr_all(i,j),j=1,time%nbyr)",
+        "line": 1925
+      }
+    ]
+  },
+  "unit_out_gwbal_aa": {
+    "summary": {
+      "unit": "out_gwbal_aa",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "ss_grid_tt%chng",
+            "ss_grid_tt%rech",
+            "ss_grid_tt%gwet",
+            "ss_grid_tt%gwsw",
+            "ss_grid_tt%swgw",
+            "ss_grid_tt%satx",
+            "ss_grid_tt%soil",
+            "ss_grid_tt%latl",
+            "ss_grid_tt%bndr",
+            "ss_grid_tt%ppag",
+            "ss_grid_tt%ppex",
+            "ss_grid_tt%tile",
+            "ss_grid_tt%resv",
+            "ss_grid_tt%wetl",
+            "ss_grid_tt%canl",
+            "ss_grid_tt%fpln",
+            "ss_grid_tt%ppdf"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gwbal_aa,105) time%yrc, ss_grid_tt%chng,ss_grid_tt%rech,ss_grid_tt%gwet,ss_grid_tt%gwsw,ss_grid_tt%swgw, ss_grid_tt%satx,ss_grid_tt%soil,ss_grid_tt%latl,ss_grid_tt%bndr,ss_grid_tt%ppag, ss_grid_tt%ppex,ss_grid_tt%tile,ss_grid_tt%resv,ss_grid_tt%wetl,ss_grid_tt%canl, ss_grid_tt%fpln,ss_grid_tt%ppdf",
+        "line": 1951
+      }
+    ]
+  },
+  "unit_out_solbal_aa+s": {
+    "summary": {
+      "unit": "out_solbal_aa+s",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "time%yrc",
+            "sol_grid_chng_tt(s)",
+            "sol_grid_rech_tt(s)",
+            "sol_grid_gwsw_tt(s)",
+            "sol_grid_swgw_tt(s)",
+            "sol_grid_satx_tt(s)",
+            "sol_grid_soil_tt(s)",
+            "sol_grid_advn_tt(s)",
+            "sol_grid_disp_tt(s)",
+            "sol_grid_rcti_tt(s)",
+            "sol_grid_rcto_tt(s)",
+            "sol_grid_minl_tt(s)",
+            "sol_grid_sorb_tt(s)",
+            "sol_grid_ppag_tt(s)",
+            "sol_grid_ppex_tt(s)",
+            "sol_grid_tile_tt(s)",
+            "sol_grid_resv_tt(s)",
+            "sol_grid_wetl_tt(s)",
+            "sol_grid_canl_tt(s)",
+            "sol_grid_fpln_tt(s)"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_solbal_aa+s,105) time%yrc, sol_grid_chng_tt(s),sol_grid_rech_tt(s),sol_grid_gwsw_tt(s),sol_grid_swgw_tt(s), sol_grid_satx_tt(s),sol_grid_soil_tt(s),sol_grid_advn_tt(s),sol_grid_disp_tt(s), sol_grid_rcti_tt(s),sol_grid_rcto_tt(s),sol_grid_minl_tt(s),sol_grid_sorb_tt(s), sol_grid_ppag_tt(s),sol_grid_ppex_tt(s),sol_grid_tile_tt(s),sol_grid_resv_tt(s), sol_grid_wetl_tt(s),sol_grid_canl_tt(s),sol_grid_fpln_tt(s)",
+        "line": 1982
+      }
+    ]
+  },
+  "unit_out_gwobs_usgs": {
+    "summary": {
+      "unit": "out_gwobs_usgs",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'MAE (m)",
+            "SAT/MAE",
+            "#Meas'"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "head_mae",
+            "sat_div",
+            "num_gw_meas"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "'MAE (m)",
+            "SAT/MAE",
+            "#Meas per well'"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "'Observed values - Simulated values'"
+          ],
+          "rows": 2
+        },
+        {
+          "columns": [
+            "usgs_id(k)",
+            "head_mae_well(k,1)",
+            "sat_div_well(k,1)",
+            "num_gw_meas_well(k,1)"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "'MAE_calib",
+            "MAE_test",
+            "SAT/MAE_calib",
+            "SAT_MAE_test",
+            "#calib",
+            "#test'"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "head_mae_calb",
+            "head_mae_test",
+            "sat_div_calb",
+            "sat_div_test",
+            "num_gw_meas_calb",
+            "num_gw_meas_test"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "'MAE (m)",
+            "SAT/MAE per well",
+            "#Meas per well'"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "usgs_id(k)",
+            "head_mae_well(k,1)",
+            "head_mae_well(k,2)",
+            "sat_div_well(k,1)",
+            "sat_div_well(k,2)",
+            "num_gw_meas_well(k,1)",
+            "num_gw_meas_well(k,2)"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "'Year",
+            "Well",
+            "Row",
+            "Col",
+            "Obs",
+            "Sim",
+            "SatThick'"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "write_yr",
+            "usgs_id(k)",
+            "gw_obs_cells(k)",
+            "usgs_head_vals(k,usgs_yr)",
+            "sim_head_vals(k,j)",
+            "sim_sat_vals(k,j)"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,*) 'MAE (m), SAT/MAE, #Meas'",
+        "line": 2031
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,*) head_mae,sat_div,num_gw_meas",
+        "line": 2032
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,*)",
+        "line": 2033
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,*) 'MAE (m), SAT/MAE, #Meas per well'",
+        "line": 2034
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,*) 'Observed values - Simulated values'",
+        "line": 2035
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,111) usgs_id(k),head_mae_well(k,1),sat_div_well(k,1),num_gw_meas_well(k,1)",
+        "line": 2037
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,*) 'MAE_calib,MAE_test,SAT/MAE_calib,SAT_MAE_test,#calib,#test'",
+        "line": 2124
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,115) head_mae_calb,head_mae_test,sat_div_calb,sat_div_test,num_gw_meas_calb,num_gw_meas_test",
+        "line": 2125
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,*)",
+        "line": 2126
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,*) 'MAE (m), SAT/MAE per well, #Meas per well'",
+        "line": 2127
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,*) 'Observed values - Simulated values'",
+        "line": 2128
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,116) usgs_id(k),head_mae_well(k,1),head_mae_well(k,2),sat_div_well(k,1),sat_div_well(k,2), num_gw_meas_well(k,1),num_gw_meas_well(k,2)",
+        "line": 2131
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,*)",
+        "line": 2134
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,*) 'Year, Well, Row, Col, Obs, Sim, SatThick'",
+        "line": 2135
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_gwobs_usgs,110) write_yr,usgs_id(k),gw_obs_cells(k),usgs_head_vals(k,usgs_yr), sim_head_vals(k,j),sim_sat_vals(k,j)",
+        "line": 2141
+      }
+    ]
+  },
+  "unit_out_strobs": {
+    "summary": {
+      "unit": "out_strobs",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "'Statistics for specified channels'"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "'Channel",
+            "count",
+            "NSE",
+            "NSE1",
+            "NNSE",
+            "PBIAS",
+            "KGE'"
+          ],
+          "rows": 2
+        },
+        {
+          "columns": [
+            "obs_channels(i)",
+            "month_count",
+            "stream_nse(i,1)",
+            "stream_nse1(i,1)",
+            "stream_nnse(i,1)",
+            "stream_pbias(i,1)",
+            "stream_kg(i,1)"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "'Statistics for specified channels (calib/testing)'"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "obs_channels(i)",
+            "month_count_calb",
+            "stream_nse(i,1)",
+            "stream_nse1(i,1)",
+            "stream_nnse(i,1)",
+            "stream_pbias(i,1)",
+            "stream_kg(i,1)"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "obs_channels(i)",
+            "month_count_test",
+            "stream_nse(i,2)",
+            "stream_nse1(i,2)",
+            "stream_nnse(i,2)",
+            "stream_pbias(i,2)",
+            "stream_kg(i,2)"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "'Monthly values for each specified channel'"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "'Channel:'",
+            "obs_channels(i)"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "'Month     Observed     Simulated'"
+          ],
+          "rows": 1
+        },
+        {
+          "columns": [
+            "j",
+            "obs_flow_vals(i,j)",
+            "sim_flow_vals(i,j)"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,*) 'Statistics for specified channels'",
+        "line": 2236
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,*) 'Channel, count, NSE, NSE1, NNSE, PBIAS, KGE'",
+        "line": 2237
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,114) obs_channels(i),month_count,stream_nse(i,1),stream_nse1(i,1),stream_nnse(i,1), stream_pbias(i,1),stream_kg(i,1)",
+        "line": 2240
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,*) 'Statistics for specified channels (calib/testing)'",
+        "line": 2391
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,*) 'Channel, count, NSE, NSE1, NNSE, PBIAS, KGE'",
+        "line": 2392
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,114) obs_channels(i),month_count_calb,stream_nse(i,1),stream_nse1(i,1),stream_nnse(i,1), stream_pbias(i,1),stream_kg(i,1)",
+        "line": 2395
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,114) obs_channels(i),month_count_test,stream_nse(i,2),stream_nse1(i,2),stream_nnse(i,2), stream_pbias(i,2),stream_kg(i,2)",
+        "line": 2397
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,*)",
+        "line": 2400
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,*) 'Monthly values for each specified channel'",
+        "line": 2401
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,*) 'Channel:',obs_channels(i)",
+        "line": 2403
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,*) 'Month     Observed     Simulated'",
+        "line": 2404
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,113) j,obs_flow_vals(i,j),sim_flow_vals(i,j)",
+        "line": 2406
+      },
+      {
+        "kind": "write",
+        "raw": "write(out_strobs,*)",
+        "line": 2408
+      }
+    ]
+  },
+  "unit_out_huc12wb": {
+    "summary": {
+      "unit": "out_huc12wb",
+      "headers": [],
+      "index_reads": [],
+      "data_reads": [],
+      "header_writes": [],
+      "data_writes": [
+        {
+          "columns": [
+            "huc12(n)",
+            "gw_huc12_wb(i,n),i=1,15"
+          ],
+          "rows": 1
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "kind": "write",
+        "raw": "write(out_huc12wb,112) huc12(n),(gw_huc12_wb(i,n),i=1,15)",
+        "line": 2416
+      }
+    ]
+  },
+  "line_number": 1
+}

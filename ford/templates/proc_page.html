@@ -47,6 +47,39 @@
       </h3>
       {{ procedure.retvar.doc }}
     {% endif %}
+
+    {% if procedure.local_variables %}
+    <section>
+      <h3>Local Variables</h3>
+      {{ macros.variable_list(procedure.local_variables, permission=True) }}
+    </section>
+    <br>
+    {% endif %}
+
+    {% if procedure.outside_variables_used %}
+    <section>
+      <h3>Outside Variables and Types Used</h3>
+      {{ macros.outside_variables_list(procedure.outside_variables_used) }}
+    </section>
+    <br>
+    {% endif %}
+
+    {% if procedure.io_operations %}
+    <section>
+      <h3>I/O Operations</h3>
+      {{ macros.io_operations_list(procedure.io_operations, procedure) }}
+    </section>
+    <br>
+    {% endif %}
+
+    {% if procedure.allocation_operations %}
+    <section>
+      <h3>Allocations</h3>
+      {{ macros.allocation_operations_list(procedure.allocation_operations) }}
+    </section>
+    <br>
+    {% endif %}
+
     {% if procedure.calledbygraph or procedure.callsgraph %}
     <br>
     {% endif %}
@@ -87,10 +120,10 @@
     </script>
     {% endif %}
 
-    {% if procedure.variables %}
+    {% if procedure.non_local_variables %}
     <section>    
       <h2>Variables</h2>
-    {{ macros.variable_list(procedure.variables, permission=True) }}
+    {{ macros.variable_list(procedure.non_local_variables, permission=True) }}
     </section>
     <br>
     {% endif %}
