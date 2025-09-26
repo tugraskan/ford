@@ -24,6 +24,7 @@
 
 import os
 import json
+import csv
 import toposort
 from itertools import chain, product
 from typing import List, Optional, Union, Dict, Set
@@ -674,6 +675,134 @@ class Project:
             log.error("Failed to write master I/O summary: %s", e)
 
         return project_summary
+
+    def procedures_to_csv(self, procedures, out_dir=None):
+        """
+        Generate a comprehensive CSV file containing information about all procedures.
+        
+        This creates an 'automated.csv' file with the following information:
+        - Procedure name and type
+        - Location (file, line number)
+        - Variables and their properties
+        - I/O operations
+        - Function calls
+        
+        Args:
+            procedures: List of procedure objects
+            out_dir: Output directory (defaults to current working directory)
+        """
+        out_dir = out_dir or os.getcwd()
+        csv_path = os.path.join(out_dir, "automated.csv")
+        
+        # Prepare CSV header
+        fieldnames = [
+            'procedure_name', 'procedure_type', 'file_name', 'line_number',
+            'variable_name', 'variable_type', 'variable_initial', 'variable_doc', 'variable_kind',
+            'io_operation', 'io_unit', 'io_file', 'io_line',
+            'call_name', 'call_type', 'call_line'
+        ]
+        
+        try:
+            with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                writer.writeheader()
+                
+                for proc in procedures:
+                    # Basic procedure information
+                    base_row = {
+                        'procedure_name': proc.name,
+                        'procedure_type': getattr(proc, 'proctype', 'unknown'),
+                        'file_name': getattr(proc, 'filename', ''),
+                        'line_number': getattr(proc, 'line_number', ''),
+                    }
+                    
+                    # Track if we've written any data for this procedure
+                    has_data = False
+                    
+                    # Add argument information
+                    if hasattr(proc, 'args') and proc.args:
+                        for arg in proc.args:
+                            row = base_row.copy()
+                            row.update({
+                                'variable_name': arg.name,
+                                'variable_type': getattr(arg, 'vartype', getattr(arg, 'type', '')),
+                                'variable_initial': getattr(arg, 'initial', ''),
+                                'variable_doc': ' '.join(getattr(arg, 'doc_list', [])),
+                                'variable_kind': 'argument',
+                            })
+                            writer.writerow(row)
+                            has_data = True
+                    
+                    # Add local variable information
+                    if hasattr(proc, 'var_ug_local') and proc.var_ug_local:
+                        for var in proc.var_ug_local:
+                            row = base_row.copy()
+                            row.update({
+                                'variable_name': var.name,
+                                'variable_type': getattr(var, 'vartype', getattr(var, 'type', '')),
+                                'variable_initial': getattr(var, 'initial', ''),
+                                'variable_doc': ' '.join(getattr(var, 'doc_list', [])),
+                                'variable_kind': 'local',
+                            })
+                            writer.writerow(row)
+                            has_data = True
+                    
+                    # Add regular variables
+                    if hasattr(proc, 'variables') and proc.variables:
+                        for var in proc.variables:
+                            row = base_row.copy()
+                            row.update({
+                                'variable_name': var.name,
+                                'variable_type': getattr(var, 'vartype', getattr(var, 'type', '')),
+                                'variable_initial': getattr(var, 'initial', ''),
+                                'variable_doc': ' '.join(getattr(var, 'doc_list', [])),
+                                'variable_kind': 'variable',
+                            })
+                            writer.writerow(row)
+                            has_data = True
+                    
+                    # Add I/O operations
+                    if hasattr(proc, 'io_read') or hasattr(proc, 'io_write'):
+                        ios = []
+                        if hasattr(proc, 'io_read'):
+                            ios.extend([(op, 'read') for op in proc.io_read])
+                        if hasattr(proc, 'io_write'):
+                            ios.extend([(op, 'write') for op in proc.io_write])
+                        
+                        for io_op, io_type in ios:
+                            row = base_row.copy()
+                            row.update({
+                                'io_operation': io_type,
+                                'io_unit': getattr(io_op, 'unit', ''),
+                                'io_file': getattr(io_op, 'filename', ''),
+                                'io_line': getattr(io_op, 'line_number', ''),
+                            })
+                            writer.writerow(row)
+                            has_data = True
+                    
+                    # Add function calls
+                    if hasattr(proc, 'calls') and proc.calls:
+                        for call in proc.calls:
+                            row = base_row.copy()
+                            row.update({
+                                'call_name': call.name if hasattr(call, 'name') else str(call),
+                                'call_type': getattr(call, 'proctype', 'call'),
+                                'call_line': getattr(call, 'line_number', ''),
+                            })
+                            writer.writerow(row)
+                            has_data = True
+                    
+                    # If no detailed data was found, write at least the basic procedure info
+                    if not has_data:
+                        writer.writerow(base_row)
+            
+            print(f"CSV file generated successfully: {csv_path}")
+            return csv_path
+            
+        except IOError as e:
+            print(f"Failed to write CSV file: {e}")
+            return None
+
     @property
     def allfiles(self):
         """Instead of duplicating files, it is much more efficient to create the itterator on the fly"""

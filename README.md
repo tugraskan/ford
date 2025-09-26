@@ -100,6 +100,8 @@ they are not affected by this license.
 
 To generate a JSON file with all the derived types and their components, you can use the `generate_json.py` script. This script extracts metadata for each module and writes it to a JSON file.
 
+To generate a CSV file with comprehensive procedure information, the script also creates an `automated.csv` file containing details about procedures, variables, I/O operations, and function calls.
+
 ### Example
 
 1. Ensure you have the necessary dependencies installed.
@@ -109,4 +111,8 @@ To generate a JSON file with all the derived types and their components, you can
     python generate_json.py
     ```
 
-3. The script will create a file named `derived_types_metadata.json` containing the metadata for all derived types and their components.
+3. The script will create:
+   - JSON files with detailed metadata in the `json_outputs` directory
+   - A file named `automated.csv` containing tabular data about all procedures
+
+For more details about CSV generation, see [CSV_GENERATION.md](CSV_GENERATION.md).
