@@ -6,9 +6,8 @@ from pathlib import Path
 
 
 def main():
-    # Specify the source directory for the Fortran files\
-    source_dir = r'C:\Users\taci.ugraskan\source\repos\ford\tsrc'
-    source_dir = r'C:\Users\taci.ugraskan\source\repos\ford\src'
+    # Specify the source directory for the Fortran files
+    source_dir = 'example/src'  # Use the example directory
 
     
 
