@@ -66,6 +66,15 @@ import logging
 log = logging.getLogger(__name__)
 
 
+# JSON output directory structure constants
+JSON_OUTPUTS_DIR = "json_outputs"
+CALLS_JSON_DIR = "calls_json"
+SUBROUTINE_CALLS_FILE = "subroutine_calls.json"
+IO_SUMMARY_FILE = "io_summary.json"
+INPUT_ANALYSIS_SUMMARY_FILE = "input_analysis_summary.json"
+OUTPUT_ANALYSIS_SUMMARY_FILE = "output_analysis_summary.json"
+
+
 LINK_TYPES = {
     "module": "modules",
     "submodule": "submodules",
@@ -265,11 +274,11 @@ class Project:
             out_dir: Output directory path. Defaults to ./json_outputs/calls_json
         """
         # Set up per-procedure directory
-        calls_dir = out_dir or os.path.join(os.getcwd(), "json_outputs", "calls_json")
+        calls_dir = out_dir or os.path.join(os.getcwd(), JSON_OUTPUTS_DIR, CALLS_JSON_DIR)
         os.makedirs(calls_dir, exist_ok=True)
 
         # Prepare master dict for subroutine calls
-        master_subs: dict[str, list[dict]] = {}
+        master_subs: Dict[str, List[Dict[str, Union[str, int]]]] = {}
 
         for proc in procedures:
             # Gather all calls from proc.call_records (chain, line_no)
@@ -316,7 +325,7 @@ class Project:
         # 3) write master subroutine_calls.json in json_outputs
         master_dir = os.path.dirname(calls_dir)
         os.makedirs(master_dir, exist_ok=True)
-        master_path = os.path.join(master_dir, "subroutine_calls.json")
+        master_path = os.path.join(master_dir, SUBROUTINE_CALLS_FILE)
         try:
             with open(master_path, "w") as mf:
                 json.dump(master_subs, mf, indent=2)
@@ -691,7 +700,7 @@ class Project:
                 log.error("Failed to write I/O summary for %s: %s", proc.name, e)
 
         # Save master summary
-        master_path = os.path.join(out_dir, 'io_summary.json')
+        master_path = os.path.join(out_dir, IO_SUMMARY_FILE)
         try:
             with open(master_path, 'w') as f:
                 json.dump(project_summary, f, indent=2)
@@ -751,7 +760,7 @@ class Project:
                 log.error("Failed to write input analysis for %s: %s", proc.name, e)
 
         # Save master summary
-        master_path = os.path.join(out_dir, 'input_analysis_summary.json')
+        master_path = os.path.join(out_dir, INPUT_ANALYSIS_SUMMARY_FILE)
         try:
             with open(master_path, 'w') as f:
                 json.dump(project_summary, f, indent=2)
@@ -811,7 +820,7 @@ class Project:
                 log.error("Failed to write output analysis for %s: %s", proc.name, e)
 
         # Save master summary
-        master_path = os.path.join(out_dir, 'output_analysis_summary.json')
+        master_path = os.path.join(out_dir, OUTPUT_ANALYSIS_SUMMARY_FILE)
         try:
             with open(master_path, 'w') as f:
                 json.dump(project_summary, f, indent=2)
