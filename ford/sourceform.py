@@ -62,7 +62,6 @@ from ford.settings import ProjectSettings, EntitySettings
 from ford._typing import PathLike
 
 import logging
-from collections import defaultdict
 
 if TYPE_CHECKING:
     from ford.fortran_project import Project

@@ -32,7 +32,7 @@ from pathlib import Path
 from fnmatch import fnmatch
 
 from ford.console import warn
-from ford.external_project import load_external_modules, get_module_metadata
+from ford.external_project import load_external_modules
 from ford.utils import ProgressBar
 from ford.sourceform import (
     _find_in_list,
@@ -61,7 +61,9 @@ from ford.sourceform import (
 )
 from ford.settings import ProjectSettings
 from ford._typing import PathLike
-import logging as log
+import logging
+
+log = logging.getLogger(__name__)
 
 
 LINK_TYPES = {
