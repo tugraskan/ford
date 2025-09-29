@@ -1,0 +1,596 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for SWAT+">
+    <meta name="author" content="" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>calsoft_hyd_bfr.f90 &ndash; SWAT+</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">SWAT+ <small>@SWAT_VERSION@</small></a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>calsoft_hyd_bfr.f90
+      <small>Source File</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 0.1% of total for sourcefile.">39 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/calsoft_hyd_bfr.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+            <li class="breadcrumb-item active" aria-current="page">calsoft_hyd_bfr.f90</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+        <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#subs-0"
+         aria-expanded="false" aria-controls="subs-0">
+         <h4 class="card-header bg-primary text-white">Subroutines</h4>
+      </a>
+      <div id="subs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../proc/calsoft_hyd_bfr.html">calsoft_hyd_bfr</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../sourcefile/calsoft_hyd_bfr.f90.html#src">calsoft_hyd_bfr.f90</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    <div class="col-md-9" id='text'>
+      
+      <br>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">This file depends on</h3>
+          </div>
+          <div class="card-body">
+            <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph Pages: 1 -->
+<svg id="sourcefilecalsoft_hyd_bfrf90EfferentGraph" width="507pt" height="612pt"
+ viewBox="0.00 0.00 507.00 612.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 608)">
+<title>sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-608 503,-608 503,4 -4,4"/>
+<!-- sourcefile~calsoft_hyd_bfr.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node1" class="node">
+<title>sourcefile~calsoft_hyd_bfr.f90</title>
+<polygon fill="none" stroke="black" points="499,-314 387,-314 387,-290 499,-290 499,-314"/>
+<text text-anchor="middle" x="443" y="-299.6" font-family="Helvetica,sans-Serif" font-size="10.50">calsoft_hyd_bfr.f90</text>
+</g>
+<!-- sourcefile~aquifer_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node2" class="node">
+<title>sourcefile~aquifer_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node2"><a xlink:href="../sourcefile/aquifer_module.f90.html" xlink:title="aquifer_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="310,-604 193,-604 193,-580 310,-580 310,-604"/>
+<text text-anchor="middle" x="251.5" y="-589.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">aquifer_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~aquifer_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge1" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~aquifer_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M441.65,-314.1C439.76,-355.79 427.73,-494.74 351,-566 342.24,-574.13 331.24,-579.78 319.8,-583.7"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="318.7,-580.37 310.12,-586.59 320.7,-587.08 318.7,-580.37"/>
+</g>
+<!-- sourcefile~basin_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node3" class="node">
+<title>sourcefile~basin_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node3"><a xlink:href="../sourcefile/basin_module.f90.html" xlink:title="basin_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="111.5,-387 4.5,-387 4.5,-363 111.5,-363 111.5,-387"/>
+<text text-anchor="middle" x="58" y="-372.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">basin_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~basin_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge2" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~basin_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M441.63,-314.14C439.67,-353.95 427.43,-480.97 351,-533 277.89,-582.78 228.78,-576.9 152,-533 100.41,-503.51 74.61,-433 64.42,-396.99"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="67.71,-395.76 61.74,-387 60.95,-397.57 67.71,-395.76"/>
+</g>
+<!-- sourcefile~calibration_data_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node4" class="node">
+<title>sourcefile~calibration_data_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node4"><a xlink:href="../sourcefile/calibration_data_module.f90.html" xlink:title="calibration_data_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="334,-524 169,-524 169,-500 334,-500 334,-524"/>
+<text text-anchor="middle" x="251.5" y="-509.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">calibration_data_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~calibration_data_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge3" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~calibration_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M439.98,-314.02C433.63,-347.76 410.84,-443.97 351,-491 348.54,-492.94 345.93,-494.7 343.23,-496.32"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="341.52,-493.26 334.25,-500.97 344.74,-499.47 341.52,-493.26"/>
+</g>
+<!-- sourcefile~channel_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node5" class="node">
+<title>sourcefile~channel_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node5"><a xlink:href="../sourcefile/channel_module.f90.html" xlink:title="channel_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="312,-482 191,-482 191,-458 312,-458 312,-482"/>
+<text text-anchor="middle" x="251.5" y="-467.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">channel_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~channel_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge4" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~channel_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M438.18,-314.2C428.58,-342.75 400.58,-414.1 351,-449 342.39,-455.06 332.37,-459.44 322.09,-462.58"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="320.95,-459.26 312.19,-465.23 322.76,-466.02 320.95,-459.26"/>
+</g>
+<!-- sourcefile~conditional_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node6" class="node">
+<title>sourcefile~conditional_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node6"><a xlink:href="../sourcefile/conditional_module.f90.html" xlink:title="conditional_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="320.5,-440 182.5,-440 182.5,-416 320.5,-416 320.5,-440"/>
+<text text-anchor="middle" x="251.5" y="-425.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">conditional_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~conditional_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge5" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~conditional_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M435.05,-314.34C421.8,-336.66 390.67,-383.57 351,-407 344.63,-410.76 337.68,-413.85 330.52,-416.39"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="329.12,-413.16 320.64,-419.52 331.23,-419.83 329.12,-413.16"/>
+</g>
+<!-- sourcefile~hru_lte_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node7" class="node">
+<title>sourcefile~hru_lte_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node7"><a xlink:href="../sourcefile/hru_lte_module.f90.html" xlink:title="hru_lte_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="309,-398 194,-398 194,-374 309,-374 309,-398"/>
+<text text-anchor="middle" x="251.5" y="-383.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hru_lte_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~hru_lte_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge6" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~hru_lte_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M428.24,-314.17C411.28,-328.51 380.99,-352.05 351,-365 340.98,-369.33 330,-372.79 319.11,-375.56"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="318.1,-372.2 309.17,-377.91 319.71,-379.01 318.1,-372.2"/>
+</g>
+<!-- sourcefile~hydrograph_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node8" class="node">
+<title>sourcefile~hydrograph_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node8"><a xlink:href="../sourcefile/hydrograph_module.f90.html" xlink:title="hydrograph_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="321.5,-356 181.5,-356 181.5,-332 321.5,-332 321.5,-356"/>
+<text text-anchor="middle" x="251.5" y="-341.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">hydrograph_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~hydrograph_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge7" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~hydrograph_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M390.54,-314.03C377.64,-317.01 363.82,-320.15 351,-323 340.91,-325.24 330.23,-327.56 319.77,-329.82"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="318.87,-326.43 309.83,-331.95 320.34,-333.27 318.87,-326.43"/>
+</g>
+<!-- sourcefile~maximum_data_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node9" class="node">
+<title>sourcefile~maximum_data_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node9"><a xlink:href="../sourcefile/maximum_data_module.f90.html" xlink:title="maximum_data_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="332.5,-314 170.5,-314 170.5,-290 332.5,-290 332.5,-314"/>
+<text text-anchor="middle" x="251.5" y="-299.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">maximum_data_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~maximum_data_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge8" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~maximum_data_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M386.93,-302C373.17,-302 358.05,-302 343.06,-302"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="342.73,-298.5 332.73,-302 342.73,-305.5 342.73,-298.5"/>
+</g>
+<!-- sourcefile~organic_mineral_mass_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node10" class="node">
+<title>sourcefile~organic_mineral_mass_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node10"><a xlink:href="../sourcefile/organic_mineral_mass_module.f90.html" xlink:title="organic_mineral_mass_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="351,-66 152,-66 152,-42 351,-42 351,-66"/>
+<text text-anchor="middle" x="251.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">organic_mineral_mass_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~organic_mineral_mass_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge9" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~organic_mineral_mass_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M441.02,-289.87C437.24,-251.71 420.18,-133.25 351,-75 349.45,-73.69 347.83,-72.46 346.16,-71.3"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="347.79,-68.19 337.41,-66.06 344.19,-74.2 347.79,-68.19"/>
+</g>
+<!-- sourcefile~plant_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node11" class="node">
+<title>sourcefile~plant_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node11"><a xlink:href="../sourcefile/plant_module.f90.html" xlink:title="plant_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="304.5,-234 198.5,-234 198.5,-210 304.5,-210 304.5,-234"/>
+<text text-anchor="middle" x="251.5" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">plant_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~plant_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge10" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~plant_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M424.98,-289.93C407.24,-277.84 378.28,-259.43 351,-248 339.42,-243.15 326.68,-238.98 314.32,-235.5"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="315.09,-232.09 304.52,-232.86 313.26,-238.84 315.09,-232.09"/>
+</g>
+<!-- sourcefile~reservoir_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node12" class="node">
+<title>sourcefile~reservoir_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node12"><a xlink:href="../sourcefile/reservoir_module.f90.html" xlink:title="reservoir_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="314.5,-192 188.5,-192 188.5,-168 314.5,-168 314.5,-192"/>
+<text text-anchor="middle" x="251.5" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">reservoir_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~reservoir_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge11" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~reservoir_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M434.72,-289.79C421.15,-268.2 389.83,-223.43 351,-201 342.8,-196.26 333.65,-192.59 324.34,-189.74"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="325.17,-186.34 314.6,-187.06 323.31,-193.09 325.17,-186.34"/>
+</g>
+<!-- sourcefile~ru_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node13" class="node">
+<title>sourcefile~ru_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node13"><a xlink:href="../sourcefile/ru_module.f90.html" xlink:title="ru_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="296.5,-150 206.5,-150 206.5,-126 296.5,-126 296.5,-150"/>
+<text text-anchor="middle" x="251.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ru_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~ru_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge12" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~ru_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M437.93,-289.71C427.97,-261.65 399.58,-192.74 351,-159 338.04,-150 321.98,-144.74 306.61,-141.69"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="307.1,-138.22 296.66,-139.99 305.93,-145.12 307.1,-138.22"/>
+</g>
+<!-- sourcefile~sd_channel_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node14" class="node">
+<title>sourcefile~sd_channel_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node14"><a xlink:href="../sourcefile/sd_channel_module.f90.html" xlink:title="sd_channel_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="321,-108 182,-108 182,-84 321,-84 321,-108"/>
+<text text-anchor="middle" x="251.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sd_channel_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~sd_channel_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge13" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~sd_channel_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M439.8,-289.75C433.1,-256.29 409.73,-162.76 351,-117 345.03,-112.35 338.25,-108.67 331.12,-105.76"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="331.82,-102.3 321.22,-102.27 329.49,-108.9 331.82,-102.3"/>
+</g>
+<!-- sourcefile~soil_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node15" class="node">
+<title>sourcefile~soil_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node15"><a xlink:href="../sourcefile/soil_module.f90.html" xlink:title="soil_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="300,-24 203,-24 203,0 300,0 300,-24"/>
+<text text-anchor="middle" x="251.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">soil_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~soil_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge14" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~soil_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M441.86,-289.83C440.69,-247.29 430.73,-103.97 351,-33 339.75,-22.99 324.92,-17.34 310.2,-14.24"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="310.51,-10.75 300.06,-12.49 309.32,-17.64 310.51,-10.75"/>
+</g>
+<!-- sourcefile~time_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node16" class="node">
+<title>sourcefile~time_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node16"><a xlink:href="../sourcefile/time_module.f90.html" xlink:title="time_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="109.5,-325 6.5,-325 6.5,-301 109.5,-301 109.5,-325"/>
+<text text-anchor="middle" x="58" y="-310.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">time_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~time_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge15" class="edge">
+<title>sourcefile~calsoft_hyd_bfr.f90&#45;&gt;sourcefile~time_module.f90</title>
+<path fill="none" stroke="#ff0000" stroke-dasharray="5,2" d="M398.84,-289.93C383.82,-286.3 366.79,-282.8 351,-281 263.12,-270.99 239.23,-266.41 152,-281 132.99,-284.18 112.67,-290.77 95.89,-297.15"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="94.48,-293.95 86.45,-300.86 97.04,-300.46 94.48,-293.95"/>
+</g>
+<!-- sourcefile~hydrograph_module.f90&#45;&gt;sourcefile~basin_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge16" class="edge">
+<title>sourcefile~hydrograph_module.f90&#45;&gt;sourcefile~basin_module.f90</title>
+<path fill="none" stroke="#00ff66" stroke-dasharray="5,2" d="M181.36,-355.19C161.84,-358.35 140.71,-361.77 121.59,-364.87"/>
+<polygon fill="#00ff66" stroke="#00ff66" points="120.81,-361.45 111.5,-366.5 121.93,-368.36 120.81,-361.45"/>
+</g>
+<!-- sourcefile~hydrograph_module.f90&#45;&gt;sourcefile~time_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge17" class="edge">
+<title>sourcefile~hydrograph_module.f90&#45;&gt;sourcefile~time_module.f90</title>
+<path fill="none" stroke="#00ff66" stroke-dasharray="5,2" d="M181.36,-332.81C161.2,-329.54 139.33,-326 119.73,-322.83"/>
+<polygon fill="#00ff66" stroke="#00ff66" points="120.14,-319.35 109.71,-321.21 119.02,-326.26 120.14,-319.35"/>
+</g>
+<!-- sourcefile~carbon_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node17" class="node">
+<title>sourcefile~carbon_module.f90</title>
+<g id="a_sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_node17"><a xlink:href="../sourcefile/carbon_module.f90.html" xlink:title="carbon_module.f90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="116,-45 0,-45 0,-21 116,-21 116,-45"/>
+<text text-anchor="middle" x="58" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">carbon_module.f90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~organic_mineral_mass_module.f90&#45;&gt;sourcefile~carbon_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge18" class="edge">
+<title>sourcefile~organic_mineral_mass_module.f90&#45;&gt;sourcefile~carbon_module.f90</title>
+<path fill="none" stroke="#00cbff" stroke-dasharray="5,2" d="M151.95,-43.19C143.21,-42.24 134.52,-41.28 126.14,-40.36"/>
+<polygon fill="#00cbff" stroke="#00cbff" points="126.42,-36.87 116.1,-39.26 125.66,-43.83 126.42,-36.87"/>
+</g>
+<!-- sourcefile~soil_module.f90&#45;&gt;sourcefile~carbon_module.f90 -->
+<g id="sourcefile~~calsoft_hyd_bfr.f90~~EfferentGraph_edge19" class="edge">
+<title>sourcefile~soil_module.f90&#45;&gt;sourcefile~carbon_module.f90</title>
+<path fill="none" stroke="#ff00cb" stroke-dasharray="5,2" d="M202.67,-17.25C179.59,-19.78 151.51,-22.85 126.32,-25.62"/>
+<polygon fill="#ff00cb" stroke="#ff00cb" points="125.65,-22.17 116.09,-26.74 126.42,-29.13 125.65,-22.17"/>
+</g>
+</g>
+</svg>
+</div>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#EfferentGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="EfferentGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="202pt" height="32pt"
+ viewBox="0.00 0.00 201.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 197.5,-28 197.5,4 -4,4"/>
+<!-- Source File -->
+<g id="node1" class="node">
+<title>Source File</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="70,-24 0,-24 0,0 70,0 70,-24"/>
+<text text-anchor="middle" x="35" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Source File</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node2" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="193.5,-24 88.5,-24 88.5,0 193.5,0 193.5,-24"/>
+<text text-anchor="middle" x="141" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a file to a file which it depends on. A file
+is dependent upon another if the latter must be compiled before the former
+can be.
+</p>
+ Where possible, edges connecting nodes are
+given different colours to make them easier to distinguish in
+large graphs.</div>
+            </div>
+          </div>
+        </div>
+          </div>
+        </div>
+<br>
+      <section>
+        <h2><span class="anchor" id="src"></span>Source Code</h2>
+        <div class="hl codehilite"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="w">      </span><span class="k">subroutine </span><span class="n">calsoft_hyd_bfr</span>
+<a id="ln-2" name="ln-2" href="#ln-2"></a>
+<a id="ln-3" name="ln-3" href="#ln-3"></a><span class="w">      </span><span class="k">use </span><span class="n">soil_module</span>
+<a id="ln-4" name="ln-4" href="#ln-4"></a><span class="w">      </span><span class="k">use </span><span class="n">plant_module</span>
+<a id="ln-5" name="ln-5" href="#ln-5"></a><span class="w">      </span><span class="k">use </span><span class="n">hydrograph_module</span>
+<a id="ln-6" name="ln-6" href="#ln-6"></a><span class="w">      </span><span class="k">use </span><span class="n">ru_module</span>
+<a id="ln-7" name="ln-7" href="#ln-7"></a><span class="w">      </span><span class="k">use </span><span class="n">aquifer_module</span>
+<a id="ln-8" name="ln-8" href="#ln-8"></a><span class="w">      </span><span class="k">use </span><span class="n">channel_module</span>
+<a id="ln-9" name="ln-9" href="#ln-9"></a><span class="w">      </span><span class="k">use </span><span class="n">hru_lte_module</span>
+<a id="ln-10" name="ln-10" href="#ln-10"></a><span class="w">      </span><span class="k">use </span><span class="n">sd_channel_module</span>
+<a id="ln-11" name="ln-11" href="#ln-11"></a><span class="w">      </span><span class="k">use </span><span class="n">basin_module</span>
+<a id="ln-12" name="ln-12" href="#ln-12"></a><span class="w">      </span><span class="k">use </span><span class="n">maximum_data_module</span>
+<a id="ln-13" name="ln-13" href="#ln-13"></a><span class="w">      </span><span class="k">use </span><span class="n">calibration_data_module</span>
+<a id="ln-14" name="ln-14" href="#ln-14"></a><span class="w">      </span><span class="k">use </span><span class="n">conditional_module</span>
+<a id="ln-15" name="ln-15" href="#ln-15"></a><span class="w">      </span><span class="k">use </span><span class="n">reservoir_module</span>
+<a id="ln-16" name="ln-16" href="#ln-16"></a><span class="w">      </span><span class="k">use </span><span class="n">organic_mineral_mass_module</span>
+<a id="ln-17" name="ln-17" href="#ln-17"></a><span class="w">      </span><span class="k">use </span><span class="n">time_module</span>
+<a id="ln-18" name="ln-18" href="#ln-18"></a><span class="w">      </span>
+<a id="ln-19" name="ln-19" href="#ln-19"></a><span class="w">      </span><span class="k">implicit none</span>
+<a id="ln-20" name="ln-20" href="#ln-20"></a><span class="k">      </span>
+<a id="ln-21" name="ln-21" href="#ln-21"></a><span class="k">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iter_all</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="c">!none      |counter</span>
+<a id="ln-22" name="ln-22" href="#ln-22"></a><span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iterall</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">   </span><span class="c">!none      |counter</span>
+<a id="ln-23" name="ln-23" href="#ln-23"></a>
+<a id="ln-24" name="ln-24" href="#ln-24"></a><span class="w">      </span><span class="c">! calibrate hydrology</span>
+<a id="ln-25" name="ln-25" href="#ln-25"></a><span class="w">      </span><span class="n">iter_all</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<a id="ln-26" name="ln-26" href="#ln-26"></a><span class="w">        </span>
+<a id="ln-27" name="ln-27" href="#ln-27"></a><span class="w">      </span><span class="k">do </span><span class="n">iterall</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">iter_all</span>
+<a id="ln-28" name="ln-28" href="#ln-28"></a>
+<a id="ln-29" name="ln-29" href="#ln-29"></a><span class="w">        </span><span class="c">! calibrate petco for actual ET</span>
+<a id="ln-30" name="ln-30" href="#ln-30"></a><span class="w">        </span><span class="c">! start with half the range</span>
+<a id="ln-31" name="ln-31" href="#ln-31"></a><span class="w">        </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">neg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">neg</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span>
+<a id="ln-32" name="ln-32" href="#ln-32"></a><span class="w">        </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">pos</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span>
+<a id="ln-33" name="ln-33" href="#ln-33"></a><span class="w">        </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">lo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">lo</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">lo</span>
+<a id="ln-34" name="ln-34" href="#ln-34"></a><span class="w">        </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">up</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">up</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">up</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span>
+<a id="ln-35" name="ln-35" href="#ln-35"></a><span class="w">        </span><span class="k">call </span><span class="n">calsoft_hyd_bfr_pet</span>
+<a id="ln-36" name="ln-36" href="#ln-36"></a><span class="w">        </span><span class="c">! calibrate esco for actual ET</span>
+<a id="ln-37" name="ln-37" href="#ln-37"></a><span class="w">        </span><span class="k">call </span><span class="n">calsoft_hyd_bfr_et</span>
+<a id="ln-38" name="ln-38" href="#ln-38"></a><span class="w">        </span><span class="c">! calibrate petco for actual ET</span>
+<a id="ln-39" name="ln-39" href="#ln-39"></a><span class="w">        </span><span class="c">! allow full range</span>
+<a id="ln-40" name="ln-40" href="#ln-40"></a><span class="w">        </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">neg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">neg</span>
+<a id="ln-41" name="ln-41" href="#ln-41"></a><span class="w">        </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">pos</span>
+<a id="ln-42" name="ln-42" href="#ln-42"></a><span class="w">        </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">lo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">lo</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">lo</span><span class="p">)</span>
+<a id="ln-43" name="ln-43" href="#ln-43"></a><span class="w">        </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">up</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">up</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">ls_prms</span><span class="p">(</span><span class="mi">4</span><span class="p">)%</span><span class="n">up</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.</span><span class="p">)</span>
+<a id="ln-44" name="ln-44" href="#ln-44"></a><span class="w">        </span><span class="k">call </span><span class="n">calsoft_hyd_bfr_pet</span>
+<a id="ln-45" name="ln-45" href="#ln-45"></a>
+<a id="ln-46" name="ln-46" href="#ln-46"></a><span class="w">        </span><span class="c">! calibrate cn3_swf for surface runoff</span>
+<a id="ln-47" name="ln-47" href="#ln-47"></a><span class="w">        </span><span class="k">call </span><span class="n">calsoft_hyd_bfr_surq</span>
+<a id="ln-48" name="ln-48" href="#ln-48"></a><span class="w">        </span>
+<a id="ln-49" name="ln-49" href="#ln-49"></a><span class="w">        </span><span class="c">! calibrate latq_co for lateral soil flow</span>
+<a id="ln-50" name="ln-50" href="#ln-50"></a><span class="w">        </span><span class="k">call </span><span class="n">calsoft_hyd_bfr_latq</span>
+<a id="ln-51" name="ln-51" href="#ln-51"></a><span class="w">        </span>
+<a id="ln-52" name="ln-52" href="#ln-52"></a><span class="w">        </span><span class="c">! calibrate perco for percolation</span>
+<a id="ln-53" name="ln-53" href="#ln-53"></a><span class="w">        </span><span class="k">call </span><span class="n">calsoft_hyd_bfr_perc</span>
+<a id="ln-54" name="ln-54" href="#ln-54"></a>
+<a id="ln-55" name="ln-55" href="#ln-55"></a><span class="w">        </span><span class="c">! calibrate cn3_swf for surface runoff</span>
+<a id="ln-56" name="ln-56" href="#ln-56"></a><span class="w">        </span><span class="k">call </span><span class="n">calsoft_hyd_bfr_surq</span>
+<a id="ln-57" name="ln-57" href="#ln-57"></a><span class="w">        </span>
+<a id="ln-58" name="ln-58" href="#ln-58"></a><span class="w">      </span><span class="k">end do</span><span class="w">    </span><span class="c">! iter_all loop</span>
+<a id="ln-59" name="ln-59" href="#ln-59"></a><span class="w">        </span>
+<a id="ln-60" name="ln-60" href="#ln-60"></a><span class="w">      </span><span class="c">!cal_codes%hyd_hru = &quot;n&quot;</span>
+<a id="ln-61" name="ln-61" href="#ln-61"></a><span class="w">      </span>
+<a id="ln-62" name="ln-62" href="#ln-62"></a><span class="w">      </span><span class="k">return</span>
+<a id="ln-63" name="ln-63" href="#ln-63"></a><span class="k">      end subroutine </span><span class="n">calsoft_hyd_bfr</span>
+</pre></div>
+
+      </section>
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              SWAT+
+              &copy; 2025 
+<br /><small>@SWAT_VERSION@</small></p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-09-05             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,2346 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Test hierarchical condition display in I/O operations">
+    <meta name="author" content="Test" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>hyd_read_connect &ndash; Test I/O Conditions Display</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">Test I/O Conditions Display </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>hyd_read_connect
+      <small>Subroutine</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 0.5% of total for proc.">290 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/hyd_read_connect.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/hyd_read_connect.f90.html'>hyd_read_connect.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">hyd_read_connect</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <h2> subroutine hyd_read_connect(con_file, obtyp, nspu1, nspu, nhyds, ndsave)  
+</h2>
+        <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
+                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
+              </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+
+
+    <p>read hru spatial data
+initialize area to calculate drainage areas in hyd_connect
+set outflow object type to 0 - needed in final hyd_read_connect loop </p>
+
+
+    <h3>Arguments</h3>
+        <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-con_file"></span>
+              character(len=20)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>con_file</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-obtyp~5"></span>
+              character(len=8)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>obtyp</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nspu1"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nspu1</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nspu~8"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nspu</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nhyds~2"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nhyds</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ndsave"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ndsave</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    <section>
+      <h3>Local Variables</h3>
+        <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="var-titldum"></span>
+              character,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>titldum</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-header"></span>
+              character,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>header</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-eof"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>eof</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-imax"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>imax</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-i_exist"></span>
+              logical,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>i_exist</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-isp"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>isp</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-cmd_prev"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cmd_prev</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ob1"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ob1</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ob2"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ob2</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-i"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>i</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-isp_ob"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>isp_ob</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-nout"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nout</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-iout"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iout</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-k"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>k</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ihyd"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ihyd</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-npests"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>npests</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-npaths"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>npaths</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-nmetals"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nmetals</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-nsalts"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nsalts</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ncs"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ncs</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-aqu_found"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>aqu_found</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    </section>
+    <br>
+
+    <section>
+      <h3>Outside Variables and Types Used</h3>
+          
+    <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingunknown">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseunknown" aria-expanded="false" 
+                    aria-controls="collapseunknown">
+              unknown
+              <small class="text-muted ms-2">(14 attributes from )</small>
+            </button>
+          </h3>
+          <div id="collapseunknown" class="accordion-collapse collapse" 
+               aria-labelledby="headingunknown" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ob(i)%props2</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%area_ha</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%name</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%gis_id</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%src_tot</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%wst_c</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%obtyp_out(isp), ob(i)%obtypno_out(isp), ob(i)%htyp_out(isp), ob(i)%frac_out(isp), isp = 1, nout</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%props</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%lat</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%long</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%constit</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%num</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%elev</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ob(i)%ruleset</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    </section>
+    <br>
+
+    <section>
+      <h3>I/O Operations</h3>
+          <!-- First, collect all conditions across all units -->
+          
+          <!-- Group by unit within this condition -->
+          
+          <!-- Group by unit within this condition -->
+          
+          <!-- Group by unit within this condition -->
+          
+          <!-- Group by unit within this condition -->
+          
+          <!-- Group by unit within this condition -->
+          
+          <!-- Group by unit within this condition -->
+          
+          <!-- Group by unit within this condition -->
+          
+          <!-- Group by unit within this condition -->
+    
+    <div class="accordion" id="ioConditionsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingCondif__i_exist__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseCondif__i_exist__" aria-expanded="false" 
+                    aria-controls="collapseCondif__i_exist__">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (i_exist )</strong>
+                  <small class="text-muted ms-2">(line 53)</small>
+            </button>
+          </h3>
+          <div id="collapseCondif__i_exist__" class="accordion-collapse collapse" 
+               aria-labelledby="headingCondif__i_exist__" data-bs-parent="#ioConditionsAccordion">
+            <div class="accordion-body">
+                <div class="unit-section mb-3">
+                  <h6 class="text-secondary">
+                    <i class="fa fa-file-o me-1"></i>
+                    <strong>Unit con_file</strong>
+                  </h6>
+                  <div class="ms-3">
+                    <table class="table table-sm">
+                      <thead>
+                        <tr>
+                          <th>Operation</th>
+                          <th>Details</th>
+                          <th>Variable Defaults</th>
+                          <th>Line</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                            <td><span class="badge bg-primary">open</span></td>
+                            <td><code>open (107,file=con_file)</code></td>
+                            <td>
+                                <small class="text-muted">-</small>
+                            </td>
+                            <td>55</td>
+                          </tr>
+                          <tr>
+                            <td><span class="badge bg-primary">read</span></td>
+                            <td><code>read (107,*,iostat=eof) titldum</code></td>
+                            <td>
+                                <small class="text-muted">-</small>
+                            </td>
+                            <td>56</td>
+                          </tr>
+                          <tr>
+                            <td><span class="badge bg-primary">read</span></td>
+                            <td><code>read (107,*,iostat=eof) header</code></td>
+                            <td>
+                                <small class="text-muted">-</small>
+                            </td>
+                            <td>58</td>
+                          </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingCondif__ncs___0_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseCondif__ncs___0_" aria-expanded="false" 
+                    aria-controls="collapseCondif__ncs___0_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (ncs > 0)</strong>
+                  <small class="text-muted ms-2">(line 196)</small>
+            </button>
+          </h3>
+          <div id="collapseCondif__ncs___0_" class="accordion-collapse collapse" 
+               aria-labelledby="headingCondif__ncs___0_" data-bs-parent="#ioConditionsAccordion">
+            <div class="accordion-body">
+                <div class="unit-section mb-3">
+                  <h6 class="text-secondary">
+                    <i class="fa fa-file-o me-1"></i>
+                    <strong>Unit con_file</strong>
+                  </h6>
+                  <div class="ms-3">
+                    <table class="table table-sm">
+                      <thead>
+                        <tr>
+                          <th>Operation</th>
+                          <th>Details</th>
+                          <th>Variable Defaults</th>
+                          <th>Line</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                            <td><span class="badge bg-primary">read</span></td>
+                            <td><code>read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot</code></td>
+                            <td>
+                                <small class="text-muted">-</small>
+                            </td>
+                            <td>219</td>
+                          </tr>
+                          <tr>
+                            <td><span class="badge bg-primary">backspace</span></td>
+                            <td><code>backspace (107)</code></td>
+                            <td>
+                                <small class="text-muted">-</small>
+                            </td>
+                            <td>295</td>
+                          </tr>
+                          <tr>
+                            <td><span class="badge bg-primary">read</span></td>
+                            <td><code>read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot, (ob(i)%obtyp_out(isp), ob(i)%obtypno_out(isp), ob(i)%htyp_out(isp), ob(i)%frac_out(isp), isp = 1, nout)</code></td>
+                            <td>
+                                <small class="text-muted">-</small>
+                            </td>
+                            <td>299</td>
+                          </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingCondif__aqu_found_eq_1__and__nat_model____1_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseCondif__aqu_found_eq_1__and__nat_model____1_" aria-expanded="false" 
+                    aria-controls="collapseCondif__aqu_found_eq_1__and__nat_model____1_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (aqu_found.eq.1 .and. nat_model == 1)</strong>
+                  <small class="text-muted ms-2">(line 310)</small>
+            </button>
+          </h3>
+          <div id="collapseCondif__aqu_found_eq_1__and__nat_model____1_" class="accordion-collapse collapse" 
+               aria-labelledby="headingCondif__aqu_found_eq_1__and__nat_model____1_" data-bs-parent="#ioConditionsAccordion">
+            <div class="accordion-body">
+                <div class="unit-section mb-3">
+                  <h6 class="text-secondary">
+                    <i class="fa fa-file-o me-1"></i>
+                    <strong>Unit con_file</strong>
+                  </h6>
+                  <div class="ms-3">
+                    <table class="table table-sm">
+                      <thead>
+                        <tr>
+                          <th>Operation</th>
+                          <th>Details</th>
+                          <th>Variable Defaults</th>
+                          <th>Line</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                            <td><span class="badge bg-primary">close</span></td>
+                            <td><code>close (107)</code></td>
+                            <td>
+                                <small class="text-muted">-</small>
+                            </td>
+                            <td>340</td>
+                          </tr>
+                          <tr>
+                            <td><span class="badge bg-primary">close</span></td>
+                            <td><code>close(107)</code></td>
+                            <td>
+                                <small class="text-muted">-</small>
+                            </td>
+                            <td>-</td>
+                          </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    </section>
+    <br>
+
+    <section>
+      <h3>Allocations</h3>
+          <div class="accordion" id="allocationConditionsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingAllocif__nspu___0_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseAllocif__nspu___0_" aria-expanded="false" 
+                    aria-controls="collapseAllocif__nspu___0_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (nspu > 0)</strong>
+                  <small class="text-muted ms-2">(line 61)</small>
+            </button>
+          </h3>
+          <div id="collapseAllocif__nspu___0_" class="accordion-collapse collapse" 
+               aria-labelledby="headingAllocif__nspu___0_" data-bs-parent="#allocationConditionsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Variables</th>
+                    <th>Details</th>
+                    <th>Line</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%hd(nhyds))</code></td>
+                      <td>71</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%hd_aa(nhyds))</code></td>
+                      <td>72</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingAllocif__cs_db_pct_num_tot___0_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseAllocif__cs_db_pct_num_tot___0_" aria-expanded="false" 
+                    aria-controls="collapseAllocif__cs_db_pct_num_tot___0_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (cs_db%num_tot > 0)</strong>
+                  <small class="text-muted ms-2">(line 78)</small>
+            </button>
+          </h3>
+          <div id="collapseAllocif__cs_db_pct_num_tot___0_" class="accordion-collapse collapse" 
+               aria-labelledby="headingAllocif__cs_db_pct_num_tot___0_" data-bs-parent="#allocationConditionsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Variables</th>
+                    <th>Details</th>
+                    <th>Line</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hd(nhyds))</code></td>
+                      <td>84</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin(1))</code></td>
+                      <td>87</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_sur(1))</code></td>
+                      <td>88</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_lat(1))</code></td>
+                      <td>89</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_til(1))</code></td>
+                      <td>90</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_aqu(1))</code></td>
+                      <td>91</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingAllocif__npests___0_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseAllocif__npests___0_" aria-expanded="false" 
+                    aria-controls="collapseAllocif__npests___0_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (npests > 0)</strong>
+                  <small class="text-muted ms-2">(line 94)</small>
+            </button>
+          </h3>
+          <div id="collapseAllocif__npests___0_" class="accordion-collapse collapse" 
+               aria-labelledby="headingAllocif__npests___0_" data-bs-parent="#allocationConditionsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Variables</th>
+                    <th>Details</th>
+                    <th>Line</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin(1)%pest(npests), source = 0.)</code></td>
+                      <td>95</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_sur(1)%pest(npests), source = 0.)</code></td>
+                      <td>96</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_lat(1)%pest(npests), source = 0.)</code></td>
+                      <td>97</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_til(1)%pest(npests), source = 0.)</code></td>
+                      <td>98</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hd(ihyd)%pest(npests))</code></td>
+                      <td>180</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_m(iout)%pest(npests), source = 0.)</code></td>
+                      <td>250</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_y(iout)%pest(npests), source = 0.)</code></td>
+                      <td>251</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_a(iout)%pest(npests), source = 0.)</code></td>
+                      <td>252</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingAllocif__npaths___0_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseAllocif__npaths___0_" aria-expanded="false" 
+                    aria-controls="collapseAllocif__npaths___0_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (npaths > 0)</strong>
+                  <small class="text-muted ms-2">(line 102)</small>
+            </button>
+          </h3>
+          <div id="collapseAllocif__npaths___0_" class="accordion-collapse collapse" 
+               aria-labelledby="headingAllocif__npaths___0_" data-bs-parent="#allocationConditionsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Variables</th>
+                    <th>Details</th>
+                    <th>Line</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin(1)%path(npaths), source = 0.)</code></td>
+                      <td>103</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_sur(1)%path(npaths), source = 0.)</code></td>
+                      <td>104</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_lat(1)%path(npaths), source = 0.)</code></td>
+                      <td>105</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_til(1)%path(npaths), source = 0.)</code></td>
+                      <td>106</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hd(ihyd)%path(npaths), source = 0.)</code></td>
+                      <td>183</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_m(iout)%path(npaths), source = 0.)</code></td>
+                      <td>257</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_y(iout)%path(npaths), source = 0.)</code></td>
+                      <td>258</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_a(iout)%path(npaths), source = 0.)</code></td>
+                      <td>259</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingAllocif__nmetals___0_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseAllocif__nmetals___0_" aria-expanded="false" 
+                    aria-controls="collapseAllocif__nmetals___0_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (nmetals > 0)</strong>
+                  <small class="text-muted ms-2">(line 109)</small>
+            </button>
+          </h3>
+          <div id="collapseAllocif__nmetals___0_" class="accordion-collapse collapse" 
+               aria-labelledby="headingAllocif__nmetals___0_" data-bs-parent="#allocationConditionsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Variables</th>
+                    <th>Details</th>
+                    <th>Line</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin(1)%hmet(nmetals), source = 0.)</code></td>
+                      <td>110</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_sur(1)%hmet(nmetals), source = 0.)</code></td>
+                      <td>111</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_lat(1)%hmet(nmetals), source = 0.)</code></td>
+                      <td>112</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_til(1)%hmet(nmetals), source = 0.)</code></td>
+                      <td>113</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hd(ihyd)%hmet(nmetals), source = 0.)</code></td>
+                      <td>186</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_m(iout)%hmet(nmetals), source = 0.)</code></td>
+                      <td>263</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_y(iout)%hmet(nmetals), source = 0.)</code></td>
+                      <td>264</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_a(iout)%hmet(nmetals), source = 0.)</code></td>
+                      <td>265</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingAllocif__nsalts___0_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseAllocif__nsalts___0_" aria-expanded="false" 
+                    aria-controls="collapseAllocif__nsalts___0_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (nsalts > 0)</strong>
+                  <small class="text-muted ms-2">(line 116)</small>
+            </button>
+          </h3>
+          <div id="collapseAllocif__nsalts___0_" class="accordion-collapse collapse" 
+               aria-labelledby="headingAllocif__nsalts___0_" data-bs-parent="#allocationConditionsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Variables</th>
+                    <th>Details</th>
+                    <th>Line</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin(1)%salt(nsalts), source = 0.)</code></td>
+                      <td>117</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_sur(1)%salt(nsalts), source = 0.)</code></td>
+                      <td>118</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_lat(1)%salt(nsalts), source = 0.)</code></td>
+                      <td>119</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_til(1)%salt(nsalts), source = 0.)</code></td>
+                      <td>120</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin(1)%salt_min(nsalts), source = 0.)</code></td>
+                      <td>121</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin(1)%saltc(nsalts), source = 0.)</code></td>
+                      <td>122</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_sur(1)%salt_min(nsalts), source = 0.)</code></td>
+                      <td>123</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_sur(1)%saltc(nsalts), source = 0.)</code></td>
+                      <td>124</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_lat(1)%salt_min(nsalts), source = 0.)</code></td>
+                      <td>125</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_lat(1)%saltc(nsalts), source = 0.)</code></td>
+                      <td>126</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_til(1)%salt_min(nsalts), source = 0.)</code></td>
+                      <td>127</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_til(1)%saltc(nsalts), source = 0.)</code></td>
+                      <td>128</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hd(ihyd)%salt(nsalts))</code></td>
+                      <td>189</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hd(ihyd)%salt_min(nsalts), source = 0.)</code></td>
+                      <td>190</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hd(ihyd)%saltc(nsalts), source = 0.)</code></td>
+                      <td>191</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_m(iout)%salt(nsalts), source = 0.)</code></td>
+                      <td>268</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_m(iout)%salt_min(nsalts), source = 0.)</code></td>
+                      <td>269</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_m(iout)%saltc(nsalts), source = 0.)</code></td>
+                      <td>270</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_y(iout)%salt(nsalts), source = 0.)</code></td>
+                      <td>271</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_y(iout)%salt_min(nsalts), source = 0.)</code></td>
+                      <td>272</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_y(iout)%saltc(nsalts), source = 0.)</code></td>
+                      <td>273</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_a(iout)%salt(nsalts), source = 0.)</code></td>
+                      <td>274</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_a(iout)%salt_min(nsalts), source = 0.)</code></td>
+                      <td>275</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_a(iout)%saltc(nsalts), source = 0.)</code></td>
+                      <td>276</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingAllocif__ncs___0_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseAllocif__ncs___0_" aria-expanded="false" 
+                    aria-controls="collapseAllocif__ncs___0_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (ncs > 0)</strong>
+                  <small class="text-muted ms-2">(line 143)</small>
+            </button>
+          </h3>
+          <div id="collapseAllocif__ncs___0_" class="accordion-collapse collapse" 
+               aria-labelledby="headingAllocif__ncs___0_" data-bs-parent="#allocationConditionsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Variables</th>
+                    <th>Details</th>
+                    <th>Line</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin(1)%cs(ncs), source = 0.)</code></td>
+                      <td>144</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin(1)%cs_sorb(ncs), source = 0.)</code></td>
+                      <td>145</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin(1)%csc(ncs), source = 0.)</code></td>
+                      <td>146</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin(1)%csc_sorb(ncs), source = 0.)</code></td>
+                      <td>147</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_sur(1)%cs(ncs), source = 0.)</code></td>
+                      <td>148</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_sur(1)%cs_sorb(ncs), source = 0.)</code></td>
+                      <td>149</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_sur(1)%csc(ncs), source = 0.)</code></td>
+                      <td>150</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_sur(1)%csc_sorb(ncs), source = 0.)</code></td>
+                      <td>151</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_lat(1)%cs(ncs), source = 0.)</code></td>
+                      <td>152</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_lat(1)%cs_sorb(ncs), source = 0.)</code></td>
+                      <td>153</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_lat(1)%csc(ncs), source = 0.)</code></td>
+                      <td>154</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_lat(1)%csc_sorb(ncs), source = 0.)</code></td>
+                      <td>155</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_til(1)%cs(ncs), source = 0.)</code></td>
+                      <td>156</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_til(1)%cs_sorb(ncs), source = 0.)</code></td>
+                      <td>157</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_til(1)%csc(ncs), source = 0.)</code></td>
+                      <td>158</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hin_til(1)%csc_sorb(ncs), source = 0.)</code></td>
+                      <td>159</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hd(ihyd)%cs(ncs), source = 0.)</code></td>
+                      <td>197</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hd(ihyd)%cs_sorb(ncs), source = 0.)</code></td>
+                      <td>198</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hd(ihyd)%csc(ncs), source = 0.)</code></td>
+                      <td>199</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hd(ihyd)%csc_sorb(ncs), source = 0.)</code></td>
+                      <td>200</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%ts(ob(i)%day_max,time%step))</code></td>
+                      <td>211</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%tsin(time%step), source = 0.)</code></td>
+                      <td>212</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%uh(ob(i)%day_max,time%step), source = 0.)</code></td>
+                      <td>213</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%hyd_flo(ob(i)%day_max,time%step), source = 0.)</code></td>
+                      <td>214</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_m(iout)%cs(ncs), source = 0.)</code></td>
+                      <td>279</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_m(iout)%cs_sorb(ncs), source = 0.)</code></td>
+                      <td>280</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_m(iout)%csc(ncs), source = 0.)</code></td>
+                      <td>281</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_m(iout)%csc_sorb(ncs), source = 0.)</code></td>
+                      <td>282</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_y(iout)%cs(ncs), source = 0.)</code></td>
+                      <td>283</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_y(iout)%cs_sorb(ncs), source = 0.)</code></td>
+                      <td>284</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_y(iout)%csc(ncs), source = 0.)</code></td>
+                      <td>285</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_y(iout)%csc_sorb(ncs), source = 0.)</code></td>
+                      <td>286</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_a(iout)%cs(ncs), source = 0.)</code></td>
+                      <td>287</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_a(iout)%cs_sorb(ncs), source = 0.)</code></td>
+                      <td>288</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_a(iout)%csc(ncs), source = 0.)</code></td>
+                      <td>289</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_a(iout)%csc_sorb(ncs), source = 0.)</code></td>
+                      <td>290</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingAllocif__ob_i__pct_src_tot___0_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseAllocif__ob_i__pct_src_tot___0_" aria-expanded="false" 
+                    aria-controls="collapseAllocif__ob_i__pct_src_tot___0_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (ob(i)%src_tot > 0)</strong>
+                  <small class="text-muted ms-2">(line 230)</small>
+            </button>
+          </h3>
+          <div id="collapseAllocif__ob_i__pct_src_tot___0_" class="accordion-collapse collapse" 
+               aria-labelledby="headingAllocif__ob_i__pct_src_tot___0_" data-bs-parent="#allocationConditionsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Variables</th>
+                    <th>Details</th>
+                    <th>Line</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%obj_out(nout), source = 0)</code></td>
+                      <td>232</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%obtyp_out(nout))</code></td>
+                      <td>233</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%obtypno_out(nout), source = 0)</code></td>
+                      <td>234</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%htyp_out(nout))</code></td>
+                      <td>235</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%ihtyp_out(nout), source = 0)</code></td>
+                      <td>236</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%frac_out(nout), source = 0.)</code></td>
+                      <td>237</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%rcvob_inhyd(nout), source = 0)</code></td>
+                      <td>238</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%hout_m(nout))</code></td>
+                      <td>239</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%hout_y(nout))</code></td>
+                      <td>240</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%hout_a(nout))</code></td>
+                      <td>241</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_m(nout))</code></td>
+                      <td>242</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_y(nout))</code></td>
+                      <td>243</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>obcs(i</code>                      </td>
+                      <td><code>allocate (obcs(i)%hcsout_a(nout))</code></td>
+                      <td>244</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingAllocif__aqu_found_eq_1__and__nat_model____1_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseAllocif__aqu_found_eq_1__and__nat_model____1_" aria-expanded="false" 
+                    aria-controls="collapseAllocif__aqu_found_eq_1__and__nat_model____1_">
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>if (aqu_found.eq.1 .and. nat_model == 1)</strong>
+                  <small class="text-muted ms-2">(line 310)</small>
+            </button>
+          </h3>
+          <div id="collapseAllocif__aqu_found_eq_1__and__nat_model____1_" class="accordion-collapse collapse" 
+               aria-labelledby="headingAllocif__aqu_found_eq_1__and__nat_model____1_" data-bs-parent="#allocationConditionsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Variables</th>
+                    <th>Details</th>
+                    <th>Line</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%obtypno_out(1), source = 0)</code></td>
+                      <td>317</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%fdc_ll(366))</code></td>
+                      <td>323</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%fdc_lla(time%nbyr))</code></td>
+                      <td>324</td>
+                    </tr>
+                    <tr>
+                      <td>
+                          <span class="badge bg-success">allocate</span>
+                      </td>
+                      <td>
+                            <code>ob(i</code>                      </td>
+                      <td><code>allocate (ob(i)%fdc%yr(time%nbyr))</code></td>
+                      <td>325</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    </section>
+    <br>
+
+    <br>
+
+
+    <section>    
+      <h2>Variables</h2>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-con_file"></span>
+              character(len=20),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>con_file</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-obtyp~5"></span>
+              character(len=8),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>obtyp</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nspu1"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nspu1</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nspu~8"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nspu</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nhyds~2"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nhyds</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ndsave"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ndsave</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    </section>
+    <br>
+    
+    
+
+    
+    
+
+
+
+    
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Test I/O Conditions Display
+ was developed by Test<br>              &copy; 2025 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>
