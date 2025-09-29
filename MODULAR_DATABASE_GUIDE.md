@@ -174,14 +174,37 @@ project_root/
 ### Configuration Recommendations
 
 ```yaml
-# Optimal project.md for modular database
+# Optimal project.yml for modular database
 project: My Project
 externalize: true          # Enable JSON export
 search: true              # Enable search functionality
+
+# Modular Database Configuration (NEW)
+modular_database: true                      # Enable automatic generation
+modular_database_generator: "enhanced"     # Choose: auto, dynamic, static, enhanced  
+modular_database_output_dir: ./parameters  # Custom output directory (optional)
+modular_database_json_outputs: true        # Generate JSON analysis files
+
 external:                 # External references
   common_lib = ../common/doc
 graph: true               # Enable dependency graphs
 ```
+
+### New Modular Database Settings
+
+| Setting | Options | Description |
+|---------|---------|-------------|
+| `modular_database` | true/false | Enable/disable modular database generation |
+| `modular_database_generator` | auto, dynamic, static, enhanced | Choose specific generator |
+| `modular_database_output_dir` | path | Custom output directory (default: ./doc/modular_database) |
+| `modular_database_json_outputs` | true/false | Generate JSON analysis files for processing |
+
+### Generator Selection Guide
+
+- **auto**: Tries dynamic → static → enhanced (recommended)
+- **dynamic**: Discovers file structures from actual I/O operations
+- **static**: Uses predefined SWAT+ input file templates  
+- **enhanced**: Comprehensive analysis with 64+ parameters
 
 ### Workflow Integration
 
