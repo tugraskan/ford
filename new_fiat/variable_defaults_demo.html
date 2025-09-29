@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Variable Defaults Demo - basin_print_codes_read</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>basin_print_codes_read Subroutine</h1>
+        <p>This demonstrates the <strong>Variable Defaults</strong> functionality that has been implemented.</p>
+        
+        <h3>I/O Operations</h3>
+        <div class="accordion" id="ioConditionsAccordion">
+            <!-- Condition 1: i_exist .or. in_sim%prt /= "null" -->
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="headingCond1">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapseCond1" aria-expanded="false" 
+                            aria-controls="collapseCond1">
+                        <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                        <strong>if (i_exist .or. in_sim%prt /= "null")</strong>
+                        <small class="text-muted ms-2">(line 21)</small>
+                    </button>
+                </h3>
+                <div id="collapseCond1" class="accordion-collapse collapse" 
+                     aria-labelledby="headingCond1" data-bs-parent="#ioConditionsAccordion">
+                    <div class="accordion-body">
+                        <div class="unit-section mb-3">
+                            <h6 class="text-secondary">
+                                <i class="fa fa-file-o me-1"></i>
+                                <strong>Unit 107</strong> - in_sim%prt
+                            </h6>
+                            <div class="ms-3">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Operation</th>
+                                            <th>Details</th>
+                                            <th>Variable Defaults</th>
+                                            <th>Line</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="table-success">
+                                            <td><span class="badge bg-primary">open</span></td>
+                                            <td><code>open (107,file=in_sim%prt)</code></td>
+                                            <td><strong><code>in_sim%prt = "print.prt"</code></strong></td>
+                                            <td>23</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-info">read</span></td>
+                                            <td><code>read (107,*,iostat=eof) titldum</code></td>
+                                            <td><small class="text-muted">-</small></td>
+                                            <td>24</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-info">read</span></td>
+                                            <td><code>read (107,*,iostat=eof) header</code></td>
+                                            <td><small class="text-muted">-</small></td>
+                                            <td>26</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-warning">close</span></td>
+                                            <td><code>close (107)</code></td>
+                                            <td><small class="text-muted">-</small></td>
+                                            <td>629</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-success mt-4">
+            <h5><i class="fa fa-check-circle"></i> Variable Defaults Working!</h5>
+            <p>The system now successfully:</p>
+            <ul>
+                <li><strong>Extracts variable defaults</strong> from imported modules (like <code>input_file_module.f90</code>)</li>
+                <li><strong>Associates defaults with I/O operations</strong> showing that <code>in_sim%prt</code> has default value <code>"print.prt"</code></li>
+                <li><strong>Displays the crosswalk</strong> in the "Variable Defaults" column of I/O operations tables</li>
+            </ul>
+        </div>
+        
+        <h4>Implementation Details</h4>
+        <div class="card">
+            <div class="card-body">
+                <h6>Key Changes Made:</h6>
+                <ol>
+                    <li><strong>Enhanced module import handling:</strong> Variable defaults are now extracted from all imported modules, not just the current procedure</li>
+                    <li><strong>Improved regex patterns:</strong> Better detection of Fortran type declarations with default values like <code>character(len=25) :: prt = "print.prt"</code></li>
+                    <li><strong>Smart association logic:</strong> Variables like <code>in_sim%prt</code> are correctly matched with their defaults <code>prt = "print.prt"</code></li>
+                    <li><strong>HTML template integration:</strong> Variable defaults appear in dedicated column in I/O operations tables</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
