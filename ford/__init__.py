@@ -586,7 +586,7 @@ def main(proj_data: ProjectSettings, proj_docs: str):
                 modular_db_dir = proj_data.output_dir / "modular_database"
             
             # Determine which generator to use
-            generator_type = proj_data.modular_database_generator.lower()
+            generator_type = (proj_data.modular_database_generator or "auto").lower()
             generated = False
             
             if generator_type in ["auto", "dynamic"]:
