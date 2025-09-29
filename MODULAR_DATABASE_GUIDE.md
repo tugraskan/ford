@@ -194,10 +194,10 @@ graph: true               # Enable dependency graphs
 
 | Setting | Options | Description |
 |---------|---------|-------------|
-| `modular_database` | true/false | Enable/disable modular database generation |
-| `modular_database_generator` | auto, dynamic, static, enhanced | Choose specific generator |
+| `modular_database` | true/false | Enable/disable modular database generation (default: false) |
+| `modular_database_generator` | auto, dynamic, static, enhanced | Choose specific generator (default: auto) |
 | `modular_database_output_dir` | path | Custom output directory (default: ./doc/modular_database) |
-| `modular_database_json_outputs` | true/false | Generate JSON analysis files for processing |
+| `modular_database_json_outputs` | true/false | Generate JSON analysis files (default: true when enabled) |
 
 ### Generator Selection Guide
 

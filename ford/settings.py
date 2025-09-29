@@ -176,7 +176,7 @@ class ProjectSettings:
     md_base_dir: Path = Path(".")
     md_extensions: List[str] = field(default_factory=list)
     media_dir: Optional[Path] = None
-    modular_database: bool = True
+    modular_database: bool = False
     modular_database_generator: str = "auto"
     modular_database_output_dir: Optional[Path] = None
     modular_database_json_outputs: bool = True

@@ -587,6 +587,7 @@ def main(proj_data: ProjectSettings, proj_docs: str):
             
             # Determine which generator to use
             generator_type = proj_data.modular_database_generator.lower()
+            generated = False
             
             if generator_type in ["auto", "dynamic"]:
                 # Try dynamic generator first
@@ -664,7 +665,7 @@ def main(proj_data: ProjectSettings, proj_docs: str):
                     print("  Generating modular database (enhanced analysis)...")
                     
                     generator = EnhancedModularDatabaseGenerator(
-                        json_dir=str(json_outputs_dir) if json_outputs_dir else "",
+                        json_outputs_dir=str(json_outputs_dir) if json_outputs_dir else "",
                         output_dir=str(modular_db_dir)
                     )
                     generator.generate_comprehensive_database()
