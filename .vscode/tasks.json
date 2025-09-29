@@ -1,0 +1,76 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "FORD: Generate Documentation",
+            "type": "shell",
+            "command": "ford",
+            "args": ["${workspaceFolder}/${input:projectFile}"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Generate documentation using FORD"
+        },
+        {
+            "label": "FORD: Generate Documentation with Debug",
+            "type": "shell",
+            "command": "ford",
+            "args": ["--debug", "${workspaceFolder}/${input:projectFile}"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Generate documentation using FORD with debug output"
+        },
+        {
+            "label": "FORD: Generate Documentation with Graphs",
+            "type": "shell",
+            "command": "ford",
+            "args": ["--graph", "${workspaceFolder}/${input:projectFile}"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Generate documentation using FORD with call graphs"
+        },
+        {
+            "label": "FORD: Open Documentation",
+            "type": "shell",
+            "command": "code",
+            "args": ["${workspaceFolder}/doc/index.html"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Open generated documentation in VS Code"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "projectFile",
+            "description": "FORD project file",
+            "default": "ford-project.md",
+            "type": "promptString"
+        }
+    ]
+}

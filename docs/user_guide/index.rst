@@ -9,6 +9,7 @@
    getting_started
    writing_documentation
    running_ford
+   vs_code_integration
    limitation
    documentation_meta_data
    writing_pages

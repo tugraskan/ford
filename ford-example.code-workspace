@@ -1,0 +1,76 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.associations": {
+            "*.md": "markdown",
+            "*.f90": "fortran-modern",
+            "*.f95": "fortran-modern", 
+            "*.f03": "fortran-modern",
+            "*.f08": "fortran-modern",
+            "*.fpp": "fortran-modern"
+        },
+        "files.exclude": {
+            "**/doc/**": false,
+            "**/.git": true,
+            "**/.DS_Store": true,
+            "**/node_modules": true
+        },
+        "search.exclude": {
+            "**/doc/**": true,
+            "**/node_modules": true
+        },
+        "emmet.includeLanguages": {
+            "markdown": "html"
+        }
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "FORD: Generate Documentation", 
+                "type": "shell",
+                "command": "ford",
+                "args": ["${workspaceFolder}/example-project-file.md"],
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                },
+                "problemMatcher": [],
+                "detail": "Generate documentation for the FORD example project"
+            }
+        ]
+    },
+    "launch": {
+        "version": "0.2.0", 
+        "configurations": [
+            {
+                "name": "FORD: Debug Example",
+                "type": "python",
+                "request": "launch",
+                "module": "ford",
+                "args": ["${workspaceFolder}/example/example-project-file.md"],
+                "console": "integratedTerminal",
+                "justMyCode": false,
+                "cwd": "${workspaceFolder}/example"
+            }
+        ]
+    },
+    "extensions": {
+        "recommendations": [
+            "fortls.fortls",
+            "ms-python.python",
+            "yzhang.markdown-all-in-one",
+            "ritwickdey.liveserver"
+        ]
+    }
+}
