@@ -31,13 +31,25 @@
     <p>{{ procedure.binding.parent | relurl(page_url) }}</p>
     {% endif %}
 
-    <h3>Arguments</h3>
-    {% if procedure.args %}
-      {{ macros.variable_list(procedure.args, intent=True) }}
-    {% else %}
-    <em>None</em>
-    <br>
-    {% endif %}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#arguments-section" 
+         aria-expanded="true" 
+         aria-controls="arguments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Arguments
+        </h3>
+      </a>
+      <div id="arguments-section" class="collapse show">
+        <div class="card-body">
+          {% if procedure.args %}
+            {{ macros.variable_list(procedure.args, intent=True) }}
+          {% else %}
+            <em>None</em>
+          {% endif %}
+        </div>
+      </div>
+    </div>
     {% if procedure.retvar %}
       <h3>Return Value
         <small>
@@ -48,35 +60,88 @@
       {{ procedure.retvar.doc }}
     {% endif %}
 
-    {% if procedure.local_variables %}
+    {% if procedure.io_operations %}
     <section>
-      <h3>Local Variables</h3>
-      {{ macros.variable_list(procedure.local_variables, permission=True) }}
+      <h2>Inputs and Outputs</h2>
+      {{ macros.io_file_summary(procedure.io_operations) }}
+      {{ macros.io_parameters_accessed(procedure.io_operations) }}
     </section>
+    <br>
+    {% endif %}
+
+    {% if procedure.local_variables %}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
+         aria-expanded="false" 
+         aria-controls="local-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Local Variables
+        </h3>
+      </a>
+      <div id="local-variables-section" class="collapse">
+        <div class="card-body">
+          {{ macros.variable_list(procedure.local_variables, permission=True) }}
+        </div>
+      </div>
+    </div>
     <br>
     {% endif %}
 
     {% if procedure.outside_variables_used %}
-    <section>
-      <h3>Outside Variables and Types Used</h3>
-      {{ macros.outside_variables_list(procedure.outside_variables_used) }}
-    </section>
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+          {{ macros.outside_variables_list(procedure.outside_variables_used) }}
+        </div>
+      </div>
+    </div>
     <br>
     {% endif %}
 
     {% if procedure.io_operations %}
-    <section>
-      <h3>I/O Operations</h3>
-      {{ macros.io_operations_list(procedure.io_operations, procedure) }}
-    </section>
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#io-operations-section" 
+         aria-expanded="false" 
+         aria-controls="io-operations-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O Operations
+        </h3>
+      </a>
+      <div id="io-operations-section" class="collapse">
+        <div class="card-body">
+          {{ macros.io_operations_list(procedure.io_operations, procedure) }}
+        </div>
+      </div>
+    </div>
     <br>
     {% endif %}
 
     {% if procedure.allocation_operations %}
-    <section>
-      <h3>Allocations</h3>
-      {{ macros.allocation_operations_list(procedure.allocation_operations) }}
-    </section>
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#allocations-section" 
+         aria-expanded="false" 
+         aria-controls="allocations-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Allocations
+        </h3>
+      </a>
+      <div id="allocations-section" class="collapse">
+        <div class="card-body">
+          {{ macros.allocation_operations_list(procedure.allocation_operations) }}
+        </div>
+      </div>
+    </div>
     <br>
     {% endif %}
 

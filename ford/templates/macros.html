@@ -95,6 +95,25 @@
   {% endif %}
 {% endmacro %}
 
+{% macro collapsible_section(title, anchor_id, content, default_expanded=False) %}
+  {# Create a collapsible section with a card #}
+  <div class="card mb-3">
+    <a data-bs-toggle="collapse" href="#{{ anchor_id }}" 
+       aria-expanded="{{ 'true' if default_expanded else 'false' }}" 
+       aria-controls="{{ anchor_id }}" 
+       class="text-decoration-none">
+      <h3 class="card-header bg-light text-dark">
+        <i class="fa fa-caret-down me-2"></i>{{ title }}
+      </h3>
+    </a>
+    <div id="{{ anchor_id }}" class="collapse{{ ' show' if default_expanded else '' }}">
+      <div class="card-body">
+        {{ content }}
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
 {% macro content_list(self, panelnum=0) %}
   {# Create the expandable panels for all the possible contents #}
   <h3>Contents</h3>
@@ -864,126 +883,6 @@
 
 {% macro io_operations_list(io_data, procedure=None) %}
   {% if io_data and io_data.keys() %}
-    <!-- Summary of Input and Output Files -->
-    {% set input_files = [] %}
-    {% set output_files = [] %}
-    {% set io_files = [] %}
-    
-    {% for unit, operations in io_data.items() %}
-      {% if operations.timeline %}
-        {% set has_read = namespace(value=false) %}
-        {% set has_write = namespace(value=false) %}
-        {% for op in operations.timeline %}
-          {% if op.kind == 'read' %}
-            {% set has_read.value = true %}
-          {% elif op.kind == 'write' %}
-            {% set has_write.value = true %}
-          {% endif %}
-        {% endfor %}
-        
-        {% set file_info = {'unit': unit, 'filename': operations.filename if operations.filename else 'unit_' + unit|string} %}
-        {% if has_read.value and has_write.value %}
-          {% set _ = io_files.append(file_info) %}
-        {% elif has_read.value %}
-          {% set _ = input_files.append(file_info) %}
-        {% elif has_write.value %}
-          {% set _ = output_files.append(file_info) %}
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-    
-    <!-- Display File Summary -->
-    {% if input_files or output_files or io_files %}
-      <div class="alert alert-info mb-3">
-        <h6 class="alert-heading"><i class="fa fa-info-circle"></i> File I/O Summary</h6>
-        <div class="row">
-          {% if input_files %}
-            <div class="col-md-4">
-              <strong><i class="fa fa-download"></i> Input Files:</strong>
-              <ul class="mb-0">
-                {% for file in input_files %}
-                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endif %}
-          {% if output_files %}
-            <div class="col-md-4">
-              <strong><i class="fa fa-upload"></i> Output Files:</strong>
-              <ul class="mb-0">
-                {% for file in output_files %}
-                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endif %}
-          {% if io_files %}
-            <div class="col-md-4">
-              <strong><i class="fa fa-exchange"></i> Input/Output Files:</strong>
-              <ul class="mb-0">
-                {% for file in io_files %}
-                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endif %}
-        </div>
-      </div>
-    {% endif %}
-    
-    <!-- Parameter-Level Summary -->
-    {% set params_read = [] %}
-    {% set params_written = [] %}
-    {% for unit, operations in io_data.items() %}
-      {% if operations.timeline %}
-        {% for op in operations.timeline %}
-          {% if op.parameters %}
-            {% if op.kind == 'read' %}
-              {% for param in op.parameters %}
-                {% if param not in params_read %}
-                  {% set _ = params_read.append(param) %}
-                {% endif %}
-              {% endfor %}
-            {% elif op.kind == 'write' %}
-              {% for param in op.parameters %}
-                {% if param not in params_written %}
-                  {% set _ = params_written.append(param) %}
-                {% endif %}
-              {% endfor %}
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
-    
-    {% if params_read or params_written %}
-      <div class="alert alert-secondary mb-3">
-        <h6 class="alert-heading"><i class="fa fa-list"></i> Parameters Accessed</h6>
-        <div class="row">
-          {% if params_read %}
-            <div class="col-md-6">
-              <strong><i class="fa fa-arrow-down"></i> Read Parameters:</strong>
-              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
-                {% for param in params_read %}
-                  <li><code>{{ param }}</code></li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endif %}
-          {% if params_written %}
-            <div class="col-md-6">
-              <strong><i class="fa fa-arrow-up"></i> Written Parameters:</strong>
-              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
-                {% for param in params_written %}
-                  <li><code>{{ param }}</code></li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endif %}
-        </div>
-      </div>
-    {% endif %}
-    
     <!-- First, collect all conditions across all units -->
     {% set all_conditions = {} %}
     {% for unit, operations in io_data.items() %}
@@ -1172,5 +1071,134 @@
     </div>
   {% else %}
     <em>No allocation operations detected</em>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro io_file_summary(io_data) %}
+  {# Extract and display File I/O Summary from io_data #}
+  {% if io_data and io_data.keys() %}
+    {% set input_files = [] %}
+    {% set output_files = [] %}
+    {% set io_files = [] %}
+    
+    {% for unit, operations in io_data.items() %}
+      {% if operations.timeline %}
+        {% set has_read = namespace(value=false) %}
+        {% set has_write = namespace(value=false) %}
+        {% for op in operations.timeline %}
+          {% if op.kind == 'read' %}
+            {% set has_read.value = true %}
+          {% elif op.kind == 'write' %}
+            {% set has_write.value = true %}
+          {% endif %}
+        {% endfor %}
+        
+        {% set file_info = {'unit': unit, 'filename': operations.filename if operations.filename else 'unit_' + unit|string} %}
+        {% if has_read.value and has_write.value %}
+          {% set _ = io_files.append(file_info) %}
+        {% elif has_read.value %}
+          {% set _ = input_files.append(file_info) %}
+        {% elif has_write.value %}
+          {% set _ = output_files.append(file_info) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    
+    {% if input_files or output_files or io_files %}
+      <div class="alert alert-info mb-3">
+        <h6 class="alert-heading"><i class="fa fa-info-circle"></i> File I/O Summary</h6>
+        <div class="row">
+          {% if input_files %}
+            <div class="col-md-4">
+              <strong><i class="fa fa-download"></i> Input Files:</strong>
+              <ul class="mb-0">
+                {% for file in input_files %}
+                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if output_files %}
+            <div class="col-md-4">
+              <strong><i class="fa fa-upload"></i> Output Files:</strong>
+              <ul class="mb-0">
+                {% for file in output_files %}
+                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if io_files %}
+            <div class="col-md-4">
+              <strong><i class="fa fa-exchange"></i> Input/Output Files:</strong>
+              <ul class="mb-0">
+                {% for file in io_files %}
+                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+
+{% macro io_parameters_accessed(io_data) %}
+  {# Extract and display Parameters Accessed from io_data #}
+  {% if io_data and io_data.keys() %}
+    {% set params_read = [] %}
+    {% set params_written = [] %}
+    {% for unit, operations in io_data.items() %}
+      {% if operations.timeline %}
+        {% for op in operations.timeline %}
+          {% if op.parameters %}
+            {% if op.kind == 'read' %}
+              {% for param in op.parameters %}
+                {% if param not in params_read %}
+                  {% set _ = params_read.append(param) %}
+                {% endif %}
+              {% endfor %}
+            {% elif op.kind == 'write' %}
+              {% for param in op.parameters %}
+                {% if param not in params_written %}
+                  {% set _ = params_written.append(param) %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+    
+    {% if params_read or params_written %}
+      <div class="alert alert-secondary mb-3">
+        <h6 class="alert-heading"><i class="fa fa-list"></i> Parameters Accessed</h6>
+        <div class="row">
+          {% if params_read %}
+            <div class="col-md-6">
+              <strong><i class="fa fa-arrow-down"></i> Read Parameters:</strong>
+              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
+                {% for param in params_read %}
+                  <li><code>{{ param }}</code></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if params_written %}
+            <div class="col-md-6">
+              <strong><i class="fa fa-arrow-up"></i> Written Parameters:</strong>
+              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
+                {% for param in params_written %}
+                  <li><code>{{ param }}</code></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
   {% endif %}
 {% endmacro %}
