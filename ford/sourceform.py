@@ -418,7 +418,7 @@ class IoTracker:
             # attach timeline with variable defaults
             timeline = self.operations_timeline().get(fname, [])
             
-            # Enhance operations with variable defaults
+            # Enhance operations with variable defaults and parameter lists
             enhanced_timeline = []
             for op in timeline:
                 enhanced_op = op.copy()
@@ -426,6 +426,13 @@ class IoTracker:
                 # Find relevant variable defaults for this operation
                 relevant_defaults = self._find_relevant_variable_defaults(enhanced_op, variable_defaults, procedure)
                 enhanced_op['variable_defaults'] = relevant_defaults
+                
+                # Extract parameter lists from READ/WRITE operations
+                if enhanced_op['kind'].lower() in ('read', 'write'):
+                    param_list = self._extract_io_variable_list(enhanced_op.get('raw', ''), enhanced_op['kind'])
+                    enhanced_op['parameters'] = param_list
+                else:
+                    enhanced_op['parameters'] = []
                 
                 enhanced_timeline.append(enhanced_op)
             
@@ -439,6 +446,67 @@ class IoTracker:
             }
 
         return final_result
+    
+    def _extract_io_variable_list(self, raw_statement: str, operation_kind: str) -> list[str]:
+        """
+        Extract the list of variables from a READ or WRITE statement.
+        Returns a list of variable names that are being read or written.
+        
+        Examples:
+        - read(101) var1, var2, var3 -> ['var1', 'var2', 'var3']
+        - write(102) result(i), value -> ['result(i)', 'value']
+        """
+        variables = []
+        
+        if operation_kind.lower() not in ('read', 'write'):
+            return variables
+        
+        # Find the closing parenthesis of the unit specification
+        paren_level = 0
+        end_idx = None
+        for idx, ch in enumerate(raw_statement):
+            if ch == '(':
+                paren_level += 1
+            elif ch == ')':
+                paren_level -= 1
+                if paren_level == 0:
+                    end_idx = idx
+                    break
+        
+        if end_idx is None or end_idx + 1 >= len(raw_statement):
+            return variables
+        
+        # Get the part after the closing parenthesis
+        vars_part = raw_statement[end_idx + 1:].strip()
+        
+        # Split on top-level commas (ignoring nested parentheses)
+        buf, depth = "", 0
+        for ch in vars_part:
+            if ch == "(":
+                depth += 1
+                buf += ch
+            elif ch == ")" and depth > 0:
+                depth -= 1
+                buf += ch
+            elif ch == "," and depth == 0:
+                if buf.strip():
+                    variables.append(buf.strip())
+                buf = ""
+            else:
+                buf += ch
+        
+        if buf.strip():
+            variables.append(buf.strip())
+        
+        # Clean up the variables - remove one layer of parens if entire thing is wrapped
+        clean_vars = []
+        for var in variables:
+            var = var.strip()
+            if var.startswith("(") and var.endswith(")"):
+                var = var[1:-1].strip()
+            clean_vars.append(var)
+        
+        return clean_vars
     
     def _find_relevant_variable_defaults(self, operation: dict, variable_defaults: dict[str, str], procedure=None) -> dict[str, dict]:
         """
@@ -498,6 +566,9 @@ class IoTracker:
                 if simple_name in variable_defaults and compound_var not in relevant_defaults:
                     # Check if the simple name is local
                     is_local = simple_name.lower() in local_var_names
+                    relevant_defaults[compound_var] = {'value': variable_defaults[simple_name], 'is_local': is_local}
+        
+        return relevant_defaults
                     relevant_defaults[compound_var] = {'value': variable_defaults[simple_name], 'is_local': is_local}
                     
         return relevant_defaults

@@ -931,6 +931,59 @@
       </div>
     {% endif %}
     
+    <!-- Parameter-Level Summary -->
+    {% set params_read = [] %}
+    {% set params_written = [] %}
+    {% for unit, operations in io_data.items() %}
+      {% if operations.timeline %}
+        {% for op in operations.timeline %}
+          {% if op.parameters %}
+            {% if op.kind == 'read' %}
+              {% for param in op.parameters %}
+                {% if param not in params_read %}
+                  {% set _ = params_read.append(param) %}
+                {% endif %}
+              {% endfor %}
+            {% elif op.kind == 'write' %}
+              {% for param in op.parameters %}
+                {% if param not in params_written %}
+                  {% set _ = params_written.append(param) %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+    
+    {% if params_read or params_written %}
+      <div class="alert alert-secondary mb-3">
+        <h6 class="alert-heading"><i class="fa fa-list"></i> Parameters Accessed</h6>
+        <div class="row">
+          {% if params_read %}
+            <div class="col-md-6">
+              <strong><i class="fa fa-arrow-down"></i> Read Parameters:</strong>
+              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
+                {% for param in params_read %}
+                  <li><code>{{ param }}</code></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if params_written %}
+            <div class="col-md-6">
+              <strong><i class="fa fa-arrow-up"></i> Written Parameters:</strong>
+              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
+                {% for param in params_written %}
+                  <li><code>{{ param }}</code></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+    
     <!-- First, collect all conditions across all units -->
     {% set all_conditions = {} %}
     {% for unit, operations in io_data.items() %}
@@ -990,6 +1043,7 @@
                         <tr>
                           <th>Operation</th>
                           <th>Details</th>
+                          <th>Parameters</th>
                           <th>Variable Defaults</th>
                           <th>Local</th>
                           <th>Line</th>
@@ -1000,6 +1054,17 @@
                           <tr>
                             <td><span class="badge bg-primary">{{ op.kind }}</span></td>
                             <td><code>{{ op.raw }}</code></td>
+                            <td>
+                              {% if op.parameters %}
+                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
+                                  {% for param in op.parameters %}
+                                    <li><small><code>{{ param }}</code></small></li>
+                                  {% endfor %}
+                                </ul>
+                              {% else %}
+                                <small class="text-muted">-</small>
+                              {% endif %}
+                            </td>
                             <td>
                               {% if op.variable_defaults %}
                                 {% for var_name, var_info in op.variable_defaults.items() %}
