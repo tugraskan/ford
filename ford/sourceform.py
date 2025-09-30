@@ -293,7 +293,7 @@ class IoTracker:
                 summary['files'][fname] = {'units': list(units), 'count': len(units)}
         return summary
 
-    def summarize_file_io(self, variable_defaults: dict[str, str] = None) -> dict[str, dict]:
+    def summarize_file_io(self, variable_defaults: dict[str, str] = None, procedure=None) -> dict[str, dict]:
         """
         Produce both:
         - a structured I/O summary per file:
@@ -424,7 +424,7 @@ class IoTracker:
                 enhanced_op = op.copy()
                 
                 # Find relevant variable defaults for this operation
-                relevant_defaults = self._find_relevant_variable_defaults(enhanced_op, variable_defaults)
+                relevant_defaults = self._find_relevant_variable_defaults(enhanced_op, variable_defaults, procedure)
                 enhanced_op['variable_defaults'] = relevant_defaults
                 
                 enhanced_timeline.append(enhanced_op)
@@ -440,15 +440,21 @@ class IoTracker:
 
         return final_result
     
-    def _find_relevant_variable_defaults(self, operation: dict, variable_defaults: dict[str, str]) -> dict[str, str]:
+    def _find_relevant_variable_defaults(self, operation: dict, variable_defaults: dict[str, str], procedure=None) -> dict[str, dict]:
         """
         Find variable defaults relevant to the given I/O operation.
         Looks for file-related variables in the operation and matches them with defaults.
+        Returns a dictionary mapping variable names to dicts with 'value' and 'is_local' keys.
         """
         relevant_defaults = {}
         
         if not variable_defaults:
             return relevant_defaults
+        
+        # Get list of local variable names if procedure is provided
+        local_var_names = set()
+        if procedure and hasattr(procedure, 'variables'):
+            local_var_names = {var.name.lower() for var in procedure.variables if hasattr(var, 'name')}
             
         # Extract the raw I/O statement
         raw_statement = operation.get('raw', '')
@@ -461,21 +467,27 @@ class IoTracker:
             for var_name, var_value in variable_defaults.items():
                 # Direct match
                 if var_name == file_var:
-                    relevant_defaults[f"{file_var}"] = var_value
+                    is_local = var_name.lower() in local_var_names
+                    relevant_defaults[f"{file_var}"] = {'value': var_value, 'is_local': is_local}
                 # Match module%variable with variable (e.g., in_sim%prt with prt)
                 elif file_var.count('%') > 0:
                     var_parts = file_var.split('%')
                     if len(var_parts) >= 2 and var_name == var_parts[-1]:
-                        relevant_defaults[file_var] = var_value
+                        # Check if the simple variable name is local
+                        is_local = var_name.lower() in local_var_names
+                        relevant_defaults[file_var] = {'value': var_value, 'is_local': is_local}
                 # Match variable%subvar with variable
                 elif var_name.endswith(f'%{file_var}'):
-                    relevant_defaults[var_name] = var_value
+                    is_local = var_name.split('%')[0].lower() in local_var_names
+                    relevant_defaults[var_name] = {'value': var_value, 'is_local': is_local}
         
         # Also look for any variables mentioned in the operation that have defaults
         for var_name, var_value in variable_defaults.items():
             # Check if the variable appears in the operation
             if re.search(r'\b' + re.escape(var_name.replace('%', r'%')) + r'\b', raw_statement, re.IGNORECASE):
-                relevant_defaults[var_name] = var_value
+                is_local = var_name.lower() in local_var_names
+                if var_name not in relevant_defaults:
+                    relevant_defaults[var_name] = {'value': var_value, 'is_local': is_local}
         
         # Look for compound variables (like in_sim%prt) and match with simple names (like prt)
         compound_vars = re.findall(r'([a-zA-Z_][a-zA-Z0-9_]*%[a-zA-Z_][a-zA-Z0-9_]*)', raw_statement, re.IGNORECASE)
@@ -483,10 +495,11 @@ class IoTracker:
             var_parts = compound_var.split('%')
             if len(var_parts) >= 2:
                 simple_name = var_parts[-1]  # Get the part after the last %
-                if simple_name in variable_defaults:
-                    relevant_defaults[compound_var] = variable_defaults[simple_name]
+                if simple_name in variable_defaults and compound_var not in relevant_defaults:
+                    # Check if the simple name is local
+                    is_local = simple_name.lower() in local_var_names
+                    relevant_defaults[compound_var] = {'value': variable_defaults[simple_name], 'is_local': is_local}
                     
-        return relevant_defaults
         return relevant_defaults
 
 
@@ -3452,7 +3465,7 @@ class FortranProcedure(FortranCodeUnit):
                         module_defaults = self.io_tracker.extract_variable_defaults(module.source.source)
                         variable_defaults.update(module_defaults)
             
-            return self.io_tracker.summarize_file_io(variable_defaults)
+            return self.io_tracker.summarize_file_io(variable_defaults, procedure=self)
         return {}
 
     @property
