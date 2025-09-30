@@ -567,9 +567,6 @@ class IoTracker:
                     relevant_defaults[compound_var] = {'value': variable_defaults[simple_name], 'is_local': is_local}
         
         return relevant_defaults
-                    relevant_defaults[compound_var] = {'value': variable_defaults[simple_name], 'is_local': is_local}
-                    
-        return relevant_defaults
 
 
 
