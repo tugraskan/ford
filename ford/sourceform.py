@@ -262,8 +262,6 @@ class IoTracker:
     def finalize(self) -> None:
         """Archive any unclosed sessions as stragglers."""
         self.stragglers = list(self._open_sessions.values())
-        if self.stragglers:
-            log.warning("Unclosed IO sessions: %s", [(s.unit, s.file) for s in self.stragglers])
         for unit, sess in list(self._open_sessions.items()):
             self.completed[unit].append(sess)
         self._open_sessions.clear()
