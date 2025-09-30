@@ -864,6 +864,126 @@
 
 {% macro io_operations_list(io_data, procedure=None) %}
   {% if io_data and io_data.keys() %}
+    <!-- Summary of Input and Output Files -->
+    {% set input_files = [] %}
+    {% set output_files = [] %}
+    {% set io_files = [] %}
+    
+    {% for unit, operations in io_data.items() %}
+      {% if operations.timeline %}
+        {% set has_read = namespace(value=false) %}
+        {% set has_write = namespace(value=false) %}
+        {% for op in operations.timeline %}
+          {% if op.kind == 'read' %}
+            {% set has_read.value = true %}
+          {% elif op.kind == 'write' %}
+            {% set has_write.value = true %}
+          {% endif %}
+        {% endfor %}
+        
+        {% set file_info = {'unit': unit, 'filename': operations.filename if operations.filename else 'unit_' + unit|string} %}
+        {% if has_read.value and has_write.value %}
+          {% set _ = io_files.append(file_info) %}
+        {% elif has_read.value %}
+          {% set _ = input_files.append(file_info) %}
+        {% elif has_write.value %}
+          {% set _ = output_files.append(file_info) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    
+    <!-- Display File Summary -->
+    {% if input_files or output_files or io_files %}
+      <div class="alert alert-info mb-3">
+        <h6 class="alert-heading"><i class="fa fa-info-circle"></i> File I/O Summary</h6>
+        <div class="row">
+          {% if input_files %}
+            <div class="col-md-4">
+              <strong><i class="fa fa-download"></i> Input Files:</strong>
+              <ul class="mb-0">
+                {% for file in input_files %}
+                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if output_files %}
+            <div class="col-md-4">
+              <strong><i class="fa fa-upload"></i> Output Files:</strong>
+              <ul class="mb-0">
+                {% for file in output_files %}
+                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if io_files %}
+            <div class="col-md-4">
+              <strong><i class="fa fa-exchange"></i> Input/Output Files:</strong>
+              <ul class="mb-0">
+                {% for file in io_files %}
+                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+    
+    <!-- Parameter-Level Summary -->
+    {% set params_read = [] %}
+    {% set params_written = [] %}
+    {% for unit, operations in io_data.items() %}
+      {% if operations.timeline %}
+        {% for op in operations.timeline %}
+          {% if op.parameters %}
+            {% if op.kind == 'read' %}
+              {% for param in op.parameters %}
+                {% if param not in params_read %}
+                  {% set _ = params_read.append(param) %}
+                {% endif %}
+              {% endfor %}
+            {% elif op.kind == 'write' %}
+              {% for param in op.parameters %}
+                {% if param not in params_written %}
+                  {% set _ = params_written.append(param) %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+    
+    {% if params_read or params_written %}
+      <div class="alert alert-secondary mb-3">
+        <h6 class="alert-heading"><i class="fa fa-list"></i> Parameters Accessed</h6>
+        <div class="row">
+          {% if params_read %}
+            <div class="col-md-6">
+              <strong><i class="fa fa-arrow-down"></i> Read Parameters:</strong>
+              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
+                {% for param in params_read %}
+                  <li><code>{{ param }}</code></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if params_written %}
+            <div class="col-md-6">
+              <strong><i class="fa fa-arrow-up"></i> Written Parameters:</strong>
+              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
+                {% for param in params_written %}
+                  <li><code>{{ param }}</code></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+    
     <!-- First, collect all conditions across all units -->
     {% set all_conditions = {} %}
     {% for unit, operations in io_data.items() %}
@@ -923,7 +1043,9 @@
                         <tr>
                           <th>Operation</th>
                           <th>Details</th>
+                          <th>Parameters</th>
                           <th>Variable Defaults</th>
+                          <th>Local</th>
                           <th>Line</th>
                         </tr>
                       </thead>
@@ -933,9 +1055,33 @@
                             <td><span class="badge bg-primary">{{ op.kind }}</span></td>
                             <td><code>{{ op.raw }}</code></td>
                             <td>
+                              {% if op.parameters %}
+                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
+                                  {% for param in op.parameters %}
+                                    <li><small><code>{{ param }}</code></small></li>
+                                  {% endfor %}
+                                </ul>
+                              {% else %}
+                                <small class="text-muted">-</small>
+                              {% endif %}
+                            </td>
+                            <td>
                               {% if op.variable_defaults %}
-                                {% for var_name, var_value in op.variable_defaults.items() %}
-                                  <small><code>{{ var_name }} = {{ var_value }}</code></small>{% if not loop.last %}<br>{% endif %}
+                                {% for var_name, var_info in op.variable_defaults.items() %}
+                                  <small><code>{{ var_name }} = {{ var_info.value if var_info is mapping and 'value' in var_info else var_info }}</code></small>{% if not loop.last %}<br>{% endif %}
+                                {% endfor %}
+                              {% else %}
+                                <small class="text-muted">-</small>
+                              {% endif %}
+                            </td>
+                            <td>
+                              {% if op.variable_defaults %}
+                                {% for var_name, var_info in op.variable_defaults.items() %}
+                                  {% if var_info is mapping and 'is_local' in var_info %}
+                                    <small>{% if var_info.is_local %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}</small>{% if not loop.last %}<br>{% endif %}
+                                  {% else %}
+                                    <small class="text-muted">-</small>{% if not loop.last %}<br>{% endif %}
+                                  {% endif %}
                                 {% endfor %}
                               {% else %}
                                 <small class="text-muted">-</small>
