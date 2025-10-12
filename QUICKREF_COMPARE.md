@@ -19,7 +19,7 @@ ford-compare old.json new.json
 ford-compare old.json new.json -o report.txt
 ```
 
-### Verbose Mode (includes variables)
+### Verbose Mode (includes public variables)
 ```bash
 ford-compare old.json new.json --verbose
 ```
@@ -129,8 +129,8 @@ PROCEDURES (Functions and Subroutines)
 
 ### Types
 ```
-DERIVED TYPES
-  New types (1):
+DERIVED TYPES (Used in Procedure Inputs/Outputs)
+  New types used in procedure arguments (1):
     + module_a::new_type
 ```
 

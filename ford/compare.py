@@ -11,7 +11,8 @@ It can identify:
 - New, modified, or removed input files (source files)
 - New, modified, or removed modules and submodules
 - New, modified, or removed subroutines and functions
-- Changes to derived types and variables
+- Changes to derived types used in procedure inputs/outputs
+- Changes to public module variables that affect the API interface
 """
 
 from __future__ import annotations
@@ -100,27 +101,91 @@ def extract_procedure_names(metadata: Dict[str, Any]) -> Set[str]:
     return procedures
 
 
-def extract_type_names(metadata: Dict[str, Any]) -> Set[str]:
-    """Extract derived type names from metadata"""
-    types = set()
+def extract_procedure_argument_types(metadata: Dict[str, Any]) -> Set[str]:
+    """
+    Extract derived types that are used in procedure arguments (inputs/outputs).
+    Only tracks types that affect the interface of procedures.
+    """
+    io_types = set()
+    
     for module in metadata.get('modules', []):
         if not module:
             continue
-        for dtype in module.get('types', []):
-            if dtype and 'name' in dtype:
-                types.add(f"{module['name']}::{dtype['name']}")
-    return types
+        
+        module_name = module.get('name', '')
+        
+        # Check all procedures (functions and subroutines)
+        for proc_list in [module.get('functions', []), module.get('subroutines', [])]:
+            for proc in proc_list:
+                if not proc:
+                    continue
+                
+                # Check procedure arguments for type usage
+                # The 'args' field contains argument information
+                args = proc.get('args', [])
+                
+                # If args is a list of dictionaries with type info
+                if isinstance(args, list):
+                    for arg in args:
+                        if isinstance(arg, dict):
+                            # Check if argument uses a derived type
+                            arg_type = arg.get('vartype', '') or arg.get('type', '')
+                            if arg_type and 'type(' in arg_type.lower():
+                                # Extract type name from type(typename)
+                                import re
+                                match = re.search(r'type\s*\(\s*(\w+)\s*\)', arg_type, re.IGNORECASE)
+                                if match:
+                                    type_name = match.group(1)
+                                    io_types.add(f"{module_name}::{type_name}")
+                
+                # Check return type for functions
+                if proc.get('obj') == 'function':
+                    ret_type = proc.get('retvar', {})
+                    if isinstance(ret_type, dict):
+                        ret_vartype = ret_type.get('vartype', '') or ret_type.get('type', '')
+                        if ret_vartype and 'type(' in ret_vartype.lower():
+                            import re
+                            match = re.search(r'type\s*\(\s*(\w+)\s*\)', ret_vartype, re.IGNORECASE)
+                            if match:
+                                type_name = match.group(1)
+                                io_types.add(f"{module_name}::{type_name}")
+    
+    return io_types
+
+
+def extract_type_names(metadata: Dict[str, Any]) -> Set[str]:
+    """
+    Extract derived type names that are used in procedure inputs/outputs.
+    This focuses only on types that affect the API interface.
+    """
+    return extract_procedure_argument_types(metadata)
 
 
 def extract_variable_names(metadata: Dict[str, Any]) -> Set[str]:
-    """Extract variable names from metadata"""
+    """
+    Extract public module-level variables that could be used as inputs/outputs.
+    Only tracks variables that are publicly accessible and could affect the module interface.
+    """
     variables = set()
     for module in metadata.get('modules', []):
         if not module:
             continue
+        
+        # Only extract public variables
+        pub_vars = module.get('pub_vars', [])
+        if isinstance(pub_vars, list):
+            for var in pub_vars:
+                if var and isinstance(var, dict) and 'name' in var:
+                    variables.add(f"{module['name']}::{var['name']}")
+        
+        # Fallback: check variables with public permission
         for var in module.get('variables', []):
             if var and 'name' in var:
-                variables.add(f"{module['name']}::{var['name']}")
+                # Check if variable is public (default assumption if not specified)
+                permission = var.get('permission', 'public')
+                if permission == 'public' or permission == 'protected':
+                    variables.add(f"{module['name']}::{var['name']}")
+                    
     return variables
 
 
@@ -239,34 +304,34 @@ def format_report(result: ComparisonResult, verbose: bool = False) -> str:
     lines.append("")
     
     # Types section
-    lines.append("DERIVED TYPES")
+    lines.append("DERIVED TYPES (Used in Procedure Inputs/Outputs)")
     lines.append("-" * 80)
     if result.new_types:
-        lines.append(f"  New types ({len(result.new_types)}):")
+        lines.append(f"  New types used in procedure arguments ({len(result.new_types)}):")
         for dtype in sorted(result.new_types):
             lines.append(f"    + {dtype}")
     if result.removed_types:
-        lines.append(f"  Removed types ({len(result.removed_types)}):")
+        lines.append(f"  Removed types used in procedure arguments ({len(result.removed_types)}):")
         for dtype in sorted(result.removed_types):
             lines.append(f"    - {dtype}")
     if not result.new_types and not result.removed_types:
-        lines.append("  No type changes detected")
+        lines.append("  No changes to types used in procedure arguments")
     lines.append("")
     
     # Variables section
     if verbose:
-        lines.append("VARIABLES")
+        lines.append("PUBLIC MODULE VARIABLES")
         lines.append("-" * 80)
         if result.new_variables:
-            lines.append(f"  New variables ({len(result.new_variables)}):")
+            lines.append(f"  New public variables ({len(result.new_variables)}):")
             for var in sorted(result.new_variables):
                 lines.append(f"    + {var}")
         if result.removed_variables:
-            lines.append(f"  Removed variables ({len(result.removed_variables)}):")
+            lines.append(f"  Removed public variables ({len(result.removed_variables)}):")
             for var in sorted(result.removed_variables):
                 lines.append(f"    - {var}")
         if not result.new_variables and not result.removed_variables:
-            lines.append("  No variable changes detected")
+            lines.append("  No public variable changes detected")
         lines.append("")
     
     # Files section

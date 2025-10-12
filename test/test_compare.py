@@ -31,12 +31,21 @@ def sample_metadata_v1():
                     {"name": "func2", "obj": "function"},
                 ],
                 "subroutines": [
-                    {"name": "sub1", "obj": "subroutine"},
+                    {
+                        "name": "sub1", 
+                        "obj": "subroutine",
+                        "args": [
+                            {"name": "input", "vartype": "type(type_a)"}
+                        ]
+                    },
                 ],
                 "types": [
                     {"name": "type_a", "obj": "type"},
                 ],
                 "variables": [
+                    {"name": "var1", "obj": "variable"},
+                ],
+                "pub_vars": [
                     {"name": "var1", "obj": "variable"},
                 ],
             },
@@ -72,8 +81,20 @@ def sample_metadata_v2():
                     {"name": "func3", "obj": "function"},  # new function
                 ],
                 "subroutines": [
-                    {"name": "sub1", "obj": "subroutine"},
-                    {"name": "sub2", "obj": "subroutine"},  # new subroutine
+                    {
+                        "name": "sub1", 
+                        "obj": "subroutine",
+                        "args": [
+                            {"name": "input", "vartype": "type(type_a)"}
+                        ]
+                    },
+                    {
+                        "name": "sub2", 
+                        "obj": "subroutine",  # new subroutine
+                        "args": [
+                            {"name": "data", "vartype": "type(type_b)"}
+                        ]
+                    },
                 ],
                 "types": [
                     {"name": "type_a", "obj": "type"},
@@ -82,6 +103,10 @@ def sample_metadata_v2():
                 "variables": [
                     {"name": "var1", "obj": "variable"},
                     {"name": "var2", "obj": "variable"},  # new variable
+                ],
+                "pub_vars": [
+                    {"name": "var1", "obj": "variable"},
+                    {"name": "var2", "obj": "variable"},
                 ],
             },
             # module_b removed
@@ -143,9 +168,10 @@ def test_extract_procedure_names(sample_metadata_v1):
 
 
 def test_extract_type_names(sample_metadata_v1):
-    """Test extracting type names from metadata"""
+    """Test extracting type names used in procedure arguments from metadata"""
     types = extract_type_names(sample_metadata_v1)
     
+    # Only type_a is extracted because it's used in sub1's arguments
     assert types == {"module_a::type_a"}
 
 

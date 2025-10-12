@@ -108,7 +108,8 @@ For more details, see the [documentation](https://forddocs.readthedocs.io/).
 
 FORD includes tools to compare documentation metadata between different versions of your project. This is useful for:
 - Identifying new or removed modules, subroutines, and functions
-- Tracking API changes between releases
+- Tracking API changes between releases (procedure interfaces and types used in inputs/outputs)
+- Monitoring changes to public module variables
 - Generating change reports
 
 To compare two versions:
@@ -128,8 +129,10 @@ Or use the utility script for more options:
 # Compare two project directories
 python ford_diff_utility.py compare-dirs old_project/ new_project/ ford.md
 
-# Compare with verbose output including variables
+# Compare with verbose output including public module variables
 ford-compare old.json new.json --verbose -o changes.txt
 ```
+
+**Note**: The comparison focuses on API-relevant changes. Only types used in procedure arguments and public module variables are tracked.
 
 See [COMPARE.md](./COMPARE.md) for detailed documentation on comparing versions.

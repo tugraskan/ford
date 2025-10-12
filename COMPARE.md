@@ -38,7 +38,7 @@ Save the report to a file:
 ford-compare old_doc/modules.json new_doc/modules.json -o changes.txt
 ```
 
-Include detailed variable information:
+Include detailed information (shows public module variables):
 
 ```bash
 ford-compare old_doc/modules.json new_doc/modules.json --verbose
@@ -132,17 +132,15 @@ PROCEDURES (Functions and Subroutines)
 
 ### Derived Types Section
 ```
-DERIVED TYPES
---------------------------------------------------------------------------------
-  New types (1):
+DERIVED TYPES (Used in Procedure Inputs/Outputs)
+  New types used in procedure arguments (1):
     + module_a::new_type
 ```
 
 ### Variables Section (Verbose Mode)
 ```
-VARIABLES
---------------------------------------------------------------------------------
-  New variables (2):
+PUBLIC MODULE VARIABLES
+  New public variables (2):
     + module_a::new_var
     + module_b::config_var
 ```
@@ -240,9 +238,11 @@ The comparison tool analyzes:
 
 1. **Modules**: New, removed, or modified modules and submodules
 2. **Procedures**: Functions and subroutines (including their locations)
-3. **Derived Types**: User-defined types and their components
-4. **Variables**: Module-level variables (in verbose mode)
+3. **Derived Types**: User-defined types **that are used in procedure inputs/outputs** (argument types)
+4. **Variables**: Public module-level variables that affect the module's API interface (in verbose mode)
 5. **Files**: Source files included in the documentation
+
+**Note**: The comparison focuses on API-relevant changes. Internal types and private variables that don't affect procedure interfaces are not tracked.
 
 ## Limitations
 
