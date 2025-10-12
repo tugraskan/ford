@@ -98,15 +98,38 @@ they are not affected by this license.
 
 ## Usage
 
-To generate a JSON file with all the derived types and their components, you can use the `generate_json.py` script. This script extracts metadata for each module and writes it to a JSON file.
+FORD can be run from the command line:
 
-### Example
+    ford project_file.md
 
-1. Ensure you have the necessary dependencies installed.
-2. Run the `generate_json.py` script:
+For more details, see the [documentation](https://forddocs.readthedocs.io/).
 
-    ```bash
-    python generate_json.py
-    ```
+### Comparing Documentation Between Versions
 
-3. The script will create a file named `derived_types_metadata.json` containing the metadata for all derived types and their components.
+FORD includes tools to compare documentation metadata between different versions of your project. This is useful for:
+- Identifying new or removed modules, subroutines, and functions
+- Tracking API changes between releases
+- Generating change reports
+
+To compare two versions:
+
+```bash
+# First, generate metadata for both versions (ensure externalize: true in your project file)
+ford old_version/ford.md
+ford new_version/ford.md
+
+# Then compare the metadata
+ford-compare old_version/doc/modules.json new_version/doc/modules.json
+```
+
+Or use the utility script for more options:
+
+```bash
+# Compare two project directories
+python ford_diff_utility.py compare-dirs old_project/ new_project/ ford.md
+
+# Compare with verbose output including variables
+ford-compare old.json new.json --verbose -o changes.txt
+```
+
+See [COMPARE.md](./COMPARE.md) for detailed documentation on comparing versions.
