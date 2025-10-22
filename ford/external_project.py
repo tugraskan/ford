@@ -42,6 +42,7 @@ ATTRIBUTES = [
     "deferred",
     "generic",
     "attribs",
+    "args",
 ]
 
 # Mapping between entity name and its type
