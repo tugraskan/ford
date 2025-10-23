@@ -45,6 +45,7 @@ from ford.external_project import dump_modules
 import ford.fortran_project
 import ford.sourceform
 import ford.output
+import ford.markdown_output
 from ford.utils import ProgressBar
 from ford._typing import PathLike
 from ford.pagetree import get_page_tree
@@ -557,8 +558,13 @@ def main(proj_data: ProjectSettings, proj_docs: str):
     # and copy any files that are needed (CSS, JS, images, fonts, source files,
     # etc.)
 
-    docs = ford.output.Documentation(proj_data, proj_docs, project, page_tree)
-    docs.writeout()
+    # Check output format and use appropriate documentation generator
+    if proj_data.output_format.lower() in ["markdown", "gitbook"]:
+        md_docs = ford.markdown_output.MarkdownDocumentation(proj_data, proj_docs, project, page_tree)
+        md_docs.writeout()
+    else:
+        docs = ford.output.Documentation(proj_data, proj_docs, project, page_tree)
+        docs.writeout()
 
     if proj_data.externalize:
         # save FortranModules to a JSON file which then can be used

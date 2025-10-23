@@ -181,6 +181,7 @@ class ProjectSettings:
     modular_database_output_dir: Optional[Path] = None
     modular_database_json_outputs: bool = True
     output_dir: Path = Path("./doc")
+    output_format: str = "html"
     page_dir: Optional[Path] = None
     parallel: int = default_cpus()
     predocmark: str = ">"
@@ -242,6 +243,13 @@ class ProjectSettings:
         self.extensions = list(set(self.extensions) | set(self.fpp_extensions))
         self.exclude_dir.append(self.output_dir)
         self.extra_mods.update(INTRINSIC_MODS)
+        
+        # Validate output_format
+        valid_formats = ["html", "markdown", "gitbook"]
+        if self.output_format.lower() not in valid_formats:
+            raise ValueError(
+                f"Invalid output_format '{self.output_format}'. Must be one of: {', '.join(valid_formats)}"
+            )
 
         # Check that none of the docmarks are the same
         docmarks = ["docmark", "predocmark", "docmark_alt", "predocmark_alt"]
