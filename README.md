@@ -79,6 +79,8 @@ following command:
 ## Documentation
 More complete documentation can be found in the [docs](https://forddocs.readthedocs.io).
 
+**Quick Start:** See [HTML Enhancement Options](./HTML_ENHANCEMENT_OPTIONS.md) for a guide on project.md options that enhance your HTML documentation.
+
 ## License
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
