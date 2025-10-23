@@ -87,6 +87,44 @@ looks like:
 .. image:: say_hello_example.png
    :alt: Example of FORD generated documentation for the "hello" program
 
+Generating Markdown or GitBook Output
+--------------------------------------
+
+.. versionadded:: 7.1
+   FORD can now generate Markdown and GitBook formatted documentation
+   in addition to HTML.
+
+If you want to generate Markdown documentation instead of HTML, you can
+specify this in your project file:
+
+.. code:: text
+
+    ---
+    project: My Fortran project
+    author: Me
+    output_format: markdown
+    ---
+
+Or in your ``fpm.toml`` file:
+
+.. code:: TOML
+
+   [extra.ford]
+   project = "My Fortran project"
+   output_format = "markdown"
+
+This will generate a set of ``.md`` files in the output directory organized
+by entity type. You can also use ``output_format: gitbook`` to generate
+GitBook-compatible documentation with a ``SUMMARY.md`` navigation file and
+``book.json`` configuration file.
+
+The Markdown format is useful for:
+
+- Publishing documentation on GitHub/GitLab
+- Converting to other formats with Pandoc
+- Integration with GitBook or other static site generators
+- Viewing documentation directly in text editors
+
 .. rubric:: Footnotes
 
 .. [#entities] An "entity" is any documentable Fortran "thing":

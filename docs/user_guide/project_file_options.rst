@@ -1161,6 +1161,41 @@ output_dir
 The directory where the project output will be placed. **Any content already
 present there will be deleted.** (*default:* ./doc)
 
+.. _option-output_format:
+
+output_format
+^^^^^^^^^^^^^
+
+The output format for the generated documentation. Valid options are:
+
+- ``html`` (*default*): Generate HTML documentation with Bootstrap CSS styling
+- ``markdown``: Generate standalone Markdown documentation files
+- ``gitbook``: Generate Markdown documentation structured for GitBook, including
+  ``README.md``, ``SUMMARY.md``, and ``book.json``
+
+Example usage in ``fpm.toml``:
+
+.. code:: TOML
+
+   [extra.ford]
+   output_format = "gitbook"
+
+Markdown and GitBook formats generate a structured set of ``.md`` files organized
+by entity type (modules, procedures, types, programs, files). The GitBook format
+additionally creates:
+
+- ``README.md``: Main introduction page
+- ``SUMMARY.md``: Table of contents for GitBook navigation
+- ``book.json``: GitBook configuration file
+
+This allows you to convert FORD-generated Fortran documentation into formats
+that can be:
+
+- Viewed directly on GitHub/GitLab (Markdown)
+- Published to GitBook or similar platforms
+- Converted to other formats using tools like Pandoc
+- Integrated into existing Markdown-based documentation systems
+
 Run-Time Behaviour
 ------------------
 
