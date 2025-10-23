@@ -31,6 +31,7 @@ from itertools import chain
 from ford.settings import ProjectSettings
 from ford.utils import ProgressBar
 from ford.console import warn
+from ford.graphs import graphviz_installed, GraphManager
 
 
 class MarkdownDocumentation:
@@ -49,6 +50,20 @@ class MarkdownDocumentation:
         
         # Store all pages that will be generated
         self.pages = []
+        
+        # Initialize graph manager if graphs are enabled
+        self.graphs = None
+        if settings.graph and graphviz_installed:
+            # Use graphs subdirectory in output for markdown/gitbook
+            graph_output_dir = self.output_dir / "graphs"
+            graphparent = ""  # Relative path for markdown
+            self.graphs = GraphManager(
+                graph_output_dir,
+                graphparent,
+                settings.coloured_edges,
+                settings.show_proc_parent,
+                save_graphs=True,  # Always save graphs for markdown output
+            )
 
     def generate(self):
         """Generate the markdown documentation"""
@@ -56,6 +71,10 @@ class MarkdownDocumentation:
         
         # Create output directory
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Generate graphs if enabled
+        if self.graphs and graphviz_installed:
+            self._generate_graphs()
         
         # Generate index/README
         self._generate_index()
@@ -75,6 +94,84 @@ class MarkdownDocumentation:
             self._generate_gitbook_files()
         
         print("done")
+
+    def _generate_graphs(self):
+        """Generate graphs and export as SVG/PNG files"""
+        if not self.graphs:
+            return
+        
+        # Create graphs directory
+        graphs_dir = self.output_dir / "graphs"
+        graphs_dir.mkdir(exist_ok=True)
+        
+        # Register all entities with the graph manager
+        for item in chain(
+            self.project.types,
+            self.project.absinterfaces,
+            self.project.procedures,
+            self.project.modules,
+            self.project.submodules,
+            self.project.programs,
+            self.project.blockdata,
+        ):
+            self.graphs.register(item)
+        
+        # Generate all graphs
+        self.graphs.graph_all()
+        
+        # Store graph references on project for use in documentation
+        self.project.callgraph = self.graphs.callgraph
+        self.project.typegraph = self.graphs.typegraph
+        self.project.usegraph = self.graphs.usegraph
+        self.project.filegraph = self.graphs.filegraph
+        
+        # Export graphs as SVG files to the graphs directory
+        self.graphs.output_graphs(0)  # 0 = sequential processing
+        
+        # Also save individual entity graphs
+        for mod in chain(self.project.modules, self.project.submodules):
+            if hasattr(mod, 'usesgraph') and mod.usesgraph:
+                mod.usesgraph.create_svg(graphs_dir)
+        
+        # Create markdown pages for project-level graphs
+        self._create_graph_pages(graphs_dir)
+    
+    def _create_graph_pages(self, graphs_dir):
+        """Create markdown pages for project-level graphs"""
+        if not self.graphs:
+            return
+        
+        # Call graph page
+        if hasattr(self.project, 'callgraph') and self.project.callgraph:
+            callgraph_file = graphs_dir / "callgraph.md"
+            content = ["# Call Graph\n\n"]
+            content.append("This graph shows the calling relationships between procedures in the project.\n\n")
+            content.append("![Call Graph](callgraph.svg)\n\n")
+            callgraph_file.write_text("".join(content), encoding="utf-8")
+        
+        # Type graph page
+        if hasattr(self.project, 'typegraph') and self.project.typegraph:
+            typegraph_file = graphs_dir / "typegraph.md"
+            content = ["# Type Graph\n\n"]
+            content.append("This graph shows the inheritance and composition relationships between types.\n\n")
+            content.append("![Type Graph](typegraph.svg)\n\n")
+            typegraph_file.write_text("".join(content), encoding="utf-8")
+        
+        # Module use graph page
+        if hasattr(self.project, 'usegraph') and self.project.usegraph:
+            usegraph_file = graphs_dir / "usegraph.md"
+            content = ["# Module Use Graph\n\n"]
+            content.append("This graph shows the dependencies between modules.\n\n")
+            content.append("![Module Use Graph](usegraph.svg)\n\n")
+            usegraph_file.write_text("".join(content), encoding="utf-8")
+        
+        # File graph page
+        if hasattr(self.project, 'filegraph') and self.project.filegraph:
+            filegraph_file = graphs_dir / "filegraph.md"
+            content = ["# File Graph\n\n"]
+            content.append("This graph shows the dependencies between source files.\n\n")
+            content.append("![File Graph](filegraph.svg)\n\n")
+            filegraph_file.write_text("".join(content), encoding="utf-8")
 
     def _generate_index(self):
         """Generate the main index/README file"""
@@ -117,6 +214,18 @@ class MarkdownDocumentation:
         if self.settings.incl_src and len(self.project.files) > 0:
             content.append("- [Source Files](files/index.md)\n")
         
+        # Add graphs section if available
+        if self.graphs and hasattr(self.project, 'callgraph') and self.project.callgraph:
+            content.append("\n## Project Graphs\n")
+            if self.project.callgraph:
+                content.append("- [Call Graph](graphs/callgraph.md)\n")
+            if hasattr(self.project, 'typegraph') and self.project.typegraph:
+                content.append("- [Type Graph](graphs/typegraph.md)\n")
+            if hasattr(self.project, 'usegraph') and self.project.usegraph:
+                content.append("- [Module Use Graph](graphs/usegraph.md)\n")
+            if hasattr(self.project, 'filegraph') and self.project.filegraph:
+                content.append("- [File Graph](graphs/filegraph.md)\n")
+        
         index_file.write_text("".join(content), encoding="utf-8")
         self.pages.append(("", index_file.name, self.settings.project))
 
@@ -157,6 +266,16 @@ class MarkdownDocumentation:
         # Add module documentation
         if hasattr(mod, 'doc') and mod.doc:
             content.append(f"{mod.doc}\n\n")
+        
+        # Add graph if available
+        if self.graphs and hasattr(mod, 'usesgraph') and mod.usesgraph:
+            # The graph identifier is constructed by the Graph class
+            graph_ident = mod.usesgraph.ident
+            # Check if graph file exists (it would be saved in graphs directory)
+            svg_path = self.output_dir / "graphs" / f"{graph_ident}.svg"
+            if svg_path.exists():
+                content.append("## Module Dependencies Graph\n\n")
+                content.append(f"![{mod.name} dependencies](../graphs/{graph_ident}.svg)\n\n")
         
         # Add procedures
         if hasattr(mod, 'routines') and mod.routines:
