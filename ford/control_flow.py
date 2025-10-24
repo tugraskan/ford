@@ -521,3 +521,386 @@ def parse_control_flow(
         return parser.parse()
     except Exception:
         return None
+
+
+@dataclass
+class LogicBlock:
+    """Represents a logic block in a procedure for hierarchical display
+    
+    Attributes
+    ----------
+    block_type : str
+        Type of block (e.g., 'if', 'do', 'select', 'case', 'else', 'statements')
+    condition : Optional[str]
+        Condition or control expression (for IF, DO, SELECT CASE, etc.)
+    statements : List[str]
+        Statements within this block (before any nested blocks)
+    children : List[LogicBlock]
+        Nested logic blocks within this one
+    level : int
+        Nesting level (0 for top-level)
+    label : Optional[str]
+        Optional Fortran label
+    """
+    block_type: str
+    condition: Optional[str] = None
+    statements: List[str] = field(default_factory=list)
+    children: List['LogicBlock'] = field(default_factory=list)
+    level: int = 0
+    label: Optional[str] = None
+
+
+class LogicBlockExtractor:
+    """Extracts logic blocks from Fortran source code in hierarchical form
+    
+    This extracts control structures and organizes them hierarchically
+    as they appear in the source code, suitable for display in the UI.
+    """
+    
+    # Regular expressions for control flow statements
+    IF_THEN_RE = re.compile(
+        r'^\s*(?:(\w+)\s*:)?\s*if\s*\((.*?)\)\s*then\s*$',
+        re.IGNORECASE
+    )
+    ELSE_IF_RE = re.compile(
+        r'^\s*else\s*if\s*\((.*?)\)\s*then\s*$',
+        re.IGNORECASE
+    )
+    ELSE_RE = re.compile(r'^\s*else\s*$', re.IGNORECASE)
+    END_IF_RE = re.compile(r'^\s*end\s*if(?:\s+(\w+))?\s*$', re.IGNORECASE)
+    
+    DO_LOOP_RE = re.compile(
+        r'^\s*(?:(\w+)\s*:)?\s*do\s+(.*)$',
+        re.IGNORECASE
+    )
+    END_DO_RE = re.compile(r'^\s*end\s*do(?:\s+(\w+))?\s*$', re.IGNORECASE)
+    
+    SELECT_CASE_RE = re.compile(
+        r'^\s*(?:(\w+)\s*:)?\s*select\s+case\s*\((.*?)\)\s*$',
+        re.IGNORECASE
+    )
+    CASE_RE = re.compile(
+        r'^\s*case\s*\((.*?)\)\s*$',
+        re.IGNORECASE
+    )
+    CASE_DEFAULT_RE = re.compile(r'^\s*case\s+default\s*$', re.IGNORECASE)
+    END_SELECT_RE = re.compile(
+        r'^\s*end\s*select(?:\s+(\w+))?\s*$',
+        re.IGNORECASE
+    )
+    
+    def __init__(self, source_code: str, procedure_name: str, procedure_type: str):
+        self.source_code = source_code
+        self.procedure_name = procedure_name
+        self.procedure_type = procedure_type
+        
+    def extract(self) -> List[LogicBlock]:
+        """Extract logic blocks from the source code
+        
+        Returns
+        -------
+        List[LogicBlock]
+            List of top-level logic blocks
+        """
+        lines = self._preprocess_source()
+        blocks: List[LogicBlock] = []
+        
+        if not lines:
+            return blocks
+        
+        # Stack to track nested blocks: (block, current_statements)
+        stack: List[Tuple[LogicBlock, List[str]]] = []
+        current_statements: List[str] = []
+        
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            line_stripped = line.strip()
+            
+            # Skip empty lines and comments
+            if not line_stripped or line_stripped.startswith('!'):
+                i += 1
+                continue
+            
+            # Check for IF-THEN-ELSE blocks
+            if match := self.IF_THEN_RE.match(line_stripped):
+                label, condition = match.groups()
+                
+                # Create IF block
+                if_block = LogicBlock(
+                    block_type='if',
+                    condition=condition,
+                    level=len(stack),
+                    label=label
+                )
+                
+                # Save current statements to parent or top-level
+                if stack:
+                    stack[-1][1].extend(current_statements)
+                else:
+                    if current_statements:
+                        blocks.append(LogicBlock(
+                            block_type='statements',
+                            statements=current_statements,
+                            level=0
+                        ))
+                current_statements = []
+                
+                # Push to stack
+                stack.append((if_block, []))
+                
+            elif self.ELSE_IF_RE.match(line_stripped):
+                match = self.ELSE_IF_RE.match(line_stripped)
+                condition = match.group(1)
+                
+                if stack and stack[-1][0].block_type in ['if', 'elseif']:
+                    # Save statements to current IF/ELSEIF block
+                    stack[-1][0].statements = stack[-1][1]
+                    
+                    # Don't pop - just create ELSE IF as sibling
+                    # Create ELSE IF block
+                    elseif_block = LogicBlock(
+                        block_type='elseif',
+                        condition=condition,
+                        level=stack[-1][0].level
+                    )
+                    
+                    # Get parent level
+                    if len(stack) > 1:
+                        stack[-2][0].children.append(stack[-1][0])
+                        stack.pop()
+                        stack.append((elseif_block, []))
+                    else:
+                        blocks.append(stack[-1][0])
+                        stack.pop()
+                        stack.append((elseif_block, []))
+                    
+            elif self.ELSE_RE.match(line_stripped):
+                if stack and stack[-1][0].block_type in ['if', 'elseif']:
+                    # Save statements to current IF/ELSEIF block
+                    stack[-1][0].statements = stack[-1][1]
+                    
+                    # Create ELSE block at same level
+                    else_block = LogicBlock(
+                        block_type='else',
+                        level=stack[-1][0].level
+                    )
+                    
+                    # Add current block to parent and push ELSE
+                    if len(stack) > 1:
+                        stack[-2][0].children.append(stack[-1][0])
+                        stack.pop()
+                        stack.append((else_block, []))
+                    else:
+                        blocks.append(stack[-1][0])
+                        stack.pop()
+                        stack.append((else_block, []))
+                    
+            elif self.END_IF_RE.match(line_stripped):
+                if stack and stack[-1][0].block_type in ['if', 'elseif', 'else']:
+                    # Save statements to current block
+                    stack[-1][0].statements = stack[-1][1]
+                    
+                    # Pop and add to parent
+                    block, _ = stack.pop()
+                    if stack:
+                        stack[-1][0].children.append(block)
+                    else:
+                        blocks.append(block)
+                        
+            # Check for DO loops
+            elif match := self.DO_LOOP_RE.match(line_stripped):
+                label, loop_control = match.groups()
+                
+                # Create DO block
+                do_block = LogicBlock(
+                    block_type='do',
+                    condition=loop_control,
+                    level=len(stack),
+                    label=label
+                )
+                
+                # Save current statements
+                if stack:
+                    stack[-1][1].extend(current_statements)
+                else:
+                    if current_statements:
+                        blocks.append(LogicBlock(
+                            block_type='statements',
+                            statements=current_statements,
+                            level=0
+                        ))
+                current_statements = []
+                
+                # Push to stack
+                stack.append((do_block, []))
+                
+            elif self.END_DO_RE.match(line_stripped):
+                if stack and stack[-1][0].block_type == 'do':
+                    # Save statements to DO block
+                    stack[-1][0].statements = stack[-1][1]
+                    
+                    # Pop and add to parent
+                    do_block, _ = stack.pop()
+                    if stack:
+                        stack[-1][0].children.append(do_block)
+                    else:
+                        blocks.append(do_block)
+                        
+            # Check for SELECT CASE
+            elif match := self.SELECT_CASE_RE.match(line_stripped):
+                label, select_expr = match.groups()
+                
+                # Create SELECT block
+                select_block = LogicBlock(
+                    block_type='select',
+                    condition=select_expr,
+                    level=len(stack),
+                    label=label
+                )
+                
+                # Save current statements
+                if stack:
+                    stack[-1][1].extend(current_statements)
+                else:
+                    if current_statements:
+                        blocks.append(LogicBlock(
+                            block_type='statements',
+                            statements=current_statements,
+                            level=0
+                        ))
+                current_statements = []
+                
+                # Push to stack
+                stack.append((select_block, []))
+                
+            elif self.CASE_RE.match(line_stripped) or self.CASE_DEFAULT_RE.match(line_stripped):
+                if stack and stack[-1][0].block_type in ['select', 'case']:
+                    # If we were in a previous CASE, save it
+                    if stack[-1][0].block_type == 'case':
+                        stack[-1][0].statements = stack[-1][1]
+                        case_block, _ = stack.pop()
+                        stack[-1][0].children.append(case_block)
+                    
+                    # Parse case value
+                    case_match = self.CASE_RE.match(line_stripped)
+                    if case_match:
+                        case_value = case_match.group(1)
+                    else:
+                        case_value = "DEFAULT"
+                    
+                    # Create CASE block
+                    case_block = LogicBlock(
+                        block_type='case',
+                        condition=case_value,
+                        level=len(stack)
+                    )
+                    stack.append((case_block, []))
+                    
+            elif self.END_SELECT_RE.match(line_stripped):
+                if stack:
+                    # Close any open CASE
+                    if stack[-1][0].block_type == 'case':
+                        stack[-1][0].statements = stack[-1][1]
+                        case_block, _ = stack.pop()
+                        stack[-1][0].children.append(case_block)
+                    
+                    # Close SELECT
+                    if stack and stack[-1][0].block_type == 'select':
+                        select_block, _ = stack.pop()
+                        if stack:
+                            stack[-1][0].children.append(select_block)
+                        else:
+                            blocks.append(select_block)
+                            
+            else:
+                # Regular statement
+                if stack:
+                    # We're inside a block, add to that block's statements
+                    stack[-1][1].append(line_stripped)
+                else:
+                    # We're at top level
+                    current_statements.append(line_stripped)
+            
+            i += 1
+        
+        # Add any remaining statements
+        if current_statements:
+            if stack:
+                stack[-1][1].extend(current_statements)
+            else:
+                blocks.append(LogicBlock(
+                    block_type='statements',
+                    statements=current_statements,
+                    level=0
+                ))
+        
+        # Close any unclosed blocks (shouldn't happen in valid code)
+        while stack:
+            block, stmts = stack.pop()
+            block.statements = stmts
+            if stack:
+                stack[-1][0].children.append(block)
+            else:
+                blocks.append(block)
+        
+        return blocks
+    
+    def _preprocess_source(self) -> List[str]:
+        """Preprocess source code to extract the procedure body"""
+        lines = self.source_code.split('\n')
+        result = []
+        in_procedure = False
+        
+        # Patterns to match procedure start and end
+        proc_start = re.compile(
+            rf'^\s*{re.escape(self.procedure_type)}\s+{re.escape(self.procedure_name)}\b',
+            re.IGNORECASE
+        )
+        proc_end = re.compile(
+            rf'^\s*end\s+{re.escape(self.procedure_type)}\b',
+            re.IGNORECASE
+        )
+        contains_re = re.compile(r'^\s*contains\s*$', re.IGNORECASE)
+        
+        for line in lines:
+            if proc_start.match(line.strip()):
+                in_procedure = True
+                continue
+            
+            if in_procedure:
+                # Stop at 'contains' or 'end subroutine/function'
+                if contains_re.match(line.strip()) or proc_end.match(line.strip()):
+                    break
+                
+                result.append(line)
+        
+        return result
+
+
+def extract_logic_blocks(
+    source_code: str,
+    procedure_name: str,
+    procedure_type: str
+) -> Optional[List[LogicBlock]]:
+    """Extract logic blocks from Fortran procedure source code
+    
+    Parameters
+    ----------
+    source_code : str
+        The complete source code of the procedure
+    procedure_name : str
+        Name of the procedure
+    procedure_type : str
+        Type of procedure ('subroutine' or 'function')
+    
+    Returns
+    -------
+    List[LogicBlock] or None
+        List of logic blocks, or None if extraction fails
+    """
+    try:
+        extractor = LogicBlockExtractor(source_code, procedure_name, procedure_type)
+        return extractor.extract()
+    except Exception:
+        return None

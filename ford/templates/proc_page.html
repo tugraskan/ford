@@ -239,6 +239,172 @@
     {% endif %}
     <br>
 
+    {% if procedure.logic_blocks %}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          {% macro render_logic_block(block, index, parent_index='') %}
+            {% set block_id = parent_index ~ 'block-' ~ index %}
+            {% set indent_class = 'ms-' ~ (block.level * 3) %}
+            
+            {% if block.block_type == 'if' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>{{ block.condition }}</code>) <strong>THEN</strong>
+                    {% if block.label %}<span class="badge bg-secondary ms-2">{{ block.label }}</span>{% endif %}
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                    {% endif %}
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'elseif' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE IF</strong> (<code>{{ block.condition }}</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                    {% endif %}
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'else' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                    {% endif %}
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'do' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>{{ block.condition }}</code>
+                    {% if block.label %}<span class="badge bg-secondary ms-2">{{ block.label }}</span>{% endif %}
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                    {% endif %}
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'select' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>{{ block.condition }}</code>)
+                    {% if block.label %}<span class="badge bg-secondary ms-2">{{ block.label }}</span>{% endif %}
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'case' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>{{ block.condition }}</code>)
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                    {% endif %}
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'statements' %}
+              {% if block.statements %}
+                <div class="card mb-2 {{ indent_class }}">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                  </div>
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endmacro %}
+          
+          {% for block in procedure.logic_blocks %}
+            {{ render_logic_block(block, loop.index) }}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    <br>
+
     {% if procedure.common %}
     <section>
       <h2>Common Blocks</h2>
