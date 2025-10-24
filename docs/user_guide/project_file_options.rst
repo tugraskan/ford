@@ -1052,7 +1052,7 @@ Graph Settings
 --------------
 
 FORD can generate call-trees, dependency diagrams, inheritance
-diagrams, and control flow graphs will be produced for the project. These require
+diagrams, and control flow graphs for the project. These require
 `Graphviz <http://graphviz.org/>`__ to be installed. Note that this can
 increase run-time substantially. The following graphs are produced:
 
