@@ -3542,6 +3542,57 @@ class FortranProcedure(FortranCodeUnit):
             return self.allocation_tracker.summarize_allocations()
         return {}
 
+    def get_control_flow_graph(self):
+        """Generate control flow graph for this procedure
+        
+        Returns
+        -------
+        ControlFlowGraph or None
+            The control flow graph representation, or None if it cannot be generated
+        """
+        try:
+            from ford.control_flow import parse_control_flow
+            
+            # Get the source code for this procedure
+            source_text = None
+            if hasattr(self, 'source_file') and self.source_file:
+                try:
+                    # Read the source file directly
+                    with open(self.source_file.path, 'r', encoding='utf-8', errors='ignore') as f:
+                        full_source = f.read()
+                    
+                    # Extract just the procedure's source code
+                    # Find the procedure start and end
+                    proc_start_pattern = rf'^\s*{self.proctype.lower()}\s+{re.escape(self.name)}\b'
+                    proc_end_pattern = rf'^\s*end\s+{self.proctype.lower()}\b'
+                    
+                    source_lines = full_source.split('\n')
+                    in_procedure = False
+                    procedure_lines = []
+                    
+                    for line in source_lines:
+                        if re.match(proc_start_pattern, line.strip(), re.IGNORECASE):
+                            in_procedure = True
+                            procedure_lines.append(line)
+                        elif in_procedure:
+                            procedure_lines.append(line)
+                            if re.match(proc_end_pattern, line.strip(), re.IGNORECASE):
+                                break
+                    
+                    if procedure_lines:
+                        source_text = '\n'.join(procedure_lines)
+                        
+                except Exception:
+                    return None
+            
+            if not source_text:
+                return None
+            
+            # Parse the control flow
+            return parse_control_flow(source_text, self.name, self.proctype.lower())
+        except Exception:
+            return None
+
 
 class FortranSubroutine(FortranProcedure):
     """
