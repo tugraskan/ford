@@ -1051,25 +1051,41 @@ year)
 Graph Settings
 --------------
 
-FORD can generate call-trees, dependency diagrams, and inheritance
-diagrams will be produced for the project. These require
+FORD can generate call-trees, dependency diagrams, inheritance
+diagrams, and control flow graphs for the project. These require
 `Graphviz <http://graphviz.org/>`__ to be installed. Note that this can
-increase run-time substantially. The following graphs are produced: -
-For each module: - a graph showing the modules which it ``use``\ s and,
-if a submodule, the (sub)modules it is descended from - a graph showing
-which modules ``use`` and which submodules descend from this one - For
-each type: - a graph showing all type which it descends from or contains
-as a component - a graph showing all types which descend from or contain
-as a component this type - For each procedure: - a graph showing all
-procedures called by this procedure and (for interfaces) any procedures
-which it provides an interface to - a graph showing all procedures which
-call this one or provide and interface to it - For each program: - a
-graph showing the modules which are ``use``\ d by the program - a graph
-showing the procedures called by the program - A graph showing all
-module ``use`` dependencies on the module list page - A graph showing
-the inheritance structure of all derived types (and their use as
-components of other types) on the type list page - A graph showing the
-call-tree for all programs and procedures on the procedure list page
+increase run-time substantially. The following graphs are produced:
+
+- For each module:
+
+  - a graph showing the modules which it ``use``\ s and,
+    if a submodule, the (sub)modules it is descended from
+  - a graph showing which modules ``use`` and which submodules descend from this one
+
+- For each type:
+
+  - a graph showing all type which it descends from or contains as a component
+  - a graph showing all types which descend from or contain as a component this type
+
+- For each procedure:
+
+  - a graph showing all procedures called by this procedure and (for interfaces)
+    any procedures which it provides an interface to
+  - a graph showing all procedures which call this one or provide and interface to it
+  - **a control flow graph showing the execution flow within the procedure,
+    including IF/THEN/ELSE statements, DO loops, SELECT CASE statements, and
+    other control structures**
+
+- For each program:
+
+  - a graph showing the modules which are ``use``\ d by the program
+  - a graph showing the procedures called by the program
+
+- A graph showing all module ``use`` dependencies on the module list page
+- A graph showing the inheritance structure of all derived types (and their use
+  as components of other types) on the type list page
+- A graph showing the call-tree for all programs and procedures on the procedure
+  list page
 
 Note that, at present, call-trees only work for procedural programming
 and will not identify any calls to type-bound procedures. Call-trees are
@@ -1129,6 +1145,33 @@ show_proc_parent
 If ``true`` then the parent module of a procedure will be displayed in
 the graphs as follows: parent::procedure.
 (*default:* ``false``)
+
+Control Flow Graphs
+^^^^^^^^^^^^^^^^^^^
+
+When graphs are enabled, FORD automatically generates control flow graphs for
+subroutines and functions. These graphs visualize the execution flow through
+the code, showing:
+
+- **Entry and Exit Points**: The start and end of the procedure (green and pink boxes)
+- **IF/THEN/ELSE Statements**: Conditional branches shown as blue diamonds with
+  true (T) and false (F) edges
+- **DO Loops**: Iterative constructs shown as purple diamonds with loop and exit edges
+- **SELECT CASE Statements**: Multi-way branches shown as yellow diamonds with
+  edges to each case block (moccasin colored boxes)
+- **Statement Blocks**: Regular executable statements grouped into gray boxes
+
+The control flow graphs help developers understand the logic flow within procedures,
+making it easier to:
+
+- Identify complex branching patterns
+- Understand loop structures
+- Verify control flow logic
+- Document algorithmic behavior
+
+Control flow graphs are automatically displayed in a collapsible section on each
+procedure's documentation page. They complement the existing call graphs by showing
+internal procedure logic rather than inter-procedural relationships.
 
 Output
 ------

@@ -1390,6 +1390,24 @@ class GraphManager:
                 obj.callsgraph = CallsGraph(obj, self.data)
                 obj.calledbygraph = CalledByGraph(obj, self.data)
                 obj.usesgraph = UsesGraph(obj, self.data)
+                
+                # Generate control flow graph
+                try:
+                    from ford.graphs import create_control_flow_graph_svg
+                    cfg = obj.get_control_flow_graph()
+                    if cfg:
+                        obj.controlflowtgraph_svg = create_control_flow_graph_svg(cfg, obj.name)
+                    else:
+                        obj.controlflowtgraph_svg = ""
+                except Exception:
+                    obj.controlflowtgraph_svg = ""
+                
+                # Extract logic blocks for hierarchical display
+                try:
+                    obj.logic_blocks = obj.get_logic_blocks()
+                except Exception:
+                    obj.logic_blocks = None
+                
                 self.procedures.add(obj)
                 # regester internal procedures
                 for p in traverse(obj, ["subroutines", "functions"]):
@@ -1497,3 +1515,128 @@ class GraphManager:
         for graph in [self.usegraph, self.typegraph, self.callgraph, self.filegraph]:
             if graph:
                 graph.create_svg(self.graphdir)
+
+
+def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
+    """Create an SVG representation of a control flow graph
+    
+    Parameters
+    ----------
+    cfg : ControlFlowGraph
+        The control flow graph to visualize
+    procedure_name : str
+        Name of the procedure (for identification)
+    
+    Returns
+    -------
+    str
+        SVG representation of the graph, or empty string if graphviz is not installed
+    """
+    if not graphviz_installed:
+        return ""
+    
+    try:
+        from ford.control_flow import BlockType
+        
+        dot = Digraph(
+            f"cfg_{procedure_name}",
+            graph_attr={
+                "rankdir": "TB",
+                "concentrate": "false",
+                "id": f"cfg_{procedure_name}",
+            },
+            node_attr={
+                "shape": "box",
+                "style": "filled",
+                "fontname": "Helvetica",
+                "fontsize": "10",
+            },
+            edge_attr={
+                "fontname": "Helvetica",
+                "fontsize": "9",
+            },
+            format="svg",
+            engine="dot",
+        )
+        
+        # Color scheme for different block types
+        colors = {
+            BlockType.ENTRY: "#90EE90",  # Light green
+            BlockType.EXIT: "#FFB6C1",   # Light pink
+            BlockType.STATEMENT: "#E0E0E0",  # Light gray
+            BlockType.IF_CONDITION: "#87CEEB",  # Sky blue
+            BlockType.DO_LOOP: "#DDA0DD",  # Plum
+            BlockType.SELECT_CASE: "#F0E68C",  # Khaki
+            BlockType.CASE: "#FFE4B5",  # Moccasin
+        }
+        
+        # Add nodes
+        for block in cfg.blocks.values():
+            color = colors.get(block.block_type, "#FFFFFF")
+            
+            # Build label
+            if block.condition:
+                label = f"{block.label}\\n{block.condition}"
+            else:
+                label = block.label
+            
+            # Add first few statements to label if present
+            if block.statements:
+                stmts = "\\n".join(block.statements[:3])
+                if len(block.statements) > 3:
+                    stmts += "\\n..."
+                label = f"{label}\\n---\\n{stmts}"
+            
+            # Use diamond shape for conditions
+            shape = "diamond" if block.block_type in [
+                BlockType.IF_CONDITION,
+                BlockType.DO_LOOP,
+                BlockType.SELECT_CASE
+            ] else "box"
+            
+            dot.node(
+                str(block.id),
+                label=label,
+                fillcolor=color,
+                shape=shape
+            )
+        
+        # Add edges
+        for block in cfg.blocks.values():
+            for succ_id in block.successors:
+                # Label edges from conditions
+                edge_label = ""
+                if block.block_type == BlockType.IF_CONDITION:
+                    # First successor is "true", second is "false"
+                    idx = block.successors.index(succ_id)
+                    edge_label = "T" if idx == 0 else "F"
+                elif block.block_type == BlockType.DO_LOOP:
+                    # First successor is loop body, second is exit
+                    idx = block.successors.index(succ_id)
+                    edge_label = "loop" if idx == 0 else "exit"
+                
+                dot.edge(str(block.id), str(succ_id), label=edge_label)
+        
+        svg_src = dot.pipe().decode("utf-8")
+        svg_src = svg_src.replace(
+            "<svg ", f'<svg id="cfg_{procedure_name}" '
+        )
+        
+        return svg_src
+    except Exception:
+        return ""
+
+
+CONTROL_FLOW_GRAPH_KEY = """
+<p>Control flow graph showing the execution flow within the procedure. Nodes of different colors represent:</p>
+<ul>
+<li><span style="color: #90EE90;">■</span> Entry point</li>
+<li><span style="color: #FFB6C1;">■</span> Exit point</li>
+<li><span style="color: #87CEEB;">◆</span> IF condition (diamond)</li>
+<li><span style="color: #DDA0DD;">◆</span> DO loop (diamond)</li>
+<li><span style="color: #F0E68C;">◆</span> SELECT CASE (diamond)</li>
+<li><span style="color: #FFE4B5;">■</span> CASE block</li>
+<li><span style="color: #E0E0E0;">■</span> Statement block</li>
+</ul>
+<p>Arrows show the possible execution paths through the code.</p>
+"""

@@ -12,6 +12,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   ford.control_flow
    ford.external_project
    ford.fixed2free2
    ford.fortran_project
