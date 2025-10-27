@@ -76,6 +76,19 @@ following command:
 
     spack install py-ford
 
+### Development in GitHub Codespaces
+
+For development work, you can use GitHub Codespaces to get a fully configured
+development environment without any local setup:
+
+1. Click the "Code" button on GitHub
+2. Select the "Codespaces" tab
+3. Click "Create codespace on main"
+
+The Codespace includes Python 3.11, all Ford dependencies (including graphviz
+for graph generation), and the testing framework. See
+[`.devcontainer/README.md`](.devcontainer/README.md) for more details.
+
 ## Documentation
 More complete documentation can be found in the [docs](https://forddocs.readthedocs.io).
 
