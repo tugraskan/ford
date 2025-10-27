@@ -1,0 +1,36 @@
+name: devcontainer
+
+on:
+  push:
+    paths:
+      - 'Dockerfile'
+      - '.devcontainer/**'
+      - '.github/workflows/devcontainer.yml'
+  pull_request:
+    paths:
+      - 'Dockerfile'
+      - '.devcontainer/**'
+      - '.github/workflows/devcontainer.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build Docker image
+      run: |
+        docker build -t ford-devcontainer:test -f Dockerfile .
+    
+    - name: Test Ford installation in container
+      run: |
+        docker run --rm ford-devcontainer:test ford --version
+    
+    - name: Test graphviz installation in container
+      run: |
+        docker run --rm ford-devcontainer:test dot -V
+    
+    - name: Test Python dependencies in container
+      run: |
+        docker run --rm ford-devcontainer:test python -c "import ford; import markdown; import jinja2; import pygments; import graphviz; print('All imports successful')"
