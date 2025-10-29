@@ -32,11 +32,9 @@ def sample_metadata_v1():
                 ],
                 "subroutines": [
                     {
-                        "name": "sub1", 
+                        "name": "sub1",
                         "obj": "subroutine",
-                        "args": [
-                            {"name": "input", "vartype": "type(type_a)"}
-                        ]
+                        "args": [{"name": "input", "vartype": "type(type_a)"}],
                     },
                 ],
                 "types": [
@@ -82,18 +80,14 @@ def sample_metadata_v2():
                 ],
                 "subroutines": [
                     {
-                        "name": "sub1", 
+                        "name": "sub1",
                         "obj": "subroutine",
-                        "args": [
-                            {"name": "input", "vartype": "type(type_a)"}
-                        ]
+                        "args": [{"name": "input", "vartype": "type(type_a)"}],
                     },
                     {
-                        "name": "sub2", 
+                        "name": "sub2",
                         "obj": "subroutine",  # new subroutine
-                        "args": [
-                            {"name": "data", "vartype": "type(type_b)"}
-                        ]
+                        "args": [{"name": "data", "vartype": "type(type_b)"}],
                     },
                 ],
                 "types": [
@@ -132,10 +126,10 @@ def test_load_metadata(tmp_path):
     test_data = {"modules": [], "metadata": []}
     test_file = tmp_path / "test_modules.json"
     test_file.write_text(json.dumps(test_data))
-    
+
     # Load the metadata
     result = load_metadata(test_file)
-    
+
     assert result == test_data
     assert "modules" in result
     assert "metadata" in result
@@ -150,14 +144,14 @@ def test_load_metadata_file_not_found():
 def test_extract_module_names(sample_metadata_v1):
     """Test extracting module names from metadata"""
     modules = extract_module_names(sample_metadata_v1)
-    
+
     assert modules == {"module_a", "module_b"}
 
 
 def test_extract_procedure_names(sample_metadata_v1):
     """Test extracting procedure names from metadata"""
     procedures = extract_procedure_names(sample_metadata_v1)
-    
+
     expected = {
         "module_a::func1",
         "module_a::func2",
@@ -170,7 +164,7 @@ def test_extract_procedure_names(sample_metadata_v1):
 def test_extract_type_names(sample_metadata_v1):
     """Test extracting type names used in procedure arguments from metadata"""
     types = extract_type_names(sample_metadata_v1)
-    
+
     # Only type_a is extracted because it's used in sub1's arguments
     assert types == {"module_a::type_a"}
 
@@ -178,7 +172,7 @@ def test_extract_type_names(sample_metadata_v1):
 def test_compare_metadata_modules(sample_metadata_v1, sample_metadata_v2):
     """Test comparison of modules between versions"""
     result = compare_metadata(sample_metadata_v1, sample_metadata_v2)
-    
+
     # module_c is new, module_b is removed, module_a exists in both
     assert result.new_modules == {"module_c"}
     assert result.removed_modules == {"module_b"}
@@ -187,11 +181,11 @@ def test_compare_metadata_modules(sample_metadata_v1, sample_metadata_v2):
 def test_compare_metadata_procedures(sample_metadata_v1, sample_metadata_v2):
     """Test comparison of procedures between versions"""
     result = compare_metadata(sample_metadata_v1, sample_metadata_v2)
-    
+
     # New procedures: func3, sub2, subC
     expected_new = {"module_a::func3", "module_a::sub2", "module_c::subC"}
     assert result.new_procedures == expected_new
-    
+
     # Removed procedures: func2, funcB (in removed module)
     expected_removed = {"module_a::func2", "module_b::funcB"}
     assert result.removed_procedures == expected_removed
@@ -200,7 +194,7 @@ def test_compare_metadata_procedures(sample_metadata_v1, sample_metadata_v2):
 def test_compare_metadata_types(sample_metadata_v1, sample_metadata_v2):
     """Test comparison of derived types between versions"""
     result = compare_metadata(sample_metadata_v1, sample_metadata_v2)
-    
+
     assert result.new_types == {"module_a::type_b"}
     assert result.removed_types == set()
 
@@ -209,13 +203,13 @@ def test_format_report(sample_metadata_v1, sample_metadata_v2):
     """Test report formatting"""
     result = compare_metadata(sample_metadata_v1, sample_metadata_v2)
     report = format_report(result, verbose=False)
-    
+
     # Check that report contains expected sections
     assert "MODULES" in report
     assert "PROCEDURES" in report
     assert "DERIVED TYPES" in report
     assert "SUMMARY" in report
-    
+
     # Check that specific changes are mentioned
     assert "module_c" in report
     assert "module_b" in report
@@ -225,7 +219,7 @@ def test_format_report_verbose(sample_metadata_v1, sample_metadata_v2):
     """Test verbose report formatting includes variables"""
     result = compare_metadata(sample_metadata_v1, sample_metadata_v2)
     report = format_report(result, verbose=True)
-    
+
     # Verbose report should include variables section
     assert "VARIABLES" in report
 
@@ -243,9 +237,9 @@ def test_compare_metadata_no_changes():
             }
         ]
     }
-    
+
     result = compare_metadata(metadata, metadata)
-    
+
     # No changes should be detected
     assert len(result.new_modules) == 0
     assert len(result.removed_modules) == 0
@@ -256,9 +250,9 @@ def test_compare_metadata_no_changes():
 def test_compare_empty_metadata():
     """Test comparison with empty metadata"""
     empty = {"modules": []}
-    
+
     result = compare_metadata(empty, empty)
-    
+
     assert len(result.new_modules) == 0
     assert len(result.removed_modules) == 0
 
@@ -266,7 +260,7 @@ def test_compare_empty_metadata():
 def test_comparison_result_dataclass():
     """Test ComparisonResult dataclass initialization"""
     result = ComparisonResult()
-    
+
     assert isinstance(result.new_modules, set)
     assert isinstance(result.removed_modules, set)
     assert isinstance(result.new_procedures, set)
@@ -288,11 +282,11 @@ def test_extract_names_with_none_values():
             },
         ]
     }
-    
+
     # Should not raise an exception
     modules = extract_module_names(metadata_with_nones)
     assert modules == {"valid_module"}
-    
+
     procedures = extract_procedure_names(metadata_with_nones)
     assert procedures == {"valid_module::func1"}
 
@@ -300,14 +294,12 @@ def test_extract_names_with_none_values():
 def test_extract_names_missing_keys():
     """Test extraction functions handle missing keys"""
     metadata_minimal = {
-        "modules": [
-            {"name": "minimal_module"}  # Missing functions, subroutines, etc.
-        ]
+        "modules": [{"name": "minimal_module"}]  # Missing functions, subroutines, etc.
     }
-    
+
     # Should not raise an exception
     modules = extract_module_names(metadata_minimal)
     assert modules == {"minimal_module"}
-    
+
     procedures = extract_procedure_names(metadata_minimal)
     assert len(procedures) == 0

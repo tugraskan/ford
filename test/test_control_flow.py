@@ -23,19 +23,21 @@ subroutine test_if(x, result)
 end subroutine test_if
 """
     cfg = parse_control_flow(source, "test_if", "subroutine")
-    
+
     assert cfg is not None
     assert len(cfg.blocks) > 0
     assert cfg.entry_block_id is not None
     assert cfg.exit_block_id is not None
-    
+
     # Should have entry, exit, condition, then block, else block, merge block
     assert len(cfg.blocks) >= 6
-    
+
     # Find the IF condition block
-    if_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.IF_CONDITION]
+    if_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.IF_CONDITION
+    ]
     assert len(if_blocks) > 0
-    
+
     # IF condition should have 2 successors (true and false branches)
     if_block = if_blocks[0]
     assert len(if_block.successors) == 2
@@ -56,13 +58,13 @@ subroutine test_loop(n, sum)
 end subroutine test_loop
 """
     cfg = parse_control_flow(source, "test_loop", "subroutine")
-    
+
     assert cfg is not None
-    
+
     # Find DO loop blocks
     do_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.DO_LOOP]
     assert len(do_blocks) > 0
-    
+
     # DO loop should have 2 successors (loop body and after loop)
     do_block = do_blocks[0]
     assert len(do_block.successors) == 2
@@ -86,17 +88,19 @@ subroutine test_select(n, result)
 end subroutine test_select
 """
     cfg = parse_control_flow(source, "test_select", "subroutine")
-    
+
     assert cfg is not None
-    
+
     # Find SELECT CASE block
-    select_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.SELECT_CASE]
+    select_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.SELECT_CASE
+    ]
     assert len(select_blocks) > 0
-    
+
     # SELECT should have multiple successors (one for each case)
     select_block = select_blocks[0]
     assert len(select_block.successors) >= 3  # case 1, case 2, case default
-    
+
     # Find CASE blocks
     case_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.CASE]
     assert len(case_blocks) >= 3
@@ -121,11 +125,13 @@ subroutine test_nested_if(x, y, result)
 end subroutine test_nested_if
 """
     cfg = parse_control_flow(source, "test_nested_if", "subroutine")
-    
+
     assert cfg is not None
-    
+
     # Should have two IF condition blocks (outer and inner)
-    if_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.IF_CONDITION]
+    if_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.IF_CONDITION
+    ]
     assert len(if_blocks) >= 2
 
 
@@ -143,13 +149,15 @@ subroutine test_if_no_else(x, result)
 end subroutine test_if_no_else
 """
     cfg = parse_control_flow(source, "test_if_no_else", "subroutine")
-    
+
     assert cfg is not None
-    
+
     # Find the IF condition block
-    if_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.IF_CONDITION]
+    if_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.IF_CONDITION
+    ]
     assert len(if_blocks) > 0
-    
+
     # IF condition should have 2 successors even without ELSE (true branch and merge)
     if_block = if_blocks[0]
     assert len(if_block.successors) == 2
@@ -170,11 +178,11 @@ function calculate_sum(n) result(sum)
 end function calculate_sum
 """
     cfg = parse_control_flow(source, "calculate_sum", "function")
-    
+
     assert cfg is not None
     assert cfg.procedure_type == "function"
     assert cfg.procedure_name == "calculate_sum"
-    
+
     # Should have DO loop
     do_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.DO_LOOP]
     assert len(do_blocks) > 0
@@ -188,7 +196,7 @@ subroutine empty_sub()
 end subroutine empty_sub
 """
     cfg = parse_control_flow(source, "empty_sub", "subroutine")
-    
+
     assert cfg is not None
     # Should at least have entry and exit blocks
     assert len(cfg.blocks) >= 2
@@ -228,14 +236,18 @@ subroutine complex_flow(n, x, result)
 end subroutine complex_flow
 """
     cfg = parse_control_flow(source, "complex_flow", "subroutine")
-    
+
     assert cfg is not None
-    
+
     # Should have IF, DO, and SELECT CASE blocks
-    if_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.IF_CONDITION]
+    if_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.IF_CONDITION
+    ]
     do_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.DO_LOOP]
-    select_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.SELECT_CASE]
-    
+    select_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.SELECT_CASE
+    ]
+
     assert len(if_blocks) >= 1  # At least the outer IF
     assert len(do_blocks) >= 1
     assert len(select_blocks) >= 1
