@@ -351,6 +351,17 @@ class Documentation:
             project.usegraph = ""
             project.filegraph = ""
 
+        # Extract logic blocks for procedures (independent of graph generation)
+        for entity_list in [
+            project.procedures,
+            project.submodprocedures,
+        ]:
+            for proc in entity_list:
+                try:
+                    proc.logic_blocks = proc.get_logic_blocks()
+                except Exception:
+                    proc.logic_blocks = None
+
         if settings.search:
             url = "" if settings.relative else settings.project_url
             self.tipue = ford.tipue_search.Tipue_Search_JSON_Generator(

@@ -1402,12 +1402,6 @@ class GraphManager:
                 except Exception:
                     obj.controlflowtgraph_svg = ""
                 
-                # Extract logic blocks for hierarchical display
-                try:
-                    obj.logic_blocks = obj.get_logic_blocks()
-                except Exception:
-                    obj.logic_blocks = None
-                
                 self.procedures.add(obj)
                 # regester internal procedures
                 for p in traverse(obj, ["subroutines", "functions"]):
