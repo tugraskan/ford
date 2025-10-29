@@ -160,10 +160,10 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/salt_data_module.html'>salt_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
                   <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
                   <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/salt_data_module.html'>salt_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -375,35 +375,6 @@
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(1 attribute from maximum_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>db_mx%plantparm</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
           <h3 class="accordion-header" id="headinginteger">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapseinteger" aria-expanded="false" 
@@ -471,6 +442,35 @@
                     <tr>
                       <td><strong>salt_stress_b</strong></td>
                       <td><p>|a and b parameters in salinity relative yield equations</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(1 attribute from maximum_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>db_mx%plantparm</strong></td>
+                      <td>None</td>
                     </tr>
                 </tbody>
               </table>
@@ -549,6 +549,103 @@
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use constituent_mass_module
+use input_file_module
+use maximum_data_module
+use salt_data_module
+implicit none
+character (len=80) :: titldum = ""
+character (len=80) :: header = ""
+character (len=12) :: plant_name = ""
+integer :: isalt = 0
+integer :: iplant = 0
+logical :: i_exist              !none       |check to determine if file exists
+inquire (file="salt_plants", exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_exist</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>open(107,file="salt_plants")
+read(107,*) titldum
+read(107,*) header
+read(107,*) salt_tds_ec
+read(107,*)
+read(107,*) salt_tol_sim !flag to simulate salt effect on plant growth
+read(107,*) salt_soil_type !soil type (1 = CaSO4 soils; 2 = NaCl soils)
+read(107,*) salt_effect !method for applying salt stress: 1 = applied after other stresses; 2 = included with other stresses (min)
+read(107,*)
+read(107,*)
+read(107,*)
+read(107,*)
+read(107,*) header
+allocate (salt_stress_a(db_mx%plantparm), source = 0.)
+allocate (salt_stress_b(db_mx%plantparm), source = 0.)
+close(107)</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iplant=1,db_mx%plantparm</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read(107,*) plant_name,salt_stress_a(iplant),salt_stress_b(iplant)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

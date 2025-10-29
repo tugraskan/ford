@@ -209,7 +209,7 @@ Units conversion Micrometer to Millimeters
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-idat"></span>
+              <span class="anchor" id="variable-idat~2"></span>
               integer
             </td>
 <td></td>
@@ -452,6 +452,265 @@ Units conversion Micrometer to Millimeters
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use channel_data_module
+use channel_module
+implicit none
+integer :: irch     !none      |counter
+integer :: ised = 0 !none      |counter
+integer :: idat     !units     |description
+real :: bnksize = 0.  !units     |description
+real :: bedsize = 0.  !units     |description
+real :: sc = 0.     !units     |description
+ised = ch_dat(idat)%sed
+bnksize = ch_sed(ised)%bnk_d50 / 1000.  !! Units conversion Micrometer to Millimeters</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bnksize <= 0.005</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch(irch)%bnk_cla = 0.65
+ch(irch)%bnk_sil = 0.15
+ch(irch)%bnk_san = 0.15
+ch(irch)%bnk_gra = 0.05</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bnksize > 0.005 .and. bnksize <= 0.05</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch(irch)%bnk_sil = 0.65
+ch(irch)%bnk_cla = 0.15
+ch(irch)%bnk_san = 0.15
+ch(irch)%bnk_gra = 0.05</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bnksize > 0.05 .and. bnksize <= 2.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch(irch)%bnk_san = 0.65
+ch(irch)%bnk_sil = 0.15
+ch(irch)%bnk_cla = 0.15
+ch(irch)%bnk_gra = 0.05</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bnksize > 2.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch(irch)%bnk_gra = 0.65
+ch(irch)%bnk_san = 0.15
+ch(irch)%bnk_sil = 0.15
+ch(irch)%bnk_cla = 0.05</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>bedsize = ch_sed(ised)%bed_d50 / 1000.  !! Units conversion Micrometer to Millimeters</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bedsize <= 0.005</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-7" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch(irch)%bed_cla = 0.65
+ch(irch)%bed_sil = 0.15
+ch(irch)%bed_san = 0.15
+ch(irch)%bed_gra = 0.05</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bedsize > 0.005 .and. bedsize <= 0.05</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-8" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch(irch)%bed_sil = 0.65
+ch(irch)%bed_cla = 0.15
+ch(irch)%bed_san = 0.15
+ch(irch)%bed_gra = 0.05</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-9" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bedsize > 0.05 .and. bedsize <= 2.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-9" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch(irch)%bed_san = 0.65
+ch(irch)%bed_sil = 0.15
+ch(irch)%bed_cla = 0.15
+ch(irch)%bed_gra = 0.05</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-10" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bedsize > 2.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-10" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch(irch)%bed_gra = 0.65
+ch(irch)%bed_san = 0.15
+ch(irch)%bed_sil = 0.15
+ch(irch)%bed_cla = 0.05</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>SC = 0.</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-12" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ch_sed(ised)%tc_bnk <= 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-12" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>SC = (ch(irch)%bnk_sil + ch(irch)%bnk_cla) * 100.
+ch_sed(ised)%tc_bnk = (0.1 + (0.1779*SC) + (0.0028*(SC)**2)       &
+- ((2.34E-05)*(SC)**3)) * ch_sed(ised)%cov1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-13" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ch_sed(ised)%tc_bed <= 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-13" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>SC = (ch(irch)%bed_sil + ch(irch)%bed_cla) * 100.
+ch_sed(ised)%tc_bed = (0.1 + (0.1779*SC) + (0.0028*(SC)**2)       &
+- ((2.34E-05)*(SC)**3)) * ch_sed(ised)%cov2</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -467,7 +726,7 @@ Units conversion Micrometer to Millimeters
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-idat"></span>
+              <span class="anchor" id="variable-idat~2"></span>
               integer,
             </td>
               <td>public</td>

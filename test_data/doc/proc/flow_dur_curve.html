@@ -670,7 +670,7 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%day</strong></td>
+                      <td><strong>time%yrs</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -678,11 +678,11 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%yrs</strong></td>
+                      <td><strong>time%end_sim</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%end_sim</strong></td>
+                      <td><strong>time%day</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -698,6 +698,483 @@
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use time_module
+use hydrograph_module
+implicit none
+real :: sum = 0.                    !             |
+integer :: iyr = 0                  !none         |number of years
+integer :: next = 0                 !             |
+integer :: npts = 0                 !             |
+integer :: ipts = 0                 !             |
+integer :: iprv = 0                 !             |
+integer :: mle = 0                  !             |
+integer :: nprob = 0                !             |
+integer :: iday = 0                 !             |
+integer :: mfe = 0                  !             |
+integer :: iyr_ch = 0               !             |
+ob(icmd)%fdc_ll(time%day)%val = ob(icmd)%hd(1)%flo
+next = ob(icmd)%fdc%mfe
+npts = time%day - 1</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ipts = 1, npts</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iprv = next
+next = ob(icmd)%fdc_ll(next)%next</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ob(icmd)%fdc_ll(time%day)%val >= ob(icmd)%fdc_ll(next)%val</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%fdc_ll(time%day)%next = next
+exit</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ipts == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%fdc%mfe = time%day</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%fdc_ll(iprv)%next = time%day</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>npts > 0 .and. ipts == npts + 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>mle = ob(icmd)%fdc%mle
+ob(icmd)%fdc_ll(mle)%next = time%day
+ob(icmd)%fdc%mle = time%day</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>time%end_yr == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sum = 0.
+nprob = 1
+next = ob(icmd)%fdc%mfe
+ob(icmd)%fdc%yr(time%yrs)%mean = sum / float(iday)
+mfe = ob(icmd)%fdc%mfe
+mle = ob(icmd)%fdc%mle
+ob(icmd)%fdc%yr(time%yrs)%max = ob(icmd)%fdc_ll(mfe)%val
+ob(icmd)%fdc%yr(time%yrs)%min = ob(icmd)%fdc_ll(mle)%val
+ob(icmd)%fdc%mfe = 1
+ob(icmd)%fdc%mle = 1</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iday = 1, time%day</code>
+                  </div>
+                </a>
+                <div id="block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>next = ob(icmd)%fdc_ll(next)%next</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iday == fdc_days(nprob)</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%fdc%yr(time%yrs)%p(nprob) = ob(icmd)%fdc_ll(next)%val
+nprob = nprob + 1
+if (nprob > fdc_npts) exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iday = 1, time%day</code>
+                  </div>
+                </a>
+                <div id="block-4-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sum = sum + ob(icmd)%fdc_ll(iday)%val</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>time%end_sim == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-5-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>nprob = 1, fdc_npts</code>
+                  </div>
+                </a>
+                <div id="block-5-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%fdc%mfe = 1
+ob(icmd)%fdc%mle = 1</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iyr = 1, time%nbyr</code>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%fdc_lla(iyr)%val = ob(icmd)%fdc%yr(iyr)%p(nprob)
+next = ob(icmd)%fdc%mfe
+npts = iyr - 1</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ipts = 1, npts</code>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iprv = next
+next = ob(icmd)%fdc_lla(next)%next
+end do  !ipts
+end do    !iyr
+sum = 0.
+ob(icmd)%fdc%p_md%mean = sum / time%nbyr
+next = ob(icmd)%fdc%mfe</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ob(icmd)%fdc_lla(iyr)%val <= ob(icmd)%fdc_lla(next)%val</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%fdc_lla(iyr)%next = next
+exit</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ipts == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%fdc%mfe = iyr</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%fdc_lla(iprv)%next = iyr</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>npts > 0 .and. ipts == npts + 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>mle = ob(icmd)%fdc%mle
+ob(icmd)%fdc_lla(mle)%next = iyr
+ob(icmd)%fdc%mle = iyr</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iyr = 1, time%nbyr</code>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sum = sum + ob(icmd)%fdc%yr(iyr)%mean
+ob(icmd)%fdc%p_md%max = Max (ob(icmd)%fdc%p_md%max, ob(icmd)%fdc%yr(iyr)%max)
+ob(icmd)%fdc%p_md%min = amin1 (ob(icmd)%fdc%p_md%min, ob(icmd)%fdc%yr(iyr)%min)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1-block-1-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iyr = 1, time%nbyr</code>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1-block-1-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iprv = next
+next = ob(icmd)%fdc_lla(next)%next
+end do    !iyr
+end do    !nprob
+ob(icmd)%fdc%p_md%mean = ob(icmd)%fdc%p_md%mean / 86400.
+ob(icmd)%fdc%p_md%p = ob(icmd)%fdc%p_md%p / 86400.
+ob(icmd)%fdc%p_md%max = ob(icmd)%fdc%p_md%max / 86400.
+ob(icmd)%fdc%p_md%min = ob(icmd)%fdc%p_md%min / 86400.
+write (6000,*) ob(icmd)%typ, ob(icmd)%props, ob(icmd)%area_ha, ob(icmd)%flash_idx%index,  &
+ob(icmd)%fdc%p_md%mean, ob(icmd)%fdc%p_md%max, ob(icmd)%fdc%p_md%p, ob(icmd)%fdc%p_md%min
+return</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1-block-1-block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iyr > time%nbyr / 2</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1-block-1-block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iyr_ch = (time%nbyr + 1.1) / 2</code></pre>
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1-block-1-block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iyr <= iyr_ch</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1-block-1-block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%fdc%p_md%p(nprob) = ob(icmd)%fdc%yr(next)%p(nprob)
+exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1-block-1-block-4-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1-block-1-block-4-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%fdc%p_md%p(nprob) = (ob(icmd)%fdc%yr(next)%p(nprob) + ob(icmd)%fdc%yr(iprv)%p(nprob)) / 2.
+exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1-block-1-block-4-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ob(icmd)%flash_idx%sum_q > 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1-block-1-block-4-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(icmd)%flash_idx%index = ob(icmd)%flash_idx%sum_q_q1 / ob(icmd)%flash_idx%sum_q</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

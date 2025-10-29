@@ -334,11 +334,11 @@
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~18" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~9" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                     <tr>
                       <td><strong>iru</strong></td>
-                      <td><p>none |counter</p><a href="../module/ru_module.html#variable-iru~5" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |counter</p><a href="../module/ru_module.html#variable-iru~10" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -593,6 +593,204 @@
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hydrograph_module
+use hru_lte_module
+use ru_module
+use hru_module, only : ihru, tconc
+implicit none
+integer :: ii = 0             !none          |counter
+integer :: ielem = 0          !none          |counter
+real :: rto = 0.              !none          |cloud cover factor</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iru = 1, sp_ob%ru</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ii = 1, ru_def(iru)%num_tot</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ielem = ru_def(iru)%num(ii)
+ihru = ru_elem(ielem)%obtypno</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ru_elem(ielem)%dr_name == "calc" .or. ru_elem(ielem)%dr_name == "0"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rto = amin1(1.0, rto ** .5)
+ru_elem(ielem)%dr = rto .add. hz
+ru_elem(ielem)%dr%flo = 1.</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>ru_elem(ielem)%obtyp</code>)
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"hru"</code>)
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rto = tconc(ihru) / ru_tc(iru)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"hlt"</code>)
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rto = (hlt_db(ihru)%tc / 3600.) / ru_tc(iru)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"sdc"</code>)
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rto = 1.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"ru"</code>)
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rto = 1.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ru_elem(ielem)%dr_name == "full" .or. ru_elem(ielem)%dr_name == "1"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ru_elem(ielem)%dr = 1. .add. hz</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

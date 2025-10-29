@@ -160,8 +160,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
               </ul>
             </li>
         </ul>
@@ -335,35 +335,6 @@ crack flow, it is assumed to percolate out of bottom of profile</p>
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-              type(<a href='../type/soil_profile.html'>soil_profile</a>)
-              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>soil</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
           <h3 class="accordion-header" id="headingreal">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapsereal" aria-expanded="false" 
@@ -434,7 +405,36 @@ crack flow, it is assumed to percolate out of bottom of profile</p>
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~18" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~9" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+              type(<a href='../type/soil_profile.html'>soil_profile</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil</strong></td>
+                      <td></td>
                     </tr>
                 </tbody>
               </table>
@@ -449,6 +449,184 @@ crack flow, it is assumed to percolate out of bottom of profile</p>
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hru_module, only : sepbtm, voltot, inflpcp, ihru, sepcrk, sepcrktot, volcrmin
+use soil_module
+implicit none
+integer :: j = 0          !none          |HRU number
+integer :: ly = 0         !none          |counter (soil layer)
+real :: crklch = 0.5      !none          |
+real :: xx = 0.           !mm H2O        |water deficiency in soil layer
+real :: crk = 0.          !mm H2O        |percolation due to crack flow
+j = ihru
+sepcrk = Min(voltot, inflpcp)
+sepcrktot = sepcrk</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sepcrk > 1.e-4</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ly = soil(j)%nly, 1, -1</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>crk = 0.
+xx = 0.
+xx = soil(j)%phys(ly)%fc - soil(j)%phys(ly)%st
+if (sepcrk < 1.e-6) exit</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ly == soil(j)%nly</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>crk = crklch*(soil(j)%ly(ly)%volcr/(soil(j)%phys(ly)%d -          &
+soil(j)%phys(ly-1)%d) * voltot - volcrmin)</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>crk < sepcrk</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sepcrk = sepcrk - crk
+sepbtm(j) = sepbtm(j) + crk
+soil(j)%ly(ly)%prk = soil(j)%ly(ly)%prk + crk</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sepbtm(j) = sepbtm(j) + sepcrk
+soil(j)%ly(ly)%prk = soil(j)%ly(ly)%prk + sepcrk
+sepcrk = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>xx > 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>crk = Min(sepcrk, xx)
+soil(j)%phys(ly)%st = soil(j)%phys(ly)%st + crk
+sepcrk = sepcrk - crk
+if (ly /= 1) soil(j)%ly(ly-1)%prk = soil(j)%ly(ly-1)%prk + crk</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sepcrk > 1.e-4</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sepbtm(j) = sepbtm(j) + sepcrk
+soil(j)%ly(soil(j)%nly)%prk =                              &
+soil(j)%ly(soil(j)%nly)%prk + sepcrk</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

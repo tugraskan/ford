@@ -160,12 +160,12 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
-                  <li class="list-inline-item"><a href='../module/channel_velocity_module.html'>channel_velocity_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/sd_channel_module.html'>sd_channel_module</a></li>
+                  <li class="list-inline-item"><a href='../module/channel_velocity_module.html'>channel_velocity_module</a></li>
+                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -602,7 +602,7 @@
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(4 attributes from maximum_data_module)</small>
+              <small class="text-muted ms-2">(4 attributes from time_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -617,11 +617,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>db_mx%ch_sednut</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%ch_lte</strong></td>
+                      <td><strong>time%step</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -629,7 +625,11 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%step</strong></td>
+                      <td><strong>db_mx%ch_sednut</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%ch_lte</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -946,6 +946,241 @@
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use input_file_module
+use sd_channel_module
+use channel_velocity_module
+use maximum_data_module
+use hydrograph_module
+use time_module
+implicit none
+character (len=80) :: titldum = ""!             |title of file
+character (len=80) :: header = "" !             |header of file
+integer :: eof = 0              !             |end of file
+integer :: imax = 0             !none         |determine max number for array (imax) and total number in file
+logical :: i_exist              !none         |check to determine if file exists
+integer :: idb = 0              !             |
+integer :: ts_sed = 0           !none         |time step for channel sediment routing
+eof = 0
+imax = 0
+maxint = 10
+ts_sed = Max (10, time%step)
+allocate (timeint(ts_sed), source = 0.)
+allocate (hyd_rad(ts_sed), source = 0.)
+allocate (trav_time(ts_sed), source = 0.)
+allocate (flo_dep(ts_sed), source = 0.)
+inquire (file=in_cha%hyd_sed, exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>.not. i_exist .or. in_cha%hyd_sed == "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (sd_chd(0:0))</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (1,file=in_cha%hyd_sed)
+read (1,*,iostat=eof) titldum
+if (eof < 0) exit
+read (1,*,iostat=eof) header
+if (eof < 0) exit
+db_mx%ch_lte = imax
+allocate (sd_chd(0:imax))
+rewind (1)
+read (1,*,iostat=eof) titldum
+if (eof < 0) exit
+read (1,*,iostat=eof) header
+if (eof < 0) exit
+exit</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (1,*,iostat=eof) titldum
+if (eof < 0) exit
+imax = imax + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>idb = 1, db_mx%ch_lte</code>
+                  </div>
+                </a>
+                <div id="block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (1,*,iostat=eof) sd_chd(idb)
+if (eof < 0) exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>inquire (file="sed_nut.cha", exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>.not. i_exist .or. "sed_nut.cha" == "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (sd_chd1(1))</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (1,file="sed_nut.cha")
+read (1,*,iostat=eof) titldum
+if (eof < 0) exit
+read (1,*,iostat=eof) header
+if (eof < 0) exit
+db_mx%ch_sednut = imax
+allocate (sd_chd1(0:imax))
+rewind (1)
+read (1,*,iostat=eof) titldum
+if (eof < 0) exit
+read (1,*,iostat=eof) header
+if (eof < 0) exit
+exit</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-6-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                  </div>
+                </a>
+                <div id="block-6-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (1,*,iostat=eof) titldum
+if (eof < 0) exit
+imax = imax + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-6-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>idb = 1, db_mx%ch_sednut</code>
+                  </div>
+                </a>
+                <div id="block-6-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (1,*,iostat=eof) sd_chd1(idb)
+if (eof < 0) exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>close (1)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

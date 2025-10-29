@@ -195,7 +195,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-max~5"></span>
+              <span class="anchor" id="variable-max~6"></span>
               integer
             </td>
 <td></td>
@@ -347,6 +347,175 @@
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>implicit none
+character(len=50) :: cfind                   !             |
+integer :: iseq                              !             |
+integer :: max                               !             |
+character(len=50), dimension(max) :: sch     !             |
+integer :: nf = 0                            !             |
+integer :: int                               !             |
+integer :: nn = 0                            !none         |number of subdaily computation points for stable
+integer :: nl = 0                            !none         |number of layers being mixed
+nf = 1
+nl = max</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>int = 1, 25  !max for 100,000,000</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>nn = (nl - nf) / 2 + nf</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>nl - nf == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sch(nl) == cfind</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iseq = nl
+return</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sch(nf) == cfind</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iseq = nf
+return</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sch(nn) == cfind</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iseq = nn
+return</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sch(nn) > cfind</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>nl = nn</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sch(nn) < cfind</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>nf = nn</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>100  format (1x,2a)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -379,7 +548,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-max~5"></span>
+              <span class="anchor" id="variable-max~6"></span>
               integer,
             </td>
               <td>public</td>

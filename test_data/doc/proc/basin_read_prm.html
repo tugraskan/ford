@@ -160,8 +160,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
               </ul>
             </li>
         </ul>
@@ -505,35 +505,6 @@
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(1 attribute from input_file_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>in_basin%parms_bas</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_basin_parms_html__basin_parms__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_basin_parms_html__basin_parms__a__" aria-expanded="false" 
@@ -562,6 +533,35 @@
             </div>
           </div>
         </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(1 attribute from input_file_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>in_basin%parms_bas</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
     </div>
 
         </div>
@@ -570,6 +570,77 @@
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use input_file_module
+use basin_module
+implicit none
+character (len=80) :: titldum = ""!           |title of file
+character (len=80) :: header = "" !           |header
+integer :: eof = 0              !           |end of file
+logical :: i_exist              !           |check to determine if file exists
+eof = 0
+inquire (file=in_basin%parms_bas, exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_exist .or. in_basin%parms_bas /= "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (107,file=in_basin%parms_bas)
+read (107,*,iostat=eof) titldum
+if (eof < 0) exit
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+read (107,*,iostat=eof) bsn_prm
+if (eof < 0) exit
+exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>close(107)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

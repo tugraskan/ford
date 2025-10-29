@@ -207,7 +207,7 @@ name        |units         |definition
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwgn~15"></span>
+              <span class="anchor" id="variable-iwgn~7"></span>
               integer
             </td>
 <td></td>
@@ -459,6 +459,48 @@ name        |units         |definition
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hydrograph_module
+use climate_module
+implicit none
+real :: rx = 0.                !none          |variable to hold intermediate calculation
+real :: rav = 0.               !MJ/m^2        |modified monthly average solar radiation
+integer :: iwgn                !              |
+rav = wgn(iwgn)%solarav(time%mo) / (1. - 0.5 * wgn_pms(iwgn)%pr_wdays(time%mo))
+if (wst(iwst)%weat%precip > 0.0) rav = 0.5 * rav
+rx = wst(iwst)%weat%solradmx - rav
+wst(iwst)%weat%solrad = rav + wgncur(3,iwgn) * rx / 4.
+if (wst(iwst)%weat%solrad <= 0.) wst(iwst)%weat%solrad = .05 * wst(iwst)%weat%solradmx
+wst(iwst)%weat%solrad = wgn(iwgn)%solarav(time%mo)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -474,7 +516,7 @@ name        |units         |definition
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwgn~15"></span>
+              <span class="anchor" id="variable-iwgn~7"></span>
               integer,
             </td>
               <td>public</td>

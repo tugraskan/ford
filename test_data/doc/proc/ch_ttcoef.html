@@ -159,8 +159,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/channel_velocity_module.html'>channel_velocity_module</a></li>
                   <li class="list-inline-item"><a href='../module/channel_module.html'>channel_module</a></li>
+                  <li class="list-inline-item"><a href='../module/channel_velocity_module.html'>channel_velocity_module</a></li>
                   <li class="list-inline-item"><a href='../module/channel_data_module.html'>channel_data_module</a></li>
               </ul>
             </li>
@@ -239,7 +239,7 @@ compute flow and travel time at 0.1 bankfull depth</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-k~89"></span>
+              <span class="anchor" id="variable-k~18"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -574,6 +574,166 @@ compute flow and travel time at 0.1 bankfull depth</p>
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use channel_data_module
+use channel_module
+use channel_velocity_module
+implicit none
+integer, intent (in) :: k  !none          |dummy argument (HRU number)
+real :: fps = 0.           !none          |change in horizontal distance per unit
+real :: d = 0.             !m             |depth of flow
+real :: b = 0.             !m             |bottom width of channel
+real :: p = 0.             !m             |wetting perimeter
+real :: a = 0.             !m^2           |cross-sectional area of channel
+real :: qq1 = 0.           !m^3/s         |flow rate for a specified depth
+real :: rh = 0.            !m             |hydraulic radius of channel
+real :: tt1 = 0.           !km s/m        |time coefficient for specified depth
+real :: tt2 = 0.           !km s/m        |time coefficient for bankfull depth
+real :: aa = 0.            !none          |area/area=1 (used to calculate velocity with
+real :: chsslope = 0.      !none          |change in horizontal distance per unit
+real :: qman               !m^3/s or m/s  |flow rate or flow velocity
+aa = 1.
+b = 0.
+d = 0.</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ch_hyd(k)%side <= 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>chsslope = 2.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>chsslope = ch_hyd(k)%side</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>fps = 4.
+d = ch_hyd(k)%d
+b = ch_hyd(k)%w - 2. * d * chsslope</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>b <= 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>b = 0.
+chsslope = 0.
+b = .5 * ch_hyd(k)%w
+b = Max(0., b)
+chsslope = (ch_hyd(k)%w - b) / (2. * d)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>ch_vel(k)%wid_btm = b
+ch_vel(k)%dep_bf = d
+p = 0.
+a = 0.
+rh = 0.
+tt2 = 0.
+p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
+a = b * d + chsslope * d * d
+rh = a / p
+ch_vel(k)%area = a
+ch_vel(k)%vel_bf = Qman(a, rh, ch_hyd(k)%n, ch_hyd(k)%s)
+ch_vel(k)%velav_bf = Qman(aa, rh, ch_hyd(k)%n, ch_hyd(k)%s)
+ch_vel(k)%celerity_bf = ch_vel(k)%velav_bf * 5. / 3.
+ch_vel(k)%st_dis = ch_hyd(k)%l / ch_vel(k)%celerity_bf / 3.6
+tt2 = ch_hyd(k)%l * a / ch_vel(k)%vel_bf
+d = 0.
+rh = 0.
+qq1 = 0.
+tt1 = 0.
+d = 1.2 * ch_hyd(k)%d
+a = a + (ch_hyd(k)%w * ch_hyd(k)%d + fps * (d - ch_hyd(k)%d) ** 2)
+p = p + 4. * ch_hyd(k)%w + (0.4 * ch_hyd(k)%d * Sqrt(fps * fps + 1.))
+rh = a / p
+qq1 = Qman(a, rh, ch_hyd(k)%n, ch_hyd(k)%s)
+tt1 = ch_hyd(k)%l * a / qq1
+a = 0.
+d = 0.
+p = 0.
+rh = 0.
+qq1 = 0.
+tt1 = 0.
+d = 0.1 * ch_hyd(k)%d
+p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
+a = b * d + chsslope * d * d
+rh = a / p
+qq1 = Qman(a, rh, ch_hyd(k)%n, ch_hyd(k)%s)
+tt1 = ch_hyd(k)%l * a / qq1
+ch_vel(k)%vel_1bf = Qman(aa, rh, ch_hyd(k)%n, ch_hyd(k)%s)
+ch_vel(k)%celerity_1bf = ch_vel(k)%vel_1bf * 5. / 3.
+ch_vel(k)%stor_dis_1bf = ch_hyd(k)%l / ch_vel(k)%celerity_1bf / 3.6
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -589,7 +749,7 @@ compute flow and travel time at 0.1 bankfull depth</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-k~89"></span>
+              <span class="anchor" id="variable-k~18"></span>
               integer,
             </td>
               <td>public</td>

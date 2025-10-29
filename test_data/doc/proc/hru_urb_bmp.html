@@ -401,7 +401,7 @@
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~18" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~9" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -497,6 +497,164 @@
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hru_module, only : hru, ihru, sedyld, sedorgn, sedorgp, sedminpa, sedminps, sed_con, soln_con, solp_con,  &
+surqno3, latno3, surqsolp, qdr, orgn_con, orgp_con
+implicit none
+integer :: j = 0      !none          |HRU number
+integer :: xx = 0     !              |
+real :: sedppm = 0.   !              |
+real :: solnppm = 0.  !              |
+real :: solpppm = 0.  !              |
+real :: sednppm = 0.  !              |
+real :: sedpppm = 0.  !              |
+j = 0
+j = ihru</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>qdr(j) > 0.1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>xx = 100. / qdr(j)
+sedppm = 1000. * xx * sedyld(j) / hru(j)%area_ha
+solnppm = xx * (surqno3(j) + latno3(j))
+solpppm = xx * surqsolp(j)
+sednppm = xx * sedorgn(j)
+sedpppm = xx * (sedorgp(j) + sedminpa(j) + sedminps(j))</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sedppm > sed_con (j)</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sedyld(j) = sed_con(j) * hru(j)%area_ha / xx / 1000.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>solnppm > soln_con(j)</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>surqno3(j) = soln_con(j) / xx
+latno3(j) = soln_con(j) / xx</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>solpppm > solp_con(j)</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>surqsolp(j) = solp_con(j) / xx</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sednppm > orgn_con(j)</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sedorgn(j) = orgn_con(j) / xx</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sedpppm > orgp_con(j)</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sedorgn(j)= orgp_con(j) / xx
+sedminpa(j)= orgp_con(j) / xx
+sedminps(j)= orgp_con(j) / xx</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

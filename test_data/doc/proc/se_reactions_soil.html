@@ -192,7 +192,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-j~72"></span>
+              <span class="anchor" id="variable-j~152"></span>
               integer
             </td>
 <td></td>
@@ -207,7 +207,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-jj~13"></span>
+              <span class="anchor" id="variable-jj~30"></span>
               integer
             </td>
 <td></td>
@@ -791,6 +791,116 @@
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use cs_data_module
+implicit none
+integer :: j
+integer :: jj
+integer :: k_slope
+integer :: kk = 0
+real :: conc_rg
+real :: conc_old
+real :: k_rg
+real :: cseo4 = 0.
+real :: cseo3 = 0.
+real :: no3inhib = 0.
+real :: hru_area_m2 = 0.
+real :: no3_mass_kg = 0.
+real :: no3_conc = 0.
+real :: seo4red = 0.
+real :: seo3red = 0.
+real :: dseo4 = 0.
+real :: dseo3 = 0.
+real :: dno3 = 0.
+real :: cno3 = 0.
+real :: o2 = 0.
+real :: o2red = 0.
+real :: no3red = 0.
+real :: yseo4_o2 = 0.
+real :: yseo4_no3 = 0.
+real :: se_prod_o2 = 0.
+real :: se_prod_no3 = 0.
+real :: ko2a = 0.
+real :: kno3 = 0.
+real :: sseratio = 0.
+dimension conc_rg(3),conc_old(3),k_rg(4,3)
+cseo4 = conc_rg(1)
+cseo3 = conc_rg(2)
+cno3 = conc_rg(3)
+o2 = cs_rct_soil(j)%oxy_soil
+no3inhib = cs_rct_soil(j)%se_ino3 / (cs_rct_soil(j)%se_ino3 + cno3)
+seo4red = cs_rct_soil(j)%kseo4 * cseo4 * no3inhib
+seo3red = cs_rct_soil(j)%kseo3 * cseo3 * no3inhib
+yseo4_o2 = 315.84 / 224.0
+yseo4_no3 = 789.6 / 196.0
+no3red = 0.
+se_prod_o2 = 0.
+se_prod_no3 = 0.</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>kk=1,num_geol_shale</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ko2a = cs_rct_soil(j)%ko2a(kk)
+o2red = ko2a * o2 * cs_rct_soil(j)%shale(kk)
+kno3 = cs_rct_soil(j)%kno3a(kk)
+no3red = no3red + (kno3 * cno3 * cs_rct_soil(j)%shale(kk))
+sseratio = cs_rct_soil(j)%sseratio(kk)
+se_prod_o2 = se_prod_o2 + (o2red * yseo4_o2 * (1/sseratio))
+se_prod_no3 = se_prod_no3 + (no3red * yseo4_no3 * (1/sseratio))</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>dseo4 = (se_prod_o2 + se_prod_no3) - seo4red
+dseo3 = seo4red - seo3red !all of reduced seo4 becomes seo3
+dno3 = no3red * (-1)
+k_rg(k_slope,1) = dseo4
+k_rg(k_slope,2) = dseo3
+k_rg(k_slope,3) = dno3
+return
+end !se_reactions_soil</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -806,7 +916,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-j~72"></span>
+              <span class="anchor" id="variable-j~152"></span>
               integer,
             </td>
               <td>public</td>
@@ -823,7 +933,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-jj~13"></span>
+              <span class="anchor" id="variable-jj~30"></span>
               integer,
             </td>
               <td>public</td>

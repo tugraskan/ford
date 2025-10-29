@@ -159,8 +159,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
                   <li class="list-inline-item"><a href='../module/carbon_module.html'>carbon_module</a></li>
+                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
                   <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
               </ul>
             </li>
@@ -205,7 +205,7 @@ compute carbon in harvested residue</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-jj~38"></span>
+              <span class="anchor" id="variable-jj~14"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -220,7 +220,7 @@ compute carbon in harvested residue</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-harveff~6"></span>
+              <span class="anchor" id="variable-harveff~5"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -368,6 +368,50 @@ compute carbon in harvested residue</p>
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use plant_module
+use carbon_module
+use organic_mineral_mass_module
+implicit none
+integer :: j = 0                  !none           |HRU number
+integer, intent (in) :: jj        !none           |hru number
+real, intent (in) :: harveff      !0-1            |harvest efficiency
+j = jj
+hrc_d(j)%harv_stov_c = 0.
+soil1(j)%rsd(1) = (1. - harveff) * soil1(j)%rsd(1)
+soil1(j)%meta(1) = (1. - harveff) * soil1(j)%meta(1)
+soil1(j)%str(1) = (1. - harveff) * soil1(j)%str(1)
+soil1(j)%lig(1) = (1. - harveff) * soil1(j)%lig(1)
+hrc_d(j)%harv_stov_c = hrc_d(j)%harv_stov_c + 0.42 * (1. - harveff) * soil1(j)%rsd(1)%c
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -383,7 +427,7 @@ compute carbon in harvested residue</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-jj~38"></span>
+              <span class="anchor" id="variable-jj~14"></span>
               integer,
             </td>
               <td>public</td>
@@ -400,7 +444,7 @@ compute carbon in harvested residue</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-harveff~6"></span>
+              <span class="anchor" id="variable-harveff~5"></span>
               real,
             </td>
               <td>public</td>

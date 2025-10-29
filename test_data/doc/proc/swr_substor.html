@@ -160,9 +160,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/output_ls_pesticide_module.html'>output_ls_pesticide_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
                   <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/output_ls_pesticide_module.html'>output_ls_pesticide_module</a></li>
                   <li class="list-inline-item"><a href='../module/pesticide_data_module.html'>pesticide_data_module</a></li>
               </ul>
             </li>
@@ -375,7 +375,7 @@ latq(:)       |mm H2O        |amount of water in lateral flow in HRU for
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~18" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~9" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -390,6 +390,63 @@ latq(:)       |mm H2O        |amount of water in lateral flow in HRU for
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use pesticide_data_module
+use hru_module, only : hru, ihru, latq, latno3, qtile, bss, tileno3
+use constituent_mass_module
+use output_ls_pesticide_module
+implicit none
+integer :: j = 0       !none          |HRU number
+j = ihru
+bss(1,j) = bss(1,j) + latq(j)
+bss(2,j) = bss(2,j) + latno3(j)
+bss(3,j) = bss(3,j) + qtile
+bss(4,j) = bss(4,j) + tileno3(j)
+if (bss(1,j) < 1.e-6) bss(1,j) = 0.0
+if (bss(2,j) < 1.e-6) bss(2,j) = 0.0
+if (bss(3,j) < 1.e-6) bss(3,j) = 0.0
+if (bss(4,j) < 1.e-6) bss(4,j) = 0.0
+latq(j) = bss(1,j) * hru(j)%hyd%lat_ttime
+latno3(j) = bss(2,j) * hru(j)%hyd%lat_ttime
+qtile = bss(3,j) * hru(j)%lumv%tile_ttime
+tileno3(j) = bss(4,j) * hru(j)%lumv%tile_ttime
+if (latq(j) < 1.e-6) latq(j) = 0.
+if (latno3(j) < 1.e-6) latno3(j) = 0.
+if (qtile < 1.e-6) qtile = 0.
+if (tileno3(j) < 1.e-6) tileno3(j) = 0.
+bss(1,j) = bss(1,j) - latq(j)
+bss(2,j) = bss(2,j) - latno3(j)
+bss(3,j) = bss(3,j) - qtile
+bss(4,j) = bss(4,j) - tileno3(j)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

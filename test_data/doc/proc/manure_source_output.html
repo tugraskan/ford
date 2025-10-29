@@ -159,8 +159,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/manure_allocation_module.html'>manure_allocation_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
               </ul>
             </li>
@@ -203,7 +203,7 @@ using region water balance print codes for now
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-imallo~4"></span>
+              <span class="anchor" id="variable-imallo~5"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -931,19 +931,7 @@ using region water balance print codes for now
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>time%yrc</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%end_mo</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
                       <td><strong>time%day</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%mo</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -951,15 +939,27 @@ using region water balance print codes for now
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%yrs_prt</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
                       <td><strong>time%day_mo</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
+                      <td><strong>time%yrs_prt</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%end_mo</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
                       <td><strong>time%end_sim</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%yrc</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%mo</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -977,6 +977,245 @@ using region water balance print codes for now
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use time_module
+use hydrograph_module
+use manure_allocation_module
+implicit none
+integer, intent (in) :: imallo        !             |
+integer :: idmd = 0
+integer :: isrc = 0</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isrc = 1, mallo(imallo)%src_obs</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>mallo(imallo)%src(isrc)%bal_m = mallo(imallo)%src(isrc)%bal_m + mallo(imallo)%src(isrc)%bal_d
+if (pco%water_allo%d == "y") then   !!using region water balance print codes for now
+write (3200,100) time%day, time%mo, time%day_mo, time%yrc, idmd, mallo(imallo)%src(isrc)%num,                &
+mallo(imallo)%src(isrc)%mois_typ, mallo(imallo)%src(isrc)%manure_typ, mallo(imallo)%src(isrc)%bal_d
+mallo(imallo)%src(isrc)%bal_d = malloz
+end do    ! do idmd = 1, mallo(imallo)%src_obs
+return
+100   format (4i6,i8,5x,a,5x,i8,5x,i8,3(7x,a,5x,i8,3f15.1))</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pco%csvout == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>write (3201,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, idmd, mallo(imallo)%src(isrc)%num,   &
+mallo(imallo)%src(isrc)%mois_typ, mallo(imallo)%src(isrc)%manure_typ, mallo(imallo)%src(isrc)%bal_d</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>time%end_mo == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>mallo(imallo)%src(isrc)%bal_y = mallo(imallo)%src(isrc)%bal_y + mallo(imallo)%src(isrc)%bal_m
+mallo(imallo)%src(isrc)%bal_m = malloz</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pco%water_allo%m == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>write (3202,100) time%day, time%mo, time%day_mo, time%yrc, idmd, mallo(imallo)%src(isrc)%num,                &
+mallo(imallo)%src(isrc)%mois_typ, mallo(imallo)%src(isrc)%manure_typ, mallo(imallo)%src(isrc)%bal_m</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pco%csvout == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>write (3203,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, idmd, mallo(imallo)%src(isrc)%num,   &
+mallo(imallo)%src(isrc)%mois_typ, mallo(imallo)%src(isrc)%manure_typ, mallo(imallo)%src(isrc)%bal_m</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>time%end_yr == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>mallo(imallo)%src(isrc)%bal_a = mallo(imallo)%src(isrc)%bal_a + mallo(imallo)%src(isrc)%bal_y
+mallo(imallo)%src(isrc)%bal_y = malloz</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pco%water_allo%y == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>write (3204,100) time%day, time%mo, time%day_mo, time%yrc, idmd, mallo(imallo)%src(isrc)%num,                &
+mallo(imallo)%src(isrc)%mois_typ, mallo(imallo)%src(isrc)%manure_typ, mallo(imallo)%src(isrc)%bal_y</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-3-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pco%csvout == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-3-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>write (3205,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, idmd, mallo(imallo)%src(isrc)%num,   &
+mallo(imallo)%src(isrc)%mois_typ, mallo(imallo)%src(isrc)%manure_typ, mallo(imallo)%src(isrc)%bal_y</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>time%end_sim == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>mallo(imallo)%src(isrc)%bal_a = mallo(imallo)%src(isrc)%bal_a / time%yrs_prt</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pco%water_allo%a == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>write (3206,100) time%day, time%mo, time%day_mo, time%yrc, idmd, mallo(imallo)%src(isrc)%num,                &
+mallo(imallo)%src(isrc)%mois_typ, mallo(imallo)%src(isrc)%manure_typ, mallo(imallo)%src(isrc)%bal_a</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pco%csvout == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>write (3207,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, idmd, mallo(imallo)%src(isrc)%num,   &
+mallo(imallo)%src(isrc)%mois_typ, mallo(imallo)%src(isrc)%manure_typ, mallo(imallo)%src(isrc)%bal_a</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -992,7 +1231,7 @@ using region water balance print codes for now
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-imallo~4"></span>
+              <span class="anchor" id="variable-imallo~5"></span>
               integer,
             </td>
               <td>public</td>

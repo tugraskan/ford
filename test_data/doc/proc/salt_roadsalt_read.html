@@ -160,12 +160,12 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -688,7 +688,7 @@
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(6 attributes from constituent_mass_module)</small>
+              <small class="text-muted ms-2">(6 attributes from time_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -703,15 +703,11 @@
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>cs_db%num_salts</strong></td>
+                      <td><strong>time%yrc_start</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
                       <td><strong>atmodep_cont%timestep</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>atmodep_cont%num</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -723,7 +719,11 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%yrc_start</strong></td>
+                      <td><strong>atmodep_cont%num</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_salts</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -948,6 +948,455 @@
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use basin_module
+use input_file_module
+use climate_module
+use time_module
+use maximum_data_module
+use constituent_mass_module
+implicit none
+character (len=80) :: file = "" !           |filename
+character (len=80) :: titldum = ""!           |title of file
+character (len=80) :: header = "" !           |header of file
+character (len=4) :: salt_ion = ""!           |
+character (len=15) :: station_name = "" !       |
+integer :: eof = 0              !           |end of file
+integer :: iadep = 0            !           |counter
+integer :: imo = 0              !           |counter
+integer :: iyr = 0              !           |counter
+integer :: imo_atmo = 0         !           |
+logical :: i_exist              !none       |check to determine if file exists
+integer :: iyrc_atmo = 0        !           |
+integer :: isalt = 0            !           |salt ion counter
+integer :: imonth = 0           !           |month counter
+integer :: year_index = 0
+integer :: yr_weat = 0
+integer :: year_days = 0
+integer :: iday = 0
+integer :: day_flag(366) = 0
+integer :: dum = 0
+real    :: day_precip = 0.
+real    :: day_temp = 0.
+real    :: year_precip = 0.
+real    :: day_fraction = 0.
+eof = 0</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>cs_db%num_salts > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>inquire (file='salt_road',exist=i_exist)</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_exist</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>open(5051,file='salt_road')
+read(5051,*)
+read(5051,*)
+read(5051,*)
+read(5051,*)
+allocate (rdapp_salt(0:atmodep_cont%num_sta))</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iadep = 1, atmodep_cont%num_sta</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (rdapp_salt(iadep)%salt(cs_db%num_salts))
+end do !go to next station
+return</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>atmodep_cont%timestep == "aa"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read(5051,*) station_name !station name --> already read in cli_read_atmodep</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read(5051,*) salt_ion,rdapp_salt(iadep)%salt(isalt)%road</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>atmodep_cont%timestep == "mo"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read(5051,*) station_name !station name</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (rdapp_salt(iadep)%salt(isalt)%roadmo(atmodep_cont%num), source = 0.)
+read(5051,*) salt_ion,(rdapp_salt(iadep)%salt(isalt)%roadmo(imo),imo=1,atmodep_cont%num)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>atmodep_cont%timestep == "yr"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read(5051,*) station_name !station name
+year_index = atmodep_cont%yr_init
+yr_weat = 1 !weather year index</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (rdapp_salt(iadep)%salt(isalt)%roadyr(atmodep_cont%num), source = 0.)
+read(5051,*) salt_ion,(rdapp_salt(iadep)%salt(isalt)%roadyr(iyr),iyr=1,atmodep_cont%num)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (rdapp_salt(iadep)%salt(isalt)%roadday(366,atmodep_cont%num), source = 0.)
+rdapp_salt(iadep)%salt(isalt)%roadday = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iyr=1,atmodep_cont%num</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>year_index = year_index + 1</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>mod(year_index,4) == 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>year_days = 366</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>year_days = 365</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>year_index .ge. time%yrc_start</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>year_precip = 0.
+day_flag = 0
+yr_weat = yr_weat + 1
+else !no precipitation data --> set daily values to 0</code></pre>
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iday=1,year_days</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>day_precip = pcp(iadep)%ts(iday,yr_weat) !mm
+day_temp = (tmp(iadep)%ts(iday,yr_weat) + tmp(iadep)%ts2(iday,yr_weat)) / 2 !average daily temp (oC)</code></pre>
+                                  
+              <div class="card mb-2 ms-21">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3-block-3-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>day_temp.ne.-99</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3-block-3-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-24">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3-block-3-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>day_precip > 0 .and. day_temp < 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3-block-3-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>day_flag(iday) = 1
+year_precip = year_precip + day_precip !mm</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3-block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iday=1,year_days</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3-block-3-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-21">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3-block-3-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>day_flag(iday) == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3-block-3-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>day_fraction = pcp(iadep)%ts(iday,yr_weat) / year_precip</code></pre>
+                                  
+              <div class="card mb-2 ms-24">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3-block-3-block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3-block-3-block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rdapp_salt(iadep)%salt(isalt)%roadday(iday,iyr) = rdapp_salt(iadep)%salt(isalt)%roadyr(iyr) * day_fraction !kg/ha</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3-block-3-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iday=1,year_days</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3-block-3-block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-21">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-3-block-3-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-3-block-3-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rdapp_salt(iadep)%salt(isalt)%roadday(iday,iyr) = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

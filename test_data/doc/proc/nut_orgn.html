@@ -160,9 +160,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
-                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
+                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
                   <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
               </ul>
             </li>
@@ -335,35 +335,6 @@ update soil nitrogen pools only for HRU calculations</p>
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-              type(<a href='../type/soil_profile.html'>soil_profile</a>)
-              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>soil</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
@@ -451,7 +422,36 @@ update soil nitrogen pools only for HRU calculations</p>
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~18" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~9" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+              type(<a href='../type/soil_profile.html'>soil_profile</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil</strong></td>
+                      <td></td>
                     </tr>
                 </tbody>
               </table>
@@ -495,6 +495,151 @@ update soil nitrogen pools only for HRU calculations</p>
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use organic_mineral_mass_module
+use hru_module, only : hru, sedorgn, sedyld, ihru, enratio
+use soil_module
+use plant_module
+implicit none
+integer :: j = 0         !none          |HRU number
+real :: orgn_kgha = 0.   !kg N/ha       |amount of organic N in first soil layer
+real :: wt1 = 0.         !kg/ha         |weight of upper soil layer
+real :: er = 0.          !none          |enrichment ratio
+real :: frac = 0.        !              |fraction of organic N in soil
+j = ihru
+orgn_kgha = soil1(j)%hsta(1)%n + soil1(j)%hact(1)%n
+wt1 = 10000. * soil(j)%phys(1)%bd * soil(j)%phys(1)%d</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>hru(j)%hyd%erorgn > .001</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>er = hru(j)%hyd%erorgn</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>er = enratio</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>frac = orgn_kgha * er / wt1
+sedorgn(j) = 1000. * frac * sedyld(j) / hru(j)%area_ha</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>orgn_kgha > 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>soil1(j)%hact(1)%n = soil1(j)%hact(1)%n - sedorgn(j) * (soil1(j)%hact(1)%n / orgn_kgha)
+soil1(j)%hsta(1)%n = soil1(j)%hsta(1)%n - sedorgn(j) * (soil1(j)%hsta(1)%n / orgn_kgha)</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-5-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>soil1(j)%hact(1)%n < 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sedorgn(j) = sedorgn(j) + soil1(j)%hact(1)%n
+soil1(j)%hact(1)%n = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-5-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>soil1(j)%hsta(1)%n < 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sedorgn(j) = sedorgn(j) + soil1(j)%hsta(1)%n
+soil1(j)%hsta(1)%n = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

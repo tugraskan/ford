@@ -207,7 +207,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ielem"></span>
+              <span class="anchor" id="variable-ielem~10"></span>
               integer,
             </td>
 <td>intent(out)</td>
@@ -445,6 +445,417 @@
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hydrograph_module, only : elem_cnt, defunit_num
+implicit none
+integer, intent (in)  :: num_elem
+integer, intent (out)  :: ielem
+integer :: ii = 0               !none       |counter
+integer :: ie1 = 0              !none       |beginning of loop
+integer :: ie2 = 0              !none       |ending of loop
+integer :: ie = 0               !none       |counter
+ielem = 0
+ii = 1</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (ii <= num_elem)</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ii == num_elem</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ie1 = elem_cnt(ii-1)
+ie2 = elem_cnt(ii)
+ii = ii + 1</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ii == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ielem = 1
+exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ie2 > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ielem = ielem + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ie2 = abs(ie2)</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ie = ie1, ie2</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ielem = ielem + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ie1 = elem_cnt(ii)
+ie2 = elem_cnt(ii+1)</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ie2 > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ielem = ielem + 1
+ii = ii + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ie2 = abs(ie2)
+ii = ii + 2</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ie = ie1, ie2</code>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ielem = ielem + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>allocate (defunit_num(ielem), source = 0)
+ielem = 0
+ii = 1</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (ii <= num_elem)</code>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ii == num_elem</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ie1 = elem_cnt(ii-1)
+ie2 = elem_cnt(ii)
+ii = ii + 1</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ii == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>defunit_num(1) = elem_cnt(1)
+ielem = 1
+exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ie2 > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ielem = ielem + 1
+defunit_num(ielem) = ie2</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ie2 = abs(ie2)</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ie = ie1, ie2</code>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ielem = ielem + 1
+defunit_num(ielem) = ie</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ie1 = elem_cnt(ii)
+ie2 = elem_cnt(ii+1)</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ie2 > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ielem = ielem + 1
+defunit_num(ielem) = ie1
+ii = ii + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ie2 = abs(ie2)
+ii = ii + 2</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-4-block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ie = ie1, ie2</code>
+                  </div>
+                </a>
+                <div id="block-4-block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ielem = ielem + 1
+defunit_num(ielem) = ie</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>deallocate (elem_cnt)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -477,7 +888,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ielem"></span>
+              <span class="anchor" id="variable-ielem~10"></span>
               integer,
             </td>
               <td>public</td>

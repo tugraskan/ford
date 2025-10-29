@@ -160,8 +160,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
               </ul>
             </li>
@@ -385,35 +385,6 @@ and current random and oriented roughness values determined above</p>
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-              type(<a href='../type/soil_profile.html'>soil_profile</a>)
-              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>soil</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
@@ -521,10 +492,39 @@ and current random and oriented roughness values determined above</p>
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~18" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~9" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                     <tr>
                       <td><strong>itill</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+              type(<a href='../type/soil_profile.html'>soil_profile</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil</strong></td>
                       <td></td>
                     </tr>
                 </tbody>
@@ -569,6 +569,123 @@ and current random and oriented roughness values determined above</p>
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hru_module, only : hru, cumeira, cumei, cumrt, cumrai, ranrns_hru, stmaxd, itill, ihru,  &
+itill, precip_eff, usle_ei
+use soil_module
+use organic_mineral_mass_module
+implicit none
+integer :: j = 0          !none          |HRU number
+real:: df = 0.            !none          |oriented and random roughness decay factor - based
+real:: hru_slpp = 0.      !%             |average percent slope steepness
+real:: sol_orgm = 0.      !%             |percent organic matter content in soil material
+real:: sol_rrr = 0.       !cm            |random roughness after a rain event
+real:: ei = 0.            !Mj*mm/ha*hr   |USLE rainfall erosion index
+real :: xx = 0.           !              |
+j = ihru
+ei = usle_ei*18.7633</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>itill(j) ==1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>cumeira(j) = cumeira(j) + ei
+cumei(j) = cumeira(j) - ei
+cumrai(j) = cumrai(j) + precip_eff
+cumrt(j) = cumrai(j) - precip_eff</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>sol_orgm = soil1(j)%tot(1)%c / 0.58
+xx = (0.943 - 0.07 * soil(j)%phys(1)%clay + 0.0011 *                 &
+soil(j)%phys(1)%clay**2 - 0.67 * sol_orgm + 0.12 * sol_orgm**2)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>xx > 1.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>df = 1.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>df = exp (xx)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>sol_rrr = 0.1 * ranrns_hru(j)                                      &
+* exp(df*(-0.0009*cumei(j)-0.0007 * cumrt(j)))
+hru_slpp = hru(j)%topo%slope*100
+stmaxd(j)= 0.112*sol_rrr+0.031*sol_rrr**2-0.012*sol_rrr*hru_slpp
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

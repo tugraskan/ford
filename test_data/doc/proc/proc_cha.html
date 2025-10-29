@@ -305,7 +305,7 @@ initialize flow routing variables</p>
                 <tbody>
                     <tr>
                       <td><strong>ich</strong></td>
-                      <td><p>none |object number </p><a href="../module/hydrograph_module.html#variable-ich~3" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |object number </p><a href="../module/hydrograph_module.html#variable-ich~4" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -382,6 +382,96 @@ initialize flow routing variables</p>
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hydrograph_module
+implicit none
+integer :: irch = 0               !              |
+integer :: idat = 0               !              |
+integer :: i = 0                  !none          |counter
+call ch_read_init
+call ch_read_init_cs
+call sd_hydsed_read
+call ch_read_hyd
+call ch_read_sed
+call ch_read_nut
+call ch_read
+call sd_channel_read
+call sd_hydsed_init
+call aqu2d_init</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ich = 1, sp_ob%chan</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>call ch_ttcoef (ich)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>irch = 1, sp_ob%chan</code>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>i = sp_ob1%chan + irch - 1
+idat = ob(i)%props
+call ch_initial (idat, irch)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>call overbank_read
+call sd_channel_surf_link
+call time_conc_init
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

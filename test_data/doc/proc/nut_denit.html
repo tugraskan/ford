@@ -159,8 +159,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
               </ul>
             </li>
@@ -195,7 +195,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-k~30"></span>
+              <span class="anchor" id="variable-k~24"></span>
               integer
             </td>
 <td></td>
@@ -210,7 +210,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-j~70"></span>
+              <span class="anchor" id="variable-j~50"></span>
               integer
             </td>
 <td></td>
@@ -225,7 +225,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-cdg~3"></span>
+              <span class="anchor" id="variable-cdg~2"></span>
               real
             </td>
 <td></td>
@@ -240,7 +240,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-wdn"></span>
+              <span class="anchor" id="variable-wdn~2"></span>
               real
             </td>
 <td></td>
@@ -403,6 +403,51 @@
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use basin_module
+use organic_mineral_mass_module
+use soil_module
+implicit none
+integer :: k          !none          |counter
+integer :: j          !none          |HRU number
+real :: cdg           !none          |soil temperature factor
+real :: wdn           !kg N/ha       |amount of nitrogen lost from nitrate pool in
+real :: void          !              |
+real :: vof = 0.      !              |
+wdn = 0.
+vof = 1. / (1. + (void/0.04)**5)
+wdn =  soil1(j)%mn(k)%no3 * (1. - Exp(-bsn_prm%cdn * cdg * vof *          &
+soil1(j)%tot(k)%c))
+soil1(j)%mn(k)%no3 = max(0.0001,soil1(j)%mn(k)%no3 - wdn)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -418,7 +463,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-k~30"></span>
+              <span class="anchor" id="variable-k~24"></span>
               integer,
             </td>
               <td>public</td>
@@ -435,7 +480,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-j~70"></span>
+              <span class="anchor" id="variable-j~50"></span>
               integer,
             </td>
               <td>public</td>
@@ -452,7 +497,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-cdg~3"></span>
+              <span class="anchor" id="variable-cdg~2"></span>
               real,
             </td>
               <td>public</td>
@@ -469,7 +514,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-wdn"></span>
+              <span class="anchor" id="variable-wdn~2"></span>
               real,
             </td>
               <td>public</td>

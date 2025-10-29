@@ -288,6 +288,53 @@ ext to 8000 recl per email 8/2/21 - Kai-Uwe
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use time_module
+implicit none
+open (9000,file="files_out.out")
+write (9000,*) "files_out.out - OUTPUT FILES WRITTEN"
+open (9001,file="diagnostics.out", recl=8000)  !!ext to 8000 recl per email 8/2/21 - Kai-Uwe
+write (9001,*) "DIAGNOSTICS.OUT FILE"
+open (9004,file="area_calc.out", recl=8000)
+call basin_read_cc
+call basin_read_objs
+call time_read
+time%dtm = 1440. / time%step
+call readcio_read
+call basin_read_prm
+call basin_prm_default
+call basin_print_codes_read
+call co2_read
+call carbon_coef_read
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     
     

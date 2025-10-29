@@ -160,11 +160,11 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_lte_module.html'>hru_lte_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/calibration_data_module.html'>calibration_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_lte_module.html'>hru_lte_module</a></li>
                   <li class="list-inline-item"><a href='../module/sd_channel_module.html'>sd_channel_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -298,7 +298,7 @@ soft data for w and d in m/year per m of channel w and d</p>
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(9 attributes from maximum_data_module)</small>
+              <small class="text-muted ms-2">(9 attributes from calibration_data_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -313,6 +313,30 @@ soft data for w and d in m/year per m of channel w and d</p>
                 </thead>
                 <tbody>
                     <tr>
+                      <td><strong>cal_codes%sed</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cal_codes%hyd_hrul</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cal_codes%hyd_hru</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cal_codes%plt</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cal_codes%chsed</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%yrs_prt</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
                       <td><strong>db_mx%plcal_reg</strong></td>
                       <td>None</td>
                     </tr>
@@ -322,30 +346,6 @@ soft data for w and d in m/year per m of channel w and d</p>
                     </tr>
                     <tr>
                       <td><strong>db_mx%ch_reg</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%yrs_prt</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cal_codes%hyd_hru</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cal_codes%sed</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cal_codes%plt</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cal_codes%hyd_hrul</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cal_codes%chsed</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -510,6 +510,312 @@ soft data for w and d in m/year per m of channel w and d</p>
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use sd_channel_module
+use hru_lte_module
+use maximum_data_module
+use calibration_data_module
+use time_module
+implicit none
+integer :: ireg = 0   !none      |counter
+integer :: ilu = 0    !none      |counter
+integer :: ich = 0    !none      |counter</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>cal_codes%hyd_hru /= "n" .or. cal_codes%sed == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ireg = 1, db_mx%lsu_reg</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ilu = 1, region(ireg)%nlum</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>time%yrs_prt > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>lscal(ireg)%lum(ilu)%precip_aa = lscal(ireg)%lum(ilu)%precip_aa / time%yrs_prt
+lscal(ireg)%lum(ilu)%precip_aa_sav = lscal(ireg)%lum(ilu)%precip_aa
+lscal(ireg)%lum(ilu)%pet_aa = lscal(ireg)%lum(ilu)%pet_aa / time%yrs_prt
+lscal(ireg)%lum(ilu)%aa%srr = lscal(ireg)%lum(ilu)%aa%srr / time%yrs_prt
+lscal(ireg)%lum(ilu)%aa%lfr = lscal(ireg)%lum(ilu)%aa%lfr / time%yrs_prt
+lscal(ireg)%lum(ilu)%aa%pcr = lscal(ireg)%lum(ilu)%aa%pcr / time%yrs_prt
+lscal(ireg)%lum(ilu)%aa%etr = lscal(ireg)%lum(ilu)%aa%etr / time%yrs_prt
+lscal(ireg)%lum(ilu)%aa%tfr = lscal(ireg)%lum(ilu)%aa%tfr / time%yrs_prt
+lscal(ireg)%lum(ilu)%aa%bfr = lscal(ireg)%lum(ilu)%aa%bfr / time%yrs_prt
+lscal(ireg)%lum(ilu)%aa%wyr = lscal(ireg)%lum(ilu)%aa%wyr / time%yrs_prt</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>cal_codes%hyd_hrul == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ireg = 1, db_mx%lsu_reg</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ilu = 1, lscalt(ireg)%lum_num</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>time%yrs_prt > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>lscalt(ireg)%lum(ilu)%precip_aa = lscalt(ireg)%lum(ilu)%precip_aa / time%yrs_prt
+lscalt(ireg)%lum(ilu)%precip_aa_sav = lscalt(ireg)%lum(ilu)%precip_aa
+lscalt(ireg)%lum(ilu)%aa%srr = lscalt(ireg)%lum(ilu)%aa%srr / time%yrs_prt
+lscalt(ireg)%lum(ilu)%aa%lfr = lscalt(ireg)%lum(ilu)%aa%lfr / time%yrs_prt
+lscalt(ireg)%lum(ilu)%aa%pcr = lscalt(ireg)%lum(ilu)%aa%pcr / time%yrs_prt
+lscalt(ireg)%lum(ilu)%aa%etr = lscalt(ireg)%lum(ilu)%aa%etr / time%yrs_prt
+lscalt(ireg)%lum(ilu)%aa%tfr = lscalt(ireg)%lum(ilu)%aa%tfr / time%yrs_prt</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>cal_codes%plt == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ireg = 1, db_mx%plcal_reg</code>
+                  </div>
+                </a>
+                <div id="block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>end do    !reg
+if (cal_codes%chsed == "y" .and. cal_codes%sed == "n" .and. cal_codes%plt == "n" .and. cal_codes%hyd_hru == "n" .and. &
+cal_codes%hyd_hrul == "n") then
+return</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ilu = 1, plcal(ireg)%lum_num</code>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>plcal(ireg)%lum(ilu)%ha > 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>plcal(ireg)%lum(ilu)%nbyr = plcal(ireg)%lum(ilu)%nbyr + 1
+plcal(ireg)%lum(ilu)%aa%yield = plcal(ireg)%lum(ilu)%sim%yield / plcal(ireg)%lum(ilu)%ha
+plcal(ireg)%lum(ilu)%sim = plcal_z  !! zero all calibration parameters</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ireg = 1, db_mx%ch_reg</code>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ich = 1, chcal(ireg)%ord_num</code>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>time%yrs_prt > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>chcal(ireg)%ord(ich)%aa%chd = chcal(ireg)%ord(ich)%aa%chd / time%yrs_prt
+chcal(ireg)%ord(ich)%aa%chw = chcal(ireg)%ord(ich)%aa%chw / time%yrs_prt
+chcal(ireg)%ord(ich)%aa%hc = chcal(ireg)%ord(ich)%aa%hc / time%yrs_prt
+chcal(ireg)%ord(ich)%aa%fpd = chcal(ireg)%ord(ich)%aa%fpd / time%yrs_prt</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

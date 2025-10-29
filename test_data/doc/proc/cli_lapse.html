@@ -160,8 +160,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
               </ul>
             </li>
@@ -303,6 +303,43 @@
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(3 attributes from basin_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>bsn_prm%plaps</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>bsn_prm%tlaps</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>sp_ob%objs</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
           <h3 class="accordion-header" id="headinginteger">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapseinteger" aria-expanded="false" 
@@ -354,43 +391,6 @@
                     <tr>
                       <td><strong>ob</strong></td>
                       <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>sp_ob%objs</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>bsn_prm%plaps</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>bsn_prm%tlaps</strong></td>
-                      <td>None</td>
                     </tr>
                 </tbody>
               </table>
@@ -496,6 +496,139 @@
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use basin_module
+use climate_module
+use hydrograph_module, only : ob, sp_ob
+implicit none
+integer :: iob = 0    !       |object number
+integer :: iwst = 0   !       |weather station number
+integer :: iwgn = 0   !       |weather generator station number
+integer :: igage = 0  !       |number of measured precip or temperature gage</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iob = 1, sp_ob%objs</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iwst = ob(iob)%wst</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wst(iwst)%wco_c%pgage == "sim"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iwgn = wst(iwst)%wco%wgn
+ob(iob)%plaps = bsn_prm%plaps * (ob(iob)%elev - wgn(iwgn)%elev) / 1000.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>igage = wst(iwst)%wco%pgage
+ob(iob)%plaps = bsn_prm%plaps * (ob(iob)%elev - pcp(igage)%elev) / 1000.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wst(iwst)%wco_c%tgage == "sim"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iwgn = wst(iwst)%wco%wgn
+ob(iob)%tlaps = bsn_prm%tlaps * (wgn(iwgn)%elev - ob(iob)%elev) / 1000.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>igage = wst(iwst)%wco%tgage
+ob(iob)%tlaps = bsn_prm%tlaps * (tmp(igage)%elev - ob(iob)%elev) / 1000.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

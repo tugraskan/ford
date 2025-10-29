@@ -160,12 +160,12 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
-                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
-                  <li class="list-inline-item"><a href='../module/carbon_module.html'>carbon_module</a></li>
+                  <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/carbon_module.html'>carbon_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
               </ul>
             </li>
         </ul>
@@ -603,7 +603,7 @@
                     </tr>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~18" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~9" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -647,6 +647,235 @@
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use plant_data_module
+use basin_module
+use hru_module, only : ihru, ipl
+use plant_module
+use carbon_module
+use organic_mineral_mass_module
+implicit none
+integer :: j = 0          !none               |HRU number
+integer :: idp = 0        !                   |
+real :: f = 0.            !none               |fraction of plant's maximum lai corresponding to a given fraction of phu (annual)
+real :: f_p = 0.          !none               |fraction of plant's maximum lai corresponding to a given fraction of phu (perennial)
+real :: ff = 0.           !                   |
+real :: deltalai = 0.     !                   |
+real :: laimax = 0.       !none               |maximum leaf area index
+real :: lai_exp = 0.      !                   |
+real :: rto_lin = 0.      !none               |ratio of current years of growth:years to maturity of perennial
+real :: rto = 0.          !none               |ratio of current years of growth:years to maturity of perennial
+real :: sumlaiht = 0.     !                   |
+real :: exponent= 0.    !                   |
+integer :: jpl = 0        !none               |counter
+j = ihru
+idp = pcom(j)%plcur(ipl)%idplt
+f = pcom(j)%plcur(ipl)%phuacc / (pcom(j)%plcur(ipl)%phuacc +                  &
+Exp(plcp(idp)%leaf1 - plcp(idp)%leaf2 * pcom(j)%plcur(ipl)%phuacc))
+pcom(j)%plg(ipl)%laimxfr = amin1 (f, pcom(j)%plg(ipl)%laimxfr)    !dormancy and grazing lower phuacc
+ff = f - pcom(j)%plg(ipl)%laimxfr
+pcom(j)%plg(ipl)%laimxfr = f
+exponent = plcp(idp)%leaf1 - plcp(idp)%leaf2 * pcom(j)%plcur(ipl)%phuacc_p  ! fg added to check value
+if (exponent < -16.0) exponent = -16.0                                      ! fg added to check value
+f_p = pcom(j)%plcur(ipl)%phuacc_p / (pcom(j)%plcur(ipl)%phuacc_p +            &  ! fg change
+Exp(exponent))</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pcom(j)%plcur(ipl)%phuacc < pldb(idp)%dlai</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>laimax = 0.
+deltalai = 0.
+if (pcom(j)%plg(ipl)%lai > laimax) pcom(j)%plg(ipl)%lai = laimax
+deltalai = ff * laimax * (1.0 - Exp(5.0 * (pcom(j)%plg(ipl)%lai - laimax))) * Sqrt(pcom(j)%plstr(ipl)%strsw)
+sumlaiht = 0.
+deltalai = deltalai * rto
+pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai + deltalai
+if (pcom(j)%plg(ipl)%lai > laimax) pcom(j)%plg(ipl)%lai = laimax
+pcom(j)%plg(ipl)%olai = pcom(j)%plg(ipl)%lai
+pcom(j)%plg(ipl)%dphu = pcom(j)%plcur(ipl)%phuacc
+end if    ! phu < dlai
+return</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pldb(idp)%typ == "perennial"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>if (pcom(j)%plcur(ipl)%curyr_mat < 1) pcom(j)%plcur(ipl)%curyr_mat = 1
+rto_lin = float(pcom(j)%plcur(ipl)%curyr_mat) / float(pldb(idp)%mat_yrs)
+rto = alog10 (rto_lin)
+lai_exp = rto * pldb(idp)%laixco_tree
+laimax = pcom(j)%plcur(ipl)%lai_pot * 10. ** lai_exp
+laimax = Min (laimax, pcom(j)%plcur(ipl)%lai_pot)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>laimax = pcom(j)%plcur(ipl)%lai_pot</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pldb(idp)%typ == "perennial"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pcom(j)%plg(ipl)%cht = pldb(idp)%chtmx * Sqrt(f_p)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pcom(j)%plg(ipl)%cht = pldb(idp)%chtmx * Sqrt(f)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pldb(idp)%typ == "perennial"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pcom(j)%plg(ipl)%leaf_frac = 0.03     !!***needs to be a plants.plt parameter</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>jpl = 1, pcom(j)%npl</code>
+                  </div>
+                </a>
+                <div id="block-2-block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sumlaiht = sumlaiht + pcom(j)%plg(ipl)%lai * pcom(j)%plg(jpl)%cht</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sumlaiht > 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-7" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rto = (pcom(j)%plg(ipl)%lai * pcom(j)%plg(ipl)%cht) / sumlaiht</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-8" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rto = 1.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

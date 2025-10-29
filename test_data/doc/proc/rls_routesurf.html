@@ -160,8 +160,8 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
-                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
               </ul>
             </li>
         </ul>
@@ -220,7 +220,7 @@ use surface runoff (mm) for eiq - m3/(10 * ha) = mm
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iob~34"></span>
+              <span class="anchor" id="variable-iob~88"></span>
               integer
             </td>
 <td></td>
@@ -235,7 +235,7 @@ use surface runoff (mm) for eiq - m3/(10 * ha) = mm
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-tile_fr_surf~2"></span>
+              <span class="anchor" id="variable-tile_fr_surf~3"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -454,7 +454,7 @@ use surface runoff (mm) for eiq - m3/(10 * ha) = mm
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~18" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~9" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -496,7 +496,7 @@ use surface runoff (mm) for eiq - m3/(10 * ha) = mm
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(3 attributes from climate_module)</small>
+              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -511,15 +511,15 @@ use surface runoff (mm) for eiq - m3/(10 * ha) = mm
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>w%ts</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
                       <td><strong>ht1%sed</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
                       <td><strong>ht2%sed</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>w%ts</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -566,6 +566,118 @@ use surface runoff (mm) for eiq - m3/(10 * ha) = mm
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hru_module, only : hru, ihru, usle_cfac, ls_overq, precip_eff
+use hydrograph_module
+use climate_module, only : w
+implicit none
+integer :: j = 0                  !       |
+integer :: iob                    !       |
+integer :: ifield = 0             !       |
+real, intent (in)  :: tile_fr_surf    !m3     |overland tile flow
+real :: sed = 0.                  !       |
+real :: trancap = 0.              !       |
+j = ihru
+ifield = hru(j)%dbs%field
+ls_overq = ob(iob)%hin_sur%flo + (ob(iob)%hin_til%flo * tile_fr_surf) / (10. * hru(j)%area_ha)   ! m3/10*ha = mm
+precip_eff = precip_eff + ls_overq</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>time%step > 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>w%ts(:) = w%ts(:) + ls_overq / time%step</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>sed = ob(iob)%hin_sur%sed / hru(j)%area_ha
+trancap = hru(j)%topo%dep_co * usle_cfac(j) * ls_overq *        &
+hru(j)%topo%slope**1.4 * hru(j)%field%wid**1.4</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sed > trancap</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ht1%sed = (sed - trancap) * hru(j)%area_ha
+ht2%sed = trancap * hru(j)%area_ha</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ht1%sed = 0.
+ht2%sed = sed * hru(j)%area_ha</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -581,7 +693,7 @@ use surface runoff (mm) for eiq - m3/(10 * ha) = mm
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iob~34"></span>
+              <span class="anchor" id="variable-iob~88"></span>
               integer,
             </td>
               <td>public</td>
@@ -598,7 +710,7 @@ use surface runoff (mm) for eiq - m3/(10 * ha) = mm
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-tile_fr_surf~2"></span>
+              <span class="anchor" id="variable-tile_fr_surf~3"></span>
               real,
             </td>
               <td>public</td>

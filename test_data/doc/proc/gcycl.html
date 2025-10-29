@@ -160,10 +160,10 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
                   <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -414,7 +414,7 @@ in sub-daily pcp generator</p>
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(2 attributes from maximum_data_module)</small>
+              <small class="text-muted ms-2">(2 attributes from basin_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -429,11 +429,11 @@ in sub-daily pcp generator</p>
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>db_mx%wgnsta</strong></td>
+                      <td><strong>bsn_prm%igen</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>bsn_prm%igen</strong></td>
+                      <td><strong>db_mx%wgnsta</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -527,6 +527,203 @@ in sub-daily pcp generator</p>
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use climate_module
+use basin_module
+use maximum_data_module
+use conditional_module
+implicit none
+real :: xx = 0.      !none          |dummy variable to accept function value
+real :: rn = 0.      !none          |random number between 0.0 and 1.0
+integer :: ii = 0    !none          |variable to hold calculated value
+integer :: j = 0     !none          |counter
+integer :: k = 0     !none          |counter, and variable
+integer :: rndseed10 = 0!none          |seed for random number generator that is
+integer :: iwgn = 0  !none          |counter
+real :: aunif        !              |
+idg = (/1,2,3,4,5,6,7,8,9/)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iwgn = 1, db_mx%wgnsta</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rndseed(1,iwgn) = 748932582
+rndseed(2,iwgn) = 1985072130
+rndseed(3,iwgn) = 1631331038
+rndseed(4,iwgn) = 67377721
+rndseed(5,iwgn) = 366304404
+rndseed(6,iwgn) = 1094585182
+rndseed(7,iwgn) = 1767585417
+rndseed(8,iwgn) = 1980520317
+rndseed(9,iwgn) = 392682216</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>rndseed10 = 64298628</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bsn_prm%igen /= 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rndseed_cond = rndseed10</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 1, 9</code>
+                  </div>
+                </a>
+                <div id="block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rn = 0.
+ii = 0
+rn = Aunif(rndseed10)
+ii = 100 * bsn_prm%igen * rn
+rndseed(j,1) = rndseed10</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>k = 1, ii</code>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>xx = Aunif(rndseed10)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 9, 1, -1</code>
+                  </div>
+                </a>
+                <div id="block-4-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ii = 0
+rn = 0.
+ii = idg(j)
+rn = Aunif(rndseed10)
+k = j * rn + 1
+idg(j) = idg(k)
+idg(k) = ii</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iwgn = 1, db_mx%wgnsta</code>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rndseed(10,iwgn) = rndseed(idg(6),iwgn)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iwgn = 1, db_mx%wgnsta</code>
+                  </div>
+                </a>
+                <div id="block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rnd2(iwgn) = Aunif(rndseed(idg(2),iwgn))
+rnd3(iwgn) = Aunif(rndseed(idg(3),iwgn))
+rnd8(iwgn) = Aunif(rndseed(idg(8),iwgn))
+rnd9(iwgn) = Aunif(rndseed(idg(9),iwgn))</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

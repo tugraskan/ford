@@ -159,9 +159,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
                   <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
-                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
               </ul>
             </li>
         </ul>
@@ -232,7 +232,7 @@ initialize water table depth and soil water for Daniel
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-isol~9"></span>
+              <span class="anchor" id="variable-isol~8"></span>
               integer
             </td>
 <td></td>
@@ -601,6 +601,464 @@ initialize water table depth and soil water for Daniel
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use soil_module
+use basin_module
+use time_module
+implicit none
+integer :: j = 0        !none          |counter
+integer :: nly = 0      !none          |number of soil layers
+real :: sumpor = 0.     !mm            |porosity of profile
+real :: pormm = 0.      !mm            |porosity in mm depth
+real :: nota = 0.       !              |
+real :: a = 0.          !m^2           |cross-sectional area of channel
+real :: b = 0.          !m             |bottom width of channel
+real :: c = 0.          !none          |inverse of channel side slope
+real :: d = 0.          !m             |depth of flow
+integer :: isol         !              |
+real :: drpor = 0.      !              |
+real :: sa = 0.         !ha            |surface area of impounded water body
+real :: cl = 0.         !              |
+real :: si = 0.         !m/n           |slope of main channel
+real :: depth_prev = 0. !              |
+if (sol(isol)%s%alb < 0.1) sol(isol)%s%alb  = 0.1
+if (sol(isol)%s%anion_excl<=1.e-6) sol(isol)%s%anion_excl = 0.5
+if (sol(isol)%s%anion_excl >= 1.) sol(isol)%s%anion_excl = 0.99
+nly = sol(isol)%s%nly</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 1, nly</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>a = 50.0
+b = 20.0
+c = 5.0
+d = 2.0
+nota = 10.
+if (sol(isol)%phys(j)%bd <= 1.e-6) sol(isol)%phys(j)%bd = 1.3
+if (sol(isol)%phys(j)%bd > 2.) sol(isol)%phys(j)%bd = 2.0
+if (sol(isol)%phys(j)%awc <= 1.e-6) sol(isol)%phys(j)%awc = .005
+if (sol(isol)%phys(j)%awc >= .8) sol(isol)%phys(j)%awc = .8
+if (sol(isol)%phys(j)%rock > 98.0) sol(isol)%phys(j)%rock= 98.0
+if (sol(isol)%ly(j)%cal <= 1.e-6) sol(isol)%ly(j)%cal = 2.8
+if (sol(isol)%ly(j)%ph<= 1.e-6) sol(isol)%ly(j)%ph = 6.5</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sol(isol)%phys(j)%k <= 0.0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sol(isol)%s%hydgrp == "A"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%phys(j)%k = a</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE IF</strong> (<code>sol(isol)%s%hydgrp == "B"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%phys(j)%k = b</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE IF</strong> (<code>sol(isol)%s%hydgrp == "C"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%phys(j)%k = c</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE IF</strong> (<code>sol(isol)%s%hydgrp == "D"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%phys(j)%k = d          !Claire 12/2/09</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%phys(j)%k = nota</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>nly = sol(isol)%s%nly</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 1, nly</code>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%phys(j)%wp = 0.4 * sol(isol)%phys(j)%clay * sol(isol)%phys(j)%bd / 100.
+if (sol(isol)%phys(j)%wp <= 0.) sol(isol)%phys(j)%wp = .005
+sol(isol)%phys(j)%up = sol(isol)%phys(j)%wp + sol(isol)%phys(j)%awc
+sol(isol)%phys(j)%por = 1. - sol(isol)%phys(j)%bd / 2.65
+drpor = sol(isol)%phys(j)%por - sol(isol)%phys(j)%up
+sol(isol)%ly(j)%vwt=(437.13*drpor**2)-(95.08 * drpor)+8.257</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sol(isol)%phys(j)%up >= sol(isol)%phys(j)%por</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%phys(j)%up = sol(isol)%phys(j)%por - .05
+sol(isol)%phys(j)%wp = sol(isol)%phys(j)%up - sol(isol)%phys(j)%awc</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sol(isol)%phys(j)%wp <= 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%phys(j)%up = sol(isol)%phys(j)%por * .75
+sol(isol)%phys(j)%wp = sol(isol)%phys(j)%por * .25</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>sa = sol(isol)%phys(1)%sand / 100.
+cl = sol(isol)%phys(1)%clay  / 100.
+si = sol(isol)%phys(1)%silt / 100.
+sol(isol)%s%det_san = sa * (1. - cl)** 2.49   !! Sand fraction
+sol(isol)%s%det_sil = 0.13 * si               !! Silt fraction
+sol(isol)%s%det_cla = 0.20 * cl               !! Clay fraction</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>cl < .25</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%s%det_sag = 2.0 * cl              !! Small aggregate fraction</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE IF</strong> (<code>cl > .5</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-7" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%s%det_sag = .57</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-8" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%s%det_sag = .28 * (cl - .25) + .5</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>sol(isol)%s%det_lag = 1. - sol(isol)%s%det_san -                 &
+sol(isol)%s%det_sil - sol(isol)%s%det_cla - sol(isol)%s%det_sag  !! Large Aggregate fraction</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-10" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sol(isol)%s%det_lag < 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-10" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%s%det_san = sol(isol)%s%det_san/(1 - sol(isol)%s%det_lag)
+sol(isol)%s%det_sil = sol(isol)%s%det_sil/(1 - sol(isol)%s%det_lag)
+sol(isol)%s%det_cla = sol(isol)%s%det_cla/(1 - sol(isol)%s%det_lag)
+sol(isol)%s%det_sag = sol(isol)%s%det_sag/(1 - sol(isol)%s%det_lag)
+sol(isol)%s%det_lag = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>depth_prev = 0.
+sumpor = 0.</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-12" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 1, nly</code>
+                  </div>
+                </a>
+                <div id="block-12" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%phys(j)%thick = sol(isol)%phys(j)%d - depth_prev
+pormm = sol(isol)%phys(j)%por * sol(isol)%phys(j)%thick
+sumpor = sumpor + pormm
+sol(isol)%phys(j)%ul = (sol(isol)%phys(j)%por -                  &
+sol(isol)%phys(j)%wp) * sol(isol)%phys(j)%thick
+sol(isol)%s%sumul = sol(isol)%s%sumul + sol(isol)%phys(j)%ul
+sol(isol)%phys(j)%fc = sol(isol)%phys(j)%thick * (sol(isol)%phys(j)%up -            &
+sol(isol)%phys(j)%wp)
+sol(isol)%s%sumfc = sol(isol)%s%sumfc + sol(isol)%phys(j)%fc
+sol(isol)%phys(j)%st = sol(isol)%phys(j)%fc * sol(isol)%s%ffc
+sol(isol)%phys(j)%hk = (sol(isol)%phys(j)%ul -                 &
+sol(isol)%phys(j)%fc) / sol(isol)%phys(j)%k
+if (sol(isol)%phys(j)%hk < 1.) sol(isol)%phys(j)%hk = 1.
+sol(isol)%s%sw = sol(isol)%s%sw + sol(isol)%phys(j)%st
+sol(isol)%phys(j)%wpmm = sol(isol)%phys(j)%wp * sol(isol)%phys(j)%thick
+sol(isol)%s%sumwp = sol(isol)%s%sumwp + sol(isol)%phys(j)%wpmm
+sol(isol)%phys(j)%crdep = sol(isol)%s%crk * 0.916 *            &
+Exp(-.0012 * sol(isol)%phys(j)%d) * sol(isol)%phys(j)%thick
+sol(isol)%ly(j)%volcr = sol(isol)%phys(j)%crdep *              &
+(sol(isol)%phys(j)%fc - sol(isol)%phys(j)%st) /              &
+(sol(isol)%phys(j)%fc)
+depth_prev = sol(isol)%phys(j)%d</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>sol(isol)%s%swpwt = sol(isol)%s%sw</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-14" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sol(isol)%s%ffc > 1.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-14" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%s%wat_tbl = (sol(isol)%s%det_lag - sol(isol)%s%ffc *   &
+sol(isol)%s%sumfc) / sol(isol)%phys(nly)%d</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-15" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-15" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%s%wat_tbl = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>sol(isol)%s%avpor = sumpor / sol(isol)%phys(nly)%d
+sol(isol)%s%avbd = 2.65 * (1. - sol(isol)%s%avpor)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-17" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>time%step > 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-17" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol(isol)%phys(1)%sand = 100. - sol(isol)%phys(1)%clay - sol(isol)%phys(1)%silt</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -616,7 +1074,7 @@ initialize water table depth and soil water for Daniel
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-isol~9"></span>
+              <span class="anchor" id="variable-isol~8"></span>
               integer,
             </td>
               <td>public</td>

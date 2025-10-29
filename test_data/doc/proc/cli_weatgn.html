@@ -226,7 +226,7 @@ for radiation</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwgn~12"></span>
+              <span class="anchor" id="variable-iwgn~16"></span>
               integer
             </td>
 <td></td>
@@ -462,6 +462,129 @@ for radiation</p>
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use climate_module
+implicit none
+integer, dimension (2) :: zshape = 0  !none          |array shape parameters
+integer :: n = 0                    !none          |counter
+integer :: l = 0                    !none          |counter
+integer :: iwgn
+real, dimension (3,3) :: a = 0.     !none          |3 x 3 matrix whose elements are defined such
+real, dimension (3,3) :: b = 0.     !none          |3 x 3 matrix whose elements are defined such
+real, dimension (3) :: xx = 0.      !none          |variable to hold calculation value
+real, dimension (3) :: e = 0.       !none          |3 x 1 matrix of independent random components
+real :: v2 = 0.                     !none          |random number between 0.0 and 1.0
+real :: aunif                       !              |
+real :: cli_dstn1                   !              |
+zshape = (/3, 3/)
+a = Reshape((/.567, .253, -.006, .086, .504, -.039, -.002, -.050,     &
+.244/), zshape)
+b = Reshape((/.781, .328, .238, 0., .637, -.341, 0., 0., .873/),      &
+zshape)
+xx = 0.
+e = 0.
+v2 = 0.
+v2 = Aunif(rndseed(idg(8),iwgn))
+e(1) = cli_Dstn1(rnd8(iwgn),v2)    !! for max temp
+rnd8(iwgn) = v2
+v2 = 0.
+v2 = Aunif(rndseed(idg(9),iwgn))
+e(2) = cli_Dstn1(rnd9(iwgn),v2)    !! for min temp
+rnd9(iwgn) = v2
+v2 = 0.
+v2 = Aunif(rndseed(idg(2),iwgn))
+e(3) = cli_Dstn1(rnd2(iwgn),v2)    !! for radiation
+rnd2(iwgn) = v2</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>n = 1, 3</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>wgncur(n,iwgn) = 0.</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>l = 1, 3</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>wgncur(n,iwgn) = wgncur(n,iwgn) + b(n,l) * e(l)
+xx(n) = xx(n) + a(n,l) * wgnold(l,iwgn)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>n = 1, 3</code>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>wgncur(n,iwgn) = wgncur(n,iwgn) + xx(n)
+if (wgncur(n,iwgn) > 1.) wgncur(n,iwgn) = 1.
+if (wgncur(n,iwgn) < -1.) wgncur(n,iwgn) = -1.
+wgnold(n,iwgn) = wgncur(n,iwgn)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -477,7 +600,7 @@ for radiation</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwgn~12"></span>
+              <span class="anchor" id="variable-iwgn~16"></span>
               integer,
             </td>
               <td>public</td>

@@ -161,8 +161,8 @@
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/fertilizer_data_module.html'>fertilizer_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/mgt_operations_module.html'>mgt_operations_module</a></li>
                   <li class="list-inline-item"><a href='../module/cs_module.html'>cs_module</a></li>
+                  <li class="list-inline-item"><a href='../module/mgt_operations_module.html'>mgt_operations_module</a></li>
               </ul>
             </li>
         </ul>
@@ -202,7 +202,7 @@ jj          |none          |HRU number
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-jj~33"></span>
+              <span class="anchor" id="variable-jj~31"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -420,35 +420,6 @@ jj          |none          |HRU number
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_chemical_application_operation_html__chemical_application_operation__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_chemical_application_operation_html__chemical_application_operation__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_chemical_application_operation_html__chemical_application_operation__a__">
-              type(<a href='../type/chemical_application_operation.html'>chemical_application_operation</a>)
-              <small class="text-muted ms-2">(1 attribute from mgt_operations_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_chemical_application_operation_html__chemical_application_operation__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_chemical_application_operation_html__chemical_application_operation__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>chemapp_db</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_object_cs_balance_html__object_cs_balance__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_object_cs_balance_html__object_cs_balance__a__" aria-expanded="false" 
@@ -535,6 +506,35 @@ jj          |none          |HRU number
             </div>
           </div>
         </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_chemical_application_operation_html__chemical_application_operation__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_chemical_application_operation_html__chemical_application_operation__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_chemical_application_operation_html__chemical_application_operation__a__">
+              type(<a href='../type/chemical_application_operation.html'>chemical_application_operation</a>)
+              <small class="text-muted ms-2">(1 attribute from mgt_operations_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_chemical_application_operation_html__chemical_application_operation__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_chemical_application_operation_html__chemical_application_operation__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>chemapp_db</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
     </div>
 
         </div>
@@ -543,6 +543,143 @@ jj          |none          |HRU number
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use mgt_operations_module
+use cs_module
+use constituent_mass_module
+use fertilizer_data_module
+implicit none
+integer, intent (in) :: jj          !none           |HRU
+integer, intent (in) :: ifrt        !               |fertilizer type from fert data base
+real, intent (in) :: frt_kg         !kg/ha          |amount of fertilizer applied
+integer, intent (in) :: fertop      !               |
+real :: xx = 0.                     !               |surface application fraction
+integer :: ics = 0                  !               |constituent counter
+integer :: l = 0                    !none           |counter</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>cs_db%num_cs > 0 .and. fert_cs_flag == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ifrt > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>l=1,2</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>xx = 0.
+cs_soil(jj)%ly(1)%cs(1) = cs_soil(jj)%ly(1)%cs(1) + (xx * frt_kg * fert_cs(ifrt)%seo4)
+cs_soil(jj)%ly(1)%cs(2) = cs_soil(jj)%ly(1)%cs(2) + (xx * frt_kg * fert_cs(ifrt)%seo3)
+cs_soil(jj)%ly(1)%cs(3) = cs_soil(jj)%ly(1)%cs(3) + (xx * frt_kg * fert_cs(ifrt)%boron)
+hcsb_d(jj)%cs(1)%fert = hcsb_d(jj)%cs(1)%fert + (xx * frt_kg * fert_cs(ifrt)%seo4)
+hcsb_d(jj)%cs(2)%fert = hcsb_d(jj)%cs(2)%fert + (xx * frt_kg * fert_cs(ifrt)%seo3)
+hcsb_d(jj)%cs(3)%fert = hcsb_d(jj)%cs(3)%fert + (xx * frt_kg * fert_cs(ifrt)%boron)</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>l == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>xx = chemapp_db(fertop)%surf_frac</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>xx = 1. - chemapp_db(fertop)%surf_frac</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 
@@ -560,7 +697,7 @@ jj          |none          |HRU number
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-jj~33"></span>
+              <span class="anchor" id="variable-jj~31"></span>
               integer,
             </td>
               <td>public</td>

@@ -330,7 +330,7 @@ set time to correspond to lower amount of dirt</p>
                     </tr>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~18" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~9" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -407,6 +407,50 @@ set time to correspond to lower amount of dirt</p>
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hru_module, only : ihru, sweepeff, twash, ulu
+use urban_data_module
+implicit none
+integer :: j = 0         !j             |none          |HRU number
+real :: dirt = 0.        !kg/curb km    |amount of solids built up on impervious
+real :: fr_curb = 0.     !none          |availability factor, the fraction of the
+j = 0
+j = ihru
+dirt = 0.
+dirt = urbdb(ulu)%dirtmx * twash(j) / (urbdb(ulu)%thalf +twash(j))
+dirt = dirt * (1. - fr_curb * sweepeff)
+if (dirt < 1.e-6) dirt = 0.
+twash(j) = 0.
+twash(j) = urbdb(ulu)%thalf * dirt / (urbdb(ulu)%dirtmx - dirt)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

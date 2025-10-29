@@ -195,7 +195,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-icha~2"></span>
+              <span class="anchor" id="variable-icha~4"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -210,7 +210,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-flow_dep"></span>
+              <span class="anchor" id="variable-flow_dep~2"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -375,6 +375,140 @@
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use sd_channel_module
+implicit none
+integer, intent (in) :: icha         !none       !channel number
+real, intent (in) :: flow_dep     !m          !flow depth to interpolate rating curve
+integer :: ielev = 0              !none       |counter for point on the rating curve
+real :: rto = 0.                  !ratio      |storage time constant for the reach on</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ielev = 1, ch_rcurv(icha)%npts</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>flow_dep < ch_rcurv(icha)%elev(ielev)%dep</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ielev == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rto = flow_dep / ch_rcurv(icha)%elev(ielev)%dep
+rcurv = ch_rcurv(icha)%elev(ielev) * rto
+rcurv%ttime = ch_rcurv(icha)%elev(ielev)%ttime
+exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ielev > 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rto = (flow_dep - ch_rcurv(icha)%elev(ielev-1)%dep) /     &
+(ch_rcurv(icha)%elev(ielev)%dep - ch_rcurv(icha)%elev(ielev-1)%dep)
+call chrc_interp (ch_rcurv(icha)%elev(ielev-1), ch_rcurv(icha)%elev(ielev), rto, rcurv)
+exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ielev == 4</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rto = 1. + (flow_dep - ch_rcurv(icha)%elev(ielev)%dep) / ch_rcurv(icha)%elev(ielev)%dep
+rcurv = ch_rcurv(icha)%elev(ielev) * rto
+rcurv%ttime = rcurv%ttime / rto
+exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -390,7 +524,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-icha~2"></span>
+              <span class="anchor" id="variable-icha~4"></span>
               integer,
             </td>
               <td>public</td>
@@ -407,7 +541,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-flow_dep"></span>
+              <span class="anchor" id="variable-flow_dep~2"></span>
               real,
             </td>
               <td>public</td>

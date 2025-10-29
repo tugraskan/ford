@@ -160,9 +160,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
-                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
+                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
               </ul>
             </li>
         </ul>
@@ -508,16 +508,16 @@ March, 2009 further adjustments expected</p>
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__">
+          <h3 class="accordion-header" id="headinginteger">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__">
-              type(<a href='../type/plant_community.html'>plant_community</a>)
-              <small class="text-muted ms-2">(1 attribute from plant_module)</small>
+                    data-bs-target="#collapseinteger" aria-expanded="false" 
+                    aria-controls="collapseinteger">
+              integer
+              <small class="text-muted ms-2">(1 attribute from hru_module)</small>
             </button>
           </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" data-bs-parent="#outsideVarsAccordion">
+          <div id="collapseinteger" class="accordion-collapse collapse" 
+               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
               <table class="table table-sm">
                 <thead>
@@ -528,8 +528,8 @@ March, 2009 further adjustments expected</p>
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>pcom</strong></td>
-                      <td></td>
+                      <td><strong>ihru</strong></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~9" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -566,16 +566,16 @@ March, 2009 further adjustments expected</p>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headinginteger">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseinteger" aria-expanded="false" 
-                    aria-controls="collapseinteger">
-              integer
-              <small class="text-muted ms-2">(1 attribute from hru_module)</small>
+                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__">
+              type(<a href='../type/plant_community.html'>plant_community</a>)
+              <small class="text-muted ms-2">(1 attribute from plant_module)</small>
             </button>
           </h3>
-          <div id="collapseinteger" class="accordion-collapse collapse" 
-               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
+          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
               <table class="table table-sm">
                 <thead>
@@ -586,8 +586,8 @@ March, 2009 further adjustments expected</p>
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~18" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><strong>pcom</strong></td>
+                      <td></td>
                     </tr>
                 </tbody>
               </table>
@@ -602,6 +602,198 @@ March, 2009 further adjustments expected</p>
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hru_module, only : ihru
+use soil_module
+use plant_module
+implicit none
+real :: sol_thick(soil(ihru)%nly) !            |
+real :: cum_rd = 0.               !            |
+real :: cum_d = 0.                !            |
+real :: cum_rf = 0.               !            |
+real :: x1 = 0.                   !            |
+real :: x2 = 0.                   !            |
+integer :: k = 0                  !            |
+integer :: l = 0                  !none        |number of soil layer that manure applied
+integer :: jj = 0                 !none        |counter
+real :: a = 0.                    !            |
+real :: b = 0.                    !            |
+real :: c = 0.                    !            |
+real :: d = 0.                    !            |
+real :: rtfr = 0.                 !none        |root fraction
+real :: xx1 = 0.                  !            |
+real :: xx2 = 0.                  !            |
+real :: xx = 0.                   !            |
+jj = ihru</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pcom(jj)%plg(1)%root_dep < 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>soil(jj)%ly(1)%rtfr = 1
+return</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>a = 1.15
+b = 11.7
+c = 0.022
+d = 0.12029 ! Integral of Normalized Root Distribution Function
+l = 0
+k = 0
+cum_d = 0.
+cum_rf = 0.
+sol_thick(:) = 0.
+rtfr = 0.</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>l = 1, soil(jj)%nly</code>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>cum_d = cum_d + sol_thick(l)
+if (cum_d >= pcom(jj)%plg(1)%root_dep) cum_rd = pcom(jj)%plg(1)%root_dep
+if (cum_d < pcom(jj)%plg(1)%root_dep) cum_rd = cum_d
+x1 = (cum_rd - sol_thick(l)) / pcom(jj)%plg(1)%root_dep
+x2 = cum_rd / pcom(jj)%plg(1)%root_dep
+xx1 = -b * x1
+if (xx1 > 20.) xx1 = 20.
+xx2 = -b * x2
+if (xx2 > 20.) xx2 = 20.
+soil(jj)%ly(l)%rtfr = (a/b*(Exp(xx1) - Exp(xx2)) + c *(x2 - x1))/d
+xx = cum_rf
+cum_rf = cum_rf + soil(jj)%ly(l)%rtfr
+k = l
+if (cum_rd >= pcom(jj)%plg(1)%root_dep) Exit</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>l == 1</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol_thick(l) = soil(jj)%phys(l)%d</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sol_thick(l) = soil(jj)%phys(l)%d - soil(jj)%phys(l-1)%d</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>cum_rf > 1.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>soil(jj)%ly(l)%rtfr = 1. - xx
+cum_rf = 1.0</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>l = 1, soil(jj)%nly</code>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>soil(jj)%ly(l)%rtfr = soil(jj)%ly(l)%rtfr / cum_rf
+If (l == k) Exit ! exits loop on the same layer as the previous loop</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

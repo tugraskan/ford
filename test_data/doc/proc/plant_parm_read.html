@@ -160,10 +160,10 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
                   <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
               </ul>
             </li>
         </ul>
@@ -707,7 +707,7 @@
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(3 attributes from input_file_module)</small>
+              <small class="text-muted ms-2">(3 attributes from basin_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -722,15 +722,15 @@
                 </thead>
                 <tbody>
                     <tr>
+                      <td><strong>bsn_cc%nam1</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
                       <td><strong>in_parmdb%plants_plt</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
                       <td><strong>db_mx%plantparm</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>bsn_cc%nam1</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -933,6 +933,182 @@
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use input_file_module
+use maximum_data_module
+use plant_data_module
+use basin_module
+implicit none
+integer :: ic = 0                   !none       |plant counter
+character (len=80) :: titldum = ""  !           |title of file
+character (len=80) :: header = ""   !           |header of file
+character (len=80) :: plclass = ""  !           |plant class - row crop, close grown, grass, tree, etc
+integer :: eof = 0              !           |end of file
+integer :: imax = 0             !none       |determine max number for array (imax) and total number in file
+integer :: mpl = 0              !           |
+logical :: i_exist              !none       |check to determine if file exists
+eof = 0
+imax = 0
+mpl = 0
+inquire (file=in_parmdb%plants_plt, exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>.not. i_exist .or. in_parmdb%plants_plt == " null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (pldb(0:0))
+allocate (plcp(0:0))
+allocate (pl_class(0:0))</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (104,file=in_parmdb%plants_plt)
+read (104,*,iostat=eof) titldum
+if (eof < 0) exit
+read (104,*,iostat=eof) header
+if (eof < 0) exit
+allocate (pldb(0:imax))
+allocate (plcp(0:imax))
+allocate (pl_class(0:imax))
+rewind (104)
+read (104,*,iostat=eof) titldum
+if (eof < 0) exit
+read (104,*,iostat=eof) header
+if (eof < 0) exit
+exit</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (104,*,iostat=eof) titldum
+if (eof < 0) exit
+imax = imax + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ic = 1, imax</code>
+                  </div>
+                </a>
+                <div id="block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>if (eof < 0) exit
+pldb(ic)%mat_yrs = Max (1, pldb(ic)%mat_yrs)</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bsn_cc%nam1 == 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (104,*,iostat=eof) pldb(ic)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (104,*,iostat=eof) pldb(ic), pl_class(ic)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>db_mx%plantparm = imax
+close (104)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

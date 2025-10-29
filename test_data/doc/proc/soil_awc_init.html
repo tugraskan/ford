@@ -159,9 +159,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
                   <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
-                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
               </ul>
             </li>
         </ul>
@@ -219,7 +219,7 @@ initialize water table depth and soil water for Daniel</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-isol~5"></span>
+              <span class="anchor" id="variable-isol~4"></span>
               integer
             </td>
 <td></td>
@@ -423,6 +423,203 @@ initialize water table depth and soil water for Daniel</p>
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use soil_module
+use basin_module
+use time_module
+implicit none
+integer :: ly = 0       !none          |soil layer counter
+integer :: nly = 0      !none          |number of soil layers
+real :: sumpor = 0.     !mm            |porosity of profile
+real :: pormm = 0.      !mm            |porosity in mm depth
+integer :: isol         !              |
+real :: drpor = 0.      !              |
+real :: depth_prev = 0. !              |
+nly = soil(isol)%nly</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ly = 1, nly</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>if (soil(isol)%phys(ly)%awc <= 1.e-6) soil(isol)%phys(ly)%awc = .005
+if (soil(isol)%phys(ly)%awc >= .8) soil(isol)%phys(ly)%awc = .8
+soil(isol)%phys(ly)%wp = 0.4 * soil(isol)%phys(ly)%clay * soil(isol)%phys(ly)%bd / 100.
+if (soil(isol)%phys(ly)%wp <= 0.) soil(isol)%phys(ly)%wp = .005
+soil(isol)%phys(ly)%up = soil(isol)%phys(ly)%wp + soil(isol)%phys(ly)%awc
+soil(isol)%phys(ly)%por = 1. - soil(isol)%phys(ly)%bd / 2.65
+drpor = soil(isol)%phys(ly)%por - soil(isol)%phys(ly)%up
+soil(isol)%ly(ly)%vwt = (437.13*drpor**2)-(95.08 * drpor)+8.257</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>soil(isol)%phys(ly)%up >= soil(isol)%phys(ly)%por</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>soil(isol)%phys(ly)%up = soil(isol)%phys(ly)%por - .05
+soil(isol)%phys(ly)%wp = soil(isol)%phys(ly)%up - soil(isol)%phys(ly)%awc</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>soil(isol)%phys(ly)%wp <= 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>soil(isol)%phys(ly)%up = soil(isol)%phys(ly)%por * .75
+soil(isol)%phys(ly)%wp = soil(isol)%phys(ly)%por * .25</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>depth_prev = 0.
+sumpor = 0.
+soil(isol)%sumfc = 0.
+soil(isol)%sumul = 0.
+soil(isol)%sw = 0.
+soil(isol)%sumwp = 0.</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ly = 1, nly</code>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>soil(isol)%phys(ly)%thick = soil(isol)%phys(ly)%d - depth_prev
+pormm = soil(isol)%phys(ly)%por * soil(isol)%phys(ly)%thick
+sumpor = sumpor + pormm
+soil(isol)%phys(ly)%ul = (soil(isol)%phys(ly)%por - soil(isol)%phys(ly)%wp) * soil(isol)%phys(ly)%thick
+soil(isol)%sumul = soil(isol)%sumul + soil(isol)%phys(ly)%ul
+soil(isol)%phys(ly)%fc = soil(isol)%phys(ly)%thick * (soil(isol)%phys(ly)%up - soil(isol)%phys(ly)%wp)
+soil(isol)%sumfc = soil(isol)%sumfc + soil(isol)%phys(ly)%fc
+soil(isol)%phys(ly)%st = soil(isol)%phys(ly)%fc * soil(isol)%ffc
+soil(isol)%phys(ly)%hk = (soil(isol)%phys(ly)%ul - soil(isol)%phys(ly)%fc) / soil(isol)%phys(ly)%k
+if (soil(isol)%phys(ly)%hk < 1.) soil(isol)%phys(ly)%hk = 1.
+soil(isol)%sw = soil(isol)%sw + soil(isol)%phys(ly)%st
+soil(isol)%phys(ly)%wpmm = soil(isol)%phys(ly)%wp * soil(isol)%phys(ly)%thick
+soil(isol)%sumwp = soil(isol)%sumwp + soil(isol)%phys(ly)%wpmm
+soil(isol)%phys(ly)%crdep = soil(isol)%crk * 0.916 * Exp(-.0012 * soil(isol)%phys(ly)%d) * soil(isol)%phys(ly)%thick
+soil(isol)%ly(ly)%volcr = soil(isol)%phys(ly)%crdep * (soil(isol)%phys(ly)%fc - soil(isol)%phys(ly)%st) / &
+(soil(isol)%phys(ly)%fc)
+depth_prev = soil(isol)%phys(ly)%d</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>soil(isol)%swpwt = soil(isol)%sw</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>soil(isol)%ffc > 1.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>soil(isol)%wat_tbl = (soil(isol)%det_lag - soil(isol)%ffc *   &
+soil(isol)%sumfc) / soil(isol)%phys(nly)%d</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-7" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>soil(isol)%wat_tbl = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>soil(isol)%avpor = sumpor / soil(isol)%phys(nly)%d
+soil(isol)%avbd = 2.65 * (1. - soil(isol)%avpor)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -438,7 +635,7 @@ initialize water table depth and soil water for Daniel</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-isol~5"></span>
+              <span class="anchor" id="variable-isol~4"></span>
               integer,
             </td>
               <td>public</td>

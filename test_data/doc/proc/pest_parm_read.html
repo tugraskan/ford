@@ -160,10 +160,10 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
                   <li class="list-inline-item"><a href='../module/pesticide_data_module.html'>pesticide_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -655,39 +655,6 @@ decay_f or decay_s = Exp(-k)</p>
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(2 attributes from input_file_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>in_parmdb%pest</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%pestparm</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__" aria-expanded="false" 
@@ -739,6 +706,39 @@ decay_f or decay_s = Exp(-k)</p>
                     <tr>
                       <td><strong>pestcp</strong></td>
                       <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(2 attributes from input_file_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>in_parmdb%pest</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%pestparm</strong></td>
+                      <td>None</td>
                     </tr>
                 </tbody>
               </table>
@@ -835,6 +835,279 @@ decay_f or decay_s = Exp(-k)</p>
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use basin_module
+use input_file_module
+use maximum_data_module
+use pesticide_data_module
+implicit none
+character (len=80) :: titldum = ""!           |title of file
+character (len=80) :: header = "" !           |header of file
+integer :: eof = 0              !           |end of file
+integer :: imax = 0             !none       |determine max number for array (imax) and total number in file
+logical :: i_exist              !none       |check to determine if file exists
+integer :: ip = 0               !none       |counter
+eof = 0
+imax = 0
+inquire (file=in_parmdb%pest, exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>.not. i_exist .or. in_parmdb%pest == "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (pestdb(0:0))
+allocate (pestcp(0:0))</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (106,file=in_parmdb%pest)
+read (106,*,iostat=eof) titldum
+if (eof < 0) exit
+read (106,*,iostat=eof) header
+if (eof < 0) exit
+allocate (pestdb(0:imax))
+allocate (pestcp(0:imax))
+rewind (106)
+read (106,*,iostat=eof) titldum
+if (eof < 0) exit
+read (106,*,iostat=eof) header
+if (eof < 0) exit
+exit</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (106,*,iostat=eof) titldum
+if (eof < 0) exit
+imax = imax + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ip = 1, imax</code>
+                  </div>
+                </a>
+                <div id="block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (106,*,iostat=eof) pestdb(ip)
+if (eof < 0) exit</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pestdb(ip)%foliar_hlife > 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pestcp(ip)%decay_f = Exp(-.693 / pestdb(ip)%foliar_hlife)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pestcp(ip)%decay_f = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pestdb(ip)%soil_hlife > 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pestcp(ip)%decay_s = Exp(-.693 / pestdb(ip)%soil_hlife)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pestcp(ip)%decay_s = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pestdb(ip)%aq_hlife > 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pestcp(ip)%decay_a = Exp(-.693 / pestdb(ip)%aq_hlife)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pestcp(ip)%decay_a = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pestdb(ip)%ben_hlife > 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-7" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pestcp(ip)%decay_b = Exp(-.693 / pestdb(ip)%ben_hlife)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-8" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pestcp(ip)%decay_b = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>db_mx%pestparm = imax
+close (106)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

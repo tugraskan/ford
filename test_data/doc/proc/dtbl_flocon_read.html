@@ -160,9 +160,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
                   <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
                   <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
               </ul>
             </li>
@@ -838,47 +838,6 @@ if divert action, xwalk fp with flo_con decision table</p>
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(4 attributes from input_file_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>in_cond%dtbl_flo</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>sp_ob%objs</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%recall_max</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%dtbl_flo</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_decision_table_html__decision_table__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_decision_table_html__decision_table__a__" aria-expanded="false" 
@@ -959,6 +918,47 @@ if divert action, xwalk fp with flo_con decision table</p>
                     <tr>
                       <td><strong>recall</strong></td>
                       <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(4 attributes from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>sp_ob%objs</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>in_cond%dtbl_flo</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%recall_max</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%dtbl_flo</strong></td>
+                      <td>None</td>
                     </tr>
                 </tbody>
               </table>
@@ -1100,6 +1100,291 @@ if divert action, xwalk fp with flo_con decision table</p>
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use maximum_data_module
+use hydrograph_module
+use input_file_module
+use conditional_module
+implicit none
+character (len=80) :: titldum = ""!           |title of file
+character (len=80) :: header = "" !           |header of file
+integer :: eof = 0              !           |end of file
+integer :: i = 0                !none       |counter
+integer :: mdtbl = 0            !none       |ending of loop
+integer :: ic = 0               !none       |counter
+integer :: ial = 0              !none       |counter
+integer :: iac = 0              !none       !counter
+logical :: i_exist              !none       |check to determine if file exists
+integer :: idb = 0              !none       |counter
+integer :: iob = 0              !none       |counter
+mdtbl = 0
+eof = 0
+inquire (file=in_cond%dtbl_flo, exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>.not. i_exist .or. in_cond%dtbl_flo == "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (dtbl_flo(0:0))</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (107,file=in_cond%dtbl_flo)
+read (107,*,iostat=eof) titldum
+if (eof < 0) exit
+read (107,*,iostat=eof) mdtbl
+if (eof < 0) exit
+read (107,*,iostat=eof)
+if (eof < 0) exit
+allocate (dtbl_flo(0:mdtbl))
+db_mx%dtbl_flo = mdtbl
+exit</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>i = 1, mdtbl</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat=eof) header
+if (eof < 0) exit
+read (107,*,iostat=eof) dtbl_flo(i)%name, dtbl_flo(i)%conds, dtbl_flo(i)%alts, dtbl_flo(i)%acts
+if (eof < 0) exit
+allocate (dtbl_flo(i)%cond(dtbl_flo(i)%conds))
+allocate (dtbl_flo(i)%alt(dtbl_flo(i)%conds,dtbl_flo(i)%alts))
+allocate (dtbl_flo(i)%act(dtbl_flo(i)%acts))
+allocate (dtbl_flo(i)%act_hit(dtbl_flo(i)%alts))
+allocate (dtbl_flo(i)%act_typ(dtbl_flo(i)%acts), source = 0)
+allocate (dtbl_flo(i)%act_app(dtbl_flo(i)%acts), source = 0)
+allocate (dtbl_flo(i)%act_outcomes(dtbl_flo(i)%acts,dtbl_flo(i)%alts))
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+read (107,*,iostat=eof)
+if (eof < 0) exit</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ic = 1, dtbl_flo(i)%conds</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat=eof) dtbl_flo(i)%cond(ic), (dtbl_flo(i)%alt(ic,ial), ial = 1, dtbl_flo(i)%alts)
+if (eof < 0) exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iac = 1, dtbl_flo(i)%acts</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat=eof) dtbl_flo(i)%act(iac), (dtbl_flo(i)%act_outcomes(iac,ial), ial = 1, dtbl_flo(i)%alts)
+if (eof < 0) exit</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-1-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>dtbl_flo(i)%act(iac)%typ == "divert" .and. dtbl_flo(i)%act(iac)%option == "recall"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-1-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-1-block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>idb = 1, db_mx%recall_max</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1-block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-3-block-1-block-2-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>dtbl_flo(i)%act(iac)%file_pointer == recall(idb)%filename</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-1-block-2-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>dtbl_flo(i)%act_typ(iac) = idb
+exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iob = 1, sp_ob%objs</code>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ob(iob)%ruleset /= "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>idb = 1, db_mx%dtbl_flo</code>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>dtbl_flo(idb)%name == ob(iob)%ruleset</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ob(iob)%flo_dtbl = idb
+exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>close (107)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

@@ -160,13 +160,13 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/channel_data_module.html'>channel_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/sd_channel_module.html'>sd_channel_module</a></li>
-                  <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/channel_data_module.html'>channel_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -400,7 +400,7 @@
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(2 attributes from maximum_data_module)</small>
+              <small class="text-muted ms-2">(2 attributes from constituent_mass_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -415,11 +415,11 @@
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>db_mx%salt_cha_ini</strong></td>
+                      <td><strong>cs_db%num_salts</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>cs_db%num_salts</strong></td>
+                      <td><strong>db_mx%salt_cha_ini</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -528,6 +528,145 @@
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use constituent_mass_module
+use input_file_module
+use maximum_data_module
+use channel_data_module
+use hydrograph_module
+use sd_channel_module
+use organic_mineral_mass_module
+implicit none
+character (len=80) :: titldum = ""
+character (len=80) :: header = ""
+integer :: eof = 0
+integer :: imax = 0
+logical :: i_exist
+integer :: isalt = 0
+integer :: isalti = 0
+eof = 0
+inquire (file="salt_channel.ini", exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_exist .or. "salt_channel.ini" /= "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (107,file="salt_channel.ini")
+read (107,*,iostat=eof) titldum
+if (eof < 0) exit
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+imax = 0
+db_mx%salt_cha_ini = imax
+allocate (salt_cha_ini(imax))
+rewind (107)
+read (107,*,iostat=eof) titldum
+if (eof < 0) exit
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+close (107)
+exit</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat=eof) titldum   !name and concentrations
+if (eof < 0) exit
+imax = imax + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,imax</code>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (salt_cha_ini(isalt)%conc(cs_db%num_salts), source = 0.)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalti = 1, imax</code>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat=eof) salt_cha_ini(isalti)%name,salt_cha_ini(isalti)%conc
+if (eof < 0) exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

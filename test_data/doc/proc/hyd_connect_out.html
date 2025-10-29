@@ -160,8 +160,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
               </ul>
             </li>
         </ul>
@@ -467,6 +467,43 @@
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(3 attributes from basin_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pco%hydcon</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>pco%csvout</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>sp_ob1%objs</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
           <h3 class="accordion-header" id="headinginteger">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapseinteger" aria-expanded="false" 
@@ -524,43 +561,6 @@
             </div>
           </div>
         </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>sp_ob1%objs</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>pco%hydcon</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>pco%csvout</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
     </div>
 
         </div>
@@ -569,6 +569,110 @@
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use basin_module
+use hydrograph_module
+implicit none
+integer :: ii = 0         !              |
+integer :: i = 0          !              |
+ii = 0
+icmd = sp_ob1%objs</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pco%hydcon == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (icmd /= 0)</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ii = ii + 1
+write (7000,*) ii, ob(icmd)%name, ob(icmd)%typ,               &
+ob(icmd)%props, ob(icmd)%props2, ob(icmd)%src_tot,           &
+ob(icmd)%rcv_tot, (ob(icmd)%obj_out,ob(icmd)%obtyp_out(i),   &
+ob(icmd)%obtypno_out(i), ob(icmd)%htyp_out(i), i = 1,        &
+ob(icmd)%src_tot)
+icmd = ob(icmd)%cmd_next</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pco%csvout == "y"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>write (7001,'(*(G0.3,:","))') ii, ob(icmd)%name, ob(icmd)%typ,  &
+ob(icmd)%props, ob(icmd)%props2, ob(icmd)%src_tot,              &
+ob(icmd)%rcv_tot, (ob(icmd)%obj_out,ob(icmd)%obtyp_out(i),     &
+ob(icmd)%obtypno_out(i), ob(icmd)%htyp_out(i), i = 1,          &
+ob(icmd)%src_tot)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>close(172)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

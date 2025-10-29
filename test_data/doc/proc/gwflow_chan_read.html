@@ -160,8 +160,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
               </ul>
             </li>
         </ul>
@@ -606,35 +606,6 @@
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>sp_ob%gwflow</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
           <h3 class="accordion-header" id="headinginteger">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapseinteger" aria-expanded="false" 
@@ -706,6 +677,35 @@
                     <tr>
                       <td><strong>gw_chan_elev</strong></td>
                       <td><p>|</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>sp_ob%gwflow</strong></td>
+                      <td>None</td>
                     </tr>
                 </tbody>
               </table>
@@ -810,6 +810,128 @@
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use gwflow_module
+use hydrograph_module
+implicit none
+character(len=20) :: col_head_con(17) = ""
+integer :: i = 0
+integer :: j = 0
+integer :: k = 0
+integer :: in_chan = 0
+integer :: in_con = 0
+integer :: cell_ID = 0
+integer :: channel = 0
+integer :: chan_zone = 0
+integer :: dum1 = 0
+integer :: dum2 = 0
+integer :: chan_cell = 0
+real :: bed_elev = 0.
+real :: chan_length = 0.
+real :: dum3 = 0.
+write(out_gw,*) 'reading cell-channel connections in gwflow.chancells...'
+open(1280,file='gwflow.chancells')
+open(1281,file='gwflow.con')
+num_chancells = sp_ob%gwflow
+allocate (gw_chan_id(num_chancells), source = 0)
+allocate (gw_chan_chan(num_chancells), source = 0)
+allocate (gw_chan_len(num_chancells), source = 0.)
+allocate (gw_chan_elev(num_chancells), source = 0.)
+allocate (gw_chan_zone(num_chancells), source = 0)
+gw_chan_len = 0.
+read(1280,*)
+read(1280,*)
+read(1280,*)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>k=1,num_chancells</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read(1280,*) cell_ID,bed_elev,channel,chan_length,chan_zone
+gw_chan_id(k) = cell_ID
+gw_chan_elev(k) = bed_elev
+gw_chan_chan(k) = channel
+gw_chan_len(k) = chan_length
+gw_chan_zone(k) = chan_zone</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>write(out_gw,*) 'writing gwflow.con file...'
+write(1281,*) 'gwflow.con: channel-cell spatial connections'
+col_head_con = [character(len=17) :: "NUMB","NAME","GISID","AREA","LAT","LONG","ELEV","CELL","WST","CONST","OVER",  &
+"RULE","SRC_TOT ","OBTYPE_OUT1 ","OBTYPNO_OUT1 ","HTYPE_OUT1 ","FRAC_OUT1 "]
+write(1281,103) (col_head_con(j),j=1,17)
+dum1 = 1
+dum2 = 0
+dum3 = 1.00</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>k=1,num_chancells</code>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>write(1281,107) dum1,dum1,dum1,dum2,dum2,dum2,dum2,gw_chan_id(k),dum1,dum2,dum2,dum2,dum1,'sdc',gw_chan_chan(k),'tot',dum3</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>close(1281)
+103  format(30(a10))
+107  format(i5,i5,i6,i5,i4,i5,i5,i10,i4,i6,i5,i5,i8,a12,i13,a11,f6.2)</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

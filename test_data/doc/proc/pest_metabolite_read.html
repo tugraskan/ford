@@ -160,11 +160,11 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
                   <li class="list-inline-item"><a href='../module/pesticide_data_module.html'>pesticide_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -463,43 +463,6 @@ xwalk with constituent data for basin</p>
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(3 attributes from maximum_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>db_mx%pestparm</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%num_pests</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%pests</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__" aria-expanded="false" 
@@ -551,6 +514,43 @@ xwalk with constituent data for basin</p>
                     <tr>
                       <td><strong>pestcp</strong></td>
                       <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(3 attributes from constituent_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>cs_db%pests</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_pests</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%pestparm</strong></td>
+                      <td>None</td>
                     </tr>
                 </tbody>
               </table>
@@ -620,6 +620,232 @@ xwalk with constituent data for basin</p>
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use basin_module
+use input_file_module
+use maximum_data_module
+use pesticide_data_module
+use constituent_mass_module
+implicit none
+character (len=80) :: titldum = ""!           |title of file
+character (len=80) :: header = "" !           |header of file
+character (len=16) :: parent_name = ""
+integer :: eof = 0              !           |end of file
+integer :: imax = 0             !none       |determine max number for array (imax) and total number in file
+logical :: i_exist              !none       |check to determine if file exists
+integer :: ip = 0               !none       |pestdb counter
+integer :: ipb = 0              !none       |basin sequential pesticide counter
+integer :: imeta = 0            !none       |metabolite counter
+integer :: iparent = 0          !none       |parent counter
+integer :: num_metab = 0        !none       |number of matabolites for each parent
+eof = 0
+imax = 0
+inquire (file="pest_metabolite.pes", exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_exist </code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (106,file="pest_metabolite.pes")
+read (106,*,iostat=eof) titldum
+if (eof < 0) exit
+read (106,*,iostat=eof) header
+if (eof < 0) exit
+rewind (106)
+read (106,*,iostat=eof) titldum
+if (eof < 0) exit
+read (106,*,iostat=eof) header
+if (eof < 0) exit</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (106,*,iostat=eof) titldum, num_metab
+if (eof < 0) exit
+imax = imax + 1</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ip = 1, num_metab</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (106,*,iostat=eof) titldum</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iparent = 1, imax</code>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (106,*,iostat=eof) parent_name, num_metab
+if (eof < 0) exit</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ip = 1, db_mx%pestparm</code>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>parent_name == pestdb(ip)%name</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (pestcp(ip)%daughter(num_metab))
+pestcp(ip)%num_metab = num_metab</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>imeta = 1, num_metab</code>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (106,*,iostat=eof) pestcp(ip)%daughter(imeta)%name,        &
+pestcp(ip)%daughter(imeta)%foliar_fr,   &
+pestcp(ip)%daughter(imeta)%soil_fr,     &
+pestcp(ip)%daughter(imeta)%aq_fr,       &
+pestcp(ip)%daughter(imeta)%ben_fr</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ipb = 1, cs_db%num_pests</code>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pestcp(ip)%daughter(imeta)%name == cs_db%pests(ipb)</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pestcp(ip)%daughter(imeta)%num = ipb</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>close (106)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

@@ -160,10 +160,10 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/aquifer_module.html'>aquifer_module</a></li>
                   <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
                   <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/aquifer_module.html'>aquifer_module</a></li>
-                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
               </ul>
             </li>
         </ul>
@@ -705,7 +705,7 @@ read from the aquifer database file named aquifer.aqu</p>
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(3 attributes from input_file_module)</small>
+              <small class="text-muted ms-2">(3 attributes from basin_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -720,15 +720,15 @@ read from the aquifer database file named aquifer.aqu</p>
                 </thead>
                 <tbody>
                     <tr>
+                      <td><strong>bsn_cc%gwflow</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
                       <td><strong>in_aqu%aqu</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
                       <td><strong>db_mx%aqudb</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>bsn_cc%gwflow</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -837,6 +837,150 @@ read from the aquifer database file named aquifer.aqu</p>
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use input_file_module
+use aquifer_module
+use basin_module !rtb gwflow
+use maximum_data_module
+implicit none
+character (len=500) :: header = ""
+character (len=80) :: titldum = ""
+integer :: eof = 0         !                |end of file
+integer :: i = 0           !none            |counter
+integer :: imax = 0        !                |maximum count
+integer :: msh_aqp = 0     !none            |counter
+logical :: i_exist         !                |check to determine if file exists
+integer :: ish_aqp = 0     !none            |counter
+integer :: k = 0           !                |index
+msh_aqp = 0
+eof = 0
+imax = 0
+inquire (file=in_aqu%aqu, exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>.not. i_exist .or. in_aqu%aqu == "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (aqudb(0:0))</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (107,file=in_aqu%aqu)
+read (107,*,iostat=eof) titldum
+if (eof < 0) exit
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+db_mx%aqudb = msh_aqp
+allocate (aqudb(0:imax))
+rewind (107)
+read (107,*,iostat=eof) titldum
+if (eof < 0) exit
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+close (107)
+exit
+bsn_cc%gwflow = 0 ! rtb set gwflow module flag to 0</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat=eof) i
+if (eof < 0) exit
+imax = Max(imax,i)
+msh_aqp = msh_aqp + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ish_aqp = 1, msh_aqp</code>
+                  </div>
+                </a>
+                <div id="block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat=eof) i
+if (eof < 0) exit
+backspace (107)
+read (107,*,iostat=eof) k, aqudb(i)
+if (eof < 0) exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

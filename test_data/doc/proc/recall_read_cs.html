@@ -160,13 +160,13 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/exco_module.html'>exco_module</a></li>
-                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/exco_module.html'>exco_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -1159,7 +1159,7 @@ xwalk with exco file to get sequential number</p>
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(3 attributes from input_file_module)</small>
+              <small class="text-muted ms-2">(3 attributes from time_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -1174,7 +1174,7 @@ xwalk with exco file to get sequential number</p>
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>in_rec%recall_rec</strong></td>
+                      <td><strong>time%yrc</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -1182,7 +1182,7 @@ xwalk with exco file to get sequential number</p>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%yrc</strong></td>
+                      <td><strong>in_rec%recall_rec</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -1621,6 +1621,624 @@ xwalk with exco file to get sequential number</p>
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hydrograph_module
+use input_file_module
+use organic_mineral_mass_module
+use constituent_mass_module
+use maximum_data_module
+use time_module
+use exco_module
+implicit none
+character (len=80) :: titldum = ""!           |title of file
+character (len=80) :: header = "" !           |header of file
+character(len=16) :: ob_name = ""
+character(len=8) :: ob_typ = ""
+integer :: imax = 0             !none       |end of loop
+integer :: iyr = 0              !           |
+integer :: jday = 0             !           |
+integer :: mo = 0               !           |
+integer :: day_mo = 0           !           |
+integer :: eof = 0              !           |end of file
+logical :: i_exist              !none       |check to determine if file exists
+integer :: nbyr = 0             !none       !number of years the land use occurred
+integer :: k = 0                !           |
+integer :: iyrs = 0             !           |
+integer :: iyr_prev = 0         !none       |previous year
+integer :: istep = 0            !           |
+integer :: ipc = 0              !none       |counter
+integer :: ii = 0               !none       |counter
+integer :: i = 0                !           |
+integer :: iexco_om = 0
+integer :: ifirst = 0           !           |
+integer :: iexo_allo = 0
+integer :: ics = 0
+integer :: jj = 0
+integer :: kk = 0
+eof = 0
+imax = 0
+inquire (file="cs_recall.rec", exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_exist .or. in_rec%recall_rec /= "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (107,file="cs_recall.rec")
+read (107,*,iostat=eof) titldum
+if (eof < 0) exit
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+imax = 0
+allocate (rec_cs(0:imax))
+allocate (reccsb_d(imax))
+allocate (reccsb_m(imax))
+allocate (reccsb_y(imax))
+allocate (reccsb_a(imax))
+allocate (recoutcsb_d(imax))
+allocate (recoutcsb_m(imax))
+allocate (recoutcsb_y(imax))
+allocate (recoutcsb_a(imax))
+rewind (107)
+read (107,*,iostat=eof) titldum
+if (eof < 0) exit
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+close (107)
+exit</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat=eof) i
+if (eof < 0) exit
+imax = Max(imax,i)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ii=1,imax</code>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (reccsb_d(ii)%cs(cs_db%num_cs), source = 0.)
+allocate (reccsb_m(ii)%cs(cs_db%num_cs), source = 0.)
+allocate (reccsb_y(ii)%cs(cs_db%num_cs), source = 0.)
+allocate (reccsb_a(ii)%cs(cs_db%num_cs), source = 0.)</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ics=1,cs_db%num_cs</code>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>reccsb_d(ii)%cs(ics) = 0.
+reccsb_m(ii)%cs(ics) = 0.
+reccsb_y(ii)%cs(ics) = 0.
+reccsb_a(ii)%cs(ics) = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ii=1,imax</code>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (recoutcsb_d(ii)%cs(cs_db%num_cs), source = 0.)
+allocate (recoutcsb_m(ii)%cs(cs_db%num_cs), source = 0.)
+allocate (recoutcsb_y(ii)%cs(cs_db%num_cs), source = 0.)
+allocate (recoutcsb_a(ii)%cs(cs_db%num_cs), source = 0.)</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ics=1,cs_db%num_cs</code>
+                  </div>
+                </a>
+                <div id="block-2-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>recoutcsb_d(ii)%cs(ics) = 0.
+recoutcsb_m(ii)%cs(ics) = 0.
+recoutcsb_y(ii)%cs(ics) = 0.
+recoutcsb_a(ii)%cs(ics) = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ii = 1, imax</code>
+                  </div>
+                </a>
+                <div id="block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat=eof) i
+if (eof < 0) exit
+backspace (107)
+read (107,*,iostat = eof) k, rec_cs(i)%name, rec_cs(i)%typ, rec_cs(i)%filename
+if (eof < 0) exit</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>rec_cs(i)%typ /= 4</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>open (108,file = rec_cs(i)%filename)
+read (108,*,iostat=eof) titldum
+if (eof < 0) exit
+read (108,*,iostat=eof) nbyr
+if (eof < 0) exit
+read (108,*,iostat=eof) header
+if (eof < 0) exit
+do
+read (108,*,iostat=eof) jday, mo, day_mo, iyr
+if (eof < 0) exit
+rec_cs(i)%end_yr = iyr
+rewind (108)
+read (108,*,iostat=eof) titldum
+if (eof < 0) exit
+read (108,*,iostat=eof) nbyr
+if (eof < 0) exit
+read (108,*,iostat=eof) header
+if (eof < 0) exit
+do
+iyr_prev = iyr
+if (eof < 0) exit
+close (108)</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>titldum == 'Incoming'</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rec_cs(i)%pts_type = 2</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rec_cs(i)%pts_type = 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>rec_cs(i)%typ</code>)
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>jj=1,nbyr</code>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-3-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>kk=1,366</code>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-3-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (rec_cs(i)%hd_cs(kk,jj)%cs(cs_db%num_cs), source = 0.)
+rec_cs(i)%hd_cs(kk,jj)%cs = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>jj=1,nbyr</code>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-3-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-3-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>kk=1,12</code>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-3-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (rec_cs(i)%hd_cs(kk,jj)%cs(cs_db%num_cs), source = 0.)
+rec_cs(i)%hd_cs(kk,jj)%cs = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-3-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>jj=1,nbyr</code>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-3-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (rec_cs(i)%hd_cs(1,jj)%cs(cs_db%num_cs), source = 0.)
+rec_cs(i)%hd_cs(1,jj)%cs = 0.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>rec_cs(i)%typ == 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iyrs = 1
+iyr_prev = jday</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+read (108,*,iostat=eof) jday, mo, day_mo, iyr
+if (eof < 0) exit
+backspace (108)
+iyr_prev = iyr
+iyrs = 1</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-5-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iyr == time%yrc</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-5-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>rec_cs(i)%start_yr = iyr
+exit
+if (eof < 0) exit</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-5-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>rec_cs(i)%typ</code>)
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-5-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>rec_cs(i)%typ == 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-6" class="collapse">
+                  <div class="card-body">
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-7" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (108,*,iostat=eof) jday, mo, day_mo, iyr, ob_typ, ob_name,    &
+(rec_cs(i)%hd_cs(istep,iyrs)%cs(ics),ics=1,cs_db%num_cs)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>rec_cs(i)%typ</code>)
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-8" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-8-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>jday == 365 .or. jday == 366</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-8-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (108,*,iostat=eof) jday, mo, day_mo, iyr
+if (eof < 0) exit
+backspace (108)</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-8-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iyr /= iyr_prev</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-8-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iyr_prev = iyr
+iyrs = iyrs + 1
+istep = 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-8-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>mo == 12</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-8-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iyrs = iyrs + 1
+istep = 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>rec_cs(i)%typ == 4</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

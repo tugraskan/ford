@@ -207,7 +207,7 @@ update pathogen levels on ground</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-frt_kg~7"></span>
+              <span class="anchor" id="variable-frt_kg~10"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -456,11 +456,11 @@ update pathogen levels on ground</p>
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>cs_db%path_num</strong></td>
+                      <td><strong>cs_db%num_paths</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>cs_db%num_paths</strong></td>
+                      <td><strong>cs_db%path_num</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -594,6 +594,116 @@ update pathogen levels on ground</p>
 
     <br>
 
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use soil_module
+use plant_module
+use pathogen_data_module
+use output_ls_pathogen_module
+use constituent_mass_module
+implicit none
+real, intent (in)  :: frt_kg
+real :: frt_t = 0.   !          |
+real :: gc = 0.      !none      |fraction of ground covered by plant foliage
+real :: gc1 = 0.     !          |
+real :: pl_frac = 0. !0-1       |fraction of pesticide applied to each plant
+integer :: ipath = 0 !none      |counter
+integer :: ipath_db = 0!          |pathogen type from pathogens.pth data input file
+integer :: j = 0     !          |
+integer :: ipl = 0   !none      |plant number
+j = 0
+gc = (1.99532 - erfc(1.333 * pcom(j)%lai_sum - 2.)) / 2.1
+if (gc < 0.) gc = 0.
+gc1 = 1. - gc</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ipath = 1, cs_db%num_paths</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ipath_db = cs_db%path_num(ipath)
+frt_t = path_db(ipath_db)%fr_manure * frt_kg / 1000.
+hpath_bal(j)%path(ipath)%apply_sol =  gc1 * frt_t * 100.
+cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) + gc1 * frt_t * 100.</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pcom(j)%lai_sum > 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ipl = 1, pcom(j)%npl</code>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pl_frac = pcom(j)%plg(ipl)%lai / pcom(j)%lai_sum
+cs_pl(j)%pl_on(ipl)%path(ipath) = cs_pl(j)%pl_on(ipl)%pest(ipath) + gc * pl_frac * frt_kg
+hpath_bal(j)%path(ipath)%apply_plt = hpath_bal(j)%path(ipath)%apply_plt + gc * pl_frac * frt_kg</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+    <br>
+
 
     <section>    
       <h2>Variables</h2>
@@ -609,7 +719,7 @@ update pathogen levels on ground</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-frt_kg~7"></span>
+              <span class="anchor" id="variable-frt_kg~10"></span>
               real,
             </td>
               <td>public</td>

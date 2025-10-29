@@ -160,11 +160,11 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
-                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
+                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -935,7 +935,7 @@ check to see when next year</p>
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(6 attributes from maximum_data_module)</small>
+              <small class="text-muted ms-2">(6 attributes from time_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -950,7 +950,15 @@ check to see when next year</p>
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>db_mx%pcpfiles</strong></td>
+                      <td><strong>time%day_start</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%yrc</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%step</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -962,15 +970,7 @@ check to see when next year</p>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%day_start</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%yrc</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%step</strong></td>
+                      <td><strong>db_mx%pcpfiles</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -1172,6 +1172,378 @@ check to see when next year</p>
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use climate_module
+use maximum_data_module
+use basin_module
+use input_file_module
+use time_module
+implicit none
+character (len=80) :: titldum = ""!           |title of file
+character (len=80) :: header = "" !           |header of file
+integer :: eof = 0              !           |end of file
+integer :: imax = 0             !none       |determine max number for array (imax) and total number in file
+integer :: iyr = 0              !none       |number of years
+logical :: i_exist              !none       |check to determine if file exists
+integer :: mpcp = 0             !           |
+integer :: i = 0                !none       |counter
+integer :: istep = 0            !           |
+integer :: iyr_prev = 0         !none       |previous year
+integer :: iyrs = 0             !           |
+integer :: iss = 0              !none       |counter
+integer :: mo = 0
+integer :: day_mo = 0
+integer :: ihr = 0
+mpcp = 0
+eof = 0
+imax = 0
+inquire (file=in_cli%pcp_cli, exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>.not. i_exist .or. in_cli%pcp_cli == "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (pcp(0:0))
+allocate (pcp_n(0))</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (107,file=in_cli%pcp_cli)
+read (107,*,iostat=eof) titldum
+if (eof < 0) exit
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+allocate (pcp(0:imax))
+allocate (pcp_n(imax))
+rewind (107)
+read (107,*,iostat=eof) titldum
+if (eof < 0) exit
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+rewind (107)
+read (107,*,iostat=eof) titldum
+if (eof < 0) exit
+read (107,*,iostat=eof) header
+if (eof < 0) exit
+backspace (108)
+iyr_prev = iyr
+iyrs = 1
+iss = 1
+do
+close (108)
+pcp(i)%end_day = istep
+pcp(i)%end_yr = iyr
+close (107)
+exit</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat = eof) titldum
+if (eof < 0) exit
+imax = imax + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>i = 1, imax</code>
+                  </div>
+                </a>
+                <div id="block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat = eof) pcp_n(i)
+if (eof < 0) exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>i = 1, imax</code>
+                  </div>
+                </a>
+                <div id="block-3-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (107,*,iostat = eof) pcp(i)%filename
+if (eof < 0) exit
+read (108,*,iostat=eof) titldum
+if (eof < 0) exit
+read (108,*,iostat=eof) header
+if (eof < 0) exit
+read (108,*,iostat=eof) pcp(i)%nbyr, pcp(i)%tstep, pcp(i)%lat,    &
+pcp(i)%long, pcp(i)%elev
+if (eof < 0) exit
+read (108,*,iostat=eof) iyr, istep
+if (eof < 0) exit
+pcp(i)%start_day = istep
+pcp(i)%start_yr = iyr
+backspace (108)
+do
+read (108,*,iostat=eof) iyr, istep
+if (eof < 0) exit
+if (iyr >= time%yrc .and. istep >= time%day_start) exit</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>in_path_pcp%pcp == "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>open (108,file = pcp(i)%filename)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>open (108,file = TRIM(ADJUSTL(in_path_pcp%pcp))//pcp(i)%filename)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pcp(i)%tstep > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (pcp(i)%tss(time%step,366,pcp(i)%nbyr), source = 0.)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (pcp(i)%ts(366,pcp(i)%nbyr), source = 0.)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iyr > time%yrc</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pcp(i)%yrs_start = iyr - time%yrc</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>pcp(i)%yrs_start = 0</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pcp(i)%tstep > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (108,*,iostat=eof)iyr, istep, mo, day_mo, ihr, pcp(i)%tss(iss,istep,iyrs)
+iss = iss + 1
+if (iss > time%step) iss = 1
+if (eof < 0) exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (108,*,iostat=eof)iyr, istep, pcp(i)%ts(istep,iyrs)
+if (eof < 0) exit</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>istep == 365 .or. istep == 366</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (108,*,iostat=eof) iyr, istep
+if (eof < 0) exit
+backspace (108)</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-6-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iyr /= iyr_prev</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-6-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>iyr_prev = iyr
+iyrs = iyrs + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>db_mx%pcpfiles = imax
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

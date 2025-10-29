@@ -160,9 +160,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/channel_data_module.html'>channel_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
                   <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/channel_data_module.html'>channel_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -745,6 +745,35 @@ apply to all reservoirs in the watershed.
               
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_channel_sed_data_html__channel_sed_data__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_sed_data_html__channel_sed_data__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_sed_data_html__channel_sed_data__a__">
+              type(<a href='../type/channel_sed_data.html'>channel_sed_data</a>)
+              <small class="text-muted ms-2">(1 attribute from channel_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_sed_data_html__channel_sed_data__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_channel_sed_data_html__channel_sed_data__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ch_sed</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapsetype" aria-expanded="false" 
@@ -771,35 +800,6 @@ apply to all reservoirs in the watershed.
                     <tr>
                       <td><strong>db_mx%ch_sed</strong></td>
                       <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_channel_sed_data_html__channel_sed_data__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_sed_data_html__channel_sed_data__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_sed_data_html__channel_sed_data__a__">
-              type(<a href='../type/channel_sed_data.html'>channel_sed_data</a>)
-              <small class="text-muted ms-2">(1 attribute from channel_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_sed_data_html__channel_sed_data__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_channel_sed_data_html__channel_sed_data__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ch_sed</strong></td>
-                      <td></td>
                     </tr>
                 </tbody>
               </table>
@@ -878,6 +878,345 @@ apply to all reservoirs in the watershed.
     </div>
     <br>
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use input_file_module
+use maximum_data_module
+use channel_data_module
+implicit none
+integer :: eof = 0               !end of file
+integer :: imax = 0              !          |determine max number for array (imax) and total number in file
+character (len=80) :: titldum = "" !title of file
+character (len=80) :: header = ""  !header of file
+logical :: i_exist               !          |check to determine if file exists
+real :: sumerod = 0.             !units     |description
+integer :: ich = 0               !none      |counter
+integer :: mo = 0                !none      |counter
+eof = 0
+imax = 0
+inquire (file=in_cha%sed,exist=i_exist)</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>.not. i_exist .or. in_cha%sed == "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>allocate (ch_sed(0:0))</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>do
+open (105,file=in_cha%sed)
+read (105,*,iostat=eof) titldum
+if (eof < 0) exit
+read (105,*,iostat=eof) header
+if (eof < 0) exit
+db_mx%ch_sed = imax
+allocate (ch_sed(0:imax))
+rewind (105)
+read (105,*,iostat=eof) titldum
+if (eof < 0) exit
+read (105,*,iostat=eof) header
+if (eof < 0) exit
+exit</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (105,*,iostat=eof) titldum
+if (eof < 0) exit
+imax = imax + 1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ich = 1, db_mx%ch_sed</code>
+                  </div>
+                </a>
+                <div id="block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>read (105,*,iostat=eof) titldum
+if (eof < 0) exit
+backspace (105)
+read (105,*,iostat=eof) ch_sed(ich)
+if (eof < 0) exit
+if (ch_sed(ich)%tc_bnk <= 0.) ch_sed(ich)%tc_bnk=0. !! Critical shear stress (N.m^2)
+if (ch_sed(ich)%tc_bed <= 0.) ch_sed(ich)%tc_bed=0. !! Critical shear stress (N.m^2)
+if (ch_sed(ich)%bnk_d50 <= 1.e-6) ch_sed(ich)%bnk_d50 = 50. !! Units are in Micrometer
+if (ch_sed(ich)%bnk_d50 > 10000) ch_sed(ich)%bnk_d50 = 10000.
+if (ch_sed(ich)%bed_d50 <= 1.e-6) ch_sed(ich)%bed_d50 = 500 !! Units are in Micrometer
+if (ch_sed(ich)%bed_d50 > 10000) ch_sed(ich)%bed_d50 = 10000.
+if (ch_sed(ich)%bnk_bd <= 1.e-6) ch_sed(ich)%bnk_bd = 1.40 !! Silty loam bank
+if (ch_sed(ich)%bed_bd <= 1.e-6) ch_sed(ich)%bed_bd = 1.50  !! Sandy loam bed
+sumerod = 0.</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ch_sed(ich)%eqn <= 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch_sed(ich)%eqn=0 !! SWAT Default sediment routing routine
+if (ch_sed(ich)%cov1 <= 0.0) ch_sed(ich)%cov1 = 0.0
+if (ch_sed(ich)%cov2 <= 0.0) ch_sed(ich)%cov2 = 0.0
+if (ch_sed(ich)%cov1 >= 1.0) ch_sed(ich)%cov1 = 1.0
+if (ch_sed(ich)%cov2 >= 1.0) ch_sed(ich)%cov2 = 1.0</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>if (ch_sed(ich)%cov1 <= 0.0) ch_sed(ich)%cov1 = 1.0
+if (ch_sed(ich)%cov2 <= 0.0) ch_sed(ich)%cov2 = 1.0
+if (ch_sed(ich)%cov1 >= 25.) ch_sed(ich)%cov1 = 25.
+if (ch_sed(ich)%cov2 >= 25.) ch_sed(ich)%cov2 = 25.</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ch_sed(ich)%bnk_kd <= 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ch_sed(ich)%tc_bnk <= 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch_sed(ich)%bnk_kd = 0.2</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch_sed(ich)%bnk_kd = 0.2 / sqrt(ch_sed(ich)%tc_bnk)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ch_sed(ich)%bed_kd <= 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-4" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ch_sed(ich)%tc_bed <= 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch_sed(ich)%bed_kd = 0.2</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-4-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch_sed(ich)%bed_kd = 0.2 / sqrt(ch_sed(ich)%tc_bed)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>mo = 1, 12</code>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>sumerod = sumerod + ch_sed(ich)%erod(mo)</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sumerod < 1.e-6</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-6" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-6-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>mo = 1, 12</code>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-6-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code>ch_sed(ich)%erod(mo) = ch_sed(ich)%cov1</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>close(105)
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 

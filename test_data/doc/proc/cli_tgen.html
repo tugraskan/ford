@@ -160,8 +160,8 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
               </ul>
             </li>
         </ul>
@@ -217,7 +217,7 @@ Intrinsic: Abs</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwgn~13"></span>
+              <span class="anchor" id="variable-iwgn~4"></span>
               integer
             </td>
 <td></td>
@@ -378,35 +378,6 @@ Intrinsic: Abs</p>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(1 attribute from time_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>time%mo</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
           <h3 class="accordion-header" id="headingreal">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapsereal" aria-expanded="false" 
@@ -522,6 +493,35 @@ Intrinsic: Abs</p>
             </div>
           </div>
         </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(1 attribute from time_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>time%mo</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
     </div>
 
         </div>
@@ -530,6 +530,53 @@ Intrinsic: Abs</p>
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use climate_module
+use hydrograph_module
+use time_module
+implicit none
+real :: tmxg = 0.          !deg C         |generated maximum temperature for the day
+real :: tmng = 0.          !deg C         |generated minimum temperature for the day
+real :: tamp = 0.          !deg C         |difference between mean monthly air temperature
+real :: txxm = 0.          !deg C         |modified monthly maximum temperature
+integer :: iwgn            !              |
+tamp = .5 * (wgn(iwgn)%tmpmx(time%mo) - wgn(iwgn)%tmpmn(time%mo))
+txxm = wgn(iwgn)%tmpmx(time%mo) + tamp * wgn_pms(iwgn)%pr_wdays(time%mo)
+if (wst(iwst)%weat%precip > 0.0) txxm = txxm - tamp
+tmxg = txxm + wgn(iwgn)%tmpstdmx(time%mo) * wgncur(1,iwgn)
+tmng = (wgn(iwgn)%tmpmn(time%mo)) + wgn(iwgn)%tmpstdmn(time%mo) *  wgncur(2,iwgn)
+if (tmng > tmxg) tmng = tmxg - .2 * Abs(tmxg)
+wst(iwst)%weat%tmax = tmxg
+wst(iwst)%weat%tmin = tmng
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 
@@ -547,7 +594,7 @@ Intrinsic: Abs</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwgn~13"></span>
+              <span class="anchor" id="variable-iwgn~4"></span>
               integer,
             </td>
               <td>public</td>

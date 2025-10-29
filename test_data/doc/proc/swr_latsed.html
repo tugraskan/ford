@@ -160,8 +160,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
               </ul>
             </li>
         </ul>
@@ -270,35 +270,6 @@ organic n and p in the lateral flow     - by J.Jeong BREC 2011  </p>
         <div class="card-body">
               
     <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-              type(<a href='../type/soil_profile.html'>soil_profile</a>)
-              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>soil</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
         <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
@@ -415,7 +386,36 @@ organic n and p in the lateral flow     - by J.Jeong BREC 2011  </p>
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~18" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~9" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+              type(<a href='../type/soil_profile.html'>soil_profile</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil</strong></td>
+                      <td></td>
                     </tr>
                 </tbody>
               </table>
@@ -430,6 +430,59 @@ organic n and p in the lateral flow     - by J.Jeong BREC 2011  </p>
     <br>
 
 
+    <br>
+
+    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+         aria-expanded="false" 
+         aria-controls="logic-blocks-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+        </h3>
+      </a>
+      <div id="logic-blocks-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code>use hru_module, only : hru, ihru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, sedorgn,  &
+sedorgp, latq, qtile
+use soil_module
+implicit none
+integer :: j = 0          !none          |HRU number
+j = ihru
+sedyld(j) = sedyld(j) + hru(j)%hyd%lat_sed * hru(j)%area_ha * (latq(j) + qtile) / 100000.
+sedyld(j)=sedyld(j) + (latq(j) + qtile) * hru(j)%hyd%lat_sed / 100000.
+sanyld(j)=sanyld(j)+ latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_san
+silyld(j)=silyld(j)+ latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_sil
+clayld(j)=clayld(j)+ latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_cla
+sagyld(j)=sagyld(j)+ latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_sag
+lagyld(j)=lagyld(j)+ latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_lag
+sedorgn(j) = sedorgn(j) + latq(j) * hru(j)%hyd%lat_orgn /10000.
+sedorgp(j) = sedorgp(j) + latq(j) * hru(j)%hyd%lat_orgp /10000.
+if (sedyld(j) < 0.) sedyld(j) = 0.
+if (sanyld(j) < 0.) sanyld(j) = 0.0
+if (silyld(j) < 0.) silyld(j) = 0.0
+if (clayld(j) < 0.) clayld(j) = 0.0
+if (sagyld(j) < 0.) sagyld(j) = 0.0
+if (lagyld(j) < 0.) lagyld(j) = 0.0
+if (sedorgn(j) < 0.) sedorgn(j) = 0.0
+if (sedorgp(j) < 0.) sedorgp(j) = 0.0
+return</code></pre>
+                  </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
     <br>
 
 
