@@ -1,9 +1,6 @@
 {
 	"name": "Ford Development Environment",
-	"build": {
-		"dockerfile": "../Dockerfile",
-		"context": ".."
-	},
+	"image": "mcr.microsoft.com/devcontainers/base:alpine",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -13,7 +10,7 @@
 				"fortran-lang.linter-gfortran"
 			],
 			"settings": {
-				"python.defaultInterpreterPath": "/usr/local/bin/python",
+				"python.defaultInterpreterPath": "/workspaces/ford/.venv/bin/python",
 				"python.linting.enabled": true,
 				"python.linting.pylintEnabled": false,
 				"python.formatting.provider": "black",
@@ -21,8 +18,12 @@
 			}
 		}
 	},
-	"postCreateCommand": "pip install -e .[docs,tests]",
-	"remoteUser": "root",
+	"postCreateCommand": "apk add --no-cache python3 py3-pip git graphviz gfortran build-base && python3 -m venv .venv && . .venv/bin/activate && python -m ensurepip --upgrade || true && python -m pip install --upgrade pip setuptools wheel setuptools-scm && pip install -e .[docs,tests] && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi",
+	"postStartCommand": "grep -qxF 'source /workspaces/ford/.venv/bin/activate' ~/.profile || echo 'source /workspaces/ford/.venv/bin/activate' >> ~/.profile",
+	"remoteUser": "vscode",
+	"remoteEnv": {
+		"PATH": "/workspaces/ford/.venv/bin:${containerEnv:PATH}"
+	},
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {
 			"installZsh": true,
