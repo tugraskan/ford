@@ -197,13 +197,13 @@ def load_external_modules(project):
 def get_module_metadata(module: FortranModule) -> dict:
     """
     Extract comprehensive metadata for a given Fortran module.
-    
+
     This function processes module variables, derived types, and usage patterns
     to create a structured metadata representation.
-    
+
     Args:
         module: The Fortran module to extract metadata from.
-        
+
     Returns:
         Dictionary containing metadata including variables, types, and subroutine usage.
     """
@@ -217,15 +217,21 @@ def get_module_metadata(module: FortranModule) -> dict:
     if hasattr(module, "all_vars"):
         for var_name, var in module.all_vars.items():
             # Extract derived type name from full_type if it's a derived type reference
-            derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", var.full_type)
-            derived_type = derived_type_match.group(1) if derived_type_match else var.full_type
+            derived_type_match = re.search(
+                r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", var.full_type
+            )
+            derived_type = (
+                derived_type_match.group(1) if derived_type_match else var.full_type
+            )
 
-            metadata["all_vars"].append({
-                "ident": var.name,
-                "type": derived_type,
-                "initial": var.initial,
-                "doc": var.doc_list,
-            })
+            metadata["all_vars"].append(
+                {
+                    "ident": var.name,
+                    "type": derived_type,
+                    "initial": var.initial,
+                    "doc": var.doc_list,
+                }
+            )
 
     # Extract metadata for derived types
     if hasattr(module, "all_types"):
@@ -235,26 +241,42 @@ def get_module_metadata(module: FortranModule) -> dict:
             # Iterate through variables in the derived type
             for variable in dtype.variables:
                 # Use a regular expression to extract the type if it's a derived type
-                derived_type_match = re.search(r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", variable.full_type)
-                derived_type = derived_type_match.group(1) if derived_type_match else variable.full_type
-                vars_metadata.append({
-                    "ident": variable.name,
-                    "type": derived_type,
-                    "initial": getattr(variable, "initial", None),  # Handle missing attributes safely
-                    "doc": getattr(variable, "doc_list", []),  # Default to an empty list
-                })
+                derived_type_match = re.search(
+                    r"type\\([a-zA-Z_][a-zA-Z0-9_]*)\.html", variable.full_type
+                )
+                derived_type = (
+                    derived_type_match.group(1)
+                    if derived_type_match
+                    else variable.full_type
+                )
+                vars_metadata.append(
+                    {
+                        "ident": variable.name,
+                        "type": derived_type,
+                        "initial": getattr(
+                            variable, "initial", None
+                        ),  # Handle missing attributes safely
+                        "doc": getattr(
+                            variable, "doc_list", []
+                        ),  # Default to an empty list
+                    }
+                )
 
             # Append the metadata for the derived type
-            metadata["all_types"].append({
-                "name": dtype.name,
-                "variables": vars_metadata,  # Include the list of variables metadata
-                "doc": getattr(dtype, "doc_list", []),  # Optional documentation for the derived type
-            })
+            metadata["all_types"].append(
+                {
+                    "name": dtype.name,
+                    "variables": vars_metadata,  # Include the list of variables metadata
+                    "doc": getattr(
+                        dtype, "doc_list", []
+                    ),  # Optional documentation for the derived type
+                }
+            )
 
         # Populate the subroutines list for each module
-    #for subroutine in project.subroutines:
-        #if subroutine.uses == 'x':
-           # continue
+    # for subroutine in project.subroutines:
+    # if subroutine.uses == 'x':
+    # continue
 
     # Identify derived types and specific variables used in subroutines
     for subroutine in module.subroutines:

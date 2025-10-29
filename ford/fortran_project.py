@@ -56,7 +56,7 @@ from ford.sourceform import (
     FortranSourceFile,
     GenericSource,
     FortranProgram,
-    FortranSubroutine,        # ← add this
+    FortranSubroutine,  # ← add this
     FortranFunction,
 )
 from ford.settings import ProjectSettings
@@ -209,6 +209,7 @@ class Project:
             incl_src=settings.incl_src,
             encoding=self.encoding,
         )
+
         def namelist_check(entity):
             self.namelists.extend(getattr(entity, "namelists", []))
 
@@ -234,7 +235,6 @@ class Project:
             self.extract_non_fortran_and_non_integers(subroutine)
             self.build_stype_dictionary(subroutine)
 
-
         for program in new_file.programs:
             program.visible = True
             self.programs.append(program)
@@ -247,17 +247,17 @@ class Project:
 
         self.files.append(new_file)
 
-    
-
-    def procedures_call_to_json(self, procedures: List[FortranProcedure], out_dir: Optional[str] = None) -> None:
+    def procedures_call_to_json(
+        self, procedures: List[FortranProcedure], out_dir: Optional[str] = None
+    ) -> None:
         """
         Export procedure call relationships and call chains to JSON files.
-        
+
         For each procedure, this method:
         - Writes <proc>.json with all calls (name + line_number)
         - Writes <proc>_subs.json with only the subroutine calls
         - Creates a master subroutine_calls.json in the parent 'json_outputs' directory
-        
+
         Args:
             procedures: List of procedures to process
             out_dir: Output directory path. Defaults to ./json_outputs/calls_json
@@ -282,9 +282,9 @@ class Project:
             # Write full calls JSON
             full_path = os.path.join(calls_dir, f"{proc.name}.json")
             full_payload = {
-                "file":        proc.filename,
+                "file": proc.filename,
                 "line_number": getattr(proc, "line_number", None),
-                "calls":       all_calls
+                "calls": all_calls,
             }
             try:
                 with open(full_path, "w") as fp:
@@ -296,16 +296,18 @@ class Project:
             # --- write subroutine‐only JSON ---
             sub_path = os.path.join(calls_dir, f"{proc.name}_subs.json")
             sub_payload = {
-                "file":        proc.filename,
+                "file": proc.filename,
                 "line_number": getattr(proc, "line_number", None),
-                "subroutines": sub_calls
+                "subroutines": sub_calls,
             }
             try:
                 with open(sub_path, "w") as sp:
                     json.dump(sub_payload, sp, indent=2)
                 log.info("Wrote subroutine-only graph for %s → %s", proc.name, sub_path)
             except IOError as e:
-                log.error("Failed to write subroutine-only graph for %s: %s", proc.name, e)
+                log.error(
+                    "Failed to write subroutine-only graph for %s: %s", proc.name, e
+                )
 
             # collect for master if any subroutine calls exist
             if sub_calls:
@@ -323,7 +325,7 @@ class Project:
             log.error("Failed to write master subroutine-call graph: %s", e)
 
         return master_subs
-    
+
     def extract_non_fortran_and_non_integers(self, subroutine):
         """
         Extracts items that are neither Fortran keywords, integers, symbols, nor self-defined variables.
@@ -349,15 +351,14 @@ class Project:
 
         # Combine all Fortran keywords dynamically using set union
         all_fortran_keywords = (
-                subroutine.fortran_control |
-                subroutine.fortran_operators |
-                subroutine.fortran_intrinsics |
-                subroutine.fortran_reserved |
-                subroutine.fortran_custom |
-                subroutine.symbols |
-                subroutine.fortran_io |
-                subroutine_variable_names
-
+            subroutine.fortran_control
+            | subroutine.fortran_operators
+            | subroutine.fortran_intrinsics
+            | subroutine.fortran_reserved
+            | subroutine.fortran_custom
+            | subroutine.symbols
+            | subroutine.fortran_io
+            | subroutine_variable_names
         )
 
         # Convert `other_results` to a set for efficient processing
@@ -369,9 +370,9 @@ class Project:
         for item in items:
             # Skip empty strings, Fortran keywords, integers, symbols, and subroutine variables
             if (
-                    item
-                    and item not in all_fortran_keywords
-                    and not subroutine.NUMBER_RE.match(item)
+                item
+                and item not in all_fortran_keywords
+                and not subroutine.NUMBER_RE.match(item)
             ):
                 # Add to filtered set if not already in member_access_results
                 if item not in subroutine.member_access_results:
@@ -379,7 +380,6 @@ class Project:
                     filtered_items.add(item)
 
         return filtered_items
-
 
     def build_stype_dictionary(self, subroutine):
         """
@@ -411,7 +411,7 @@ class Project:
             raise TypeError("Expected 'member_access_results' to be a list.")
 
         for var in subroutine.member_access_results:
-            parts = var.split('%')  # Split by '%' to get nested type parts
+            parts = var.split("%")  # Split by '%' to get nested type parts
             current = type_dict
 
             for part in parts:
@@ -447,16 +447,18 @@ class Project:
             return [self._clean_fvar_recursive(item) for item in data]
         else:
             return data
-    
-    def procedures_fvar_to_json(self, procedures: List[FortranProcedure], out_dir: Optional[str] = None) -> None:
+
+    def procedures_fvar_to_json(
+        self, procedures: List[FortranProcedure], out_dir: Optional[str] = None
+    ) -> None:
         """
         Export procedure variable information and local variables to JSON files.
-        
+
         For each procedure, this method:
         - Cleans up its fvar dictionary
         - Collects local variables
         - Exports both to a JSON file if non-empty
-        
+
         Args:
             procedures: List of procedures to process
             out_dir: Output directory path. Defaults to ./json_outputs/fvar_json
@@ -469,36 +471,40 @@ class Project:
         for proc in procedures:
             # Clean the existing fvar dict
             cleaned = {}
-            if hasattr(proc, 'fvar'):
+            if hasattr(proc, "fvar"):
                 cleaned = self._clean_fvar_recursive(proc.fvar) or {}
 
             # Build the local-variable list
             local_list = []
-            if hasattr(proc, 'var_ug_local'):
+            if hasattr(proc, "var_ug_local"):
                 for var in proc.var_ug_local:
-                    local_list.append({
-                        'name':       var.name,
-                        'vartype':    getattr(var, 'vartype', getattr(var, 'type', None)),
-                        'initial':    getattr(var, 'initial', None),
-                        'doc_list':   getattr(var, 'doc_list', []),
-                        'line_number':getattr(var, 'line_number', None),
-                    })
+                    local_list.append(
+                        {
+                            "name": var.name,
+                            "vartype": getattr(
+                                var, "vartype", getattr(var, "type", None)
+                            ),
+                            "initial": getattr(var, "initial", None),
+                            "doc_list": getattr(var, "doc_list", []),
+                            "line_number": getattr(var, "line_number", None),
+                        }
+                    )
 
             # 4. only write JSON if there’s any fvar or any locals
             if cleaned or local_list:
                 payload = {}
                 if cleaned:
-                    payload['fvar'] = cleaned
+                    payload["fvar"] = cleaned
                 if local_list:
-                    payload['locals'] = local_list
+                    payload["locals"] = local_list
 
                 # Add top-level line number of the procedure
-                payload['line_number'] = getattr(proc, 'line_number', None)
+                payload["line_number"] = getattr(proc, "line_number", None)
 
-                                # Write to file
+                # Write to file
                 fname = os.path.join(out_dir, f"{proc.name}.json")
                 try:
-                    with open(fname, 'w') as fp:
+                    with open(fname, "w") as fp:
                         json.dump(payload, fp, indent=2)
                     log.info("Wrote JSON for %s → %s", proc.name, fname)
                     proc.pjson = json.dumps(payload, indent=2)
@@ -506,7 +512,6 @@ class Project:
                     log.error("Failed to write JSON for %s: %s", proc.name, e)
             else:
                 log.debug("No fvar or locals for %s; skipping JSON", proc.name)
-
 
     def _find_variable_info(self, procedure, var_ref):
         """
@@ -517,11 +522,11 @@ class Project:
         Returns the variable's dictionary or None if not found.
         """
         # If there's no fvar or it's not a dict, we can't proceed
-        if not hasattr(procedure, 'fvar') or not isinstance(procedure.fvar, dict):
+        if not hasattr(procedure, "fvar") or not isinstance(procedure.fvar, dict):
             return None
 
         # Split the reference by '%'
-        parts = var_ref.split('%')
+        parts = var_ref.split("%")
         if not parts:
             return None
 
@@ -532,7 +537,7 @@ class Project:
                 # If this is not the last part, move into its 'variables' sub-dict
                 if i < len(parts) - 1:
                     # Move inside the nested structure
-                    next_dict = current_dict[part].get('variables', None)
+                    next_dict = current_dict[part].get("variables", None)
                     if not next_dict:
                         return None
                     current_dict = next_dict
@@ -544,33 +549,34 @@ class Project:
                 return None
         # If we exit the loop without returning, no match was found
         return None
+
     def get_procedures(self) -> List[FortranProcedure]:
         """
         Extract procedures that are defined at the source file level.
-        
+
         Returns:
             List of procedures that have 'sourcefile' as their parent object,
             sorted alphabetically by name.
         """
         procedures = [
-            procedure for procedure in self.procedures
-            if procedure.parobj == 'sourcefile'
+            procedure
+            for procedure in self.procedures
+            if procedure.parobj == "sourcefile"
         ]
-        
+
         # Sort procedures alphabetically by name
         procedures.sort(key=lambda x: x.name)
-        
-        return procedures
 
+        return procedures
 
     def cross_walk_type_dicts(self, procedures: List[FortranProcedure]) -> None:
         """
         Cross-reference type dictionaries with variable definitions to create
         comprehensive variable metadata for procedures.
-        
+
         This method populates the fvar attribute of each procedure with detailed
         variable information including type, documentation, and nested structures.
-        
+
         Args:
             procedures: List of procedures to process
         """
@@ -578,21 +584,21 @@ class Project:
             for key, value in procedure.type_results.items():
                 if key in procedure.all_vars:
                     procedure.fvar[key] = {
-                        'name': procedure.all_vars[key].name,
-                        'vartype': procedure.all_vars[key].vartype,
-                        'initial': procedure.all_vars[key].initial,
-                        'filename': procedure.all_vars[key].filename,
-                        'doc_list': procedure.all_vars[key].doc_list,
-                        'variables': {},
-                        'original': procedure.all_vars[key]
+                        "name": procedure.all_vars[key].name,
+                        "vartype": procedure.all_vars[key].vartype,
+                        "initial": procedure.all_vars[key].initial,
+                        "filename": procedure.all_vars[key].filename,
+                        "doc_list": procedure.all_vars[key].doc_list,
+                        "variables": {},
+                        "original": procedure.all_vars[key],
                     }
                     if value:
                         # Handle nested structure
                         self.r_check(procedure.fvar[key], value)
                         # Remove original from the top-level branch after recursion
-                        procedure.fvar[key].pop('original', None)
+                        procedure.fvar[key].pop("original", None)
                     else:
-                        procedure.fvar[key].pop('original', None)
+                        procedure.fvar[key].pop("original", None)
                 else:
                     procedure.var_ug_na.append(key)
 
@@ -607,54 +613,64 @@ class Project:
                 log.error("Parent original object not found; cannot continue recursion.")
         """
         for nested_key, nested_values in value.items():
-            parent_orig = parent_rep.get('original')
+            parent_orig = parent_rep.get("original")
             if not parent_orig:
-                log.error("Parent original object not found; cannot continue recursion.")
+                log.error(
+                    "Parent original object not found; cannot continue recursion."
+                )
                 continue
             # Find the matching variable in parent's proto[0].variables by name.
             found_var = next(
-                (var for var in parent_orig.proto[0].variables if var.name == nested_key),
-                None
+                (
+                    var
+                    for var in parent_orig.proto[0].variables
+                    if var.name == nested_key
+                ),
+                None,
             )
 
             if found_var is not None:
                 # Build a custom representation for the nested variable.
                 new_rep = {
-                    'name': found_var.name,
-                    'vartype': found_var.vartype,
-                    'initial': found_var.initial,
+                    "name": found_var.name,
+                    "vartype": found_var.vartype,
+                    "initial": found_var.initial,
                     # 'filename': found_var.filename,  # If you want to include filename, uncomment it.
-                    'doc_list': found_var.doc_list,
-                    'variables': {},
-                    'original': found_var  # temporary; used only for recursion.
+                    "doc_list": found_var.doc_list,
+                    "variables": {},
+                    "original": found_var,  # temporary; used only for recursion.
                 }
-                parent_rep['variables'][nested_key] = new_rep
+                parent_rep["variables"][nested_key] = new_rep
 
                 if nested_values:
                     self.r_check(new_rep, nested_values)
 
                 # Remove the 'original' key from this branch now that recursion is complete.
-                new_rep.pop('original', None)
+                new_rep.pop("original", None)
             else:
-                log.warning("Key '%s' not found in parent's proto variables by name", nested_key)
-        
-    def procedures_io_to_json(self, procedures: List[FortranProcedure], out_dir: Optional[str] = None) -> None:
+                log.warning(
+                    "Key '%s' not found in parent's proto variables by name", nested_key
+                )
+
+    def procedures_io_to_json(
+        self, procedures: List[FortranProcedure], out_dir: Optional[str] = None
+    ) -> None:
         """
         Export I/O operations and timeline analysis for procedures to JSON files.
-        
+
         For each procedure, this method:
         - Finalizes its io_tracker
         - Generates summarize_file_io() result including summary and timeline
         - Adds line number information
         - Writes to individual .io.json files
-        
+
         Also creates a master io_summary.json file.
-        
+
         Args:
             procedures: List of procedures to process
             out_dir: Output directory path. Defaults to ./json_outputs/io_summary
         """
-        out_dir = out_dir or os.path.join(os.getcwd(), 'json_outputs', 'io_summary')
+        out_dir = out_dir or os.path.join(os.getcwd(), "json_outputs", "io_summary")
         os.makedirs(out_dir, exist_ok=True)
 
         project_summary = {}
@@ -668,30 +684,30 @@ class Project:
                 continue
 
             # ——— New: add the procedure's line number
-            result['line_number'] = getattr(proc, 'line_number', None)
+            result["line_number"] = getattr(proc, "line_number", None)
 
             # ——— Optional: if your result has a 'timeline' list of I/O events,
             #             and each event has its own 'lineno' attribute, copy it in:
-            if 'timeline' in result:
-                for event in result['timeline']:
+            if "timeline" in result:
+                for event in result["timeline"]:
                     # adjust 'lineno' to match whatever your tracker uses
-                    event['line_number'] = event.get('lineno', None)
+                    event["line_number"] = event.get("lineno", None)
 
             project_summary[proc.name] = result
 
             # Save individual file
             path = os.path.join(out_dir, f"{proc.name}.io.json")
             try:
-                with open(path, 'w') as f:
+                with open(path, "w") as f:
                     json.dump(result, f, indent=2)
                 log.info("Wrote I/O summary for %s → %s", proc.name, path)
             except IOError as e:
                 log.error("Failed to write I/O summary for %s: %s", proc.name, e)
 
         # Save master summary
-        master_path = os.path.join(out_dir, 'io_summary.json')
+        master_path = os.path.join(out_dir, "io_summary.json")
         try:
-            with open(master_path, 'w') as f:
+            with open(master_path, "w") as f:
                 json.dump(project_summary, f, indent=2)
             log.info("Wrote master I/O summary → %s", master_path)
         except IOError as e:
@@ -699,29 +715,31 @@ class Project:
 
         return project_summary
 
-    def procedures_input_analysis_to_json(self, procedures: List[FortranProcedure], out_dir: Optional[str] = None) -> None:
+    def procedures_input_analysis_to_json(
+        self, procedures: List[FortranProcedure], out_dir: Optional[str] = None
+    ) -> None:
         """
         Export detailed input file analysis for procedures to JSON files.
-        
+
         For each procedure that reads input files, this method analyzes:
         - Subroutine name that reads the input
         - Unit number used for file operations
         - Whether files are opened via assigned variables vs hardcoded strings
         - Read structure of the file (title, header, data)
         - What data is read and to what data types/variables
-        
+
         Args:
             procedures: List of procedures to process
             out_dir: Output directory path. Defaults to ./json_outputs/input_analysis
         """
-        out_dir = out_dir or os.path.join(os.getcwd(), 'json_outputs', 'input_analysis')
+        out_dir = out_dir or os.path.join(os.getcwd(), "json_outputs", "input_analysis")
         os.makedirs(out_dir, exist_ok=True)
 
         project_summary = {}
 
         for proc in procedures:
             # Only analyze procedures that have I/O operations
-            if not hasattr(proc, 'io_tracker') or not proc.io_tracker.completed:
+            if not hasattr(proc, "io_tracker") or not proc.io_tracker.completed:
                 continue
 
             tracker = proc.io_tracker
@@ -742,16 +760,16 @@ class Project:
             # Save individual file
             path = os.path.join(out_dir, f"{proc.name}.input_analysis.json")
             try:
-                with open(path, 'w') as f:
+                with open(path, "w") as f:
                     json.dump(input_analysis, f, indent=2)
                 log.info("Wrote input analysis for %s → %s", proc.name, path)
             except IOError as e:
                 log.error("Failed to write input analysis for %s: %s", proc.name, e)
 
         # Save master summary
-        master_path = os.path.join(out_dir, 'input_analysis_summary.json')
+        master_path = os.path.join(out_dir, "input_analysis_summary.json")
         try:
-            with open(master_path, 'w') as f:
+            with open(master_path, "w") as f:
                 json.dump(project_summary, f, indent=2)
             log.info("Wrote master input analysis → %s", master_path)
         except IOError as e:
@@ -759,29 +777,33 @@ class Project:
 
         return project_summary
 
-    def procedures_output_analysis_to_json(self, procedures: List[FortranProcedure], out_dir: Optional[str] = None) -> None:
+    def procedures_output_analysis_to_json(
+        self, procedures: List[FortranProcedure], out_dir: Optional[str] = None
+    ) -> None:
         """
         Export detailed output file analysis for procedures to JSON files.
-        
+
         For each procedure that writes output files, this method analyzes:
         - Subroutine name that writes the output
         - Unit number used for file operations
         - Whether files are opened via assigned variables vs hardcoded strings
         - Write structure of the file (title, header, data)
         - What data is written and from what data types/variables
-        
+
         Args:
             procedures: List of procedures to process
             out_dir: Output directory path. Defaults to ./json_outputs/output_analysis
         """
-        out_dir = out_dir or os.path.join(os.getcwd(), 'json_outputs', 'output_analysis')
+        out_dir = out_dir or os.path.join(
+            os.getcwd(), "json_outputs", "output_analysis"
+        )
         os.makedirs(out_dir, exist_ok=True)
 
         project_summary = {}
 
         for proc in procedures:
             # Only analyze procedures that have I/O operations
-            if not hasattr(proc, 'io_tracker') or not proc.io_tracker.completed:
+            if not hasattr(proc, "io_tracker") or not proc.io_tracker.completed:
                 continue
 
             tracker = proc.io_tracker
@@ -802,16 +824,16 @@ class Project:
             # Save individual file
             path = os.path.join(out_dir, f"{proc.name}.output_analysis.json")
             try:
-                with open(path, 'w') as f:
+                with open(path, "w") as f:
                     json.dump(output_analysis, f, indent=2)
                 log.info("Wrote output analysis for %s → %s", proc.name, path)
             except IOError as e:
                 log.error("Failed to write output analysis for %s: %s", proc.name, e)
 
         # Save master summary
-        master_path = os.path.join(out_dir, 'output_analysis_summary.json')
+        master_path = os.path.join(out_dir, "output_analysis_summary.json")
         try:
-            with open(master_path, 'w') as f:
+            with open(master_path, "w") as f:
                 json.dump(project_summary, f, indent=2)
             log.info("Wrote master output analysis → %s", master_path)
         except IOError as e:
@@ -819,340 +841,359 @@ class Project:
 
         return project_summary
 
-    def _analyze_output_patterns(self, proc: FortranProcedure, tracker, io_summary: Dict) -> Optional[Dict]:
+    def _analyze_output_patterns(
+        self, proc: FortranProcedure, tracker, io_summary: Dict
+    ) -> Optional[Dict]:
         """
         Analyze output file patterns for a specific procedure.
-        
+
         Returns detailed analysis of output operations including:
         - Unit numbers and file opening methods
         - Write structure patterns
         - Variable assignments and data types
         """
         import re
-        
+
         if not io_summary:
             return None
 
         analysis = {
-            'subroutine_name': proc.name,
-            'line_number': getattr(proc, 'line_number', None),
-            'source_file': getattr(proc, 'filename', None),
-            'output_files': []
+            "subroutine_name": proc.name,
+            "line_number": getattr(proc, "line_number", None),
+            "source_file": getattr(proc, "filename", None),
+            "output_files": [],
         }
 
         # Analyze each file that has output operations
         for filename, file_data in io_summary.items():
-            if 'summary' not in file_data:
+            if "summary" not in file_data:
                 continue
-                
-            summary = file_data['summary']
-            timeline = file_data.get('timeline', [])
-            
+
+            summary = file_data["summary"]
+            timeline = file_data.get("timeline", [])
+
             # Only process files that have write operations
             if not self._has_write_operations(summary, timeline):
                 continue
 
             file_analysis = {
-                'filename': filename,
-                'unit_number': summary.get('unit'),
-                'opening_method': self._analyze_file_opening(timeline, filename),
-                'write_structure': self._analyze_write_structure(summary, timeline),
-                'data_variables': self._analyze_output_variables(summary, timeline, proc)
+                "filename": filename,
+                "unit_number": summary.get("unit"),
+                "opening_method": self._analyze_file_opening(timeline, filename),
+                "write_structure": self._analyze_write_structure(summary, timeline),
+                "data_variables": self._analyze_output_variables(
+                    summary, timeline, proc
+                ),
             }
 
-            analysis['output_files'].append(file_analysis)
+            analysis["output_files"].append(file_analysis)
 
-        return analysis if analysis['output_files'] else None
+        return analysis if analysis["output_files"] else None
 
     def _has_write_operations(self, summary: Dict, timeline: List[Dict]) -> bool:
         """Check if a file has write operations."""
         # Check for write operations in timeline
         for op in timeline:
-            if op.get('kind') == 'write':
+            if op.get("kind") == "write":
                 return True
-        
+
         # Check for data writes in summary
-        if summary.get('data_writes'):
+        if summary.get("data_writes"):
             return True
-            
+
         return False
 
     def _analyze_write_structure(self, summary: Dict, timeline: List[Dict]) -> Dict:
         """Analyze the write structure of the file (title, header, data)."""
         structure = {
-            'has_title': False,
-            'has_header': False,
-            'has_data': False,
-            'write_sequence': []
+            "has_title": False,
+            "has_header": False,
+            "has_data": False,
+            "write_sequence": [],
         }
 
         # Check for header writes
-        headers = summary.get('headers', [])
-        if 'titldum' in headers:
-            structure['has_title'] = True
-        if 'header' in headers or any(h for h in headers if h != 'titldum'):
-            structure['has_header'] = True
+        headers = summary.get("headers", [])
+        if "titldum" in headers:
+            structure["has_title"] = True
+        if "header" in headers or any(h for h in headers if h != "titldum"):
+            structure["has_header"] = True
 
         # Check for data writes
-        data_writes = summary.get('data_writes', [])
+        data_writes = summary.get("data_writes", [])
         if data_writes:
-            structure['has_data'] = True
+            structure["has_data"] = True
 
         # Build write sequence from timeline
         for op in timeline:
-            if op.get('kind') == 'write':
-                raw = op.get('raw', '')
-                line_no = op.get('lineno')
-                
+            if op.get("kind") == "write":
+                raw = op.get("raw", "")
+                line_no = op.get("lineno")
+
                 # Extract variables being written
                 write_vars = self._extract_write_variables(raw)
-                structure['write_sequence'].append({
-                    'line_number': line_no,
-                    'variables': write_vars,
-                    'raw_statement': raw
-                })
+                structure["write_sequence"].append(
+                    {
+                        "line_number": line_no,
+                        "variables": write_vars,
+                        "raw_statement": raw,
+                    }
+                )
 
         return structure
 
-    def _analyze_output_variables(self, summary: Dict, timeline: List[Dict], proc: FortranProcedure) -> List[Dict]:
+    def _analyze_output_variables(
+        self, summary: Dict, timeline: List[Dict], proc: FortranProcedure
+    ) -> List[Dict]:
         """Analyze what data variables are written and their types."""
         variables = []
-        
+
         # Process data writes from summary
-        data_writes = summary.get('data_writes', [])
+        data_writes = summary.get("data_writes", [])
         for write_group in data_writes:
-            columns = write_group.get('columns', [])
-            rows = write_group.get('rows', 1)
-            
+            columns = write_group.get("columns", [])
+            rows = write_group.get("rows", 1)
+
             for var_name in columns:
                 var_info = self._get_variable_type_info(proc, var_name)
-                variables.append({
-                    'name': var_name,
-                    'type': var_info.get('type'),
-                    'kind': var_info.get('kind'),
-                    'dimensions': var_info.get('dimensions'),
-                    'write_count': rows
-                })
+                variables.append(
+                    {
+                        "name": var_name,
+                        "type": var_info.get("type"),
+                        "kind": var_info.get("kind"),
+                        "dimensions": var_info.get("dimensions"),
+                        "write_count": rows,
+                    }
+                )
 
         return variables
 
     def _extract_write_variables(self, raw_statement: str) -> List[str]:
         """Extract variable names from a write statement."""
         import re
-        
+
         # Match write(...) variable_list pattern
-        match = re.search(r'write\s*\([^)]*\)\s*(.+)', raw_statement, re.IGNORECASE)
+        match = re.search(r"write\s*\([^)]*\)\s*(.+)", raw_statement, re.IGNORECASE)
         if not match:
             return []
-        
+
         var_part = match.group(1).strip()
-        
+
         # Split on commas, handling nested parentheses
         variables = []
         current_var = ""
         paren_depth = 0
-        
+
         for char in var_part:
-            if char == '(':
+            if char == "(":
                 paren_depth += 1
                 current_var += char
-            elif char == ')':
+            elif char == ")":
                 paren_depth -= 1
                 current_var += char
-            elif char == ',' and paren_depth == 0:
+            elif char == "," and paren_depth == 0:
                 if current_var.strip():
                     variables.append(current_var.strip())
                 current_var = ""
             else:
                 current_var += char
-        
+
         if current_var.strip():
             variables.append(current_var.strip())
-        
+
         return variables
 
-    def _analyze_input_patterns(self, proc: FortranProcedure, tracker, io_summary: Dict) -> Optional[Dict]:
+    def _analyze_input_patterns(
+        self, proc: FortranProcedure, tracker, io_summary: Dict
+    ) -> Optional[Dict]:
         """
         Analyze input file patterns for a specific procedure.
-        
+
         Returns detailed analysis of input operations including:
         - Unit numbers and file opening methods
         - Read structure patterns
         - Variable assignments and data types
         """
         import re
-        
+
         if not io_summary:
             return None
 
         analysis = {
-            'subroutine_name': proc.name,
-            'line_number': getattr(proc, 'line_number', None),
-            'source_file': getattr(proc, 'filename', None),
-            'input_files': []
+            "subroutine_name": proc.name,
+            "line_number": getattr(proc, "line_number", None),
+            "source_file": getattr(proc, "filename", None),
+            "input_files": [],
         }
 
         # Analyze each file that has input operations
         for filename, file_data in io_summary.items():
-            if 'summary' not in file_data:
+            if "summary" not in file_data:
                 continue
-                
-            summary = file_data['summary']
-            timeline = file_data.get('timeline', [])
-            
+
+            summary = file_data["summary"]
+            timeline = file_data.get("timeline", [])
+
             # Only process files that have read operations
-            if not summary.get('headers') and not summary.get('data_reads'):
+            if not summary.get("headers") and not summary.get("data_reads"):
                 continue
 
             file_analysis = {
-                'filename': filename,
-                'unit_number': summary.get('unit'),
-                'opening_method': self._analyze_file_opening(timeline, filename),
-                'read_structure': self._analyze_read_structure(summary, timeline),
-                'data_variables': self._analyze_data_variables(summary, timeline, proc)
+                "filename": filename,
+                "unit_number": summary.get("unit"),
+                "opening_method": self._analyze_file_opening(timeline, filename),
+                "read_structure": self._analyze_read_structure(summary, timeline),
+                "data_variables": self._analyze_data_variables(summary, timeline, proc),
             }
 
-            analysis['input_files'].append(file_analysis)
+            analysis["input_files"].append(file_analysis)
 
-        return analysis if analysis['input_files'] else None
+        return analysis if analysis["input_files"] else None
 
     def _analyze_file_opening(self, timeline: List[Dict], filename: str) -> Dict:
         """Analyze how a file is opened (assigned variable vs hardcoded string)."""
         for op in timeline:
-            if op.get('kind') == 'open':
-                raw = op.get('raw', '')
-                
+            if op.get("kind") == "open":
+                raw = op.get("raw", "")
+
                 # Extract the file parameter from the open statement
-                file_match = re.search(r'file\s*=\s*([^,)]+)', raw, re.IGNORECASE)
+                file_match = re.search(r"file\s*=\s*([^,)]+)", raw, re.IGNORECASE)
                 if file_match:
                     file_expr = file_match.group(1).strip()
-                    
+
                     # Check if it's a hardcoded string (in quotes)
-                    if (file_expr.startswith('"') and file_expr.endswith('"')) or \
-                       (file_expr.startswith("'") and file_expr.endswith("'")):
+                    if (file_expr.startswith('"') and file_expr.endswith('"')) or (
+                        file_expr.startswith("'") and file_expr.endswith("'")
+                    ):
                         return {
-                            'method': 'hardcoded_string',
-                            'expression': file_expr,
-                            'line_number': op.get('lineno')
+                            "method": "hardcoded_string",
+                            "expression": file_expr,
+                            "line_number": op.get("lineno"),
                         }
                     else:
                         return {
-                            'method': 'assigned_variable',
-                            'expression': file_expr,
-                            'line_number': op.get('lineno')
+                            "method": "assigned_variable",
+                            "expression": file_expr,
+                            "line_number": op.get("lineno"),
                         }
-        
-        return {'method': 'unknown', 'expression': None, 'line_number': None}
+
+        return {"method": "unknown", "expression": None, "line_number": None}
 
     def _analyze_read_structure(self, summary: Dict, timeline: List[Dict]) -> Dict:
         """Analyze the read structure of the file (title, header, data)."""
         structure = {
-            'has_title': False,
-            'has_header': False,
-            'has_data': False,
-            'read_sequence': []
+            "has_title": False,
+            "has_header": False,
+            "has_data": False,
+            "read_sequence": [],
         }
 
         # Check for title/header reads
-        headers = summary.get('headers', [])
-        if 'titldum' in headers:
-            structure['has_title'] = True
-        if 'header' in headers or any(h for h in headers if h != 'titldum'):
-            structure['has_header'] = True
+        headers = summary.get("headers", [])
+        if "titldum" in headers:
+            structure["has_title"] = True
+        if "header" in headers or any(h for h in headers if h != "titldum"):
+            structure["has_header"] = True
 
         # Check for data reads
-        data_reads = summary.get('data_reads', [])
+        data_reads = summary.get("data_reads", [])
         if data_reads:
-            structure['has_data'] = True
+            structure["has_data"] = True
 
         # Build read sequence from timeline
         for op in timeline:
-            if op.get('kind') == 'read':
-                raw = op.get('raw', '')
-                line_no = op.get('lineno')
-                
+            if op.get("kind") == "read":
+                raw = op.get("raw", "")
+                line_no = op.get("lineno")
+
                 # Extract variables being read
                 read_vars = self._extract_read_variables(raw)
-                structure['read_sequence'].append({
-                    'line_number': line_no,
-                    'variables': read_vars,
-                    'raw_statement': raw
-                })
+                structure["read_sequence"].append(
+                    {
+                        "line_number": line_no,
+                        "variables": read_vars,
+                        "raw_statement": raw,
+                    }
+                )
 
         return structure
 
-    def _analyze_data_variables(self, summary: Dict, timeline: List[Dict], proc: FortranProcedure) -> List[Dict]:
+    def _analyze_data_variables(
+        self, summary: Dict, timeline: List[Dict], proc: FortranProcedure
+    ) -> List[Dict]:
         """Analyze what data variables are read and their types."""
         variables = []
-        
+
         # Process data reads from summary
-        data_reads = summary.get('data_reads', [])
+        data_reads = summary.get("data_reads", [])
         for read_group in data_reads:
-            columns = read_group.get('columns', [])
-            rows = read_group.get('rows', 1)
-            
+            columns = read_group.get("columns", [])
+            rows = read_group.get("rows", 1)
+
             for var_name in columns:
                 var_info = self._get_variable_type_info(proc, var_name)
-                variables.append({
-                    'name': var_name,
-                    'type': var_info.get('type'),
-                    'kind': var_info.get('kind'),
-                    'dimensions': var_info.get('dimensions'),
-                    'read_count': rows
-                })
+                variables.append(
+                    {
+                        "name": var_name,
+                        "type": var_info.get("type"),
+                        "kind": var_info.get("kind"),
+                        "dimensions": var_info.get("dimensions"),
+                        "read_count": rows,
+                    }
+                )
 
         return variables
 
     def _extract_read_variables(self, raw_statement: str) -> List[str]:
         """Extract variable names from a read statement."""
         import re
-        
+
         # Match read(...) variable_list pattern
-        match = re.search(r'read\s*\([^)]*\)\s*(.+)', raw_statement, re.IGNORECASE)
+        match = re.search(r"read\s*\([^)]*\)\s*(.+)", raw_statement, re.IGNORECASE)
         if not match:
             return []
-        
+
         var_part = match.group(1).strip()
-        
+
         # Split on commas, handling nested parentheses
         variables = []
         current_var = ""
         paren_depth = 0
-        
+
         for char in var_part:
-            if char == '(':
+            if char == "(":
                 paren_depth += 1
                 current_var += char
-            elif char == ')':
+            elif char == ")":
                 paren_depth -= 1
                 current_var += char
-            elif char == ',' and paren_depth == 0:
+            elif char == "," and paren_depth == 0:
                 if current_var.strip():
                     variables.append(current_var.strip())
                 current_var = ""
             else:
                 current_var += char
-        
+
         if current_var.strip():
             variables.append(current_var.strip())
-        
+
         return variables
 
     def _get_variable_type_info(self, proc: FortranProcedure, var_name: str) -> Dict:
         """Get type information for a variable from the procedure's fvar."""
-        if not hasattr(proc, 'fvar') or not isinstance(proc.fvar, dict):
-            return {'type': 'unknown', 'kind': None, 'dimensions': None}
-        
+        if not hasattr(proc, "fvar") or not isinstance(proc.fvar, dict):
+            return {"type": "unknown", "kind": None, "dimensions": None}
+
         # Look for the variable in fvar
         var_info = self._find_variable_info(proc, var_name)
         if var_info:
             return {
-                'type': var_info.get('vartype', 'unknown'),
-                'kind': var_info.get('kind'),
-                'dimensions': var_info.get('dimension')
+                "type": var_info.get("vartype", "unknown"),
+                "kind": var_info.get("kind"),
+                "dimensions": var_info.get("dimension"),
             }
-        
-        return {'type': 'unknown', 'kind': None, 'dimensions': None}
+
+        return {"type": "unknown", "kind": None, "dimensions": None}
 
     @property
     def allfiles(self):
@@ -1298,9 +1339,8 @@ class Project:
         self.block_lines = sum_lines(self.blockdata)
 
         # Store module metadata
-        #self.module_metadata = [get_module_metadata(module) for module in self.modules] # do this in xwalk  instead or is a json still ultimately needed?
-        #self.xwalk_type_dicts = [self.cross_walk_type_dicts(procedures) for procedures in self.procedures] #all_vars exists, still need a xwalk but do it after correlating
-
+        # self.module_metadata = [get_module_metadata(module) for module in self.modules] # do this in xwalk  instead or is a json still ultimately needed?
+        # self.xwalk_type_dicts = [self.cross_walk_type_dicts(procedures) for procedures in self.procedures] #all_vars exists, still need a xwalk but do it after correlating
 
     def markdown(self, md):
         """
