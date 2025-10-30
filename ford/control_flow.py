@@ -529,9 +529,9 @@ class LogicBlockExtractor:
     USE_RE = re.compile(r"^\s*use\s+", re.IGNORECASE)
     IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
     # Match variable declarations (type declarations)
-    # Matches: integer, real, double precision, complex, logical, character, type(...)
+    # Matches: integer, real, double precision, complex, logical, character, class, procedure, type(...)
     DECLARATION_RE = re.compile(
-        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|type\s*\()",
+        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*\()",
         re.IGNORECASE,
     )
 
@@ -540,20 +540,19 @@ class LogicBlockExtractor:
         self.procedure_name = procedure_name
         self.procedure_type = procedure_type
 
-    def _is_declaration_or_use(self, line: str) -> bool:
+    def _is_declaration_or_use(self, line_stripped: str) -> bool:
         """Check if a line is a USE, IMPLICIT, or type declaration statement
 
         Parameters
         ----------
-        line : str
-            The line to check
+        line_stripped : str
+            The stripped line to check
 
         Returns
         -------
         bool
             True if the line is a declaration/use statement, False otherwise
         """
-        line_stripped = line.strip()
         return (
             self.USE_RE.match(line_stripped)
             or self.IMPLICIT_RE.match(line_stripped)

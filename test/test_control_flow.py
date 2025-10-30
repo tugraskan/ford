@@ -376,6 +376,34 @@ end subroutine test_control_flow
     assert len(if_blocks) >= 1
 
 
+def test_logic_blocks_exclude_class_and_procedure_declarations():
+    """Test that logic blocks exclude CLASS and PROCEDURE pointer declarations"""
+    source = """
+subroutine test_class_procedure
+    use some_module
+    implicit none
+    class(base_type), pointer :: obj
+    procedure(interface_name), pointer :: proc_ptr
+    integer :: x
+    
+    x = 10
+    call obj%method()
+end subroutine test_class_procedure
+"""
+    blocks = extract_logic_blocks(source, "test_class_procedure", "subroutine")
+    
+    assert blocks is not None
+    # Should have one statements block with only executable statements
+    assert len(blocks) == 1
+    assert blocks[0].block_type == "statements"
+    assert len(blocks[0].statements) == 2
+    
+    # Check that class and procedure declarations are not included
+    for stmt in blocks[0].statements:
+        assert "class" not in stmt.lower() or "::" not in stmt
+        assert "procedure" not in stmt.lower() or "::" not in stmt
+
+
 def test_logic_blocks_empty_after_filtering():
     """Test that procedures with only declarations produce no logic blocks"""
     source = """
