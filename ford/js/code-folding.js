@@ -66,15 +66,19 @@
             const lineInfo = lines.map((anchor, idx) => ({
                 anchor: anchor,
                 idx: idx,
-                text: getFullLineText(anchor),
-                processed: false
+                text: getFullLineText(anchor)
             }));
 
             let blockIdCounter = 0;
 
-            // Process from first to last, finding blocks
+            // Process from first to last, finding ALL blocks (including nested)
             for (let i = 0; i < lineInfo.length; i++) {
-                if (lineInfo[i].processed) continue;
+                // Skip if this line already has a fold icon (already processed as a start line)
+                if (lineInfo[i].anchor.previousSibling && 
+                    lineInfo[i].anchor.previousSibling.classList &&
+                    lineInfo[i].anchor.previousSibling.classList.contains('code-fold-icon')) {
+                    continue;
+                }
 
                 const text = lineInfo[i].text;
 
@@ -110,11 +114,6 @@
                     // Wrap this block
                     wrapBlock(lineInfo, i, endIdx, blockId, blockType, endText);
 
-                    // Mark these lines as processed
-                    for (let k = i; k <= endIdx; k++) {
-                        lineInfo[k].processed = true;
-                    }
-
                     break; // Found a match, move to next line
                 }
             }
@@ -147,6 +146,7 @@
         // Create preview span (shown when collapsed)
         const preview = document.createElement('span');
         preview.className = 'code-fold-preview';
+        preview.dataset.blockId = blockId;
         preview.style.display = 'none';
         preview.innerHTML = ' <span class="ellipsis">…</span> <span class="end-text">' + 
             escapeHtml(endText) + '</span>';
