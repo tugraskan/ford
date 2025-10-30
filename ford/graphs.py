@@ -1393,8 +1393,6 @@ class GraphManager:
 
                 # Generate control flow graph
                 try:
-                    from ford.graphs import create_control_flow_graph_svg
-
                     cfg = obj.get_control_flow_graph()
                     if cfg:
                         obj.controlflowtgraph_svg = create_control_flow_graph_svg(
