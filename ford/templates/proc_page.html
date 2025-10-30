@@ -268,12 +268,16 @@
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>{{ block.condition }}</code>) <strong>THEN</strong>
                     {% if block.label %}<span class="badge bg-secondary ms-2">{{ block.label }}</span>{% endif %}
+                    {% if block.start_line and block.end_line %}
+                      <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                    {% endif %}
                   </div>
                 </a>
                 <div id="{{ block_id }}" class="collapse">
                   <div class="card-body">
                     {% if block.statements %}
-                      <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
+{% endfor %}</code></pre>
                     {% endif %}
                     {% for child in block.children %}
                       {{ render_logic_block(child, loop.index, block_id ~ '-') }}
@@ -289,12 +293,16 @@
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>ELSE IF</strong> (<code>{{ block.condition }}</code>) <strong>THEN</strong>
+                  {%if block.start_line and block.end_line %}
+                    <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                  {%  endif %}
                   </div>
                 </a>
                 <div id="{{ block_id }}" class="collapse">
                   <div class="card-body">
                     {% if block.statements %}
-                      <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
+                      {% endfor %}</code></pre>
                     {% endif %}
                     {% for child in block.children %}
                       {{ render_logic_block(child, loop.index, block_id ~ '-') }}
@@ -310,12 +318,16 @@
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>ELSE</strong>
+                    {% if block.start_line and block.end_line %}
+                      <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                    {% endif %}
                   </div>
                 </a>
                 <div id="{{ block_id }}" class="collapse">
                   <div class="card-body">
                     {% if block.statements %}
-                      <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
+                      {% endfor %}</code></pre>
                     {% endif %}
                     {% for child in block.children %}
                       {{ render_logic_block(child, loop.index, block_id ~ '-') }}
@@ -332,12 +344,16 @@
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>DO</strong> <code>{{ block.condition }}</code>
                     {% if block.label %}<span class="badge bg-secondary ms-2">{{ block.label }}</span>{% endif %}
+                    {% if block.start_line and block.end_line %}
+                      <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                    {% endif %}
                   </div>
                 </a>
                 <div id="{{ block_id }}" class="collapse">
                   <div class="card-body">
                     {% if block.statements %}
-                      <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
+                      {% endfor %}</code></pre>
                     {% endif %}
                     {% for child in block.children %}
                       {{ render_logic_block(child, loop.index, block_id ~ '-') }}
@@ -354,6 +370,9 @@
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>SELECT CASE</strong> (<code>{{ block.condition }}</code>)
                     {% if block.label %}<span class="badge bg-secondary ms-2">{{ block.label }}</span>{% endif %}
+                    {% if block.start_line and block.end_line %}
+                      <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                    {% endif %}
                   </div>
                 </a>
                 <div id="{{ block_id }}" class="collapse">
@@ -372,12 +391,16 @@
                   <div class="card-header bg-success bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>CASE</strong> (<code>{{ block.condition }}</code>)
+                    {% if block.start_line and block.end_line %}
+                      <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                    {% endif %}
                   </div>
                 </a>
                 <div id="{{ block_id }}" class="collapse">
                   <div class="card-body">
                     {% if block.statements %}
-                      <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
+                      {% endfor %}</code></pre>
                     {% endif %}
                     {% for child in block.children %}
                       {{ render_logic_block(child, loop.index, block_id ~ '-') }}
@@ -389,7 +412,8 @@
               {% if block.statements %}
                 <div class="card mb-2 {{ indent_class }}">
                   <div class="card-body">
-                    <pre class="mb-0"><code>{{ block.statements | join('\n') }}</code></pre>
+                    <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
+                    {% endfor %}</code></pre>
                   </div>
                 </div>
               {% endif %}

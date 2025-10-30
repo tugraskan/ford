@@ -490,6 +490,12 @@ class LogicBlock:
         Nesting level (0 for top-level)
     label : Optional[str]
         Optional Fortran label
+    start_line : Optional[int]
+        Starting line number of this block (1-indexed)
+    end_line : Optional[int]
+        Ending line number of this block (1-indexed)
+    statement_lines : List[int]
+        Line numbers corresponding to each statement
     """
 
     block_type: str
@@ -498,6 +504,9 @@ class LogicBlock:
     children: List["LogicBlock"] = field(default_factory=list)
     level: int = 0
     label: Optional[str] = None
+    start_line: Optional[int] = None
+    end_line: Optional[int] = None
+    statement_lines: List[int] = field(default_factory=list)
 
 
 class LogicBlockExtractor:
@@ -567,19 +576,21 @@ class LogicBlockExtractor:
         List[LogicBlock]
             List of top-level logic blocks
         """
-        lines = self._preprocess_source()
+        lines, line_numbers = self._preprocess_source()
         blocks: List[LogicBlock] = []
 
         if not lines:
             return blocks
 
-        # Stack to track nested blocks: (block, current_statements)
-        stack: List[Tuple[LogicBlock, List[str]]] = []
+        # Stack to track nested blocks: (block, current_statements, current_statement_lines)
+        stack: List[Tuple[LogicBlock, List[str], List[int]]] = []
         current_statements: List[str] = []
+        current_statement_lines: List[int] = []
 
         i = 0
         while i < len(lines):
             line = lines[i]
+            line_num = line_numbers[i]
             line_stripped = line.strip()
 
             # Skip empty lines and comments
@@ -593,12 +604,17 @@ class LogicBlockExtractor:
 
                 # Create IF block
                 if_block = LogicBlock(
-                    block_type="if", condition=condition, level=len(stack), label=label
+                    block_type="if", 
+                    condition=condition, 
+                    level=len(stack), 
+                    label=label,
+                    start_line=line_num
                 )
 
                 # Save current statements to parent or top-level
                 if stack:
                     stack[-1][1].extend(current_statements)
+                    stack[-1][2].extend(current_statement_lines)
                 else:
                     if current_statements:
                         blocks.append(
@@ -606,12 +622,14 @@ class LogicBlockExtractor:
                                 block_type="statements",
                                 statements=current_statements,
                                 level=0,
+                                statement_lines=current_statement_lines,
                             )
                         )
                 current_statements = []
+                current_statement_lines = []
 
                 # Push to stack
-                stack.append((if_block, []))
+                stack.append((if_block, [], []))
 
             elif self.ELSE_IF_RE.match(line_stripped):
                 match = self.ELSE_IF_RE.match(line_stripped)
@@ -620,50 +638,62 @@ class LogicBlockExtractor:
                 if stack and stack[-1][0].block_type in ["if", "elseif"]:
                     # Save statements to current IF/ELSEIF block
                     stack[-1][0].statements = stack[-1][1]
+                    stack[-1][0].statement_lines = stack[-1][2]
 
-                    # Don't pop - just create ELSE IF as sibling
                     # Create ELSE IF block
                     elseif_block = LogicBlock(
                         block_type="elseif",
                         condition=condition,
                         level=stack[-1][0].level,
+                        start_line=line_num
                     )
 
                     # Get parent level
                     if len(stack) > 1:
                         stack[-2][0].children.append(stack[-1][0])
                         stack.pop()
-                        stack.append((elseif_block, []))
+                        stack.append((elseif_block, [], []))
                     else:
                         blocks.append(stack[-1][0])
                         stack.pop()
-                        stack.append((elseif_block, []))
+                        stack.append((elseif_block, [], []))
 
             elif self.ELSE_RE.match(line_stripped):
                 if stack and stack[-1][0].block_type in ["if", "elseif"]:
                     # Save statements to current IF/ELSEIF block
                     stack[-1][0].statements = stack[-1][1]
+                    stack[-1][0].statement_lines = stack[-1][2]
 
                     # Create ELSE block at same level
-                    else_block = LogicBlock(block_type="else", level=stack[-1][0].level)
+                    else_block = LogicBlock(
+                        block_type="else", 
+                        level=stack[-1][0].level,
+                        start_line=line_num
+                    )
 
                     # Add current block to parent and push ELSE
                     if len(stack) > 1:
                         stack[-2][0].children.append(stack[-1][0])
                         stack.pop()
-                        stack.append((else_block, []))
+                        stack.append((else_block, [], []))
                     else:
                         blocks.append(stack[-1][0])
                         stack.pop()
-                        stack.append((else_block, []))
+                        stack.append((else_block, [], []))
 
             elif self.END_IF_RE.match(line_stripped):
                 if stack and stack[-1][0].block_type in ["if", "elseif", "else"]:
+                    # Add END IF to the current block's statements
+                    stack[-1][1].append(line_stripped)
+                    stack[-1][2].append(line_num)
+                    
                     # Save statements to current block
                     stack[-1][0].statements = stack[-1][1]
+                    stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].end_line = line_num
 
                     # Pop and add to parent
-                    block, _ = stack.pop()
+                    block, _, _ = stack.pop()
                     if stack:
                         stack[-1][0].children.append(block)
                     else:
@@ -679,11 +709,13 @@ class LogicBlockExtractor:
                     condition=loop_control,
                     level=len(stack),
                     label=label,
+                    start_line=line_num
                 )
 
                 # Save current statements
                 if stack:
                     stack[-1][1].extend(current_statements)
+                    stack[-1][2].extend(current_statement_lines)
                 else:
                     if current_statements:
                         blocks.append(
@@ -691,20 +723,28 @@ class LogicBlockExtractor:
                                 block_type="statements",
                                 statements=current_statements,
                                 level=0,
+                                statement_lines=current_statement_lines,
                             )
                         )
                 current_statements = []
+                current_statement_lines = []
 
                 # Push to stack
-                stack.append((do_block, []))
+                stack.append((do_block, [], []))
 
             elif self.END_DO_RE.match(line_stripped):
                 if stack and stack[-1][0].block_type == "do":
+                    # Add END DO to the current block's statements
+                    stack[-1][1].append(line_stripped)
+                    stack[-1][2].append(line_num)
+                    
                     # Save statements to DO block
                     stack[-1][0].statements = stack[-1][1]
+                    stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].end_line = line_num
 
                     # Pop and add to parent
-                    do_block, _ = stack.pop()
+                    do_block, _, _ = stack.pop()
                     if stack:
                         stack[-1][0].children.append(do_block)
                     else:
@@ -720,11 +760,13 @@ class LogicBlockExtractor:
                     condition=select_expr,
                     level=len(stack),
                     label=label,
+                    start_line=line_num
                 )
 
                 # Save current statements
                 if stack:
                     stack[-1][1].extend(current_statements)
+                    stack[-1][2].extend(current_statement_lines)
                 else:
                     if current_statements:
                         blocks.append(
@@ -732,12 +774,14 @@ class LogicBlockExtractor:
                                 block_type="statements",
                                 statements=current_statements,
                                 level=0,
+                                statement_lines=current_statement_lines,
                             )
                         )
                 current_statements = []
+                current_statement_lines = []
 
                 # Push to stack
-                stack.append((select_block, []))
+                stack.append((select_block, [], []))
 
             elif self.CASE_RE.match(line_stripped) or self.CASE_DEFAULT_RE.match(
                 line_stripped
@@ -746,7 +790,8 @@ class LogicBlockExtractor:
                     # If we were in a previous CASE, save it
                     if stack[-1][0].block_type == "case":
                         stack[-1][0].statements = stack[-1][1]
-                        case_block, _ = stack.pop()
+                        stack[-1][0].statement_lines = stack[-1][2]
+                        case_block, _, _ = stack.pop()
                         stack[-1][0].children.append(case_block)
 
                     # Parse case value
@@ -758,21 +803,27 @@ class LogicBlockExtractor:
 
                     # Create CASE block
                     case_block = LogicBlock(
-                        block_type="case", condition=case_value, level=len(stack)
+                        block_type="case", 
+                        condition=case_value, 
+                        level=len(stack),
+                        start_line=line_num
                     )
-                    stack.append((case_block, []))
+                    stack.append((case_block, [], []))
 
             elif self.END_SELECT_RE.match(line_stripped):
                 if stack:
                     # Close any open CASE
                     if stack[-1][0].block_type == "case":
                         stack[-1][0].statements = stack[-1][1]
-                        case_block, _ = stack.pop()
+                        stack[-1][0].statement_lines = stack[-1][2]
+                        case_block, _, _ = stack.pop()
                         stack[-1][0].children.append(case_block)
 
-                    # Close SELECT
+                    # Close SELECT - Add END SELECT to the block
                     if stack and stack[-1][0].block_type == "select":
-                        select_block, _ = stack.pop()
+                        stack[-1][0].end_line = line_num
+                        # Note: END SELECT is not added as a statement to match Fortran structure
+                        select_block, _, _ = stack.pop()
                         if stack:
                             stack[-1][0].children.append(select_block)
                         else:
@@ -784,9 +835,11 @@ class LogicBlockExtractor:
                     if stack:
                         # We're inside a block, add to that block's statements
                         stack[-1][1].append(line_stripped)
+                        stack[-1][2].append(line_num)
                     else:
                         # We're at top level
                         current_statements.append(line_stripped)
+                        current_statement_lines.append(line_num)
 
             i += 1
 
@@ -794,17 +847,22 @@ class LogicBlockExtractor:
         if current_statements:
             if stack:
                 stack[-1][1].extend(current_statements)
+                stack[-1][2].extend(current_statement_lines)
             else:
                 blocks.append(
                     LogicBlock(
-                        block_type="statements", statements=current_statements, level=0
+                        block_type="statements", 
+                        statements=current_statements, 
+                        level=0,
+                        statement_lines=current_statement_lines
                     )
                 )
 
         # Close any unclosed blocks (shouldn't happen in valid code)
         while stack:
-            block, stmts = stack.pop()
+            block, stmts, stmt_lines = stack.pop()
             block.statements = stmts
+            block.statement_lines = stmt_lines
             if stack:
                 stack[-1][0].children.append(block)
             else:
@@ -812,10 +870,18 @@ class LogicBlockExtractor:
 
         return blocks
 
-    def _preprocess_source(self) -> List[str]:
-        """Preprocess source code to extract the procedure body"""
+
+    def _preprocess_source(self) -> Tuple[List[str], List[int]]:
+        """Preprocess source code to extract the procedure body
+        
+        Returns
+        -------
+        Tuple[List[str], List[int]]
+            List of lines and their corresponding line numbers (1-indexed)
+        """
         lines = self.source_code.split("\n")
         result = []
+        line_numbers = []
         in_procedure = False
 
         # Patterns to match procedure start and end
@@ -828,7 +894,7 @@ class LogicBlockExtractor:
         )
         contains_re = re.compile(r"^\s*contains\s*$", re.IGNORECASE)
 
-        for line in lines:
+        for line_num, line in enumerate(lines, start=1):
             if proc_start.match(line.strip()):
                 in_procedure = True
                 continue
@@ -839,8 +905,9 @@ class LogicBlockExtractor:
                     break
 
                 result.append(line)
+                line_numbers.append(line_num)
 
-        return result
+        return result, line_numbers
 
 
 def extract_logic_blocks(
