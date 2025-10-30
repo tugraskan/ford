@@ -525,10 +525,40 @@ class LogicBlockExtractor:
     CASE_DEFAULT_RE = re.compile(r"^\s*case\s+default\s*$", re.IGNORECASE)
     END_SELECT_RE = re.compile(r"^\s*end\s*select(?:\s+(\w+))?\s*$", re.IGNORECASE)
 
+    # Regular expressions for statements to exclude from logic blocks
+    USE_RE = re.compile(r"^\s*use\s+", re.IGNORECASE)
+    IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
+    # Match variable declarations (type declarations)
+    # Matches: integer, real, double precision, complex, logical, character, type(...)
+    DECLARATION_RE = re.compile(
+        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|type\s*\()",
+        re.IGNORECASE,
+    )
+
     def __init__(self, source_code: str, procedure_name: str, procedure_type: str):
         self.source_code = source_code
         self.procedure_name = procedure_name
         self.procedure_type = procedure_type
+
+    def _is_declaration_or_use(self, line: str) -> bool:
+        """Check if a line is a USE, IMPLICIT, or type declaration statement
+
+        Parameters
+        ----------
+        line : str
+            The line to check
+
+        Returns
+        -------
+        bool
+            True if the line is a declaration/use statement, False otherwise
+        """
+        line_stripped = line.strip()
+        return (
+            self.USE_RE.match(line_stripped)
+            or self.IMPLICIT_RE.match(line_stripped)
+            or self.DECLARATION_RE.match(line_stripped)
+        )
 
     def extract(self) -> List[LogicBlock]:
         """Extract logic blocks from the source code
@@ -750,13 +780,14 @@ class LogicBlockExtractor:
                             blocks.append(select_block)
 
             else:
-                # Regular statement
-                if stack:
-                    # We're inside a block, add to that block's statements
-                    stack[-1][1].append(line_stripped)
-                else:
-                    # We're at top level
-                    current_statements.append(line_stripped)
+                # Regular statement - skip USE, IMPLICIT, and declarations
+                if not self._is_declaration_or_use(line_stripped):
+                    if stack:
+                        # We're inside a block, add to that block's statements
+                        stack[-1][1].append(line_stripped)
+                    else:
+                        # We're at top level
+                        current_statements.append(line_stripped)
 
             i += 1
 
