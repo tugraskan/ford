@@ -604,11 +604,11 @@ class LogicBlockExtractor:
 
                 # Create IF block
                 if_block = LogicBlock(
-                    block_type="if", 
-                    condition=condition, 
-                    level=len(stack), 
+                    block_type="if",
+                    condition=condition,
+                    level=len(stack),
                     label=label,
-                    start_line=line_num
+                    start_line=line_num,
                 )
 
                 # Save current statements to parent or top-level
@@ -645,7 +645,7 @@ class LogicBlockExtractor:
                         block_type="elseif",
                         condition=condition,
                         level=stack[-1][0].level,
-                        start_line=line_num
+                        start_line=line_num,
                     )
 
                     # Get parent level
@@ -666,9 +666,7 @@ class LogicBlockExtractor:
 
                     # Create ELSE block at same level
                     else_block = LogicBlock(
-                        block_type="else", 
-                        level=stack[-1][0].level,
-                        start_line=line_num
+                        block_type="else", level=stack[-1][0].level, start_line=line_num
                     )
 
                     # Add current block to parent and push ELSE
@@ -686,7 +684,7 @@ class LogicBlockExtractor:
                     # Add END IF to the current block's statements
                     stack[-1][1].append(line_stripped)
                     stack[-1][2].append(line_num)
-                    
+
                     # Save statements to current block
                     stack[-1][0].statements = stack[-1][1]
                     stack[-1][0].statement_lines = stack[-1][2]
@@ -709,7 +707,7 @@ class LogicBlockExtractor:
                     condition=loop_control,
                     level=len(stack),
                     label=label,
-                    start_line=line_num
+                    start_line=line_num,
                 )
 
                 # Save current statements
@@ -737,7 +735,7 @@ class LogicBlockExtractor:
                     # Add END DO to the current block's statements
                     stack[-1][1].append(line_stripped)
                     stack[-1][2].append(line_num)
-                    
+
                     # Save statements to DO block
                     stack[-1][0].statements = stack[-1][1]
                     stack[-1][0].statement_lines = stack[-1][2]
@@ -760,7 +758,7 @@ class LogicBlockExtractor:
                     condition=select_expr,
                     level=len(stack),
                     label=label,
-                    start_line=line_num
+                    start_line=line_num,
                 )
 
                 # Save current statements
@@ -803,10 +801,10 @@ class LogicBlockExtractor:
 
                     # Create CASE block
                     case_block = LogicBlock(
-                        block_type="case", 
-                        condition=case_value, 
+                        block_type="case",
+                        condition=case_value,
                         level=len(stack),
-                        start_line=line_num
+                        start_line=line_num,
                     )
                     stack.append((case_block, [], []))
 
@@ -851,10 +849,10 @@ class LogicBlockExtractor:
             else:
                 blocks.append(
                     LogicBlock(
-                        block_type="statements", 
-                        statements=current_statements, 
+                        block_type="statements",
+                        statements=current_statements,
                         level=0,
-                        statement_lines=current_statement_lines
+                        statement_lines=current_statement_lines,
                     )
                 )
 
@@ -870,10 +868,9 @@ class LogicBlockExtractor:
 
         return blocks
 
-
     def _preprocess_source(self) -> Tuple[List[str], List[int]]:
         """Preprocess source code to extract the procedure body
-        
+
         Returns
         -------
         Tuple[List[str], List[int]]

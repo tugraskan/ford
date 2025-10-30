@@ -267,14 +267,14 @@ subroutine test_use
 end subroutine test_use
 """
     blocks = extract_logic_blocks(source, "test_use", "subroutine")
-    
+
     assert blocks is not None
     # Should have one statements block with only executable statement
     assert len(blocks) == 1
     assert blocks[0].block_type == "statements"
     assert len(blocks[0].statements) == 1
     assert "x = 5" in blocks[0].statements[0]
-    
+
     # Make sure USE statements are not included
     for block in blocks:
         for stmt in block.statements:
@@ -293,11 +293,11 @@ subroutine test_implicit
 end subroutine test_implicit
 """
     blocks = extract_logic_blocks(source, "test_implicit", "subroutine")
-    
+
     assert blocks is not None
     assert len(blocks) == 1
     assert blocks[0].block_type == "statements"
-    
+
     # Make sure IMPLICIT statements are not included
     for block in blocks:
         for stmt in block.statements:
@@ -323,13 +323,13 @@ subroutine test_declarations
 end subroutine test_declarations
 """
     blocks = extract_logic_blocks(source, "test_declarations", "subroutine")
-    
+
     assert blocks is not None
     # Should have one statements block with only executable statements
     assert len(blocks) == 1
     assert blocks[0].block_type == "statements"
     assert len(blocks[0].statements) == 3
-    
+
     # Check that only assignments are included, not declarations
     for stmt in blocks[0].statements:
         assert "=" in stmt  # All should be assignments
@@ -355,22 +355,22 @@ subroutine test_control_flow
 end subroutine test_control_flow
 """
     blocks = extract_logic_blocks(source, "test_control_flow", "subroutine")
-    
+
     assert blocks is not None
     # Should have a statements block and an if block
     assert len(blocks) >= 2
-    
+
     # First block should be statements with only executable code
     stmt_blocks = [b for b in blocks if b.block_type == "statements"]
     assert len(stmt_blocks) >= 1
-    
+
     # Check no declarations in statements
     for block in stmt_blocks:
         for stmt in block.statements:
             assert not stmt.strip().lower().startswith("use ")
             assert not stmt.strip().lower().startswith("implicit ")
             assert "::" not in stmt or "=" in stmt  # Either no :: or it's an assignment
-    
+
     # Should have an if block
     if_blocks = [b for b in blocks if b.block_type == "if"]
     assert len(if_blocks) >= 1
@@ -391,24 +391,23 @@ subroutine test_class_procedure
 end subroutine test_class_procedure
 """
     blocks = extract_logic_blocks(source, "test_class_procedure", "subroutine")
-    
+
     assert blocks is not None
     # Should have one statements block with only executable statements
     assert len(blocks) == 1
     assert blocks[0].block_type == "statements"
     assert len(blocks[0].statements) == 2
-    
+
     # Verify the actual statements
     assert "x = 10" in blocks[0].statements[0]
     assert "call obj%method()" in blocks[0].statements[1]
-    
+
     # Check that no class or procedure declarations are present
     for stmt in blocks[0].statements:
         # If it contains :: it should not be a class or procedure declaration
         if "::" in stmt:
             assert not (stmt.strip().lower().startswith("class"))
             assert not (stmt.strip().lower().startswith("procedure"))
-
 
 
 def test_logic_blocks_empty_after_filtering():
@@ -422,8 +421,7 @@ subroutine test_empty_logic
 end subroutine test_empty_logic
 """
     blocks = extract_logic_blocks(source, "test_empty_logic", "subroutine")
-    
+
     assert blocks is not None
     # Should have no blocks since all statements are filtered out
     assert len(blocks) == 0
-
