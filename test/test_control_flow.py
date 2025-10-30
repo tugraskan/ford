@@ -398,10 +398,17 @@ end subroutine test_class_procedure
     assert blocks[0].block_type == "statements"
     assert len(blocks[0].statements) == 2
     
-    # Check that class and procedure declarations are not included
+    # Verify the actual statements
+    assert "x = 10" in blocks[0].statements[0]
+    assert "call obj%method()" in blocks[0].statements[1]
+    
+    # Check that no class or procedure declarations are present
     for stmt in blocks[0].statements:
-        assert "class" not in stmt.lower() or "::" not in stmt
-        assert "procedure" not in stmt.lower() or "::" not in stmt
+        # If it contains :: it should not be a class or procedure declaration
+        if "::" in stmt:
+            assert not (stmt.strip().lower().startswith("class"))
+            assert not (stmt.strip().lower().startswith("procedure"))
+
 
 
 def test_logic_blocks_empty_after_filtering():
