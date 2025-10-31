@@ -28,27 +28,29 @@ subroutine aqu_pest_output_init
 end subroutine aqu_pest_output_init
 """
     blocks = extract_logic_blocks(source, "aqu_pest_output_init", "subroutine")
-    
+
     assert blocks is not None
     assert len(blocks) >= 1
-    
+
     # Find the outer DO loop
     do_blocks = [b for b in blocks if b.block_type == "do"]
     assert len(do_blocks) == 1
     outer_do = do_blocks[0]
-    
+
     # The outer DO should have 2 child DO loops
     child_dos = [c for c in outer_do.children if c.block_type == "do"]
     assert len(child_dos) == 2
-    
+
     # Verify that END DO is NOT in any statements
     for child_do in child_dos:
         for stmt in child_do.statements:
             assert "end do" not in stmt.lower(), f"Found 'end do' in statements: {stmt}"
-    
+
     # Also check outer DO
     for stmt in outer_do.statements:
-        assert "end do" not in stmt.lower(), f"Found 'end do' in outer statements: {stmt}"
+        assert (
+            "end do" not in stmt.lower()
+        ), f"Found 'end do' in outer statements: {stmt}"
 
 
 def test_nested_if_end_statements():
@@ -70,20 +72,20 @@ subroutine test_nested_if(x, y, result)
 end subroutine test_nested_if
 """
     blocks = extract_logic_blocks(source, "test_nested_if", "subroutine")
-    
+
     assert blocks is not None
-    
+
     # Find all IF/ELSE/ELSEIF blocks
     if_blocks = [b for b in blocks if b.block_type in ["if", "else", "elseif"]]
     assert len(if_blocks) >= 1
-    
+
     # Check all blocks recursively
     def check_no_end_if(block):
         for stmt in block.statements:
             assert "end if" not in stmt.lower(), f"Found 'end if' in statements: {stmt}"
         for child in block.children:
             check_no_end_if(child)
-    
+
     for block in blocks:
         check_no_end_if(block)
 
@@ -100,11 +102,11 @@ subroutine test_loop(n)
 end subroutine test_loop
 """
     blocks = extract_logic_blocks(source, "test_loop", "subroutine")
-    
+
     assert blocks is not None
     do_blocks = [b for b in blocks if b.block_type == "do"]
     assert len(do_blocks) == 1
-    
+
     do_block = do_blocks[0]
     # end_line should be set to the line number of 'end do'
     assert do_block.end_line is not None
@@ -123,11 +125,11 @@ subroutine test_if(x)
 end subroutine test_if
 """
     blocks = extract_logic_blocks(source, "test_if", "subroutine")
-    
+
     assert blocks is not None
     if_blocks = [b for b in blocks if b.block_type == "if"]
     assert len(if_blocks) == 1
-    
+
     if_block = if_blocks[0]
     # end_line should be set to the line number of 'end if'
     assert if_block.end_line is not None
