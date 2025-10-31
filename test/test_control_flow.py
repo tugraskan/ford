@@ -266,9 +266,10 @@ subroutine test_use
     x = 5
 end subroutine test_use
 """
-    blocks = extract_logic_blocks(source, "test_use", "subroutine")
+    result = extract_logic_blocks(source, "test_use", "subroutine")
 
-    assert blocks is not None
+    assert result is not None
+    blocks, allocations = result
     # Should have one statements block with only executable statement
     assert len(blocks) == 1
     assert blocks[0].block_type == "statements"
@@ -292,9 +293,10 @@ subroutine test_implicit
     write(*,*) x
 end subroutine test_implicit
 """
-    blocks = extract_logic_blocks(source, "test_implicit", "subroutine")
+    result = extract_logic_blocks(source, "test_implicit", "subroutine")
 
-    assert blocks is not None
+    assert result is not None
+    blocks, allocations = result
     assert len(blocks) == 1
     assert blocks[0].block_type == "statements"
 
@@ -322,9 +324,10 @@ subroutine test_declarations
     z = 3.14
 end subroutine test_declarations
 """
-    blocks = extract_logic_blocks(source, "test_declarations", "subroutine")
+    result = extract_logic_blocks(source, "test_declarations", "subroutine")
 
-    assert blocks is not None
+    assert result is not None
+    blocks, allocations = result
     # Should have one statements block with only executable statements
     assert len(blocks) == 1
     assert blocks[0].block_type == "statements"
@@ -354,9 +357,10 @@ subroutine test_control_flow
     end if
 end subroutine test_control_flow
 """
-    blocks = extract_logic_blocks(source, "test_control_flow", "subroutine")
+    result = extract_logic_blocks(source, "test_control_flow", "subroutine")
 
-    assert blocks is not None
+    assert result is not None
+    blocks, allocations = result
     # Should have a statements block and an if block
     assert len(blocks) >= 2
 
@@ -390,9 +394,10 @@ subroutine test_class_procedure
     call obj%method()
 end subroutine test_class_procedure
 """
-    blocks = extract_logic_blocks(source, "test_class_procedure", "subroutine")
+    result = extract_logic_blocks(source, "test_class_procedure", "subroutine")
 
-    assert blocks is not None
+    assert result is not None
+    blocks, allocations = result
     # Should have one statements block with only executable statements
     assert len(blocks) == 1
     assert blocks[0].block_type == "statements"
@@ -420,9 +425,10 @@ subroutine test_empty_logic
     real :: z
 end subroutine test_empty_logic
 """
-    blocks = extract_logic_blocks(source, "test_empty_logic", "subroutine")
+    result = extract_logic_blocks(source, "test_empty_logic", "subroutine")
 
-    assert blocks is not None
+    assert result is not None
+    blocks, allocations = result
     # Should have no blocks since all statements are filtered out
     assert len(blocks) == 0
 
@@ -445,9 +451,10 @@ subroutine test_select(n, result)
     end select
 end subroutine test_select
 """
-    blocks = extract_logic_blocks(source, "test_select", "subroutine")
+    result = extract_logic_blocks(source, "test_select", "subroutine")
 
-    assert blocks is not None
+    assert result is not None
+    blocks, allocations = result
     assert len(blocks) > 0
 
     # Find SELECT block
@@ -475,3 +482,75 @@ end subroutine test_select
         ), f"CASE block missing end_line: {case_block.condition}"
         # end_line should be >= start_line
         assert case_block.end_line >= case_block.start_line
+
+
+def test_allocation_tracking():
+    """Test that allocate and deallocate statements are tracked"""
+    source = """
+subroutine test_allocations
+    implicit none
+    integer, allocatable :: hru(:), res(:)
+    real, allocatable :: temp(:)
+    
+    allocate(hru(10))
+    allocate(res(5))
+    allocate(hru(20))
+    
+    deallocate(hru)
+    deallocate(res)
+end subroutine test_allocations
+"""
+    result = extract_logic_blocks(source, "test_allocations", "subroutine")
+
+    assert result is not None
+    blocks, allocations = result
+    
+    # Should have tracked allocations
+    assert len(allocations) > 0
+    
+    # Find hru allocation
+    hru_alloc = next((a for a in allocations if a.variable_name == "hru"), None)
+    assert hru_alloc is not None
+    assert len(hru_alloc.allocate_lines) == 2  # Allocated twice
+    assert len(hru_alloc.deallocate_lines) == 1  # Deallocated once
+    
+    # Find res allocation
+    res_alloc = next((a for a in allocations if a.variable_name == "res"), None)
+    assert res_alloc is not None
+    assert len(res_alloc.allocate_lines) == 1
+    assert len(res_alloc.deallocate_lines) == 1
+    
+    # temp should not be tracked (never allocated/deallocated)
+    temp_alloc = next((a for a in allocations if a.variable_name == "temp"), None)
+    assert temp_alloc is None
+
+
+def test_allocation_tracking_with_control_flow():
+    """Test that allocations inside control flow are tracked"""
+    source = """
+subroutine test_alloc_control
+    implicit none
+    integer, allocatable :: arr(:)
+    integer :: n
+    
+    n = 10
+    if (n > 5) then
+        allocate(arr(n))
+    else
+        allocate(arr(1))
+    end if
+    
+    deallocate(arr)
+end subroutine test_alloc_control
+"""
+    result = extract_logic_blocks(source, "test_alloc_control", "subroutine")
+
+    assert result is not None
+    blocks, allocations = result
+    
+    # Should have tracked allocation of arr
+    assert len(allocations) > 0
+    arr_alloc = next((a for a in allocations if a.variable_name == "arr"), None)
+    assert arr_alloc is not None
+    assert len(arr_alloc.allocate_lines) == 2  # Allocated in both branches
+    assert len(arr_alloc.deallocate_lines) == 1

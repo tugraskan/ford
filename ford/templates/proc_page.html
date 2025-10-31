@@ -443,6 +443,54 @@
           {% for block in procedure.logic_blocks %}
             {{ render_logic_block(block, loop.index) }}
           {% endfor %}
+          
+          {# Allocation Summary Section #}
+          {% if procedure.allocation_summary %}
+          <div class="card mt-4 mb-2">
+            <div class="card-header bg-secondary bg-opacity-10">
+              <strong>Allocations Summary</strong>
+            </div>
+            <div class="card-body">
+              <p class="text-muted mb-3">
+                Memory allocations and deallocations grouped by variable.
+              </p>
+              <table class="table table-sm table-striped">
+                <thead>
+                  <tr>
+                    <th>Variable</th>
+                    <th>Allocations</th>
+                    <th>Deallocations</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for alloc in procedure.allocation_summary %}
+                  <tr>
+                    <td><code>{{ alloc.variable_name }}</code></td>
+                    <td>
+                      {% if alloc.allocate_lines %}
+                        {% for line in alloc.allocate_lines %}
+                          <span class="badge bg-success">line {{ line }}</span>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                      {% else %}
+                        <em>none</em>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if alloc.deallocate_lines %}
+                        {% for line in alloc.deallocate_lines %}
+                          <span class="badge bg-warning text-dark">line {{ line }}</span>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                      {% else %}
+                        <em>none</em>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
