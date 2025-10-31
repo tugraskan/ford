@@ -446,26 +446,32 @@ subroutine test_select(n, result)
 end subroutine test_select
 """
     blocks = extract_logic_blocks(source, "test_select", "subroutine")
-    
+
     assert blocks is not None
     assert len(blocks) > 0
-    
+
     # Find SELECT block
     select_blocks = [b for b in blocks if b.block_type == "select"]
     assert len(select_blocks) == 1
-    
+
     select_block = select_blocks[0]
-    
+
     # SELECT block should have start_line and end_line
     assert select_block.start_line is not None
     assert select_block.end_line is not None
-    
+
     # Each CASE should have start_line and end_line
-    case_blocks = [child for child in select_block.children if child.block_type == "case"]
+    case_blocks = [
+        child for child in select_block.children if child.block_type == "case"
+    ]
     assert len(case_blocks) == 3
-    
+
     for case_block in case_blocks:
-        assert case_block.start_line is not None, f"CASE block missing start_line: {case_block.condition}"
-        assert case_block.end_line is not None, f"CASE block missing end_line: {case_block.condition}"
+        assert (
+            case_block.start_line is not None
+        ), f"CASE block missing start_line: {case_block.condition}"
+        assert (
+            case_block.end_line is not None
+        ), f"CASE block missing end_line: {case_block.condition}"
         # end_line should be >= start_line
         assert case_block.end_line >= case_block.start_line
