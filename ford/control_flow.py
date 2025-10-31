@@ -681,10 +681,6 @@ class LogicBlockExtractor:
 
             elif self.END_IF_RE.match(line_stripped):
                 if stack and stack[-1][0].block_type in ["if", "elseif", "else"]:
-                    # Add END IF to the current block's statements
-                    stack[-1][1].append(line_stripped)
-                    stack[-1][2].append(line_num)
-
                     # Save statements to current block
                     stack[-1][0].statements = stack[-1][1]
                     stack[-1][0].statement_lines = stack[-1][2]
@@ -732,10 +728,6 @@ class LogicBlockExtractor:
 
             elif self.END_DO_RE.match(line_stripped):
                 if stack and stack[-1][0].block_type == "do":
-                    # Add END DO to the current block's statements
-                    stack[-1][1].append(line_stripped)
-                    stack[-1][2].append(line_num)
-
                     # Save statements to DO block
                     stack[-1][0].statements = stack[-1][1]
                     stack[-1][0].statement_lines = stack[-1][2]
