@@ -425,3 +425,47 @@ end subroutine test_empty_logic
     assert blocks is not None
     # Should have no blocks since all statements are filtered out
     assert len(blocks) == 0
+
+
+def test_case_blocks_have_line_ranges():
+    """Test that CASE blocks have start_line and end_line set"""
+    source = """
+subroutine test_select(n, result)
+    integer, intent(in) :: n
+    integer, intent(out) :: result
+    
+    select case (n)
+        case (1)
+            result = 10
+            result = result + 1
+        case (2)
+            result = 20
+        case default
+            result = 0
+    end select
+end subroutine test_select
+"""
+    blocks = extract_logic_blocks(source, "test_select", "subroutine")
+    
+    assert blocks is not None
+    assert len(blocks) > 0
+    
+    # Find SELECT block
+    select_blocks = [b for b in blocks if b.block_type == "select"]
+    assert len(select_blocks) == 1
+    
+    select_block = select_blocks[0]
+    
+    # SELECT block should have start_line and end_line
+    assert select_block.start_line is not None
+    assert select_block.end_line is not None
+    
+    # Each CASE should have start_line and end_line
+    case_blocks = [child for child in select_block.children if child.block_type == "case"]
+    assert len(case_blocks) == 3
+    
+    for case_block in case_blocks:
+        assert case_block.start_line is not None, f"CASE block missing start_line: {case_block.condition}"
+        assert case_block.end_line is not None, f"CASE block missing end_line: {case_block.condition}"
+        # end_line should be >= start_line
+        assert case_block.end_line >= case_block.start_line

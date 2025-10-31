@@ -639,6 +639,7 @@ class LogicBlockExtractor:
                     # Save statements to current IF/ELSEIF block
                     stack[-1][0].statements = stack[-1][1]
                     stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].end_line = line_num - 1
 
                     # Create ELSE IF block
                     elseif_block = LogicBlock(
@@ -663,6 +664,7 @@ class LogicBlockExtractor:
                     # Save statements to current IF/ELSEIF block
                     stack[-1][0].statements = stack[-1][1]
                     stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].end_line = line_num - 1
 
                     # Create ELSE block at same level
                     else_block = LogicBlock(
@@ -781,6 +783,7 @@ class LogicBlockExtractor:
                     if stack[-1][0].block_type == "case":
                         stack[-1][0].statements = stack[-1][1]
                         stack[-1][0].statement_lines = stack[-1][2]
+                        stack[-1][0].end_line = line_num - 1
                         case_block, _, _ = stack.pop()
                         stack[-1][0].children.append(case_block)
 
@@ -806,6 +809,7 @@ class LogicBlockExtractor:
                     if stack[-1][0].block_type == "case":
                         stack[-1][0].statements = stack[-1][1]
                         stack[-1][0].statement_lines = stack[-1][2]
+                        stack[-1][0].end_line = line_num - 1
                         case_block, _, _ = stack.pop()
                         stack[-1][0].children.append(case_block)
 
