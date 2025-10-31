@@ -125,13 +125,8 @@
      */
     function wrapBlock(lineInfo, startIdx, endIdx, blockId, blockType, endText) {
         const startAnchor = lineInfo[startIdx].anchor;
+        const endAnchor = lineInfo[endIdx].anchor;
         
-        // Create wrapper div
-        const wrapper = document.createElement('div');
-        wrapper.className = 'code-fold-block';
-        wrapper.id = blockId;
-        wrapper.dataset.blockType = blockType;
-
         // Create fold icon span (insert before the line anchor)
         const icon = document.createElement('span');
         icon.className = 'code-fold-icon';
@@ -159,47 +154,46 @@
         startAnchor.classList.add('code-fold-start');
         startAnchor.dataset.blockId = blockId;
 
-        // Wrap content lines (between start and end, exclusive)
-        if (startIdx + 1 < endIdx) {
-            const contentWrapper = document.createElement('span');
-            contentWrapper.className = 'code-fold-content';
-            contentWrapper.dataset.blockId = blockId;
+        // Wrap content lines (between start and end, exclusive) AND the end line
+        const contentWrapper = document.createElement('span');
+        contentWrapper.className = 'code-fold-content';
+        contentWrapper.dataset.blockId = blockId;
 
-            // Collect all nodes between start and end anchors
-            let currentNode = startAnchor;
-            const nodesToWrap = [];
-            let foundEnd = false;
+        // Collect all nodes from after start to end (inclusive of end line and its content)
+        let currentNode = startAnchor;
+        const nodesToWrap = [];
 
-            while (currentNode && !foundEnd) {
-                currentNode = currentNode.nextSibling;
-                if (!currentNode) break;
+        while (currentNode) {
+            currentNode = currentNode.nextSibling;
+            if (!currentNode) break;
 
-                if (currentNode === lineInfo[endIdx].anchor) {
-                    foundEnd = true;
-                    break;
-                }
+            // Include everything up to and including the end anchor and all its content
+            nodesToWrap.push(currentNode);
 
-                // Check if we've reached a line in our range
-                const isLineInRange = lineInfo.slice(startIdx + 1, endIdx).some(info => 
-                    info.anchor === currentNode
-                );
-
-                if (isLineInRange || currentNode.nodeType === Node.TEXT_NODE || 
-                    currentNode.nodeName === 'SPAN') {
+            // Check if we've collected the end line and all its content
+            if (currentNode === endAnchor) {
+                // Continue collecting until we hit the next line anchor or run out of siblings
+                while (currentNode.nextSibling) {
+                    const nextNode = currentNode.nextSibling;
+                    // Stop if we hit another line anchor
+                    if (nextNode.nodeName === 'A' && nextNode.id && nextNode.id.startsWith('ln-')) {
+                        break;
+                    }
+                    currentNode = nextNode;
                     nodesToWrap.push(currentNode);
                 }
-            }
-
-            // Wrap the nodes
-            if (nodesToWrap.length > 0) {
-                const parent = startAnchor.parentNode;
-                parent.insertBefore(contentWrapper, nodesToWrap[0]);
-                nodesToWrap.forEach(node => contentWrapper.appendChild(node));
+                break;
             }
         }
 
+        // Wrap all the nodes (content + end line)
+        if (nodesToWrap.length > 0) {
+            const parent = startAnchor.parentNode;
+            parent.insertBefore(contentWrapper, nodesToWrap[0]);
+            nodesToWrap.forEach(node => contentWrapper.appendChild(node));
+        }
+
         // Mark the end line
-        const endAnchor = lineInfo[endIdx].anchor;
         endAnchor.classList.add('code-fold-end');
         endAnchor.dataset.blockId = blockId;
     }
@@ -211,9 +205,8 @@
         const icon = document.querySelector(`.code-fold-icon[data-block-id="${blockId}"]`);
         const preview = document.querySelector(`.code-fold-preview[data-block-id="${blockId}"]`);
         const content = document.querySelector(`.code-fold-content[data-block-id="${blockId}"]`);
-        const endLine = document.querySelector(`.code-fold-end[data-block-id="${blockId}"]`);
 
-        if (!icon) return;
+        if (!icon || !content) return;
 
         const isCollapsed = icon.innerHTML === '▶';
 
@@ -221,14 +214,12 @@
             // Expand
             icon.innerHTML = '▼';
             if (preview) preview.style.display = 'none';
-            if (content) content.style.display = '';
-            if (endLine) endLine.style.display = '';
+            content.style.display = '';
         } else {
             // Collapse
             icon.innerHTML = '▶';
             if (preview) preview.style.display = 'inline';
-            if (content) content.style.display = 'none';
-            if (endLine) endLine.style.display = 'none';
+            content.style.display = 'none';
         }
     }
 
