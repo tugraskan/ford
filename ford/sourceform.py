@@ -4009,8 +4009,13 @@ class FortranProcedure(FortranCodeUnit):
                 # Store allocation summary for use in template
                 self.allocation_summary = allocations
                 return blocks
-            return None
+            else:
+                # Initialize to empty list if extraction fails
+                self.allocation_summary = []
+                return None
         except Exception:
+            # Initialize to empty list on exception
+            self.allocation_summary = []
             return None
 
 
