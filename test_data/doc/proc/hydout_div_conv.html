@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -156,8 +157,6 @@
 </h2>
     
 
-
-
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#arguments-section" 
          aria-expanded="true" 
@@ -215,32 +214,51 @@
         </div>
       </div>
     </div>
-      <h3>Return Value
-        <small>
-          <span class="anchor" id="variable-hyd3~4"></span>
-          type(<a href='../type/hyd_output.html'>hyd_output</a>)
-        </small>
-      </h3>
-      
-
-
-
-
-
-    <br>
-
-    <br>
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
          aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
+         aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
-      <div id="logic-blocks-section" class="collapse">
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
         <div class="card-body">
           <p class="text-muted mb-3">
             Control flow structures organized as they appear in the source code. 
@@ -248,13 +266,25 @@
           </p>
           
                         
-                <div class="card mb-2 ms-0">
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>hyd2%flo > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 5-6</span>
+                  </div>
+                </a>
+                <div id="block-1" class="collapse">
                   <div class="card-body">
-                    <pre class="mb-0"><code>type (hyd_output), intent (in) :: hyd1
-type (hyd_output), intent (in) :: hyd2
-type (hyd_output) :: hyd3</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">   6</span> hyd3%flo = hyd1%flo / hyd2%flo
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 6</span>                    </div>
                   </div>
                 </div>
+              </div>
 
                         
               <div class="card mb-2 ms-0">
@@ -263,12 +293,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%flo > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 7-9</span>
                   </div>
                 </a>
                 <div id="block-2" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%flo = hyd1%flo / hyd2%flo</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">   8</span> hyd3%flo = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 9</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -280,12 +315,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%sed > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 10-11</span>
                   </div>
                 </a>
                 <div id="block-3" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%flo = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  11</span> hyd3%sed = hyd1%sed / hyd2%sed
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 11</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -297,12 +336,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%sed > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 12-14</span>
                   </div>
                 </a>
                 <div id="block-4" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%sed = hyd1%sed / hyd2%sed</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  13</span> hyd3%sed = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 14</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -314,12 +358,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%orgn > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 15-16</span>
                   </div>
                 </a>
                 <div id="block-5" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%sed = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  16</span> hyd3%orgn = hyd1%orgn / hyd2%orgn
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 16</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -331,12 +379,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%orgn > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 17-19</span>
                   </div>
                 </a>
                 <div id="block-6" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%orgn = hyd1%orgn / hyd2%orgn</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  18</span> hyd3%orgn = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 19</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -348,12 +401,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%sedp > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 20-21</span>
                   </div>
                 </a>
                 <div id="block-7" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%orgn = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  21</span> hyd3%sedp = hyd1%sedp / hyd2%sedp
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 21</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -365,12 +422,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%sedp > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 22-24</span>
                   </div>
                 </a>
                 <div id="block-8" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%sedp = hyd1%sedp / hyd2%sedp</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  23</span> hyd3%sedp = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 24</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -382,12 +444,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%no3 > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 25-26</span>
                   </div>
                 </a>
                 <div id="block-9" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%sedp = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  26</span> hyd3%no3 = hyd1%no3 / hyd2%no3
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 26</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -399,12 +465,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%no3 > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 27-29</span>
                   </div>
                 </a>
                 <div id="block-10" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%no3 = hyd1%no3 / hyd2%no3</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  28</span> hyd3%no3 = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 29</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -416,12 +487,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%solp > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 30-31</span>
                   </div>
                 </a>
                 <div id="block-11" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%no3 = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  31</span> hyd3%solp = hyd1%solp / hyd2%solp
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 31</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -433,12 +508,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%solp > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 32-34</span>
                   </div>
                 </a>
                 <div id="block-12" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%solp = hyd1%solp / hyd2%solp</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  33</span> hyd3%solp = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 34</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -450,12 +530,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%chla > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 35-36</span>
                   </div>
                 </a>
                 <div id="block-13" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%solp = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  36</span> hyd3%chla = hyd1%chla / hyd2%chla
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 36</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -467,12 +551,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%chla > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 37-39</span>
                   </div>
                 </a>
                 <div id="block-14" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%chla = hyd1%chla / hyd2%chla</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  38</span> hyd3%chla = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 39</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -484,12 +573,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%nh3 > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 40-41</span>
                   </div>
                 </a>
                 <div id="block-15" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%chla = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  41</span> hyd3%nh3 = hyd1%nh3 / hyd2%nh3
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 41</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -501,12 +594,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%nh3 > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 42-44</span>
                   </div>
                 </a>
                 <div id="block-16" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%nh3 = hyd1%nh3 / hyd2%nh3</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  43</span> hyd3%nh3 = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 44</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -518,12 +616,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%no2 > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 45-46</span>
                   </div>
                 </a>
                 <div id="block-17" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%nh3 = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  46</span> hyd3%no2 = hyd1%no2 / hyd2%no2
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 46</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -535,12 +637,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%no2 > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 47-49</span>
                   </div>
                 </a>
                 <div id="block-18" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%no2 = hyd1%no2 / hyd2%no2</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  48</span> hyd3%no2 = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 49</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -552,12 +659,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%cbod > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 50-51</span>
                   </div>
                 </a>
                 <div id="block-19" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%no2 = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  51</span> hyd3%cbod = hyd1%cbod / hyd2%cbod
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 51</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -569,12 +680,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%cbod > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 52-54</span>
                   </div>
                 </a>
                 <div id="block-20" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%cbod = hyd1%cbod / hyd2%cbod</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  53</span> hyd3%cbod = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 54</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -586,12 +702,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%dox > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 55-56</span>
                   </div>
                 </a>
                 <div id="block-21" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%cbod = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  56</span> hyd3%dox = hyd1%dox / hyd2%dox
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 56</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -603,12 +723,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%dox > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 57-59</span>
                   </div>
                 </a>
                 <div id="block-22" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%dox = hyd1%dox / hyd2%dox</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  58</span> hyd3%dox = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 59</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -620,12 +745,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%san > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 60-61</span>
                   </div>
                 </a>
                 <div id="block-23" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%dox = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  61</span> hyd3%san = hyd1%san / hyd2%san
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 61</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -637,12 +766,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%san > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 62-64</span>
                   </div>
                 </a>
                 <div id="block-24" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%san = hyd1%san / hyd2%san</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  63</span> hyd3%san = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 64</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -654,12 +788,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%sil > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 65-66</span>
                   </div>
                 </a>
                 <div id="block-25" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%san = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  66</span> hyd3%sil = hyd1%sil / hyd2%sil
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 66</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -671,12 +809,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%sil > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 67-69</span>
                   </div>
                 </a>
                 <div id="block-26" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%sil = hyd1%sil / hyd2%sil</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  68</span> hyd3%sil = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 69</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -688,12 +831,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%cla > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 70-71</span>
                   </div>
                 </a>
                 <div id="block-27" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%sil = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  71</span> hyd3%cla = hyd1%cla / hyd2%cla
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 71</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -705,12 +852,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%cla > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 72-74</span>
                   </div>
                 </a>
                 <div id="block-28" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%cla = hyd1%cla / hyd2%cla</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  73</span> hyd3%cla = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 74</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -722,12 +874,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%sag > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 75-76</span>
                   </div>
                 </a>
                 <div id="block-29" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%cla = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  76</span> hyd3%sag = hyd1%sag / hyd2%sag
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 76</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -739,12 +895,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%sag > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 77-79</span>
                   </div>
                 </a>
                 <div id="block-30" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%sag = hyd1%sag / hyd2%sag</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  78</span> hyd3%sag = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 79</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -756,12 +917,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%lag > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 80-81</span>
                   </div>
                 </a>
                 <div id="block-31" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%sag = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  81</span> hyd3%lag = hyd1%lag / hyd2%lag
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 81</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -773,12 +938,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%lag > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 82-84</span>
                   </div>
                 </a>
                 <div id="block-32" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%lag = hyd1%lag / hyd2%lag</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  83</span> hyd3%lag = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 84</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -790,12 +960,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd2%grv > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 85-86</span>
                   </div>
                 </a>
                 <div id="block-33" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%lag = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  86</span> hyd3%grv = hyd1%grv / hyd2%grv
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 86</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -807,12 +981,17 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd2%grv > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 87-89</span>
                   </div>
                 </a>
                 <div id="block-34" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%grv = hyd1%grv / hyd2%grv</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  88</span> hyd3%grv = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 89</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -824,12 +1003,16 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>hyd1%flo + hyd2%flo > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 90-91</span>
                   </div>
                 </a>
                 <div id="block-35" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%grv = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  91</span> hyd3%temp = (hyd1%flo * hyd2%temp + hyd2%flo + hyd2%temp) / (hyd1%flo + hyd2%flo)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 91</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -841,36 +1024,54 @@ type (hyd_output) :: hyd3</code></pre>
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hyd1%flo + hyd2%flo > 1.e-6</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 92-94</span>
                   </div>
                 </a>
                 <div id="block-36" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%temp = (hyd1%flo * hyd2%temp + hyd2%flo + hyd2%temp) / (hyd1%flo + hyd2%flo)</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  93</span> hyd3%temp = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 94</span>                    </div>
                   </div>
                 </div>
               </div>
 
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-37" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-37" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>hyd3%temp = 0.</code></pre>
-                  </div>
-                </div>
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
               </div>
-
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+
+      <h3>Return Value
+        <small>
+          <span class="anchor" id="variable-hyd3~4"></span>
+          type(<a href='../type/hyd_output.html'>hyd_output</a>)
+        </small>
+      </h3>
+      
+
+
+    <br>
+
     <br>
 
 

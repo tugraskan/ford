@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -159,41 +160,18 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/pesticide_data_module.html'>pesticide_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
                   <li class="list-inline-item"><a href='../module/reservoir_data_module.html'>reservoir_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/pesticide_data_module.html'>pesticide_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/reservoir_module.html'>reservoir_module</a></li>
                   <li class="list-inline-item"><a href='../module/res_pesticide_module.html'>res_pesticide_module</a></li>
-                  <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>~ ~ ~ PURPOSE ~ ~ ~
-   this subroutine computes the lake hydrologic pesticide balance.</p>
-<p>calculate average depth of reservoir
-sor conc/sol conc = Koc * frac_oc = Kd -&gt; (sor mass/mass sed) / (sol mass/mass water) = Kd
--&gt; sor mass/sol mass = Kd * (kg sed)/(L water) --&gt; sol mass/tot mass = 1 / (1 + Kd * (kg sed)/(L water))
-water column --&gt; kg sed/L water = t/m3 = t / (m3 - (t * m3/t)) --&gt; sedvol = sed/particle density(2.65)
-assume; fraction organic = 1%;\; por=0.8; density=2.6 t/m^3
-benthic layer --&gt; kg sed/L water = t/m3 = bd (t sed/m3 total) / por --&gt; por*total gives volume of water
-determine pesticide lost through reactions in water layer
-add decay to daughter pesticides
-determine pesticide lost through volatilization
-determine amount of pesticide settling to sediment layer
-determine pesticide resuspended into lake water
-determine pesticide diffusing from sediment to water
-determine pesticide lost from sediment by reactions
-add decay to daughter pesticides
-determine pesticide lost from sediment by burial
-calculate soluble pesticide transported out of reservoir
-calculate sorbed pesticide transported out of reservoir
-update concentration of pesticide in lake water and sediment
-set outgoing pesticide for routing</p>
 
 
     <div class="card mb-3">
@@ -238,6 +216,1134 @@ set outgoing pesticide for routing</p>
         </div>
       </div>
     </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_html__water_body__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_html__water_body__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_html__water_body__a__">
+              type(<a href='../type/water_body.html'>water_body</a>)
+              <small class="text-muted ms-2">(1 attribute from water_body_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_html__water_body__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_html__water_body__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_wat_d</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__">
+              type(<a href='../type/reservoir_data.html'>reservoir_data</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_dat</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__">
+              type(<a href='../type/reservoir_sed_data.html'>reservoir_sed_data</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_sed</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headinginteger">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseinteger" aria-expanded="false" 
+                    aria-controls="collapseinteger">
+              integer
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapseinteger" class="accordion-collapse collapse" 
+               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>icmd</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(4 attributes from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ht2%flo</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%pest_num</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_pests</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>hcs2%pest</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+              type(<a href='../type/hyd_output.html'>hyd_output</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__">
+              type(<a href='../type/object_connectivity.html'>object_connectivity</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ob</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__">
+              type(<a href='../type/pesticide_db.html'>pesticide_db</a>)
+              <small class="text-muted ms-2">(1 attribute from pesticide_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pestdb</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_pesticide_cp_html__pesticide_cp__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_pesticide_cp_html__pesticide_cp__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_pesticide_cp_html__pesticide_cp__a__">
+              type(<a href='../type/pesticide_cp.html'>pesticide_cp</a>)
+              <small class="text-muted ms-2">(1 attribute from pesticide_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_pesticide_cp_html__pesticide_cp__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_pesticide_cp_html__pesticide_cp__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pestcp</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingreal">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsereal" aria-expanded="false" 
+                    aria-controls="collapsereal">
+              real
+              <small class="text-muted ms-2">(5 attributes from reservoir_module)</small>
+            </button>
+          </h3>
+          <div id="collapsereal" class="accordion-collapse collapse" 
+               aria-labelledby="headingreal" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>volatpst</strong></td>
+                      <td><p>mg pst |amount of pesticide lost from reach by volatilization</p><a href="../module/reservoir_module.html#variable-volatpst" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>setlpst</strong></td>
+                      <td><p>mg pst |amount of pesticide moving from water to sediment due to settling</p><a href="../module/reservoir_module.html#variable-setlpst~4" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>resuspst</strong></td>
+                      <td><p>mg pst |amount of pesticide moving from sediment to reach due to resuspension</p><a href="../module/reservoir_module.html#variable-resuspst~4" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>difus</strong></td>
+                      <td><p>mg pst |diffusion of pesticide from sediment to reach</p><a href="../module/reservoir_module.html#variable-difus~4" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>bury</strong></td>
+                      <td><p>mg pst |loss of pesticide from active sediment layer by burial</p><a href="../module/reservoir_module.html#variable-bury~4" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_html__reservoir__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_html__reservoir__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_html__reservoir__a__">
+              type(<a href='../type/reservoir.html'>reservoir</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_html__reservoir__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_html__reservoir__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_ob</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_res_pesticide_output_html__res_pesticide_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_res_pesticide_output_html__res_pesticide_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_res_pesticide_output_html__res_pesticide_output__a__">
+              type(<a href='../type/res_pesticide_output.html'>res_pesticide_output</a>)
+              <small class="text-muted ms-2">(1 attribute from res_pesticide_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_res_pesticide_output_html__res_pesticide_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_res_pesticide_output_html__res_pesticide_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>respst_d</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
+              type(<a href='../type/constituent_mass.html'>constituent_mass</a>)
+              <small class="text-muted ms-2">(2 attributes from constituent_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_water</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>res_benthic</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_all_constituent_hydrograph_html__all_constituent_hydrograph__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_all_constituent_hydrograph_html__all_constituent_hydrograph__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_all_constituent_hydrograph_html__all_constituent_hydrograph__a__">
+              type(<a href='../type/all_constituent_hydrograph.html'>all_constituent_hydrograph</a>)
+              <small class="text-muted ms-2">(1 attribute from constituent_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_all_constituent_hydrograph_html__all_constituent_hydrograph__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_all_constituent_hydrograph_html__all_constituent_hydrograph__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>obcs</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>~ ~ ~ PURPOSE ~ ~ ~
+   this subroutine computes the lake hydrologic pesticide balance.</p>
+<p>calculate average depth of reservoir
+sor conc/sol conc = Koc * frac_oc = Kd -&gt; (sor mass/mass sed) / (sol mass/mass water) = Kd
+-&gt; sor mass/sol mass = Kd * (kg sed)/(L water) --&gt; sol mass/tot mass = 1 / (1 + Kd * (kg sed)/(L water))
+water column --&gt; kg sed/L water = t/m3 = t / (m3 - (t * m3/t)) --&gt; sedvol = sed/particle density(2.65)
+assume; fraction organic = 1%;\; por=0.8; density=2.6 t/m^3
+benthic layer --&gt; kg sed/L water = t/m3 = bd (t sed/m3 total) / por --&gt; por*total gives volume of water
+determine pesticide lost through reactions in water layer
+add decay to daughter pesticides
+determine pesticide lost through volatilization
+determine amount of pesticide settling to sediment layer
+determine pesticide resuspended into lake water
+determine pesticide diffusing from sediment to water
+determine pesticide lost from sediment by reactions
+add decay to daughter pesticides
+determine pesticide lost from sediment by burial
+calculate soluble pesticide transported out of reservoir
+calculate sorbed pesticide transported out of reservoir
+update concentration of pesticide in lake water and sediment
+set outgoing pesticide for routing</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>res(jres)%flo > 1.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ipst = 1, cs_db%num_pests</code>
+                  </div>
+                </a>
+                <div id="block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  44</span> icmd = res_ob(jres)%ob
+<span class="text-muted">  45</span> idb = ob(icmd)%props
+<span class="text-muted">  46</span> ipest_db = cs_db%pest_num(ipst)
+<span class="text-muted">  47</span> jsed = res_dat(idb)%sed
+<span class="text-muted">  48</span> respst_d(jres)%pest(ipst)%tot_in = obcs(icmd)%hin(1)%pest(ipst)
+<span class="text-muted">  49</span> tpest1 = obcs(icmd)%hin(1)%pest(ipst) + res_water(jres)%pest(ipst)
+<span class="text-muted">  50</span> bedvol = 1000. * res_wat_d(jres)%area_ha * pestdb(ipest_db)%ben_act_dep + .01
+<span class="text-muted">  51</span> tpest2 = res_benthic(jres)%pest(ipst) * bedvol
+<span class="text-muted">  54</span> depth = res(jres)%flo / (res_wat_d(jres)%area_ha * 10000.)
+<span class="text-muted">  58</span> sedmass_watervol = (res(jres)%sed) / (res(jres)%flo - (res(jres)%sed / 2.65))
+<span class="text-muted">  59</span> kd = pestdb(ipest_db)%koc * res_sed(jsed)%carbon / 100.
+<span class="text-muted">  60</span> fd1 = 1. / (1. + kd * sedmass_watervol)
+<span class="text-muted">  61</span> fd1 = amin1 (1., fd1)
+<span class="text-muted">  62</span> fp1 = 1. - fd1
+<span class="text-muted">  65</span> sedmass_watervol = res_sed(jsed)%bd / (1. - res_sed(jsed)%bd / 2.65)
+<span class="text-muted">  66</span> fd2 = 1. / (1. + kd * sedmass_watervol)
+<span class="text-muted">  67</span> fd2 = amin1 (1., fd2)
+<span class="text-muted">  68</span> fp2 = 1. - fd2
+<span class="text-muted">  70</span> fd2 = 1. / (.8 + .026 * kd)
+<span class="text-muted">  71</span> fd2 = amin1 (1., fd2)
+<span class="text-muted">  72</span> fp2 = 1. - fd2
+<span class="text-muted">  75</span> pest_init = tpest1
+<span class="text-muted">  92</span> volatpst = pestdb(ipest_db)%aq_volat * fd1 * tpest1 / depth
+<span class="text-muted">  99</span> respst_d(jres)%pest(ipst)%volat = volatpst
+<span class="text-muted"> 102</span> setlpst = pestdb(ipest_db)%aq_settle * fp1 * tpest1 / depth
+<span class="text-muted"> 111</span> respst_d(jres)%pest(ipst)%settle = setlpst
+<span class="text-muted"> 114</span> resuspst = pestdb(ipest_db)%aq_resus * tpest2 / pestdb(ipest_db)%ben_act_dep
+<span class="text-muted"> 123</span> respst_d(jres)%pest(ipst)%resus = resuspst
+<span class="text-muted"> 126</span> difus = res_ob(jres)%aq_mix(ipst) *                                 &
+<span class="text-muted"> 127</span> (fd2 * tpest2 / pestdb(ipest_db)%ben_act_dep - fd1 * tpest1 / depth)
+<span class="text-muted"> 145</span> respst_d(jres)%pest(ipst)%difus = difus
+<span class="text-muted"> 148</span> pest_init = tpest2
+<span class="text-muted"> 165</span> bury = pestdb(ipest_db)%ben_bury * tpest2 / pestdb(ipest_db)%ben_act_dep
+<span class="text-muted"> 172</span> respst_d(jres)%pest(ipst)%bury = bury
+<span class="text-muted"> 175</span> solpesto = ht2%flo * fd1 * tpest1 / res(jres)%flo
+<span class="text-muted"> 184</span> sorpesto = ht2%flo * fp1 * tpest1 / res(jres)%flo
+<span class="text-muted"> 191</span> respst_d(jres)%pest(ipst)%sol_out = solpesto
+<span class="text-muted"> 192</span> respst_d(jres)%pest(ipst)%sor_out = sorpesto
+<span class="text-muted"> 195</span> if (tpest1 < 1.e-10) tpest1 = 0.0
+<span class="text-muted"> 196</span> if (tpest2 < 1.e-10) tpest2 = 0.0
+<span class="text-muted"> 197</span> res_water(jres)%pest(ipst) = tpest1
+<span class="text-muted"> 198</span> res_benthic(jres)%pest(ipst) = tpest2
+<span class="text-muted"> 201</span> hcs2%pest(ipst) = solpesto + sorpesto
+<span class="text-muted"> 203</span> end do    ! ipst = 1, cs_db%num_pests
+<span class="text-muted"> 204</span> end if    ! res(jres)%flo > 1.
+<span class="text-muted"> 206</span> return
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pest_init > 1.e-12</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 76-89</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  77</span> pest_end = tpest1 * pestcp(ipest_db)%decay_a
+<span class="text-muted">  78</span> tpest1 = pest_end
+<span class="text-muted">  79</span> respst_d(jres)%pest(ipst)%react = pest_init - pest_end
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>imeta = 1, pestcp(ipest_db)%num_metab</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 81-88</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  82</span> ipseq = pestcp(ipest_db)%daughter(imeta)%num
+<span class="text-muted">  83</span> ipdb = cs_db%pest_num(ipseq)
+<span class="text-muted">  84</span> mol_wt_rto = pestdb(ipdb)%mol_wt / pestdb(ipest_db)%mol_wt
+<span class="text-muted">  85</span> respst_d(jres)%pest(ipseq)%metab = respst_d(jres)%pest(ipseq)%metab + respst_d(jres)%pest(ipst)%react *     &
+<span class="text-muted">  86</span> pestcp(ipest_db)%daughter(imeta)%soil_fr * mol_wt_rto
+<span class="text-muted">  87</span> res_water(jres)%pest(ipseq) = res_water(jres)%pest(ipseq) + respst_d(jres)%pest(ipseq)%metab
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 88</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 89</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>volatpst > tpest1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 93-95</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  94</span> volatpst = tpest1
+<span class="text-muted">  95</span> tpest1 = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 95</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 96-98</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  97</span> tpest1 = tpest1 - volatpst
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 98</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>setlpst > tpest1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 103-106</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 104</span> setlpst = tpest1
+<span class="text-muted"> 105</span> tpest1 = 0.
+<span class="text-muted"> 106</span> tpest2 = tpest2 + setlpst
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 106</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 107-110</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 108</span> tpest1 = tpest1 - setlpst
+<span class="text-muted"> 109</span> tpest2 = tpest2 + setlpst
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 110</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>resuspst > tpest2</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 115-118</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 116</span> resuspst = tpest2
+<span class="text-muted"> 117</span> tpest2 = 0.
+<span class="text-muted"> 118</span> tpest1 = tpest1 + resuspst
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 118</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 119-122</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-7" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 120</span> tpest2 = tpest2 - resuspst
+<span class="text-muted"> 121</span> tpest1 = tpest1 + resuspst
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 122</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>difus > 0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 128-135</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-8" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 135</span> tpest1 = tpest1 + Abs(difus)
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-8-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>difus > tpest2</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 129-131</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-8-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 130</span> difus = tpest2
+<span class="text-muted"> 131</span> tpest2 = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 131</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-8-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 132-134</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-8-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 133</span> tpest2 = tpest2 - Abs(difus)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 134</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 135</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-9" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 136-144</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-9" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 143</span> tpest2 = tpest2 + Abs(difus)
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-9-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>Abs(difus) > tpest1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 137-139</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-9-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 138</span> difus = -tpest1
+<span class="text-muted"> 139</span> tpest1 = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 139</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-9-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 140-142</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-9-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 141</span> tpest1 = tpest1 - Abs(difus)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 142</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 144</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-10" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pest_init > 1.e-12</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 149-162</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-10" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 150</span> pest_end = tpest2 * pestcp(ipest_db)%decay_b
+<span class="text-muted"> 151</span> tpest2 = pest_end
+<span class="text-muted"> 152</span> respst_d(jres)%pest(ipst)%react_bot = pest_init - pest_end
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-10-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>imeta = 1, pestcp(ipest_db)%num_metab</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 154-161</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-10-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 155</span> ipseq = pestcp(ipest_db)%daughter(imeta)%num
+<span class="text-muted"> 156</span> ipdb = cs_db%pest_num(ipseq)
+<span class="text-muted"> 157</span> mol_wt_rto = pestdb(ipdb)%mol_wt / pestdb(ipest_db)%mol_wt
+<span class="text-muted"> 158</span> respst_d(jres)%pest(ipseq)%metab = respst_d(jres)%pest(ipseq)%metab + respst_d(jres)%pest(ipst)%react *     &
+<span class="text-muted"> 159</span> pestcp(ipest_db)%daughter(imeta)%soil_fr * mol_wt_rto
+<span class="text-muted"> 160</span> res_benthic(jres)%pest(ipseq) = res_benthic(jres)%pest(ipseq) + respst_d(jres)%pest(ipseq)%metab
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 161</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 162</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-11" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bury > tpest2</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 166-168</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-11" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 167</span> bury = tpest2
+<span class="text-muted"> 168</span> tpest2 = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 168</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-12" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 169-171</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-12" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 170</span> tpest2 = tpest2 - bury
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 171</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-13" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>solpesto > tpest1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 176-178</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-13" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 177</span> solpesto = tpest1
+<span class="text-muted"> 178</span> tpest1 = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 178</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-14" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 179-181</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-14" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 180</span> tpest1 = tpest1 - solpesto
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 181</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-15" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sorpesto > tpest1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 185-187</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-15" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 186</span> sorpesto = tpest1
+<span class="text-muted"> 187</span> tpest1 = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 187</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-16" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 188-190</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-16" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 189</span> tpest1 = tpest1 - sorpesto
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 190</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>                    </div>
+                  </div>
+                </div>
+              </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
     <div class="card mb-3">
@@ -660,1004 +1766,8 @@ set outgoing pesticide for routing</p>
     </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__">
-              type(<a href='../type/pesticide_db.html'>pesticide_db</a>)
-              <small class="text-muted ms-2">(1 attribute from pesticide_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_pesticide_db_html__pesticide_db__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pestdb</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_pesticide_cp_html__pesticide_cp__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_pesticide_cp_html__pesticide_cp__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_pesticide_cp_html__pesticide_cp__a__">
-              type(<a href='../type/pesticide_cp.html'>pesticide_cp</a>)
-              <small class="text-muted ms-2">(1 attribute from pesticide_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_pesticide_cp_html__pesticide_cp__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_pesticide_cp_html__pesticide_cp__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pestcp</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(4 attributes from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>cs_db%pest_num</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%num_pests</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>hcs2%pest</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>ht2%flo</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
-              type(<a href='../type/constituent_mass.html'>constituent_mass</a>)
-              <small class="text-muted ms-2">(2 attributes from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res_water</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>res_benthic</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_all_constituent_hydrograph_html__all_constituent_hydrograph__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_all_constituent_hydrograph_html__all_constituent_hydrograph__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_all_constituent_hydrograph_html__all_constituent_hydrograph__a__">
-              type(<a href='../type/all_constituent_hydrograph.html'>all_constituent_hydrograph</a>)
-              <small class="text-muted ms-2">(1 attribute from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_all_constituent_hydrograph_html__all_constituent_hydrograph__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_all_constituent_hydrograph_html__all_constituent_hydrograph__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>obcs</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__">
-              type(<a href='../type/reservoir_data.html'>reservoir_data</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res_dat</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__">
-              type(<a href='../type/reservoir_sed_data.html'>reservoir_sed_data</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res_sed</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headinginteger">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseinteger" aria-expanded="false" 
-                    aria-controls="collapseinteger">
-              integer
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapseinteger" class="accordion-collapse collapse" 
-               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>icmd</strong></td>
-                      <td><p>|</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-              type(<a href='../type/hyd_output.html'>hyd_output</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__">
-              type(<a href='../type/object_connectivity.html'>object_connectivity</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ob</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingreal">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsereal" aria-expanded="false" 
-                    aria-controls="collapsereal">
-              real
-              <small class="text-muted ms-2">(5 attributes from reservoir_module)</small>
-            </button>
-          </h3>
-          <div id="collapsereal" class="accordion-collapse collapse" 
-               aria-labelledby="headingreal" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>volatpst</strong></td>
-                      <td><p>mg pst |amount of pesticide lost from reach by volatilization</p><a href="../module/reservoir_module.html#variable-volatpst" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                    <tr>
-                      <td><strong>setlpst</strong></td>
-                      <td><p>mg pst |amount of pesticide moving from water to sediment due to settling</p><a href="../module/reservoir_module.html#variable-setlpst~4" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                    <tr>
-                      <td><strong>resuspst</strong></td>
-                      <td><p>mg pst |amount of pesticide moving from sediment to reach due to resuspension</p><a href="../module/reservoir_module.html#variable-resuspst~4" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                    <tr>
-                      <td><strong>difus</strong></td>
-                      <td><p>mg pst |diffusion of pesticide from sediment to reach</p><a href="../module/reservoir_module.html#variable-difus~8" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                    <tr>
-                      <td><strong>bury</strong></td>
-                      <td><p>mg pst |loss of pesticide from active sediment layer by burial</p><a href="../module/reservoir_module.html#variable-bury~8" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_html__reservoir__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_html__reservoir__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_html__reservoir__a__">
-              type(<a href='../type/reservoir.html'>reservoir</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_html__reservoir__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_html__reservoir__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res_ob</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_res_pesticide_output_html__res_pesticide_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_res_pesticide_output_html__res_pesticide_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_res_pesticide_output_html__res_pesticide_output__a__">
-              type(<a href='../type/res_pesticide_output.html'>res_pesticide_output</a>)
-              <small class="text-muted ms-2">(1 attribute from res_pesticide_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_res_pesticide_output_html__res_pesticide_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_res_pesticide_output_html__res_pesticide_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>respst_d</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_water_body_html__water_body__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_water_body_html__water_body__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_water_body_html__water_body__a__">
-              type(<a href='../type/water_body.html'>water_body</a>)
-              <small class="text-muted ms-2">(1 attribute from water_body_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_water_body_html__water_body__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_water_body_html__water_body__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res_wat_d</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use reservoir_data_module
-use reservoir_module
-use res_pesticide_module
-use hydrograph_module, only : res, ob, ht2
-use constituent_mass_module
-use pesticide_data_module
-use water_body_module
-implicit none
-real :: tpest1 = 0.           !mg pst        |amount of pesticide in water
-real :: tpest2 = 0.           !mg pst        |amount of pesticide in benthic sediment
-real :: kd = 0.               !(mg/kg)/(mg/L) |koc * carbon
-real :: fd1 = 0.              !              |frac of soluble pesticide in water column
-real :: fd2 = 0.              !              |frac of sorbed pesticide in water column
-real :: fp1 = 0.              !              |frac of soluble pesticide in benthic column
-real :: fp2 = 0.              !              |frac of sorbed pesticide in benthic column
-real :: depth = 0.            !              |average depth of reservoir
-real :: bedvol = 0.           !m^3           |volume of river bed sediment
-real :: solpesto = 0.         !mg pst        |soluble pesticide transported out of reservoir
-real :: sorpesto = 0.         !mg pst        |sorbed pesticide transported out of reservoir
-real :: sedmass_watervol = 0. !kg/L or t/m3  |sediment mass divided by water volume in water and benthic
-real :: pest_init = 0.        !mg            |amount of pesticide before decay
-real :: pest_end = 0.         !mg            |amount of pesticide after decay
-real :: mol_wt_rto = 0.   !ratio      |molecular weight ratio of duaghter to parent pesticide
-integer :: ipest_db = 0   !none       |pesticide number from pesticide data base
-integer :: ipseq = 0      !none       |sequential basin pesticide number
-integer :: ipdb = 0       !none       |sequential pesticide number of daughter pesticide
-integer :: imeta = 0      !none       |pesticide metabolite counter
-integer :: jres               !none          |reservoir number
-integer :: ipst = 0           !none          |counter
-integer :: icmd = 0           !none          |
-integer :: jsed = 0           !none          |counter
-integer :: idb = 0            !none          |</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>res(jres)%flo > 1.</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ipst = 1, cs_db%num_pests</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>icmd = res_ob(jres)%ob
-idb = ob(icmd)%props
-ipest_db = cs_db%pest_num(ipst)
-jsed = res_dat(idb)%sed
-respst_d(jres)%pest(ipst)%tot_in = obcs(icmd)%hin(1)%pest(ipst)
-tpest1 = obcs(icmd)%hin(1)%pest(ipst) + res_water(jres)%pest(ipst)
-bedvol = 1000. * res_wat_d(jres)%area_ha * pestdb(ipest_db)%ben_act_dep + .01
-tpest2 = res_benthic(jres)%pest(ipst) * bedvol
-depth = res(jres)%flo / (res_wat_d(jres)%area_ha * 10000.)
-sedmass_watervol = (res(jres)%sed) / (res(jres)%flo - (res(jres)%sed / 2.65))
-kd = pestdb(ipest_db)%koc * res_sed(jsed)%carbon / 100.
-fd1 = 1. / (1. + kd * sedmass_watervol)
-fd1 = amin1 (1., fd1)
-fp1 = 1. - fd1
-sedmass_watervol = res_sed(jsed)%bd / (1. - res_sed(jsed)%bd / 2.65)
-fd2 = 1. / (1. + kd * sedmass_watervol)
-fd2 = amin1 (1., fd2)
-fp2 = 1. - fd2
-fd2 = 1. / (.8 + .026 * kd)
-fd2 = amin1 (1., fd2)
-fp2 = 1. - fd2
-pest_init = tpest1
-volatpst = pestdb(ipest_db)%aq_volat * fd1 * tpest1 / depth
-respst_d(jres)%pest(ipst)%volat = volatpst
-setlpst = pestdb(ipest_db)%aq_settle * fp1 * tpest1 / depth
-respst_d(jres)%pest(ipst)%settle = setlpst
-resuspst = pestdb(ipest_db)%aq_resus * tpest2 / pestdb(ipest_db)%ben_act_dep
-respst_d(jres)%pest(ipst)%resus = resuspst
-difus = res_ob(jres)%aq_mix(ipst) *                                 &
-(fd2 * tpest2 / pestdb(ipest_db)%ben_act_dep - fd1 * tpest1 / depth)
-respst_d(jres)%pest(ipst)%difus = difus
-pest_init = tpest2
-bury = pestdb(ipest_db)%ben_bury * tpest2 / pestdb(ipest_db)%ben_act_dep
-respst_d(jres)%pest(ipst)%bury = bury
-solpesto = ht2%flo * fd1 * tpest1 / res(jres)%flo
-sorpesto = ht2%flo * fp1 * tpest1 / res(jres)%flo
-respst_d(jres)%pest(ipst)%sol_out = solpesto
-respst_d(jres)%pest(ipst)%sor_out = sorpesto
-if (tpest1 < 1.e-10) tpest1 = 0.0
-if (tpest2 < 1.e-10) tpest2 = 0.0
-res_water(jres)%pest(ipst) = tpest1
-res_benthic(jres)%pest(ipst) = tpest2
-hcs2%pest(ipst) = solpesto + sorpesto
-end do    ! ipst = 1, cs_db%num_pests
-end if    ! res(jres)%flo > 1.
-return</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>pest_init > 1.e-12</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>pest_end = tpest1 * pestcp(ipest_db)%decay_a
-tpest1 = pest_end
-respst_d(jres)%pest(ipst)%react = pest_init - pest_end</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>imeta = 1, pestcp(ipest_db)%num_metab</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>ipseq = pestcp(ipest_db)%daughter(imeta)%num
-ipdb = cs_db%pest_num(ipseq)
-mol_wt_rto = pestdb(ipdb)%mol_wt / pestdb(ipest_db)%mol_wt
-respst_d(jres)%pest(ipseq)%metab = respst_d(jres)%pest(ipseq)%metab + respst_d(jres)%pest(ipst)%react *     &
-pestcp(ipest_db)%daughter(imeta)%soil_fr * mol_wt_rto
-res_water(jres)%pest(ipseq) = res_water(jres)%pest(ipseq) + respst_d(jres)%pest(ipseq)%metab</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>volatpst > tpest1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>volatpst = tpest1
-tpest1 = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>tpest1 = tpest1 - volatpst</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-4" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>setlpst > tpest1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-4" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>setlpst = tpest1
-tpest1 = 0.
-tpest2 = tpest2 + setlpst</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-5" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-5" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>tpest1 = tpest1 - setlpst
-tpest2 = tpest2 + setlpst</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-6" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>resuspst > tpest2</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-6" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>resuspst = tpest2
-tpest2 = 0.
-tpest1 = tpest1 + resuspst</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-7" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-7" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>tpest2 = tpest2 - resuspst
-tpest1 = tpest1 + resuspst</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-8" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>difus > 0.</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-8" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>tpest1 = tpest1 + Abs(difus)</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-8-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>difus > tpest2</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-8-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>difus = tpest2
-tpest2 = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-8-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-8-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>tpest2 = tpest2 - Abs(difus)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-9" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-9" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>tpest2 = tpest2 + Abs(difus)</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-9-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>Abs(difus) > tpest1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-9-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>difus = -tpest1
-tpest1 = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-9-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-9-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>tpest1 = tpest1 - Abs(difus)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-10" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>pest_init > 1.e-12</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-10" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>pest_end = tpest2 * pestcp(ipest_db)%decay_b
-tpest2 = pest_end
-respst_d(jres)%pest(ipst)%react_bot = pest_init - pest_end</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-10-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>imeta = 1, pestcp(ipest_db)%num_metab</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-10-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>ipseq = pestcp(ipest_db)%daughter(imeta)%num
-ipdb = cs_db%pest_num(ipseq)
-mol_wt_rto = pestdb(ipdb)%mol_wt / pestdb(ipest_db)%mol_wt
-respst_d(jres)%pest(ipseq)%metab = respst_d(jres)%pest(ipseq)%metab + respst_d(jres)%pest(ipst)%react *     &
-pestcp(ipest_db)%daughter(imeta)%soil_fr * mol_wt_rto
-res_benthic(jres)%pest(ipseq) = res_benthic(jres)%pest(ipseq) + respst_d(jres)%pest(ipseq)%metab</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-11" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>bury > tpest2</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-11" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>bury = tpest2
-tpest2 = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-12" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-12" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>tpest2 = tpest2 - bury</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-13" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>solpesto > tpest1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-13" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>solpesto = tpest1
-tpest1 = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-14" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-14" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>tpest1 = tpest1 - solpesto</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-15" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>sorpesto > tpest1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-15" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>sorpesto = tpest1
-tpest1 = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-16" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-16" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>tpest1 = tpest1 - sorpesto</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
 

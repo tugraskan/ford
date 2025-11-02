@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -160,75 +161,15 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <div class="codehilite"><pre><span></span><code><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">PURPOSE</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
-<span class="n">this</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="n">initializes</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">daily</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span>
-<span class="n">land</span><span class="w"> </span><span class="n">phase</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">hydrologic</span><span class="w"> </span><span class="n">cycle</span><span class="w"> </span><span class="p">(</span><span class="n">the</span><span class="w"> </span><span class="n">subbasin</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="n">loop</span><span class="p">)</span>
-
-<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">INCOMING</span><span class="w"> </span><span class="n">VARIABLES</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
-<span class="n">name</span><span class="w">        </span><span class="o">|</span><span class="n">units</span><span class="w">         </span><span class="o">|</span><span class="n">definition</span>
-<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span>
-<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
-
-<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">OUTGOING</span><span class="w"> </span><span class="n">VARIABLES</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
-<span class="n">name</span><span class="w">        </span><span class="o">|</span><span class="n">units</span><span class="w">         </span><span class="o">|</span><span class="n">definition</span>
-<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span>
-<span class="n">albday</span><span class="w">      </span><span class="o">|</span><span class="n">none</span><span class="w">          </span><span class="o">|</span><span class="n">albedo</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">bioday</span><span class="w">      </span><span class="o">|</span><span class="n">kg</span><span class="w">            </span><span class="o">|</span><span class="n">biomass</span><span class="w"> </span><span class="n">generated</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">bsprev</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">surface</span><span class="w"> </span><span class="n">runoff</span><span class="w"> </span><span class="n">lagged</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">prior</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="n">of</span>
-<span class="w">                           </span><span class="o">|</span><span class="n">simulation</span>
-<span class="n">canev</span><span class="w">       </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">water</span><span class="w"> </span><span class="n">evaporated</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">canopy</span><span class="w"> </span><span class="n">storage</span>
-<span class="n">ep_day</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">actual</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">transpiration</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">occurs</span><span class="w"> </span><span class="n">on</span>
-<span class="w">                           </span><span class="o">|</span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">ep_max</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">maximum</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">transpiration</span><span class="w"> </span><span class="p">(</span><span class="n">plant</span><span class="w"> </span><span class="n">et</span><span class="p">)</span>
-<span class="w">                           </span><span class="o">|</span><span class="n">that</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">occur</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">es_day</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">actual</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">evaporation</span><span class="w"> </span><span class="p">(</span><span class="n">from</span><span class="w"> </span><span class="n">soil</span><span class="p">)</span><span class="w"> </span><span class="n">that</span>
-<span class="w">                           </span><span class="o">|</span><span class="n">occurs</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">hhqday</span><span class="p">(:)</span><span class="w">   </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">surface</span><span class="w"> </span><span class="n">runoff</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">HRU</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">day</span>
-<span class="n">inflpcp</span><span class="w">     </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">precipitation</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">infiltrates</span><span class="w"> </span><span class="n">into</span>
-<span class="w">                           </span><span class="o">|</span><span class="n">soil</span><span class="w"> </span><span class="p">(</span><span class="n">enters</span><span class="w"> </span><span class="n">soil</span><span class="p">)</span>
-<span class="n">lat_pst</span><span class="p">(:)</span><span class="w">  </span><span class="o">|</span><span class="n">kg</span><span class="w"> </span><span class="n">pst</span><span class="o">/</span><span class="n">ha</span><span class="w">     </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">pesticide</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">lateral</span><span class="w"> </span><span class="n">flow</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span><span class="w"> </span><span class="k">for</span>
-<span class="w">                           </span><span class="o">|</span><span class="n">the</span><span class="w"> </span><span class="n">day</span>
-<span class="n">qp_cms</span><span class="w">      </span><span class="o">|</span><span class="n">m</span><span class="o">^</span><span class="mi">3</span><span class="o">/</span><span class="n">s</span><span class="w">         </span><span class="o">|</span><span class="n">peak</span><span class="w"> </span><span class="n">runoff</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">pet_day</span><span class="w">     </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">potential</span><span class="w"> </span><span class="n">evapotranspiration</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">qtile</span><span class="w">       </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">drainage</span><span class="w"> </span><span class="n">tile</span><span class="w"> </span><span class="n">flow</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">sepday</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">percolation</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">bottom</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">soil</span><span class="w"> </span><span class="n">layer</span><span class="w"> </span><span class="n">on</span>
-<span class="w">                           </span><span class="o">|</span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">snoev</span><span class="w">       </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">water</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">snow</span><span class="w"> </span><span class="n">lost</span><span class="w"> </span><span class="n">through</span><span class="w"> </span>
-<span class="w">                           </span><span class="o">|</span><span class="n">sublimation</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">snofall</span><span class="w">     </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">precipitation</span><span class="w"> </span><span class="n">falling</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">freezing</span><span class="w"> </span>
-<span class="w">                           </span><span class="o">|</span><span class="n">rain</span><span class="o">/</span><span class="n">snow</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">snomlt</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">water</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">snow</span><span class="w"> </span><span class="n">melt</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span>
-<span class="w">                           </span><span class="o">|</span><span class="n">HRU</span>
-<span class="n">sw_excess</span><span class="w">   </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">water</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">soil</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">exceeds</span><span class="w"> </span><span class="n">field</span><span class="w"> </span>
-<span class="w">                           </span><span class="o">|</span><span class="n">capacity</span><span class="w"> </span><span class="p">(</span><span class="n">gravity</span><span class="w"> </span><span class="n">drained</span><span class="w"> </span><span class="n">water</span><span class="p">)</span>
-<span class="n">uno3d</span><span class="w">       </span><span class="o">|</span><span class="n">kg</span><span class="w"> </span><span class="n">N</span><span class="o">/</span><span class="n">ha</span><span class="w">       </span><span class="o">|</span><span class="n">plant</span><span class="w"> </span><span class="n">nitrogen</span><span class="w"> </span><span class="n">deficiency</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">usle_ei</span><span class="w">     </span><span class="o">|</span><span class="n">none</span><span class="w">          </span><span class="o">|</span><span class="n">USLE</span><span class="w"> </span><span class="n">erodibility</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">HRU</span>
-<span class="n">vpd</span><span class="w">         </span><span class="o">|</span><span class="n">kPa</span><span class="w">           </span><span class="o">|</span><span class="n">vapor</span><span class="w"> </span><span class="n">pressure</span><span class="w"> </span><span class="n">deficit</span>
-<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
-
-<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">LOCAL</span><span class="w"> </span><span class="n">DEFINITIONS</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
-<span class="n">name</span><span class="w">        </span><span class="o">|</span><span class="n">units</span><span class="w">         </span><span class="o">|</span><span class="n">definition</span>
-<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span>
-<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
-
-
-<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">END</span><span class="w"> </span><span class="n">SPECIFICATIONS</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
-</code></pre></div>
-
-<p>initialize hru variables - modular code
-initialize variables NUBS - all these need to be checked
- urban modeling by J.Jeong</p>
 
 
     <div class="card mb-3">
@@ -242,176 +183,26 @@ initialize variables NUBS - all these need to be checked
       </a>
       <div id="arguments-section" class="collapse show">
         <div class="card-body">
-            <em>None</em>
+            <em>n/a</em>
         </div>
       </div>
     </div>
-
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#local-variables-section" 
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
          aria-expanded="false" 
-         aria-controls="local-variables-section" 
+         aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Local Variables
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
-      <div id="local-variables-section" class="collapse">
+      <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-            <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-<th></th><th scope="col">Initial</th>        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="var-j"></span>
-              integer,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>j</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-ly"></span>
-              integer,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ly</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-crk"></span>
-              real,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>crk</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-enratio"></span>
-              real,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>enratio</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-etday"></span>
-              real,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>etday</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-over_flow"></span>
-              real,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>over_flow</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-sedprev"></span>
-              real,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>sedprev</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-irmmdt"></span>
-              integer,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>irmmdt</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
+            <em>n/a</em>
         </div>
       </div>
     </div>
-    <br>
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#outside-variables-section" 
@@ -419,13 +210,42 @@ initialize variables NUBS - all these need to be checked
          aria-controls="outside-variables-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
         </h3>
       </a>
       <div id="outside-variables-section" class="collapse">
         <div class="card-body">
-              
+                
     <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+              type(<a href='../type/soil_profile.html'>soil_profile</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
         <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
@@ -456,16 +276,16 @@ initialize variables NUBS - all these need to be checked
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-              type(<a href='../type/soil_profile.html'>soil_profile</a>)
-              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+              type(<a href='../type/hyd_output.html'>hyd_output</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
             </button>
           </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
               <table class="table table-sm">
                 <thead>
@@ -476,8 +296,8 @@ initialize variables NUBS - all these need to be checked
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>soil</strong></td>
-                      <td></td>
+                      <td><strong>wet_seep_day</strong></td>
+                      <td><p>Jaehak 2022 wetland seepage volume</p></td>
                     </tr>
                 </tbody>
               </table>
@@ -675,36 +495,7 @@ initialize variables NUBS - all these need to be checked
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~24" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-              type(<a href='../type/hyd_output.html'>hyd_output</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wet_seep_day</strong></td>
-                      <td><p>Jaehak 2022 wetland seepage volume</p></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~36" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -716,23 +507,91 @@ initialize variables NUBS - all these need to be checked
         </div>
       </div>
     </div>
-    <br>
 
-
-    <br>
-
-    <br>
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
          aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
+         aria-controls="bang-comments-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
         </h3>
       </a>
-      <div id="logic-blocks-section" class="collapse">
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <div class="codehilite"><pre><span></span><code><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">PURPOSE</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
+<span class="n">this</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="n">initializes</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">daily</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span>
+<span class="n">land</span><span class="w"> </span><span class="n">phase</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">hydrologic</span><span class="w"> </span><span class="n">cycle</span><span class="w"> </span><span class="p">(</span><span class="n">the</span><span class="w"> </span><span class="n">subbasin</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="n">loop</span><span class="p">)</span>
+
+<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">INCOMING</span><span class="w"> </span><span class="n">VARIABLES</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
+<span class="n">name</span><span class="w">        </span><span class="o">|</span><span class="n">units</span><span class="w">         </span><span class="o">|</span><span class="n">definition</span>
+<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span>
+<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
+
+<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">OUTGOING</span><span class="w"> </span><span class="n">VARIABLES</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
+<span class="n">name</span><span class="w">        </span><span class="o">|</span><span class="n">units</span><span class="w">         </span><span class="o">|</span><span class="n">definition</span>
+<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span>
+<span class="n">albday</span><span class="w">      </span><span class="o">|</span><span class="n">none</span><span class="w">          </span><span class="o">|</span><span class="n">albedo</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">bioday</span><span class="w">      </span><span class="o">|</span><span class="n">kg</span><span class="w">            </span><span class="o">|</span><span class="n">biomass</span><span class="w"> </span><span class="n">generated</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">bsprev</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">surface</span><span class="w"> </span><span class="n">runoff</span><span class="w"> </span><span class="n">lagged</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">prior</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="n">of</span>
+<span class="w">                           </span><span class="o">|</span><span class="n">simulation</span>
+<span class="n">canev</span><span class="w">       </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">water</span><span class="w"> </span><span class="n">evaporated</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">canopy</span><span class="w"> </span><span class="n">storage</span>
+<span class="n">ep_day</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">actual</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">transpiration</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">occurs</span><span class="w"> </span><span class="n">on</span>
+<span class="w">                           </span><span class="o">|</span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">ep_max</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">maximum</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">transpiration</span><span class="w"> </span><span class="p">(</span><span class="n">plant</span><span class="w"> </span><span class="n">et</span><span class="p">)</span>
+<span class="w">                           </span><span class="o">|</span><span class="n">that</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">occur</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">es_day</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">actual</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">evaporation</span><span class="w"> </span><span class="p">(</span><span class="n">from</span><span class="w"> </span><span class="n">soil</span><span class="p">)</span><span class="w"> </span><span class="n">that</span>
+<span class="w">                           </span><span class="o">|</span><span class="n">occurs</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">hhqday</span><span class="p">(:)</span><span class="w">   </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">surface</span><span class="w"> </span><span class="n">runoff</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">HRU</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">day</span>
+<span class="n">inflpcp</span><span class="w">     </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">precipitation</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">infiltrates</span><span class="w"> </span><span class="n">into</span>
+<span class="w">                           </span><span class="o">|</span><span class="n">soil</span><span class="w"> </span><span class="p">(</span><span class="n">enters</span><span class="w"> </span><span class="n">soil</span><span class="p">)</span>
+<span class="n">lat_pst</span><span class="p">(:)</span><span class="w">  </span><span class="o">|</span><span class="n">kg</span><span class="w"> </span><span class="n">pst</span><span class="o">/</span><span class="n">ha</span><span class="w">     </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">pesticide</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">lateral</span><span class="w"> </span><span class="n">flow</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span><span class="w"> </span><span class="k">for</span>
+<span class="w">                           </span><span class="o">|</span><span class="n">the</span><span class="w"> </span><span class="n">day</span>
+<span class="n">qp_cms</span><span class="w">      </span><span class="o">|</span><span class="n">m</span><span class="o">^</span><span class="mi">3</span><span class="o">/</span><span class="n">s</span><span class="w">         </span><span class="o">|</span><span class="n">peak</span><span class="w"> </span><span class="n">runoff</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">pet_day</span><span class="w">     </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">potential</span><span class="w"> </span><span class="n">evapotranspiration</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">qtile</span><span class="w">       </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">drainage</span><span class="w"> </span><span class="n">tile</span><span class="w"> </span><span class="n">flow</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">sepday</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">percolation</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">bottom</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">soil</span><span class="w"> </span><span class="n">layer</span><span class="w"> </span><span class="n">on</span>
+<span class="w">                           </span><span class="o">|</span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">snoev</span><span class="w">       </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">water</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">snow</span><span class="w"> </span><span class="n">lost</span><span class="w"> </span><span class="n">through</span><span class="w"> </span>
+<span class="w">                           </span><span class="o">|</span><span class="n">sublimation</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">snofall</span><span class="w">     </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">precipitation</span><span class="w"> </span><span class="n">falling</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">freezing</span><span class="w"> </span>
+<span class="w">                           </span><span class="o">|</span><span class="n">rain</span><span class="o">/</span><span class="n">snow</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">snomlt</span><span class="w">      </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">water</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">snow</span><span class="w"> </span><span class="n">melt</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span>
+<span class="w">                           </span><span class="o">|</span><span class="n">HRU</span>
+<span class="n">sw_excess</span><span class="w">   </span><span class="o">|</span><span class="n">mm</span><span class="w"> </span><span class="n">H2O</span><span class="w">        </span><span class="o">|</span><span class="n">amount</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">water</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">soil</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">exceeds</span><span class="w"> </span><span class="n">field</span><span class="w"> </span>
+<span class="w">                           </span><span class="o">|</span><span class="n">capacity</span><span class="w"> </span><span class="p">(</span><span class="n">gravity</span><span class="w"> </span><span class="n">drained</span><span class="w"> </span><span class="n">water</span><span class="p">)</span>
+<span class="n">uno3d</span><span class="w">       </span><span class="o">|</span><span class="n">kg</span><span class="w"> </span><span class="n">N</span><span class="o">/</span><span class="n">ha</span><span class="w">       </span><span class="o">|</span><span class="n">plant</span><span class="w"> </span><span class="n">nitrogen</span><span class="w"> </span><span class="n">deficiency</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">usle_ei</span><span class="w">     </span><span class="o">|</span><span class="n">none</span><span class="w">          </span><span class="o">|</span><span class="n">USLE</span><span class="w"> </span><span class="n">erodibility</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">HRU</span>
+<span class="n">vpd</span><span class="w">         </span><span class="o">|</span><span class="n">kPa</span><span class="w">           </span><span class="o">|</span><span class="n">vapor</span><span class="w"> </span><span class="n">pressure</span><span class="w"> </span><span class="n">deficit</span>
+<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
+
+<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">LOCAL</span><span class="w"> </span><span class="n">DEFINITIONS</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
+<span class="n">name</span><span class="w">        </span><span class="o">|</span><span class="n">units</span><span class="w">         </span><span class="o">|</span><span class="n">definition</span>
+<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span>
+<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
+
+
+<span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">END</span><span class="w"> </span><span class="n">SPECIFICATIONS</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
+</code></pre></div>
+
+<p>initialize hru variables - modular code
+initialize variables NUBS - all these need to be checked
+ urban modeling by J.Jeong</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
         <div class="card-body">
           <p class="text-muted mb-3">
             Control flow structures organized as they appear in the source code. 
@@ -742,24 +601,12 @@ initialize variables NUBS - all these need to be checked
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>use time_module
-use hru_module, only : hhqday, ihru, albday,                                      &
-bioday, bsprev, canev, ep_day, ep_max, es_day, fertn, fertp, grazn, grazp,      &
-hhsedy, inflpcp, latqrunon, ls_overq, lyrtile, qp_cms,                          &
-pet_day, qday, qtile, sepday, snoev, snofall, snomlt,                           &
-sw_excess, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, fixn
-use soil_module
-use hydrograph_module
-implicit none
-integer :: j = 0          !none          |HRU number
-integer :: ly = 0         !none          |counter
-real :: crk = 0.          !mm H2O        |percolation due to crack flow
-real :: enratio = 0.      !none          |enrichment ratio calculated for day in HRU
-real :: etday = 0.        !mm H2O        |actual amount of evapotranspiration that
-real :: over_flow = 0.    !              |
-real :: sedprev = 0.      !              |
-integer :: irmmdt = 0     !              |
-j = ihru</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">  59</span> bioday, bsprev, canev, ep_day, ep_max, es_day, fertn, fertp, grazn, grazp,      &
+<span class="text-muted">  60</span> hhsedy, inflpcp, latqrunon, ls_overq, lyrtile, qp_cms,                          &
+<span class="text-muted">  61</span> pet_day, qday, qtile, sepday, snoev, snofall, snomlt,                           &
+<span class="text-muted">  62</span> sw_excess, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, fixn
+<span class="text-muted">  78</span> j = ihru
+</code></pre>
                   </div>
                 </div>
 
@@ -771,12 +618,16 @@ j = ihru</code></pre>
                   <div class="card-header bg-warning bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>DO</strong> <code>ly = 1, soil(j)%nly</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 81-84</span>
                   </div>
                 </a>
                 <div id="block-2" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>soil(j)%ly(ly)%prk = 0.
-soil(j)%ly(ly)%flat = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  82</span> soil(j)%ly(ly)%prk = 0.
+<span class="text-muted">  83</span> soil(j)%ly(ly)%flat = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 84</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -784,58 +635,246 @@ soil(j)%ly(ly)%flat = 0.</code></pre>
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>albday = 0.
-bioday = 0.
-bsprev = 0.
-canev = 0.
-crk = 0.
-enratio = 0.
-ep_day = 0.
-ep_max = 0.
-es_day = 0.
-etday = 0.
-fertn = 0.
-fertp = 0.
-fixn = 0.
-grazn = 0.
-grazp = 0.
-if (time%step > 1)  hhqday(j,:) = 0.
-inflpcp = 0.
-lyrtile = 0.
-qp_cms = 0.
-pet_day = 0.
-qday = 0.
-qtile = 0.
-ls_overq = 0.
-over_flow = 0.
-latqrunon = 0.
-sepday = 0.
-snoev = 0.
-snofall = 0.
-snomlt = 0.
-sw_excess = 0.
-uno3d = 0.
-usle = 0.
-usle_ei = 0.
-vpd = 0.
-voltot = 0.
-sedprev = 0.
-ubnrunoff = 0.
-irmmdt = 0.
-hhsedy = 0.
-ubntss = 0.
-wet_seep_day(j)%no3 = 0
-wet_seep_day(j)%nh3 = 0
-wet_seep_day(j)%orgn =0
-wet_seep_day(j)%solp =0
-wet_seep_day(j)%sedp =0
-return</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">  87</span> albday = 0.
+<span class="text-muted">  88</span> bioday = 0.
+<span class="text-muted">  89</span> bsprev = 0.
+<span class="text-muted">  90</span> canev = 0.
+<span class="text-muted">  91</span> crk = 0.
+<span class="text-muted">  92</span> enratio = 0.
+<span class="text-muted">  93</span> ep_day = 0.
+<span class="text-muted">  94</span> ep_max = 0.
+<span class="text-muted">  95</span> es_day = 0.
+<span class="text-muted">  96</span> etday = 0.
+<span class="text-muted">  97</span> fertn = 0.
+<span class="text-muted">  98</span> fertp = 0.
+<span class="text-muted">  99</span> fixn = 0.
+<span class="text-muted"> 100</span> grazn = 0.
+<span class="text-muted"> 101</span> grazp = 0.
+<span class="text-muted"> 102</span> if (time%step > 1)  hhqday(j,:) = 0.
+<span class="text-muted"> 103</span> inflpcp = 0.
+<span class="text-muted"> 104</span> lyrtile = 0.
+<span class="text-muted"> 105</span> qp_cms = 0.
+<span class="text-muted"> 106</span> pet_day = 0.
+<span class="text-muted"> 107</span> qday = 0.
+<span class="text-muted"> 108</span> qtile = 0.
+<span class="text-muted"> 109</span> ls_overq = 0.
+<span class="text-muted"> 110</span> over_flow = 0.
+<span class="text-muted"> 111</span> latqrunon = 0.
+<span class="text-muted"> 112</span> sepday = 0.
+<span class="text-muted"> 113</span> snoev = 0.
+<span class="text-muted"> 114</span> snofall = 0.
+<span class="text-muted"> 115</span> snomlt = 0.
+<span class="text-muted"> 116</span> sw_excess = 0.
+<span class="text-muted"> 117</span> uno3d = 0.
+<span class="text-muted"> 118</span> usle = 0.
+<span class="text-muted"> 119</span> usle_ei = 0.
+<span class="text-muted"> 120</span> vpd = 0.
+<span class="text-muted"> 121</span> voltot = 0.
+<span class="text-muted"> 124</span> sedprev = 0.
+<span class="text-muted"> 125</span> ubnrunoff = 0.
+<span class="text-muted"> 126</span> irmmdt = 0.
+<span class="text-muted"> 127</span> hhsedy = 0.
+<span class="text-muted"> 128</span> ubntss = 0.
+<span class="text-muted"> 129</span> wet_seep_day(j)%no3 = 0
+<span class="text-muted"> 130</span> wet_seep_day(j)%nh3 = 0
+<span class="text-muted"> 131</span> wet_seep_day(j)%orgn =0
+<span class="text-muted"> 132</span> wet_seep_day(j)%solp =0
+<span class="text-muted"> 133</span> wet_seep_day(j)%sedp =0
+<span class="text-muted"> 135</span> return
+</code></pre>
                   </div>
                 </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
+         aria-expanded="false" 
+         aria-controls="local-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Local Variables
+        </h3>
+      </a>
+      <div id="local-variables-section" class="collapse">
+        <div class="card-body">
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="var-j"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>j</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ly"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ly</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-crk"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>crk</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-enratio"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>enratio</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-etday"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>etday</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-over_flow"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>over_flow</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-sedprev"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sedprev</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-irmmdt"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>irmmdt</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
 
         </div>
       </div>
     </div>
+    <br>
+
+    <br>
+
     <br>
 
 

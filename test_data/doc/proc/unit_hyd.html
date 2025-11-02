@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -168,7 +169,161 @@
     </div>
 
 
-    <p>~ ~ ~ PURPOSE ~ ~ ~
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#arguments-section" 
+         aria-expanded="true" 
+         aria-controls="arguments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Arguments
+        </h3>
+      </a>
+      <div id="arguments-section" class="collapse show">
+        <div class="card-body">
+              <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-tc~3"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tc</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-uh~4"></span>
+              real,
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              dimension(bsn_prm%day_lag_mx,time%step)
+            </td>
+            <td>::</td>
+            <td><strong>uh</strong></td>
+            <td>
+                <p>compute unit hydrograph for computing hydrograph from direct runoff</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(6 attributes from time_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>time%dtm</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%step</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>bsn_cc%uhyd</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>bsn_prm%uhalpha</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>bsn_prm%tb_adj</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>bsn_prm%day_lag_mx</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>~ ~ ~ PURPOSE ~ ~ ~
    This subroutine computes variables related to the watershed hydrology:
    the time of concentration for the subbasins, lagged surface runoff,
    the coefficient for the peak runoff rate equation, and lateral flow travel
@@ -211,65 +366,262 @@ Triangular Unit Hydrograph
 rising limb of hydrograph
 falling limb of hydrograph
 Gamma Function Unit Hydrograph</p>
-
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#arguments-section" 
-         aria-expanded="true" 
-         aria-controls="arguments-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Arguments
-        </h3>
-      </a>
-      <div id="arguments-section" class="collapse show">
-        <div class="card-body">
-              <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-tc~2"></span>
-              real,
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>tc</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-uh~3"></span>
-              real,
-            </td>
-<td>intent(out),</td>
-              <td></td>            <td>
-              dimension(bsn_prm%day_lag_mx,time%step)
-            </td>
-            <td>::</td>
-            <td><strong>uh</strong></td>
-            <td>
-                <p>compute unit hydrograph for computing hydrograph from direct runoff</p>
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
         </div>
       </div>
     </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  73</span> ql = 0.
+<span class="text-muted">  74</span> sumq = 0.
+<span class="text-muted">  75</span> uh = 0.
+<span class="text-muted">  76</span> tb = .5 + .6 * tc + bsn_prm%tb_adj    !baseflow time, hr
+<span class="text-muted">  77</span> if (tb > 48.) tb = 48.                !maximum 48hrs
+<span class="text-muted">  78</span> tp = .375 * tb                        ! time to peak flow
+<span class="text-muted">  81</span> t_inc = tb / 20.
+<span class="text-muted">  82</span> t_tot = 0.
+<span class="text-muted">  85</span> ts_base = int(tb / (time%dtm / 60.))
+<span class="text-muted">  86</span> ts_base = max (1, ts_base)
+<span class="text-muted">  87</span> t_inc = 20 / ts_base + 2
+<span class="text-muted">  88</span> t_inc_hr = time%dtm / float(t_inc) / 60.
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iday = 1, 2</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 90-119</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>istep = 1, time%step</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 91-118</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 117</span> if (q < 1.e-4) exit
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>i = 1, t_inc</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 93-116</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  94</span> t_tot = t_tot + t_inc_hr
+<span class="text-muted"> 112</span> q = Max(0.,q)
+<span class="text-muted"> 113</span> uh(iday,istep) = uh(iday,istep) + (q + ql) / 2.
+<span class="text-muted"> 114</span> sumq = sumq + (q + ql) / 2.
+<span class="text-muted"> 115</span> ql = q
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bsn_cc%uhyd == 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 97-105</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>t_tot < tp</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 98-100</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 100</span> q = t_tot / tp
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 100</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 101-104</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 103</span> q = (tb - t_tot) / (tb - tp)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 104</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 105</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>bsn_cc%uhyd == 1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 108-110</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 109</span> q = (t_tot / tp) ** bsn_prm%uhalpha * exp((1. - t_tot / tp) * bsn_prm%uhalpha)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 110</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 116</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 118</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 119</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>i = 1, 2</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 121-125</span>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>istep = 1, time%step</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 122-124</span>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 123</span> uh(i,istep) = uh(i, istep) / sumq
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 124</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 125</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted"> 127</span> return
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
     <div class="card mb-3">
@@ -556,298 +908,8 @@ Gamma Function Unit Hydrograph</p>
     </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(6 attributes from time_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>time%step</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%dtm</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>bsn_cc%uhyd</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>bsn_prm%uhalpha</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>bsn_prm%tb_adj</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>bsn_prm%day_lag_mx</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use basin_module
-use time_module
-implicit none
-real :: ql = 0.           !           |
-real :: sumq = 0.         !           |
-real :: tb = 0.           !           |
-real :: tp = 0.           !           |
-integer :: i = 0          !none       |counter
-real :: xi = 0.           !           |
-real :: q = 0.            !           |
-integer :: max            !           |
-integer :: itb = 0        !           |
-integer :: istep = 0      !none       |time step that corresponds to time%step for routing
-integer :: iday = 0       !none       |current day in the unit hydrograph
-integer :: t_inc = 0      !none       |time increments within the time step to sum the unit hyd
-integer :: ts_base = 0    !none       |number of time steps in base of hydrograph
-real :: t_inc_hr = 0.     !hr         |time increment
-real :: t_tot = 0.        !hr         |total time in the hydrograph
-real, intent (in)  :: tc
-real, intent (out), dimension(bsn_prm%day_lag_mx,time%step) :: uh
-ql = 0.
-sumq = 0.
-uh = 0.
-tb = .5 + .6 * tc + bsn_prm%tb_adj    !baseflow time, hr
-if (tb > 48.) tb = 48.                !maximum 48hrs
-tp = .375 * tb                        ! time to peak flow
-t_inc = tb / 20.
-t_tot = 0.
-ts_base = int(tb / (time%dtm / 60.))
-ts_base = max (1, ts_base)
-t_inc = 20 / ts_base + 2
-t_inc_hr = time%dtm / float(t_inc) / 60.</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>iday = 1, 2</code>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>istep = 1, time%step</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>if (q < 1.e-4) exit</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>i = 1, t_inc</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>t_tot = t_tot + t_inc_hr
-q = Max(0.,q)
-uh(iday,istep) = uh(iday,istep) + (q + ql) / 2.
-sumq = sumq + (q + ql) / 2.
-ql = q</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>bsn_cc%uhyd == 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>t_tot < tp</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>q = t_tot / tp</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>q = (tb - t_tot) / (tb - tp)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>bsn_cc%uhyd == 1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>q = (t_tot / tp) ** bsn_prm%uhalpha * exp((1. - t_tot / tp) * bsn_prm%uhalpha)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>i = 1, 2</code>
-                  </div>
-                </a>
-                <div id="block-3" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>istep = 1, time%step</code>
-                  </div>
-                </a>
-                <div id="block-3-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>uh(i,istep) = uh(i, istep) / sumq</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>return</code></pre>
-                  </div>
-                </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
 
@@ -865,7 +927,7 @@ ql = q</code></pre>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tc~2"></span>
+              <span class="anchor" id="variable-tc~3"></span>
               real,
             </td>
               <td>public</td>
@@ -882,7 +944,7 @@ ql = q</code></pre>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uh~3"></span>
+              <span class="anchor" id="variable-uh~4"></span>
               real,
             </td>
               <td>public,</td>

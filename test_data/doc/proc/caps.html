@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -155,14 +156,6 @@
 </h2>
     
 
-    <p>~ ~ ~ PURPOSE ~ ~ ~
-this subroutine reads the input and output names
-and converts all capital letters to lowercase letters.</p>
-<p>~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-Intrinsic: Len, Index, AdjustL</p>
-<p>~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</p>
-
-
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#arguments-section" 
          aria-expanded="true" 
@@ -205,6 +198,142 @@ Intrinsic: Len, Index, AdjustL</p>
         </div>
       </div>
     </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>~ ~ ~ PURPOSE ~ ~ ~
+this subroutine reads the input and output names
+and converts all capital letters to lowercase letters.</p>
+<p>~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+Intrinsic: Len, Index, AdjustL</p>
+<p>~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  15</span> intrinsic Len, Index, AdjustL
+<span class="text-muted">  24</span> temp_name = ""
+<span class="text-muted">  25</span> j = 0
+<span class="text-muted">  27</span> temp_name = file_name
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ii = 1, Len(file_name)</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 29-32</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  30</span> j = Index (up_case,file_name(ii:ii))
+<span class="text-muted">  31</span> if (j /= 0) temp_name(ii:ii) = low_case(j:j)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 32</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  34</span> temp_name = AdjustL (temp_name)     !moves leading blanks to right end
+<span class="text-muted">  36</span> file_name = temp_name
+<span class="text-muted">  38</span> return
+<span class="text-muted">  39</span> end
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
     <div class="card mb-3">
@@ -304,76 +433,8 @@ Intrinsic: Len, Index, AdjustL</p>
     </div>
     <br>
 
-
-
     <br>
 
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>implicit none
-intrinsic Len, Index, AdjustL
-character (len=*) :: file_name
-character (len=Len(file_name)) ::  temp_name
-character (len=26) :: low_case = "abcdefghijklmnopqrstuvwxyz"
-character (len=26) :: up_case = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-integer :: ii = 0
-integer :: j = 0
-temp_name = ""
-j = 0
-temp_name = file_name</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ii = 1, Len(file_name)</code>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>j = Index (up_case,file_name(ii:ii))
-if (j /= 0) temp_name(ii:ii) = low_case(j:j)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>temp_name = AdjustL (temp_name)     !moves leading blanks to right end
-file_name = temp_name
-return
-end</code></pre>
-                  </div>
-                </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
 

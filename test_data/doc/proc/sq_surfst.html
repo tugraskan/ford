@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -161,47 +162,13 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>~ ~ ~ PURPOSE ~ ~ ~
-   this subroutine determines the net surface runoff reaching the 
-   main channel on a given day. The net amount of water reaching
-   the main channel can include water in surface runoff from the 
-   previous day and will exclude surface runoff generated on the
-   current day which takes longer than one day to reach the main
-   channel</p>
-<p>~ ~ ~ INCOMING VARIABLES ~ ~ ~
-   name        |units         |definition
-   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-   brt(:)      |none          |fraction of surface runoff that takes
-                              |one day or less to reach the subbasin
-                              |outlet
-   surf_bs(1,:)|mm H2O        |amount of surface runoff lagged over one
-                              |day
-   surfq(:)    |mm H2O        |surface runoff generated in HRU on the
-                              |current day 
-   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</p>
-<p>~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-   name        |units         |definition
-   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-   bsprev      |mm H2O        |surface runoff lagged from prior day
-   surf_bs(1,:)|mm H2O        |amount of surface runoff lagged over one
-                              |day 
-   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-   ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-   Intrinsic: Max
-   ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</p>
-<p>Left-over (previous timestep) + inflow (current  timestep)
-new estimation of runoff and sediment reaching the main channel
-lagged at the end of time step<br>
-daily total yield from the HRU</p>
 
 
     <div class="card mb-3">
@@ -215,74 +182,26 @@ daily total yield from the HRU</p>
       </a>
       <div id="arguments-section" class="collapse show">
         <div class="card-body">
-            <em>None</em>
+            <em>n/a</em>
         </div>
       </div>
     </div>
-
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#local-variables-section" 
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
          aria-expanded="false" 
-         aria-controls="local-variables-section" 
+         aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Local Variables
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
-      <div id="local-variables-section" class="collapse">
+      <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-            <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-<th></th><th scope="col">Initial</th>        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="var-j"></span>
-              integer,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>j</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-k"></span>
-              integer,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>k</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
+            <em>n/a</em>
         </div>
       </div>
     </div>
-    <br>
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#outside-variables-section" 
@@ -290,12 +209,12 @@ daily total yield from the HRU</p>
          aria-controls="outside-variables-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
         </h3>
       </a>
       <div id="outside-variables-section" class="collapse">
         <div class="card-body">
-              
+                
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype">
@@ -405,7 +324,7 @@ daily total yield from the HRU</p>
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~24" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~36" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -417,23 +336,65 @@ daily total yield from the HRU</p>
         </div>
       </div>
     </div>
-    <br>
 
-
-    <br>
-
-    <br>
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
          aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
+         aria-controls="bang-comments-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
         </h3>
       </a>
-      <div id="logic-blocks-section" class="collapse">
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>~ ~ ~ PURPOSE ~ ~ ~
+   this subroutine determines the net surface runoff reaching the 
+   main channel on a given day. The net amount of water reaching
+   the main channel can include water in surface runoff from the 
+   previous day and will exclude surface runoff generated on the
+   current day which takes longer than one day to reach the main
+   channel</p>
+<p>~ ~ ~ INCOMING VARIABLES ~ ~ ~
+   name        |units         |definition
+   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+   brt(:)      |none          |fraction of surface runoff that takes
+                              |one day or less to reach the subbasin
+                              |outlet
+   surf_bs(1,:)|mm H2O        |amount of surface runoff lagged over one
+                              |day
+   surfq(:)    |mm H2O        |surface runoff generated in HRU on the
+                              |current day 
+   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</p>
+<p>~ ~ ~ OUTGOING VARIABLES ~ ~ ~
+   name        |units         |definition
+   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+   bsprev      |mm H2O        |surface runoff lagged from prior day
+   surf_bs(1,:)|mm H2O        |amount of surface runoff lagged over one
+                              |day 
+   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+   ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+   Intrinsic: Max
+   ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</p>
+<p>Left-over (previous timestep) + inflow (current  timestep)
+new estimation of runoff and sediment reaching the main channel
+lagged at the end of time step<br>
+daily total yield from the HRU</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
         <div class="card-body">
           <p class="text-muted mb-3">
             Control flow structures organized as they appear in the source code. 
@@ -443,13 +404,8 @@ daily total yield from the HRU</p>
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>use basin_module
-use time_module
-use hru_module, only : surf_bs, surfq, brt, hhsurf_bs, hhsurfq, ihru, bsprev, qday
-implicit none
-integer :: j = 0       !none          |HRU number
-integer :: k = 0       !none          |counter
-j = ihru</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">  43</span> j = ihru
+</code></pre>
                   </div>
                 </div>
 
@@ -461,14 +417,18 @@ j = ihru</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>bsn_cc%gampt == 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 45-49</span>
                   </div>
                 </a>
                 <div id="block-2" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>bsprev = surf_bs(1,j)
-surf_bs(1,j) = Max(1.e-6, surf_bs(1,j) + surfq(j))
-qday = surf_bs(1,j) * brt(j)
-surf_bs(1,j) = surf_bs(1,j) - qday</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  46</span> bsprev = surf_bs(1,j)
+<span class="text-muted">  47</span> surf_bs(1,j) = Max(1.e-6, surf_bs(1,j) + surfq(j))
+<span class="text-muted">  48</span> qday = surf_bs(1,j) * brt(j)
+<span class="text-muted">  49</span> surf_bs(1,j) = surf_bs(1,j) - qday
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 49</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -481,12 +441,14 @@ surf_bs(1,j) = surf_bs(1,j) - qday</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 50-67</span>
                   </div>
                 </a>
                 <div id="block-3" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>bsprev = hhsurf_bs(1,j,time%step)       ! lag from previous day J.Jeong 4/06/2009
-qday = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  51</span> bsprev = hhsurf_bs(1,j,time%step)       ! lag from previous day J.Jeong 4/06/2009
+<span class="text-muted">  52</span> qday = 0.
+</code></pre>
                                   
               <div class="card mb-2 ms-3">
                 <a data-bs-toggle="collapse" href="#block-3-block-1" 
@@ -495,19 +457,26 @@ qday = 0.</code></pre>
                   <div class="card-header bg-warning bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>DO</strong> <code>k=1,time%step</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 53-66</span>
                   </div>
                 </a>
                 <div id="block-3-block-1" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hhsurf_bs(1,j,k) = Max(0., bsprev + hhsurfq(j,k))
-hhsurfq(j,k) = hhsurf_bs(1,j,k) * brt(j)
-hhsurf_bs(1,j,k) = hhsurf_bs(1,j,k) - hhsurfq(j,k)
-bsprev = hhsurf_bs(1,j,k)
-qday = qday + hhsurfq(j,k)</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  55</span> hhsurf_bs(1,j,k) = Max(0., bsprev + hhsurfq(j,k))
+<span class="text-muted">  58</span> hhsurfq(j,k) = hhsurf_bs(1,j,k) * brt(j)
+<span class="text-muted">  59</span> hhsurf_bs(1,j,k) = hhsurf_bs(1,j,k) - hhsurfq(j,k)
+<span class="text-muted">  62</span> bsprev = hhsurf_bs(1,j,k)
+<span class="text-muted">  65</span> qday = qday + hhsurfq(j,k)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 66</span>                    </div>
                   </div>
                 </div>
               </div>
 
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 67</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -515,13 +484,99 @@ qday = qday + hhsurfq(j,k)</code></pre>
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>return</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">  69</span> return
+</code></pre>
                   </div>
                 </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
+         aria-expanded="false" 
+         aria-controls="local-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Local Variables
+        </h3>
+      </a>
+      <div id="local-variables-section" class="collapse">
+        <div class="card-body">
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="var-j"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>j</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-k"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>k</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
 
         </div>
       </div>
     </div>
+    <br>
+
+    <br>
+
     <br>
 
 

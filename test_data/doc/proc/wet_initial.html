@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -159,45 +160,22 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/res_cs_module.html'>res_cs_module</a></li>
                   <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/reservoir_data_module.html'>reservoir_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
                   <li class="list-inline-item"><a href='../module/res_salt_module.html'>res_salt_module</a></li>
-                  <li class="list-inline-item"><a href='../module/reservoir_module.html'>reservoir_module</a></li>
+                  <li class="list-inline-item"><a href='../module/res_cs_module.html'>res_cs_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
-                  <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
+                  <li class="list-inline-item"><a href='../module/reservoir_module.html'>reservoir_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>check if hru can store surface water
- crosswalk with wetland data files
- initialize orgaincs and minerals in water
- initial organic mineral
- initial pesticides
- initial pathogens
- initial heavy metals
- initial salts
- xwalk hydrology inputs
- xwalk release decision table
- xwalk with sediment inputs
- d50 -micro meters
- xwalk with nutrient inputs
- initialize parameters
- ha<em>mm</em>10. =&gt; m**3  - assume entire hru is wet and don't use fractional inputs (for simplicity)
- set initial weir height to principal depth - m
-set initial n and p concentrations --&gt; (ppm) * (m^3) / 1000 = kg    !! ppm = t/m^3 * 10^6
-set initial salt ion concentrations and mass (rtb salt)
-set initial constituent concentrations and mass (rtb cs)
- update surface area
- wetland on hru - solve quadratic to find new depth</p>
 
 
     <div class="card mb-3">
@@ -223,7 +201,7 @@ set initial constituent concentrations and mass (rtb cs)
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iihru~3"></span>
+              <span class="anchor" id="variable-iihru~16"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -242,6 +220,1517 @@ set initial constituent concentrations and mass (rtb cs)
         </div>
       </div>
     </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_html__water_body__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_html__water_body__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_html__water_body__a__">
+              type(<a href='../type/water_body.html'>water_body</a>)
+              <small class="text-muted ms-2">(1 attribute from water_body_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_html__water_body__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_html__water_body__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wet_wat_d</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(12 attributes from maximum_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>db_mx%wet_hyd</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%res_nut</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%om_water_init</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%res_init</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%res_weir</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%pestw_ini</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%wet_dat</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%pathw_ini</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%dtbl_res</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%res_sed</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_salts</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_cs</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__">
+              type(<a href='../type/reservoir_data_char_input.html'>reservoir_data_char_input</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wet_dat_c</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__">
+              type(<a href='../type/reservoir_data.html'>reservoir_data</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wet_dat</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_init_data_char_html__reservoir_init_data_char__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_init_data_char_html__reservoir_init_data_char__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_init_data_char_html__reservoir_init_data_char__a__">
+              type(<a href='../type/reservoir_init_data_char.html'>reservoir_init_data_char</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_init_data_char_html__reservoir_init_data_char__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_init_data_char_html__reservoir_init_data_char__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_init_dat_c</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_init_data_html__reservoir_init_data__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_init_data_html__reservoir_init_data__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_init_data_html__reservoir_init_data__a__">
+              type(<a href='../type/reservoir_init_data.html'>reservoir_init_data</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_init_data_html__reservoir_init_data__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_init_data_html__reservoir_init_data__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wet_init</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_wetland_hyd_data_html__wetland_hyd_data__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_wetland_hyd_data_html__wetland_hyd_data__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_wetland_hyd_data_html__wetland_hyd_data__a__">
+              type(<a href='../type/wetland_hyd_data.html'>wetland_hyd_data</a>)
+              <small class="text-muted ms-2">(2 attributes from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_wetland_hyd_data_html__wetland_hyd_data__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_wetland_hyd_data_html__wetland_hyd_data__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wet_hyd</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>wet_hyddb</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__">
+              type(<a href='../type/reservoir_sed_data.html'>reservoir_sed_data</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_sed</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_nut_data_html__reservoir_nut_data__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_nut_data_html__reservoir_nut_data__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_nut_data_html__reservoir_nut_data__a__">
+              type(<a href='../type/reservoir_nut_data.html'>reservoir_nut_data</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_nut_data_html__reservoir_nut_data__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_nut_data_html__reservoir_nut_data__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_nut</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_data_parameters_html__water_body_data_parameters__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_data_parameters_html__water_body_data_parameters__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_data_parameters_html__water_body_data_parameters__a__">
+              type(<a href='../type/water_body_data_parameters.html'>water_body_data_parameters</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_data_parameters_html__water_body_data_parameters__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_body_data_parameters_html__water_body_data_parameters__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wet_prm</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_weir_outflow_html__reservoir_weir_outflow__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_weir_outflow_html__reservoir_weir_outflow__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_weir_outflow_html__reservoir_weir_outflow__a__">
+              type(<a href='../type/reservoir_weir_outflow.html'>reservoir_weir_outflow</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_weir_outflow_html__reservoir_weir_outflow__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_weir_outflow_html__reservoir_weir_outflow__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_weir</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingcharacter_len_16_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsecharacter_len_16_" aria-expanded="false" 
+                    aria-controls="collapsecharacter_len_16_">
+              character(len=16)
+              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsecharacter_len_16_" class="accordion-collapse collapse" 
+               aria-labelledby="headingcharacter_len_16_" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>om_init_name</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>pest_init_name</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>path_init_name</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+              type(<a href='../type/hyd_output.html'>hyd_output</a>)
+              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wet</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>wet_om_init</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>om_init_water</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_decision_table_html__decision_table__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_decision_table_html__decision_table__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_decision_table_html__decision_table__a__">
+              type(<a href='../type/decision_table.html'>decision_table</a>)
+              <small class="text-muted ms-2">(1 attribute from conditional_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_decision_table_html__decision_table__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_decision_table_html__decision_table__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>dtbl_res</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_salt_data_html__reservoir_salt_data__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_salt_data_html__reservoir_salt_data__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_salt_data_html__reservoir_salt_data__a__">
+              type(<a href='../type/reservoir_salt_data.html'>reservoir_salt_data</a>)
+              <small class="text-muted ms-2">(1 attribute from res_salt_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_salt_data_html__reservoir_salt_data__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_salt_data_html__reservoir_salt_data__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_salt_data</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_cs_data_html__reservoir_cs_data__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_cs_data_html__reservoir_cs_data__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_cs_data_html__reservoir_cs_data__a__">
+              type(<a href='../type/reservoir_cs_data.html'>reservoir_cs_data</a>)
+              <small class="text-muted ms-2">(1 attribute from res_cs_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_cs_data_html__reservoir_cs_data__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_reservoir_cs_data_html__reservoir_cs_data__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>res_cs_data</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
+              type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
+              <small class="text-muted ms-2">(1 attribute from hru_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>hru</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_wetland_html__wetland__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_wetland_html__wetland__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_wetland_html__wetland__a__">
+              type(<a href='../type/wetland.html'>wetland</a>)
+              <small class="text-muted ms-2">(1 attribute from reservoir_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_wetland_html__wetland__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_wetland_html__wetland__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wet_ob</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype_wetland_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype_wetland_" aria-expanded="false" 
+                    aria-controls="collapsetype_wetland_">
+              type(wetland)
+              <small class="text-muted ms-2">(1 attribute from reservoir_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype_wetland_" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype_wetland_" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wetland</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
+              type(<a href='../type/constituent_mass.html'>constituent_mass</a>)
+              <small class="text-muted ms-2">(1 attribute from constituent_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wet_water</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>check if hru can store surface water
+ crosswalk with wetland data files
+ initialize orgaincs and minerals in water
+ initial organic mineral
+ initial pesticides
+ initial pathogens
+ initial heavy metals
+ initial salts
+ xwalk hydrology inputs
+ xwalk release decision table
+ xwalk with sediment inputs
+ d50 -micro meters
+ xwalk with nutrient inputs
+ initialize parameters
+ ha<em>mm</em>10. =&gt; m**3  - assume entire hru is wet and don't use fractional inputs (for simplicity)
+ set initial weir height to principal depth - m
+set initial n and p concentrations --&gt; (ppm) * (m^3) / 1000 = kg    !! ppm = t/m^3 * 10^6
+set initial salt ion concentrations and mass (rtb salt)
+set initial constituent concentrations and mass (rtb cs)
+ update surface area
+ wetland on hru - solve quadratic to find new depth</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  37</span> iprop = hru(iihru)%dbs%surf_stor
+<span class="text-muted">  38</span> iweir = wet_ob(iihru)%iweir
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iprop > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 41-147</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 128</span> if (hru(iihru)%dbs%surf_stor == 0 .and. hru(iihru)%dbsc%surf_stor /= 'null')       &
+<span class="text-muted"> 129</span> write (9001,*) hru(iihru)%dbsc%surf_stor,"not found (wetland.wet)"
+<span class="text-muted"> 133</span> hru(iihru)%wet_hc = wet_hyd(iihru)%k  !mm/hr
+<span class="text-muted"> 135</span> wet_ob(iihru)%evol = hru(iihru)%area_ha * wet_hyd(iihru)%edep * 10.  ! * wet_hyd(iihru)%esa
+<span class="text-muted"> 136</span> wet_ob(iihru)%pvol = hru(iihru)%area_ha * wet_hyd(iihru)%pdep * 10.  ! * wet_hyd(iihru)%psa
+<span class="text-muted"> 137</span> wet_ob(iihru)%psa = wet_hyd(iihru)%psa * hru(iihru)%area_ha
+<span class="text-muted"> 138</span> wet_ob(iihru)%esa = wet_hyd(iihru)%esa * hru(iihru)%area_ha
+<span class="text-muted"> 140</span> if (db_mx%res_weir > 0.and.wet_ob(iihru)%iweir>0) then !if available, read from weir.res Jaehak 2022
+<span class="text-muted"> 141</span> wet_ob(iihru)%weir_hgt = res_weir(iweir)%h  !m weir height
+<span class="text-muted"> 142</span> wet_ob(iihru)%weir_wid = res_weir(iweir)%w  !m, weir width
+<span class="text-muted"> 144</span> wet_ob(iihru)%pvol = hru(iihru)%area_ha * res_weir(iweir)%h * 10.**4  ! m3
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>hru(iihru)%dbsc%surf_stor /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 43-127</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isstor = 1, db_mx%wet_dat</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 44-126</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>hru(iihru)%dbsc%surf_stor == wet_dat_c(isstor)%name</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 45-125</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  46</span> hru(iihru)%dbs%surf_stor = isstor
+<span class="text-muted">  47</span> hru(iihru)%wet_db = isstor
+<span class="text-muted"> 118</span> if (wet_dat(isstor)%init == 0) write (9001,*) wet_dat_c(isstor)%init, " not found (wet-init)"
+<span class="text-muted"> 119</span> if (wet_dat(isstor)%hyd == 0) write (9001,*) wet_dat_c(isstor)%hyd, " not found (wet-hyd)"
+<span class="text-muted"> 120</span> if (wet_dat(isstor)%release == 0) write (9001,*) wet_dat_c(isstor)%release, " not found (wet-release)"
+<span class="text-muted"> 121</span> if (wet_dat(isstor)%sed == 0) write (9001,*) wet_dat_c(isstor)%sed, " not found (wet-sed)"
+<span class="text-muted"> 122</span> if (wet_dat(isstor)%nut == 0) write (9001,*) wet_dat_c(isstor)%nut, " not found (wet-nut)"
+<span class="text-muted"> 124</span> exit
+</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isp_ini = 1, db_mx%res_init</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 50-77</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wet_dat_c(isstor)%init == res_init_dat_c(isp_ini)%init</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 51-76</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  52</span> wet_dat(isstor)%init = isp_ini
+</code></pre>
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ics = 1, db_mx%om_water_init</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 54-59</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-21">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>res_init_dat_c(isp_ini)%org_min == om_init_name(ics)</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 55-58</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  56</span> wet_init(isp_ini)%org_min = ics
+<span class="text-muted">  57</span> exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 58</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 59</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ics = 1, db_mx%pestw_ini</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 61-66</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-21">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>res_init_dat_c(isp_ini)%pest == pest_init_name(ics)</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 62-65</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  63</span> wet_init(isp_ini)%pest = ics
+<span class="text-muted">  64</span> exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 65</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 66</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ics = 1, db_mx%pathw_ini</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 68-73</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-21">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>res_init_dat_c(isp_ini)%path == path_init_name(ics)</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 69-72</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  70</span> wet_init(isp_ini)%path = ics
+<span class="text-muted">  71</span> exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 72</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 73</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 76</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 77</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ihyd = 1, db_mx%wet_hyd</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 80-86</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wet_hyddb(ihyd)%name == wet_dat_c(isstor)%hyd</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 81-85</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  82</span> wet_hyd(iihru) = wet_hyddb(ihyd)
+<span class="text-muted">  83</span> wet_dat(isstor)%hyd = ihyd
+<span class="text-muted">  84</span> exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 85</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 86</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>irel = 1, db_mx%dtbl_res</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 89-94</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>dtbl_res(irel)%name == wet_dat_c(isstor)%release</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 90-93</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  91</span> wet_dat(isstor)%release = irel
+<span class="text-muted">  92</span> exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 93</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 94</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ised = 1, db_mx%res_sed</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 97-107</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-4" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>res_sed(ised)%name == wet_dat_c(isstor)%sed</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 98-106</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  99</span> wet_prm(iihru)%sed = res_sed(ised)
+<span class="text-muted"> 101</span> wet_prm(iihru)%sed_stlr_co = exp(-0.184 * wet_prm(iihru)%sed%d50)
+<span class="text-muted"> 102</span> wet_dat(isstor)%sed = ised
+<span class="text-muted"> 103</span> wet_prm(iihru)%soln_stl_fr = 0.2
+<span class="text-muted"> 104</span> wet_prm(iihru)%solp_stl_fr = 0.2
+<span class="text-muted"> 105</span> exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 106</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 107</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>inut = 1, db_mx%res_nut</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 110-116</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-5" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-5-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>res_nut(inut)%name == wet_dat_c(isstor)%nut</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 111-115</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-5-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 112</span> wet_prm(iihru)%nut = res_nut(inut)
+<span class="text-muted"> 113</span> wet_dat(isstor)%nut = inut
+<span class="text-muted"> 114</span> exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 115</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 116</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 125</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 126</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 127</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wet_ob(iihru)%evol < wet_ob(iihru)%pvol*1.2</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 145-147</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 146</span> wet_ob(iihru)%evol = wet_ob(iihru)%pvol * 1.2
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 147</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 147</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 148-151</span>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 149</span> wet_ob(iihru)%weir_hgt = wet_hyd(iihru)%pdep / 1000.  !m
+<span class="text-muted"> 150</span> wet_ob(iihru)%weir_wid = 2.5  !m
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 151</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted"> 154</span> init = wet_dat(iprop)%init
+<span class="text-muted"> 155</span> init_om = wet_init(init)%org_min
+<span class="text-muted"> 156</span> wet(iihru) = om_init_water(init_om)
+<span class="text-muted"> 157</span> call res_convert_mass (wet(iihru), wet_ob(iihru)%pvol)
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>cs_db%num_salts > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 160-175</span>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 161</span> icon = wet_dat(iprop)%salt !database to use (from salt_res file)
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-5-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>icon > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 162-167</span>
+                  </div>
+                </a>
+                <div id="block-5-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 164-167</span>
+                  </div>
+                </a>
+                <div id="block-5-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 165</span> wet_water(iihru)%saltc(isalt) = res_salt_data(icon)%c_init(isalt) !g/m3
+<span class="text-muted"> 166</span> wet_water(iihru)%salt(isalt) = (res_salt_data(icon)%c_init(isalt) / 1000.) * wet(iihru)%flo !kg
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 167</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 167</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-5-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 168-174</span>
+                  </div>
+                </a>
+                <div id="block-5-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-5-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 170-173</span>
+                  </div>
+                </a>
+                <div id="block-5-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 171</span> wet_water(iihru)%saltc(isalt) = 0.
+<span class="text-muted"> 172</span> wet_water(iihru)%salt(isalt) = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 173</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 174</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 175</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>cs_db%num_cs > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 178-199</span>
+                  </div>
+                </a>
+                <div id="block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 179</span> icon = wet_dat(iprop)%cs !database to use (from cs_res file)
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-6-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>icon > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 180-188</span>
+                  </div>
+                </a>
+                <div id="block-6-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 182</span> wet_water(iihru)%csc(1) = res_cs_data(icon)%c_seo4
+<span class="text-muted"> 183</span> wet_water(iihru)%csc(2) = res_cs_data(icon)%c_seo3
+<span class="text-muted"> 184</span> wet_water(iihru)%csc(3) = res_cs_data(icon)%c_born
+<span class="text-muted"> 186</span> wet_water(iihru)%cs(1) = (res_cs_data(icon)%c_seo4 / 1000.) * wet(iihru)%flo !kg
+<span class="text-muted"> 187</span> wet_water(iihru)%cs(2) = (res_cs_data(icon)%c_seo3 / 1000.) * wet(iihru)%flo !kg
+<span class="text-muted"> 188</span> wet_water(iihru)%cs(3) = (res_cs_data(icon)%c_born / 1000.) * wet(iihru)%flo !kg
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 188</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-6-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 189-198</span>
+                  </div>
+                </a>
+                <div id="block-6-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 191</span> wet_water(iihru)%csc(1) = 0.
+<span class="text-muted"> 192</span> wet_water(iihru)%csc(2) = 0.
+<span class="text-muted"> 193</span> wet_water(iihru)%csc(3) = 0.
+<span class="text-muted"> 195</span> wet_water(iihru)%cs(1) = 0.
+<span class="text-muted"> 196</span> wet_water(iihru)%cs(2) = 0.
+<span class="text-muted"> 197</span> wet_water(iihru)%cs(3) = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 198</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 199</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted"> 202</span> wet_om_init(iihru) = wet(iihru)
+<span class="text-muted"> 206</span> wet_wat_d(iihru)%area_ha = 0.
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wet(iihru)%flo > 0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 207-218</span>
+                  </div>
+                </a>
+                <div id="block-8" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 208</span> x1 = wet_hyd(iihru)%bcoef ** 2 + 4. * wet_hyd(iihru)%ccoef * (1. - wet(iihru)%flo / wet_ob(iihru)%pvol)
+<span class="text-muted"> 215</span> wet_fr = (1. + wet_hyd(iihru)%acoef * wet_h)
+<span class="text-muted"> 216</span> wet_fr = min(wet_fr,1.)
+<span class="text-muted"> 217</span> wet_wat_d(iihru)%area_ha = hru(iihru)%area_ha * wet_hyd(iihru)%psa * wet_fr
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-8-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>x1 < 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 209-210</span>
+                  </div>
+                </a>
+                <div id="block-8-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 210</span> wet_h = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 210</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-8-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 211-214</span>
+                  </div>
+                </a>
+                <div id="block-8-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 212</span> wet_h1 = (-wet_hyd(iihru)%bcoef - sqrt(x1)) / (2. * wet_hyd(iihru)%ccoef)
+<span class="text-muted"> 213</span> wet_h = wet_h1 + wet_hyd(iihru)%bcoef
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 214</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 218</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted"> 222</span> return
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
     <div class="card mb-3">
@@ -562,1354 +2051,8 @@ set initial constituent concentrations and mass (rtb cs)
     </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_cs_data_html__reservoir_cs_data__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_cs_data_html__reservoir_cs_data__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_cs_data_html__reservoir_cs_data__a__">
-              type(<a href='../type/reservoir_cs_data.html'>reservoir_cs_data</a>)
-              <small class="text-muted ms-2">(1 attribute from res_cs_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_cs_data_html__reservoir_cs_data__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_cs_data_html__reservoir_cs_data__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res_cs_data</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingcharacter_len_16_">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsecharacter_len_16_" aria-expanded="false" 
-                    aria-controls="collapsecharacter_len_16_">
-              character(len=16)
-              <small class="text-muted ms-2">(3 attributes from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsecharacter_len_16_" class="accordion-collapse collapse" 
-               aria-labelledby="headingcharacter_len_16_" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pest_init_name</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>path_init_name</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>om_init_name</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(12 attributes from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>cs_db%num_salts</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%num_cs</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%wet_hyd</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%pestw_ini</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%res_init</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%pathw_ini</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%dtbl_res</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%res_sed</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%res_weir</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%om_water_init</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%res_nut</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%wet_dat</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
-              type(<a href='../type/constituent_mass.html'>constituent_mass</a>)
-              <small class="text-muted ms-2">(1 attribute from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wet_water</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__">
-              type(<a href='../type/reservoir_data_char_input.html'>reservoir_data_char_input</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_char_input_html__reservoir_data_char_input__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wet_dat_c</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__">
-              type(<a href='../type/reservoir_data.html'>reservoir_data</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_data_html__reservoir_data__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wet_dat</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_init_data_char_html__reservoir_init_data_char__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_init_data_char_html__reservoir_init_data_char__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_init_data_char_html__reservoir_init_data_char__a__">
-              type(<a href='../type/reservoir_init_data_char.html'>reservoir_init_data_char</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_init_data_char_html__reservoir_init_data_char__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_init_data_char_html__reservoir_init_data_char__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res_init_dat_c</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_init_data_html__reservoir_init_data__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_init_data_html__reservoir_init_data__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_init_data_html__reservoir_init_data__a__">
-              type(<a href='../type/reservoir_init_data.html'>reservoir_init_data</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_init_data_html__reservoir_init_data__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_init_data_html__reservoir_init_data__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wet_init</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_wetland_hyd_data_html__wetland_hyd_data__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_wetland_hyd_data_html__wetland_hyd_data__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_wetland_hyd_data_html__wetland_hyd_data__a__">
-              type(<a href='../type/wetland_hyd_data.html'>wetland_hyd_data</a>)
-              <small class="text-muted ms-2">(2 attributes from reservoir_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_wetland_hyd_data_html__wetland_hyd_data__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_wetland_hyd_data_html__wetland_hyd_data__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wet_hyd</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>wet_hyddb</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__">
-              type(<a href='../type/reservoir_sed_data.html'>reservoir_sed_data</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_sed_data_html__reservoir_sed_data__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res_sed</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_nut_data_html__reservoir_nut_data__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_nut_data_html__reservoir_nut_data__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_nut_data_html__reservoir_nut_data__a__">
-              type(<a href='../type/reservoir_nut_data.html'>reservoir_nut_data</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_nut_data_html__reservoir_nut_data__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_nut_data_html__reservoir_nut_data__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res_nut</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_water_body_data_parameters_html__water_body_data_parameters__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_water_body_data_parameters_html__water_body_data_parameters__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_water_body_data_parameters_html__water_body_data_parameters__a__">
-              type(<a href='../type/water_body_data_parameters.html'>water_body_data_parameters</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_water_body_data_parameters_html__water_body_data_parameters__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_water_body_data_parameters_html__water_body_data_parameters__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wet_prm</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_weir_outflow_html__reservoir_weir_outflow__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_weir_outflow_html__reservoir_weir_outflow__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_weir_outflow_html__reservoir_weir_outflow__a__">
-              type(<a href='../type/reservoir_weir_outflow.html'>reservoir_weir_outflow</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_weir_outflow_html__reservoir_weir_outflow__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_weir_outflow_html__reservoir_weir_outflow__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res_weir</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-              type(<a href='../type/hyd_output.html'>hyd_output</a>)
-              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wet</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>wet_om_init</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>om_init_water</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_decision_table_html__decision_table__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_decision_table_html__decision_table__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_decision_table_html__decision_table__a__">
-              type(<a href='../type/decision_table.html'>decision_table</a>)
-              <small class="text-muted ms-2">(1 attribute from conditional_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_decision_table_html__decision_table__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_decision_table_html__decision_table__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>dtbl_res</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_salt_data_html__reservoir_salt_data__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_salt_data_html__reservoir_salt_data__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_salt_data_html__reservoir_salt_data__a__">
-              type(<a href='../type/reservoir_salt_data.html'>reservoir_salt_data</a>)
-              <small class="text-muted ms-2">(1 attribute from res_salt_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_reservoir_salt_data_html__reservoir_salt_data__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_reservoir_salt_data_html__reservoir_salt_data__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>res_salt_data</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_wetland_html__wetland__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_wetland_html__wetland__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_wetland_html__wetland__a__">
-              type(<a href='../type/wetland.html'>wetland</a>)
-              <small class="text-muted ms-2">(1 attribute from reservoir_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_wetland_html__wetland__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_wetland_html__wetland__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wet_ob</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype_wetland_">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype_wetland_" aria-expanded="false" 
-                    aria-controls="collapsetype_wetland_">
-              type(wetland)
-              <small class="text-muted ms-2">(1 attribute from reservoir_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype_wetland_" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype_wetland_" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wetland</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
-              type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
-              <small class="text-muted ms-2">(1 attribute from hru_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>hru</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_water_body_html__water_body__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_water_body_html__water_body__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_water_body_html__water_body__a__">
-              type(<a href='../type/water_body.html'>water_body</a>)
-              <small class="text-muted ms-2">(1 attribute from water_body_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_water_body_html__water_body__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_water_body_html__water_body__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wet_wat_d</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use reservoir_module
-use reservoir_data_module
-use reservoir_data_module
-use hydrograph_module
-use hru_module, only : hru
-use maximum_data_module
-use water_body_module
-use soil_module
-use conditional_module
-use constituent_mass_module
-use res_salt_module
-use res_cs_module
-implicit none
-integer, intent (in) :: iihru     !none       |
-integer :: iprop = 0              !           |
-integer :: init_om = 0
-integer :: init = 0               !           |
-integer :: iweir = 0              !           |
-integer :: icon = 0               !           |
-integer :: isalt = 0              !           |salt ion counter
-real :: x1 = 0.                   !           |
-real :: wet_h = 0.                !           |
-real :: wet_h1 = 0.               !           |
-real :: wet_fr = 0.               !           |
-integer :: ihyd = 0                !none       |counter
-integer :: irel = 0                !none       |counter
-integer :: ised = 0                !none       |counter
-integer :: inut = 0                !none       |counter
-integer :: isp_ini = 0             !none       |counter
-integer :: ics = 0                 !none       |counter
-integer :: isstor = 0              !none       |counter
-iprop = hru(iihru)%dbs%surf_stor
-iweir = wet_ob(iihru)%iweir</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>iprop > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>if (hru(iihru)%dbs%surf_stor == 0 .and. hru(iihru)%dbsc%surf_stor /= 'null')       &
-write (9001,*) hru(iihru)%dbsc%surf_stor,"not found (wetland.wet)"
-hru(iihru)%wet_hc = wet_hyd(iihru)%k  !mm/hr
-wet_ob(iihru)%evol = hru(iihru)%area_ha * wet_hyd(iihru)%edep * 10.  ! * wet_hyd(iihru)%esa
-wet_ob(iihru)%pvol = hru(iihru)%area_ha * wet_hyd(iihru)%pdep * 10.  ! * wet_hyd(iihru)%psa
-wet_ob(iihru)%psa = wet_hyd(iihru)%psa * hru(iihru)%area_ha
-wet_ob(iihru)%esa = wet_hyd(iihru)%esa * hru(iihru)%area_ha
-if (db_mx%res_weir > 0.and.wet_ob(iihru)%iweir>0) then !if available, read from weir.res Jaehak 2022
-wet_ob(iihru)%weir_hgt = res_weir(iweir)%h  !m weir height
-wet_ob(iihru)%weir_wid = res_weir(iweir)%w  !m, weir width
-wet_ob(iihru)%pvol = hru(iihru)%area_ha * res_weir(iweir)%h * 10.**4  ! m3</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hru(iihru)%dbsc%surf_stor /= "null"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isstor = 1, db_mx%wet_dat</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>hru(iihru)%dbsc%surf_stor == wet_dat_c(isstor)%name</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>hru(iihru)%dbs%surf_stor = isstor
-hru(iihru)%wet_db = isstor
-if (wet_dat(isstor)%init == 0) write (9001,*) wet_dat_c(isstor)%init, " not found (wet-init)"
-if (wet_dat(isstor)%hyd == 0) write (9001,*) wet_dat_c(isstor)%hyd, " not found (wet-hyd)"
-if (wet_dat(isstor)%release == 0) write (9001,*) wet_dat_c(isstor)%release, " not found (wet-release)"
-if (wet_dat(isstor)%sed == 0) write (9001,*) wet_dat_c(isstor)%sed, " not found (wet-sed)"
-if (wet_dat(isstor)%nut == 0) write (9001,*) wet_dat_c(isstor)%nut, " not found (wet-nut)"
-exit</code></pre>
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isp_ini = 1, db_mx%res_init</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wet_dat_c(isstor)%init == res_init_dat_c(isp_ini)%init</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_dat(isstor)%init = isp_ini</code></pre>
-                                  
-              <div class="card mb-2 ms-18">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ics = 1, db_mx%om_water_init</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-21">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>res_init_dat_c(isp_ini)%org_min == om_init_name(ics)</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_init(isp_ini)%org_min = ics
-exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-18">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ics = 1, db_mx%pestw_ini</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-21">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>res_init_dat_c(isp_ini)%pest == pest_init_name(ics)</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_init(isp_ini)%pest = ics
-exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-18">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ics = 1, db_mx%pathw_ini</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-3" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-21">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1-block-1-block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>res_init_dat_c(isp_ini)%path == path_init_name(ics)</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-1-block-1-block-3-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_init(isp_ini)%path = ics
-exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ihyd = 1, db_mx%wet_hyd</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wet_hyddb(ihyd)%name == wet_dat_c(isstor)%hyd</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_hyd(iihru) = wet_hyddb(ihyd)
-wet_dat(isstor)%hyd = ihyd
-exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>irel = 1, db_mx%dtbl_res</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-3" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>dtbl_res(irel)%name == wet_dat_c(isstor)%release</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-3-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_dat(isstor)%release = irel
-exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-4" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ised = 1, db_mx%res_sed</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-4" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-4-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>res_sed(ised)%name == wet_dat_c(isstor)%sed</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-4-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_prm(iihru)%sed = res_sed(ised)
-wet_prm(iihru)%sed_stlr_co = exp(-0.184 * wet_prm(iihru)%sed%d50)
-wet_dat(isstor)%sed = ised
-wet_prm(iihru)%soln_stl_fr = 0.2
-wet_prm(iihru)%solp_stl_fr = 0.2
-exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-5" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>inut = 1, db_mx%res_nut</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-5" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-5-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>res_nut(inut)%name == wet_dat_c(isstor)%nut</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-5-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_prm(iihru)%nut = res_nut(inut)
-wet_dat(isstor)%nut = inut
-exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wet_ob(iihru)%evol < wet_ob(iihru)%pvol*1.2</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_ob(iihru)%evol = wet_ob(iihru)%pvol * 1.2</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_ob(iihru)%weir_hgt = wet_hyd(iihru)%pdep / 1000.  !m
-wet_ob(iihru)%weir_wid = 2.5  !m</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>init = wet_dat(iprop)%init
-init_om = wet_init(init)%org_min
-wet(iihru) = om_init_water(init_om)
-call res_convert_mass (wet(iihru), wet_ob(iihru)%pvol)</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-5" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>cs_db%num_salts > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-5" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>icon = wet_dat(iprop)%salt !database to use (from salt_res file)</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-5-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>icon > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-5-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
-                  </div>
-                </a>
-                <div id="block-5-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_water(iihru)%saltc(isalt) = res_salt_data(icon)%c_init(isalt) !g/m3
-wet_water(iihru)%salt(isalt) = (res_salt_data(icon)%c_init(isalt) / 1000.) * wet(iihru)%flo !kg</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-5-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-5-block-2" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-5-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
-                  </div>
-                </a>
-                <div id="block-5-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_water(iihru)%saltc(isalt) = 0.
-wet_water(iihru)%salt(isalt) = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-6" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>cs_db%num_cs > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-6" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>icon = wet_dat(iprop)%cs !database to use (from cs_res file)</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-6-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>icon > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-6-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_water(iihru)%csc(1) = res_cs_data(icon)%c_seo4
-wet_water(iihru)%csc(2) = res_cs_data(icon)%c_seo3
-wet_water(iihru)%csc(3) = res_cs_data(icon)%c_born
-wet_water(iihru)%cs(1) = (res_cs_data(icon)%c_seo4 / 1000.) * wet(iihru)%flo !kg
-wet_water(iihru)%cs(2) = (res_cs_data(icon)%c_seo3 / 1000.) * wet(iihru)%flo !kg
-wet_water(iihru)%cs(3) = (res_cs_data(icon)%c_born / 1000.) * wet(iihru)%flo !kg</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-6-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-6-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_water(iihru)%csc(1) = 0.
-wet_water(iihru)%csc(2) = 0.
-wet_water(iihru)%csc(3) = 0.
-wet_water(iihru)%cs(1) = 0.
-wet_water(iihru)%cs(2) = 0.
-wet_water(iihru)%cs(3) = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>wet_om_init(iihru) = wet(iihru)
-wet_wat_d(iihru)%area_ha = 0.</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-8" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wet(iihru)%flo > 0.</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-8" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>x1 = wet_hyd(iihru)%bcoef ** 2 + 4. * wet_hyd(iihru)%ccoef * (1. - wet(iihru)%flo / wet_ob(iihru)%pvol)
-wet_fr = (1. + wet_hyd(iihru)%acoef * wet_h)
-wet_fr = min(wet_fr,1.)
-wet_wat_d(iihru)%area_ha = hru(iihru)%area_ha * wet_hyd(iihru)%psa * wet_fr</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-8-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>x1 < 1.e-6</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-8-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_h = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-8-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-8-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wet_h1 = (-wet_hyd(iihru)%bcoef - sqrt(x1)) / (2. * wet_hyd(iihru)%ccoef)
-wet_h = wet_h1 + wet_hyd(iihru)%bcoef</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>return</code></pre>
-                  </div>
-                </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
 
@@ -1927,7 +2070,7 @@ wet_h = wet_h1 + wet_hyd(iihru)%bcoef</code></pre>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iihru~3"></span>
+              <span class="anchor" id="variable-iihru~16"></span>
               integer,
             </td>
               <td>public</td>

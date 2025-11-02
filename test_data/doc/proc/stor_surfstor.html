@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -160,93 +161,17 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/septic_data_module.html'>septic_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
                   <li class="list-inline-item"><a href='../module/output_ls_pesticide_module.html'>output_ls_pesticide_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
-                  <li class="list-inline-item"><a href='../module/septic_data_module.html'>septic_data_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>~ ~ ~ PURPOSE ~ ~ ~
-   this subroutine stores and lags sediment and nutrients in surface runoff</p>
-<p>~ ~ ~ INCOMING VARIABLES ~ ~ ~
-   name          |units        |definition
-   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-   brt(:)        |none         |fraction of surface runoff that takes
-                               |one day or less to reach the subbasin
-                               |outlet</p>
-<p>ihru          |none         |HRU number
-   sedminpa(:)   |kg P/ha      |amount of active mineral phosphorus sorbed to
-                               |sediment in surface runoff in HRU for day
-   sedminps(:)   |kg P/ha      |amount of stable mineral phosphorus sorbed to
-                               |sediment in surface runoff in HRU for day
-   surf_bs(2,:)  |metric tons  |amount of sediment yield lagged over one
-                               |day
-   surf_bs(3,:)  |kg N/ha      |amount of organic nitrogen loading lagged
-                               |over one day
-   surf_bs(4,:)  |kg P/ha      |amount of organic phosphorus loading lagged
-                               |over one day
-   surf_bs(5,:)  |kg N/ha      |amount of nitrate loading in surface runoff
-                               |lagged over one day
-   surf_bs(6,:)  |kg P/ha      |amount of soluble phosphorus loading lagged
-                               |over one day
-   surf_bs(7,:)  |kg P/ha      |amount of active mineral phosphorus loading 
-                               |lagged over one day
-   surf_bs(8,:)  |kg P/ha      |amount of stable mineral phosphorus loading 
-                               |lagged over one day
-   surf_bs(9,:)  |# colonies/ha|amount of less persistent bacteria in 
-                               |solution lagged over one day
-   surf_bs(10,:) |# colonies/ha|amount of persistent bacteria in 
-                               |solution lagged over one day
-   surf_bs(11,:) |# colonies/ha|amount of less persistent bacteria
-                               |sorbed lagged over one day
-   surf_bs(12,:) |# colonies/ha|amount of persistent bacteria
-                               |sorbed lagged over one day
-   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</p>
-<p>~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-   name          |units        |definition
-   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-   sedminpa(:)   |kg P/ha      |amount of active mineral phosphorus sorbed to
-                               |sediment in surface runoff in HRU for day
-   sedminps(:)   |kg P/ha      |amount of stable mineral phosphorus sorbed to
-                               |sediment in surface runoff in HRU for day
-   surf_bs(2,:)  |metric tons  |amount of sediment yield lagged over one
-                               |day
-   surf_bs(3,:)  |kg N/ha      |amount of organic nitrogen loading lagged
-                               |over one day
-   surf_bs(4,:)  |kg P/ha      |amount of organic phosphorus loading lagged
-                               |over one day
-   surf_bs(5,:)  |kg N/ha      |amount of nitrate loading in surface runoff
-                               |lagged over one day
-   surf_bs(6,:)  |kg P/ha      |amount of soluble phosphorus loading lagged
-                               |over one day
-   surf_bs(7,:)  |kg P/ha      |amount of active mineral phosphorus loading 
-                               |lagged over one day
-   surf_bs(8,:)  |kg P/ha      |amount of stable mineral phosphorus loading 
-                               |lagged over one day
-   surf_bs(9,:)  |# colonies/ha|amount of less persistent bacteria in 
-                               |solution lagged over one day
-   surf_bs(10,:) |# colonies/ha|amount of persistent bacteria in 
-                               |solution lagged over one day
-   surf_bs(11,:) |# colonies/ha|amount of less persistent bacteria
-                               |sorbed lagged over one day
-   surf_bs(12,:) |# colonies/ha|amount of persistent bacteria
-                               |sorbed lagged over one day
-   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-   ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-   Intrinsic: Max</p>
-<p>~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</p>
-<p>Left-over (previous timestep) + inflow (current  timestep)
-new estimation of sediment reaching the main channel
-lagged at the end of time step<br>
-daily total sediment yield from the HRU
-    sedyld(j) = surf_bs(2,j) * brt(j)  &lt;--line of code in x 2. fixes sedyld low prob</p>
 
 
     <div class="card mb-3">
@@ -260,91 +185,26 @@ daily total sediment yield from the HRU
       </a>
       <div id="arguments-section" class="collapse show">
         <div class="card-body">
-            <em>None</em>
+            <em>n/a</em>
         </div>
       </div>
     </div>
-
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#local-variables-section" 
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
          aria-expanded="false" 
-         aria-controls="local-variables-section" 
+         aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Local Variables
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
-      <div id="local-variables-section" class="collapse">
+      <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-            <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-<th></th><th scope="col">Initial</th>        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="var-j"></span>
-              integer,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>j</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-k"></span>
-              integer,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>k</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-sedprev"></span>
-              real,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>sedprev</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
+            <em>n/a</em>
         </div>
       </div>
     </div>
-    <br>
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#outside-variables-section" 
@@ -352,50 +212,13 @@ daily total sediment yield from the HRU
          aria-controls="outside-variables-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
         </h3>
       </a>
       <div id="outside-variables-section" class="collapse">
         <div class="card-body">
-              
+                
     <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(3 attributes from time_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>time%step</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%num_salts</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%num_cs</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
         <div class="accordion-item">
           <h3 class="accordion-header" id="headinginteger">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
@@ -418,7 +241,7 @@ daily total sediment yield from the HRU
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~24" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~36" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -542,28 +365,149 @@ daily total sediment yield from the HRU
             </div>
           </div>
         </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(3 attributes from time_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>time%step</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_salts</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_cs</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
     </div>
 
         </div>
       </div>
     </div>
-    <br>
 
-
-    <br>
-
-    <br>
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
          aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
+         aria-controls="bang-comments-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
         </h3>
       </a>
-      <div id="logic-blocks-section" class="collapse">
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>~ ~ ~ PURPOSE ~ ~ ~
+   this subroutine stores and lags sediment and nutrients in surface runoff</p>
+<p>~ ~ ~ INCOMING VARIABLES ~ ~ ~
+   name          |units        |definition
+   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+   brt(:)        |none         |fraction of surface runoff that takes
+                               |one day or less to reach the subbasin
+                               |outlet</p>
+<p>ihru          |none         |HRU number
+   sedminpa(:)   |kg P/ha      |amount of active mineral phosphorus sorbed to
+                               |sediment in surface runoff in HRU for day
+   sedminps(:)   |kg P/ha      |amount of stable mineral phosphorus sorbed to
+                               |sediment in surface runoff in HRU for day
+   surf_bs(2,:)  |metric tons  |amount of sediment yield lagged over one
+                               |day
+   surf_bs(3,:)  |kg N/ha      |amount of organic nitrogen loading lagged
+                               |over one day
+   surf_bs(4,:)  |kg P/ha      |amount of organic phosphorus loading lagged
+                               |over one day
+   surf_bs(5,:)  |kg N/ha      |amount of nitrate loading in surface runoff
+                               |lagged over one day
+   surf_bs(6,:)  |kg P/ha      |amount of soluble phosphorus loading lagged
+                               |over one day
+   surf_bs(7,:)  |kg P/ha      |amount of active mineral phosphorus loading 
+                               |lagged over one day
+   surf_bs(8,:)  |kg P/ha      |amount of stable mineral phosphorus loading 
+                               |lagged over one day
+   surf_bs(9,:)  |# colonies/ha|amount of less persistent bacteria in 
+                               |solution lagged over one day
+   surf_bs(10,:) |# colonies/ha|amount of persistent bacteria in 
+                               |solution lagged over one day
+   surf_bs(11,:) |# colonies/ha|amount of less persistent bacteria
+                               |sorbed lagged over one day
+   surf_bs(12,:) |# colonies/ha|amount of persistent bacteria
+                               |sorbed lagged over one day
+   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</p>
+<p>~ ~ ~ OUTGOING VARIABLES ~ ~ ~
+   name          |units        |definition
+   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+   sedminpa(:)   |kg P/ha      |amount of active mineral phosphorus sorbed to
+                               |sediment in surface runoff in HRU for day
+   sedminps(:)   |kg P/ha      |amount of stable mineral phosphorus sorbed to
+                               |sediment in surface runoff in HRU for day
+   surf_bs(2,:)  |metric tons  |amount of sediment yield lagged over one
+                               |day
+   surf_bs(3,:)  |kg N/ha      |amount of organic nitrogen loading lagged
+                               |over one day
+   surf_bs(4,:)  |kg P/ha      |amount of organic phosphorus loading lagged
+                               |over one day
+   surf_bs(5,:)  |kg N/ha      |amount of nitrate loading in surface runoff
+                               |lagged over one day
+   surf_bs(6,:)  |kg P/ha      |amount of soluble phosphorus loading lagged
+                               |over one day
+   surf_bs(7,:)  |kg P/ha      |amount of active mineral phosphorus loading 
+                               |lagged over one day
+   surf_bs(8,:)  |kg P/ha      |amount of stable mineral phosphorus loading 
+                               |lagged over one day
+   surf_bs(9,:)  |# colonies/ha|amount of less persistent bacteria in 
+                               |solution lagged over one day
+   surf_bs(10,:) |# colonies/ha|amount of persistent bacteria in 
+                               |solution lagged over one day
+   surf_bs(11,:) |# colonies/ha|amount of less persistent bacteria
+                               |sorbed lagged over one day
+   surf_bs(12,:) |# colonies/ha|amount of persistent bacteria
+                               |sorbed lagged over one day
+   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+   ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+   Intrinsic: Max</p>
+<p>~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</p>
+<p>Left-over (previous timestep) + inflow (current  timestep)
+new estimation of sediment reaching the main channel
+lagged at the end of time step<br>
+daily total sediment yield from the HRU
+    sedyld(j) = surf_bs(2,j) * brt(j)  &lt;--line of code in x 2. fixes sedyld low prob</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
         <div class="card-body">
           <p class="text-muted mb-3">
             Control flow structures organized as they appear in the source code. 
@@ -573,20 +517,11 @@ daily total sediment yield from the HRU
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>use septic_data_module
-use basin_module
-use time_module
-use constituent_mass_module
-use output_ls_pesticide_module
-use hru_module, only : sedyld, surf_bs, ihru, hhsurf_bs, hhsedy, sanyld, silyld,          &
-clayld, sagyld, lagyld, sedorgn, sedorgp, surqno3, surqsolp, sedminpa, sedminps, brt,  &
-surqsalt,urbqsalt,wetqsalt,                                                            & !rtb salt
-surqcs,sedmcs,urbqcs,wetqcs                                                              !rtb cs
-implicit none
-integer :: j = 0     !none          |HRU number
-integer :: k = 0     !none          |counter
-real :: sedprev = 0. !              |
-j = ihru</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">  83</span> clayld, sagyld, lagyld, sedorgn, sedorgp, surqno3, surqsolp, sedminpa, sedminps, brt,  &
+<span class="text-muted">  84</span> surqsalt,urbqsalt,wetqsalt,                                                            & !rtb salt
+<span class="text-muted">  85</span> surqcs,sedmcs,urbqcs,wetqcs                                                              !rtb cs
+<span class="text-muted">  93</span> j = ihru
+</code></pre>
                   </div>
                 </div>
 
@@ -598,16 +533,18 @@ j = ihru</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>time%step == 1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 95-118</span>
                   </div>
                 </a>
                 <div id="block-2" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>surf_bs(2,j) = Max(1.e-9, surf_bs(2,j) + sedyld(j))
-sedyld(j) = surf_bs(2,j) * brt(j)
-surf_bs(2,j) = surf_bs(2,j) - sedyld(j)
-else !subdaily time steps, Jaehak Jeong 2011
-sedprev = hhsurf_bs(2,j,time%step)
-sedyld(j) = sum(hhsedy(j,:))</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  96</span> surf_bs(2,j) = Max(1.e-9, surf_bs(2,j) + sedyld(j))
+<span class="text-muted">  97</span> sedyld(j) = surf_bs(2,j) * brt(j)
+<span class="text-muted">  98</span> surf_bs(2,j) = surf_bs(2,j) - sedyld(j)
+<span class="text-muted"> 100</span> else !subdaily time steps, Jaehak Jeong 2011
+<span class="text-muted"> 101</span> sedprev = hhsurf_bs(2,j,time%step)
+<span class="text-muted"> 117</span> sedyld(j) = sum(hhsedy(j,:))
+</code></pre>
                                   
               <div class="card mb-2 ms-3">
                 <a data-bs-toggle="collapse" href="#block-2-block-1" 
@@ -616,19 +553,25 @@ sedyld(j) = sum(hhsedy(j,:))</code></pre>
                   <div class="card-header bg-warning bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>DO</strong> <code>k=1,time%step</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 103-114</span>
                   </div>
                 </a>
                 <div id="block-2-block-1" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hhsurf_bs(2,j,k) = Max(0., sedprev + hhsedy(j,k))
-hhsedy(j,k) = hhsurf_bs(2,j,k) * brt(j)! tons
-hhsurf_bs(2,j,k) = hhsurf_bs(2,j,k) - hhsedy(j,k)
-sedprev = hhsurf_bs(2,j,k)
-surf_bs(2,j) = Max(1.e-9, surf_bs(2,j) + sedyld(j))</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted"> 105</span> hhsurf_bs(2,j,k) = Max(0., sedprev + hhsedy(j,k))
+<span class="text-muted"> 108</span> hhsedy(j,k) = hhsurf_bs(2,j,k) * brt(j)! tons
+<span class="text-muted"> 109</span> hhsurf_bs(2,j,k) = hhsurf_bs(2,j,k) - hhsedy(j,k)
+<span class="text-muted"> 112</span> sedprev = hhsurf_bs(2,j,k)
+<span class="text-muted"> 113</span> surf_bs(2,j) = Max(1.e-9, surf_bs(2,j) + sedyld(j))
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 114</span>                    </div>
                   </div>
                 </div>
               </div>
 
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 118</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -636,17 +579,18 @@ surf_bs(2,j) = Max(1.e-9, surf_bs(2,j) + sedyld(j))</code></pre>
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>surf_bs(13,j) = Max(1.e-6, surf_bs(13,j) + sanyld(j))
-surf_bs(14,j) = Max(1.e-6, surf_bs(14,j) + silyld(j))
-surf_bs(15,j) = Max(1.e-6, surf_bs(15,j) + clayld(j))
-surf_bs(16,j) = Max(1.e-6, surf_bs(16,j) + sagyld(j))
-surf_bs(17,j) = Max(1.e-6, surf_bs(17,j) + lagyld(j))
-surf_bs(3,j) = Max(1.e-9, surf_bs(3,j) + sedorgn(j))
-surf_bs(4,j) = Max(1.e-9, surf_bs(4,j) + sedorgp(j))
-surf_bs(5,j) = Max(1.e-9, surf_bs(5,j) + surqno3(j))
-surf_bs(6,j) = Max(1.e-9, surf_bs(6,j) + surqsolp(j))
-surf_bs(7,j) = Max(1.e-9, surf_bs(7,j) + sedminpa(j))
-surf_bs(8,j) = Max(1.e-9, surf_bs(8,j) + sedminps(j))</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted"> 120</span> surf_bs(13,j) = Max(1.e-6, surf_bs(13,j) + sanyld(j))
+<span class="text-muted"> 121</span> surf_bs(14,j) = Max(1.e-6, surf_bs(14,j) + silyld(j))
+<span class="text-muted"> 122</span> surf_bs(15,j) = Max(1.e-6, surf_bs(15,j) + clayld(j))
+<span class="text-muted"> 123</span> surf_bs(16,j) = Max(1.e-6, surf_bs(16,j) + sagyld(j))
+<span class="text-muted"> 124</span> surf_bs(17,j) = Max(1.e-6, surf_bs(17,j) + lagyld(j))
+<span class="text-muted"> 126</span> surf_bs(3,j) = Max(1.e-9, surf_bs(3,j) + sedorgn(j))
+<span class="text-muted"> 127</span> surf_bs(4,j) = Max(1.e-9, surf_bs(4,j) + sedorgp(j))
+<span class="text-muted"> 128</span> surf_bs(5,j) = Max(1.e-9, surf_bs(5,j) + surqno3(j))
+<span class="text-muted"> 129</span> surf_bs(6,j) = Max(1.e-9, surf_bs(6,j) + surqsolp(j))
+<span class="text-muted"> 130</span> surf_bs(7,j) = Max(1.e-9, surf_bs(7,j) + sedminpa(j))
+<span class="text-muted"> 131</span> surf_bs(8,j) = Max(1.e-9, surf_bs(8,j) + sedminps(j))
+</code></pre>
                   </div>
                 </div>
 
@@ -658,34 +602,38 @@ surf_bs(8,j) = Max(1.e-9, surf_bs(8,j) + sedminps(j))</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>cs_db%num_salts > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 134-162</span>
                   </div>
                 </a>
                 <div id="block-4" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>surf_bs(20,j) = surf_bs(20,j) + surqsalt(j,1) !so4
-surf_bs(21,j) = surf_bs(21,j) + surqsalt(j,2) !ca
-surf_bs(22,j) = surf_bs(22,j) + surqsalt(j,3) !mg
-surf_bs(23,j) = surf_bs(23,j) + surqsalt(j,4) !na
-surf_bs(24,j) = surf_bs(24,j) + surqsalt(j,5) !k
-surf_bs(25,j) = surf_bs(25,j) + surqsalt(j,6) !cl
-surf_bs(26,j) = surf_bs(26,j) + surqsalt(j,7) !co3
-surf_bs(27,j) = surf_bs(27,j) + surqsalt(j,8) !hco3
-surf_bs(28,j) = surf_bs(28,j) + urbqsalt(j,1) !so4
-surf_bs(29,j) = surf_bs(29,j) + urbqsalt(j,2) !ca
-surf_bs(30,j) = surf_bs(30,j) + urbqsalt(j,3) !mg
-surf_bs(31,j) = surf_bs(31,j) + urbqsalt(j,4) !na
-surf_bs(32,j) = surf_bs(32,j) + urbqsalt(j,5) !k
-surf_bs(33,j) = surf_bs(33,j) + urbqsalt(j,6) !cl
-surf_bs(34,j) = surf_bs(34,j) + urbqsalt(j,7) !co3
-surf_bs(35,j) = surf_bs(35,j) + urbqsalt(j,8) !hco3
-surf_bs(36,j) = surf_bs(36,j) + wetqsalt(j,1) !so4
-surf_bs(37,j) = surf_bs(37,j) + wetqsalt(j,2) !ca
-surf_bs(38,j) = surf_bs(38,j) + wetqsalt(j,3) !mg
-surf_bs(39,j) = surf_bs(39,j) + wetqsalt(j,4) !na
-surf_bs(40,j) = surf_bs(40,j) + wetqsalt(j,5) !k
-surf_bs(41,j) = surf_bs(41,j) + wetqsalt(j,6) !cl
-surf_bs(42,j) = surf_bs(42,j) + wetqsalt(j,7) !co3
-surf_bs(43,j) = surf_bs(43,j) + wetqsalt(j,8) !hco3</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted"> 136</span> surf_bs(20,j) = surf_bs(20,j) + surqsalt(j,1) !so4
+<span class="text-muted"> 137</span> surf_bs(21,j) = surf_bs(21,j) + surqsalt(j,2) !ca
+<span class="text-muted"> 138</span> surf_bs(22,j) = surf_bs(22,j) + surqsalt(j,3) !mg
+<span class="text-muted"> 139</span> surf_bs(23,j) = surf_bs(23,j) + surqsalt(j,4) !na
+<span class="text-muted"> 140</span> surf_bs(24,j) = surf_bs(24,j) + surqsalt(j,5) !k
+<span class="text-muted"> 141</span> surf_bs(25,j) = surf_bs(25,j) + surqsalt(j,6) !cl
+<span class="text-muted"> 142</span> surf_bs(26,j) = surf_bs(26,j) + surqsalt(j,7) !co3
+<span class="text-muted"> 143</span> surf_bs(27,j) = surf_bs(27,j) + surqsalt(j,8) !hco3
+<span class="text-muted"> 145</span> surf_bs(28,j) = surf_bs(28,j) + urbqsalt(j,1) !so4
+<span class="text-muted"> 146</span> surf_bs(29,j) = surf_bs(29,j) + urbqsalt(j,2) !ca
+<span class="text-muted"> 147</span> surf_bs(30,j) = surf_bs(30,j) + urbqsalt(j,3) !mg
+<span class="text-muted"> 148</span> surf_bs(31,j) = surf_bs(31,j) + urbqsalt(j,4) !na
+<span class="text-muted"> 149</span> surf_bs(32,j) = surf_bs(32,j) + urbqsalt(j,5) !k
+<span class="text-muted"> 150</span> surf_bs(33,j) = surf_bs(33,j) + urbqsalt(j,6) !cl
+<span class="text-muted"> 151</span> surf_bs(34,j) = surf_bs(34,j) + urbqsalt(j,7) !co3
+<span class="text-muted"> 152</span> surf_bs(35,j) = surf_bs(35,j) + urbqsalt(j,8) !hco3
+<span class="text-muted"> 154</span> surf_bs(36,j) = surf_bs(36,j) + wetqsalt(j,1) !so4
+<span class="text-muted"> 155</span> surf_bs(37,j) = surf_bs(37,j) + wetqsalt(j,2) !ca
+<span class="text-muted"> 156</span> surf_bs(38,j) = surf_bs(38,j) + wetqsalt(j,3) !mg
+<span class="text-muted"> 157</span> surf_bs(39,j) = surf_bs(39,j) + wetqsalt(j,4) !na
+<span class="text-muted"> 158</span> surf_bs(40,j) = surf_bs(40,j) + wetqsalt(j,5) !k
+<span class="text-muted"> 159</span> surf_bs(41,j) = surf_bs(41,j) + wetqsalt(j,6) !cl
+<span class="text-muted"> 160</span> surf_bs(42,j) = surf_bs(42,j) + wetqsalt(j,7) !co3
+<span class="text-muted"> 161</span> surf_bs(43,j) = surf_bs(43,j) + wetqsalt(j,8) !hco3
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 162</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -698,22 +646,26 @@ surf_bs(43,j) = surf_bs(43,j) + wetqsalt(j,8) !hco3</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>cs_db%num_cs > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 165-182</span>
                   </div>
                 </a>
                 <div id="block-5" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>surf_bs(44,j) = surf_bs(44,j) + surqcs(j,1) !seo4
-surf_bs(45,j) = surf_bs(45,j) + surqcs(j,2) !seo3
-surf_bs(46,j) = surf_bs(46,j) + surqcs(j,3) !boron
-surf_bs(47,j) = surf_bs(47,j) + sedmcs(j,1) !seo4
-surf_bs(48,j) = surf_bs(48,j) + sedmcs(j,2) !seo3
-surf_bs(49,j) = surf_bs(49,j) + sedmcs(j,3) !boron
-surf_bs(50,j) = surf_bs(50,j) + urbqcs(j,1) !seo4
-surf_bs(51,j) = surf_bs(51,j) + urbqcs(j,2) !seo3
-surf_bs(52,j) = surf_bs(52,j) + urbqcs(j,3) !born
-surf_bs(53,j) = surf_bs(53,j) + wetqcs(j,1) !seo4
-surf_bs(54,j) = surf_bs(54,j) + wetqcs(j,2) !seo3
-surf_bs(55,j) = surf_bs(55,j) + wetqcs(j,3) !born</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted"> 167</span> surf_bs(44,j) = surf_bs(44,j) + surqcs(j,1) !seo4
+<span class="text-muted"> 168</span> surf_bs(45,j) = surf_bs(45,j) + surqcs(j,2) !seo3
+<span class="text-muted"> 169</span> surf_bs(46,j) = surf_bs(46,j) + surqcs(j,3) !boron
+<span class="text-muted"> 171</span> surf_bs(47,j) = surf_bs(47,j) + sedmcs(j,1) !seo4
+<span class="text-muted"> 172</span> surf_bs(48,j) = surf_bs(48,j) + sedmcs(j,2) !seo3
+<span class="text-muted"> 173</span> surf_bs(49,j) = surf_bs(49,j) + sedmcs(j,3) !boron
+<span class="text-muted"> 175</span> surf_bs(50,j) = surf_bs(50,j) + urbqcs(j,1) !seo4
+<span class="text-muted"> 176</span> surf_bs(51,j) = surf_bs(51,j) + urbqcs(j,2) !seo3
+<span class="text-muted"> 177</span> surf_bs(52,j) = surf_bs(52,j) + urbqcs(j,3) !born
+<span class="text-muted"> 179</span> surf_bs(53,j) = surf_bs(53,j) + wetqcs(j,1) !seo4
+<span class="text-muted"> 180</span> surf_bs(54,j) = surf_bs(54,j) + wetqcs(j,2) !seo3
+<span class="text-muted"> 181</span> surf_bs(55,j) = surf_bs(55,j) + wetqcs(j,3) !born
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 182</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -721,17 +673,18 @@ surf_bs(55,j) = surf_bs(55,j) + wetqcs(j,3) !born</code></pre>
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>sanyld(j) = surf_bs(13,j) * brt(j)
-silyld(j) = surf_bs(14,j) * brt(j)
-clayld(j) = surf_bs(15,j) * brt(j)
-sagyld(j) = surf_bs(16,j) * brt(j)
-lagyld(j) = surf_bs(17,j) * brt(j)
-sedorgn(j) = surf_bs(3,j) * brt(j)
-sedorgp(j) = surf_bs(4,j) * brt(j)
-surqno3(j) = surf_bs(5,j) * brt(j)
-surqsolp(j) = surf_bs(6,j) * brt(j)
-sedminpa(j) = surf_bs(7,j) * brt(j)
-sedminps(j) = surf_bs(8,j) * brt(j)</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted"> 186</span> sanyld(j) = surf_bs(13,j) * brt(j)
+<span class="text-muted"> 187</span> silyld(j) = surf_bs(14,j) * brt(j)
+<span class="text-muted"> 188</span> clayld(j) = surf_bs(15,j) * brt(j)
+<span class="text-muted"> 189</span> sagyld(j) = surf_bs(16,j) * brt(j)
+<span class="text-muted"> 190</span> lagyld(j) = surf_bs(17,j) * brt(j)
+<span class="text-muted"> 192</span> sedorgn(j) = surf_bs(3,j) * brt(j)
+<span class="text-muted"> 193</span> sedorgp(j) = surf_bs(4,j) * brt(j)
+<span class="text-muted"> 194</span> surqno3(j) = surf_bs(5,j) * brt(j)
+<span class="text-muted"> 195</span> surqsolp(j) = surf_bs(6,j) * brt(j)
+<span class="text-muted"> 196</span> sedminpa(j) = surf_bs(7,j) * brt(j)
+<span class="text-muted"> 197</span> sedminps(j) = surf_bs(8,j) * brt(j)
+</code></pre>
                   </div>
                 </div>
 
@@ -743,34 +696,38 @@ sedminps(j) = surf_bs(8,j) * brt(j)</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>cs_db%num_salts > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 200-228</span>
                   </div>
                 </a>
                 <div id="block-7" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>surqsalt(j,1) = surf_bs(20,j) * brt(j) !so4
-surqsalt(j,2) = surf_bs(21,j) * brt(j) !ca
-surqsalt(j,3) = surf_bs(22,j) * brt(j) !mg
-surqsalt(j,4) = surf_bs(23,j) * brt(j) !na
-surqsalt(j,5) = surf_bs(24,j) * brt(j) !k
-surqsalt(j,6) = surf_bs(25,j) * brt(j) !cl
-surqsalt(j,7) = surf_bs(26,j) * brt(j) !co3
-surqsalt(j,8) = surf_bs(27,j) * brt(j) !hco3
-urbqsalt(j,1) = surf_bs(28,j) * brt(j) !so4
-urbqsalt(j,2) = surf_bs(29,j) * brt(j) !ca
-urbqsalt(j,3) = surf_bs(30,j) * brt(j) !mg
-urbqsalt(j,4) = surf_bs(31,j) * brt(j) !na
-urbqsalt(j,5) = surf_bs(32,j) * brt(j) !k
-urbqsalt(j,6) = surf_bs(33,j) * brt(j) !cl
-urbqsalt(j,7) = surf_bs(34,j) * brt(j) !co3
-urbqsalt(j,8) = surf_bs(35,j) * brt(j) !hco3
-wetqsalt(j,1) = surf_bs(36,j) * brt(j) !so4
-wetqsalt(j,2) = surf_bs(37,j) * brt(j) !ca
-wetqsalt(j,3) = surf_bs(38,j) * brt(j) !mg
-wetqsalt(j,4) = surf_bs(39,j) * brt(j) !na
-wetqsalt(j,5) = surf_bs(40,j) * brt(j) !k
-wetqsalt(j,6) = surf_bs(41,j) * brt(j) !cl
-wetqsalt(j,7) = surf_bs(42,j) * brt(j) !co3
-wetqsalt(j,8) = surf_bs(43,j) * brt(j) !hco3</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted"> 202</span> surqsalt(j,1) = surf_bs(20,j) * brt(j) !so4
+<span class="text-muted"> 203</span> surqsalt(j,2) = surf_bs(21,j) * brt(j) !ca
+<span class="text-muted"> 204</span> surqsalt(j,3) = surf_bs(22,j) * brt(j) !mg
+<span class="text-muted"> 205</span> surqsalt(j,4) = surf_bs(23,j) * brt(j) !na
+<span class="text-muted"> 206</span> surqsalt(j,5) = surf_bs(24,j) * brt(j) !k
+<span class="text-muted"> 207</span> surqsalt(j,6) = surf_bs(25,j) * brt(j) !cl
+<span class="text-muted"> 208</span> surqsalt(j,7) = surf_bs(26,j) * brt(j) !co3
+<span class="text-muted"> 209</span> surqsalt(j,8) = surf_bs(27,j) * brt(j) !hco3
+<span class="text-muted"> 211</span> urbqsalt(j,1) = surf_bs(28,j) * brt(j) !so4
+<span class="text-muted"> 212</span> urbqsalt(j,2) = surf_bs(29,j) * brt(j) !ca
+<span class="text-muted"> 213</span> urbqsalt(j,3) = surf_bs(30,j) * brt(j) !mg
+<span class="text-muted"> 214</span> urbqsalt(j,4) = surf_bs(31,j) * brt(j) !na
+<span class="text-muted"> 215</span> urbqsalt(j,5) = surf_bs(32,j) * brt(j) !k
+<span class="text-muted"> 216</span> urbqsalt(j,6) = surf_bs(33,j) * brt(j) !cl
+<span class="text-muted"> 217</span> urbqsalt(j,7) = surf_bs(34,j) * brt(j) !co3
+<span class="text-muted"> 218</span> urbqsalt(j,8) = surf_bs(35,j) * brt(j) !hco3
+<span class="text-muted"> 220</span> wetqsalt(j,1) = surf_bs(36,j) * brt(j) !so4
+<span class="text-muted"> 221</span> wetqsalt(j,2) = surf_bs(37,j) * brt(j) !ca
+<span class="text-muted"> 222</span> wetqsalt(j,3) = surf_bs(38,j) * brt(j) !mg
+<span class="text-muted"> 223</span> wetqsalt(j,4) = surf_bs(39,j) * brt(j) !na
+<span class="text-muted"> 224</span> wetqsalt(j,5) = surf_bs(40,j) * brt(j) !k
+<span class="text-muted"> 225</span> wetqsalt(j,6) = surf_bs(41,j) * brt(j) !cl
+<span class="text-muted"> 226</span> wetqsalt(j,7) = surf_bs(42,j) * brt(j) !co3
+<span class="text-muted"> 227</span> wetqsalt(j,8) = surf_bs(43,j) * brt(j) !hco3
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 228</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -783,22 +740,26 @@ wetqsalt(j,8) = surf_bs(43,j) * brt(j) !hco3</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>cs_db%num_cs > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 231-248</span>
                   </div>
                 </a>
                 <div id="block-8" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>surqcs(j,1) = surf_bs(44,j) * brt(j) !seo4
-surqcs(j,2) = surf_bs(45,j) * brt(j) !seo3
-surqcs(j,3) = surf_bs(46,j) * brt(j) !boron
-sedmcs(j,1) = surf_bs(47,j) * brt(j) !seo4
-sedmcs(j,2) = surf_bs(48,j) * brt(j) !seo3
-sedmcs(j,3) = surf_bs(49,j) * brt(j) !boron
-urbqcs(j,1) = surf_bs(50,j) * brt(j) !seo4
-urbqcs(j,2) = surf_bs(51,j) * brt(j) !seo3
-urbqcs(j,3) = surf_bs(52,j) * brt(j) !boron
-wetqcs(j,1) = surf_bs(53,j) * brt(j) !seo4
-wetqcs(j,2) = surf_bs(54,j) * brt(j) !seo3
-wetqcs(j,3) = surf_bs(55,j) * brt(j) !boron</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted"> 233</span> surqcs(j,1) = surf_bs(44,j) * brt(j) !seo4
+<span class="text-muted"> 234</span> surqcs(j,2) = surf_bs(45,j) * brt(j) !seo3
+<span class="text-muted"> 235</span> surqcs(j,3) = surf_bs(46,j) * brt(j) !boron
+<span class="text-muted"> 237</span> sedmcs(j,1) = surf_bs(47,j) * brt(j) !seo4
+<span class="text-muted"> 238</span> sedmcs(j,2) = surf_bs(48,j) * brt(j) !seo3
+<span class="text-muted"> 239</span> sedmcs(j,3) = surf_bs(49,j) * brt(j) !boron
+<span class="text-muted"> 241</span> urbqcs(j,1) = surf_bs(50,j) * brt(j) !seo4
+<span class="text-muted"> 242</span> urbqcs(j,2) = surf_bs(51,j) * brt(j) !seo3
+<span class="text-muted"> 243</span> urbqcs(j,3) = surf_bs(52,j) * brt(j) !boron
+<span class="text-muted"> 245</span> wetqcs(j,1) = surf_bs(53,j) * brt(j) !seo4
+<span class="text-muted"> 246</span> wetqcs(j,2) = surf_bs(54,j) * brt(j) !seo3
+<span class="text-muted"> 247</span> wetqcs(j,3) = surf_bs(55,j) * brt(j) !boron
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 248</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -806,18 +767,19 @@ wetqcs(j,3) = surf_bs(55,j) * brt(j) !boron</code></pre>
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>surf_bs(2,j) = surf_bs(2,j) - sedyld(j)
-surf_bs(13,j) = surf_bs(13,j) - sanyld(j)
-surf_bs(14,j) = surf_bs(14,j) - silyld(j)
-surf_bs(15,j) = surf_bs(15,j) - clayld(j)
-surf_bs(16,j) = surf_bs(16,j) - sagyld(j)
-surf_bs(17,j) = surf_bs(17,j) - lagyld(j)
-surf_bs(3,j) = surf_bs(3,j) - sedorgn(j)
-surf_bs(4,j) = surf_bs(4,j) - sedorgp(j)
-surf_bs(5,j) = surf_bs(5,j) - surqno3(j)
-surf_bs(6,j) = surf_bs(6,j) - surqsolp(j)
-surf_bs(7,j) = surf_bs(7,j) - sedminpa(j)
-surf_bs(8,j) = surf_bs(8,j) - sedminps(j)</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted"> 250</span> surf_bs(2,j) = surf_bs(2,j) - sedyld(j)
+<span class="text-muted"> 251</span> surf_bs(13,j) = surf_bs(13,j) - sanyld(j)
+<span class="text-muted"> 252</span> surf_bs(14,j) = surf_bs(14,j) - silyld(j)
+<span class="text-muted"> 253</span> surf_bs(15,j) = surf_bs(15,j) - clayld(j)
+<span class="text-muted"> 254</span> surf_bs(16,j) = surf_bs(16,j) - sagyld(j)
+<span class="text-muted"> 255</span> surf_bs(17,j) = surf_bs(17,j) - lagyld(j)
+<span class="text-muted"> 257</span> surf_bs(3,j) = surf_bs(3,j) - sedorgn(j)
+<span class="text-muted"> 258</span> surf_bs(4,j) = surf_bs(4,j) - sedorgp(j)
+<span class="text-muted"> 259</span> surf_bs(5,j) = surf_bs(5,j) - surqno3(j)
+<span class="text-muted"> 260</span> surf_bs(6,j) = surf_bs(6,j) - surqsolp(j)
+<span class="text-muted"> 261</span> surf_bs(7,j) = surf_bs(7,j) - sedminpa(j)
+<span class="text-muted"> 262</span> surf_bs(8,j) = surf_bs(8,j) - sedminps(j)
+</code></pre>
                   </div>
                 </div>
 
@@ -829,34 +791,38 @@ surf_bs(8,j) = surf_bs(8,j) - sedminps(j)</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>cs_db%num_salts > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 265-293</span>
                   </div>
                 </a>
                 <div id="block-10" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>surf_bs(20,j) = surf_bs(20,j) - surqsalt(j,1) !so4
-surf_bs(21,j) = surf_bs(21,j) - surqsalt(j,2) !ca
-surf_bs(22,j) = surf_bs(22,j) - surqsalt(j,3) !mg
-surf_bs(23,j) = surf_bs(23,j) - surqsalt(j,4) !na
-surf_bs(24,j) = surf_bs(24,j) - surqsalt(j,5) !k
-surf_bs(25,j) = surf_bs(25,j) - surqsalt(j,6) !cl
-surf_bs(26,j) = surf_bs(26,j) - surqsalt(j,7) !co3
-surf_bs(27,j) = surf_bs(27,j) - surqsalt(j,8) !hco3
-surf_bs(28,j) = surf_bs(28,j) - urbqsalt(j,1) !so4
-surf_bs(29,j) = surf_bs(29,j) - urbqsalt(j,2) !ca
-surf_bs(30,j) = surf_bs(30,j) - urbqsalt(j,3) !mg
-surf_bs(31,j) = surf_bs(31,j) - urbqsalt(j,4) !na
-surf_bs(32,j) = surf_bs(32,j) - urbqsalt(j,5) !k
-surf_bs(33,j) = surf_bs(33,j) - urbqsalt(j,6) !cl
-surf_bs(34,j) = surf_bs(34,j) - urbqsalt(j,7) !co3
-surf_bs(35,j) = surf_bs(35,j) - urbqsalt(j,8) !hco3
-surf_bs(36,j) = surf_bs(36,j) - wetqsalt(j,1) !so4
-surf_bs(37,j) = surf_bs(37,j) - wetqsalt(j,2) !ca
-surf_bs(38,j) = surf_bs(38,j) - wetqsalt(j,3) !mg
-surf_bs(39,j) = surf_bs(39,j) - wetqsalt(j,4) !na
-surf_bs(40,j) = surf_bs(40,j) - wetqsalt(j,5) !k
-surf_bs(41,j) = surf_bs(41,j) - wetqsalt(j,6) !cl
-surf_bs(42,j) = surf_bs(42,j) - wetqsalt(j,7) !co3
-surf_bs(43,j) = surf_bs(43,j) - wetqsalt(j,8) !hco3</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted"> 267</span> surf_bs(20,j) = surf_bs(20,j) - surqsalt(j,1) !so4
+<span class="text-muted"> 268</span> surf_bs(21,j) = surf_bs(21,j) - surqsalt(j,2) !ca
+<span class="text-muted"> 269</span> surf_bs(22,j) = surf_bs(22,j) - surqsalt(j,3) !mg
+<span class="text-muted"> 270</span> surf_bs(23,j) = surf_bs(23,j) - surqsalt(j,4) !na
+<span class="text-muted"> 271</span> surf_bs(24,j) = surf_bs(24,j) - surqsalt(j,5) !k
+<span class="text-muted"> 272</span> surf_bs(25,j) = surf_bs(25,j) - surqsalt(j,6) !cl
+<span class="text-muted"> 273</span> surf_bs(26,j) = surf_bs(26,j) - surqsalt(j,7) !co3
+<span class="text-muted"> 274</span> surf_bs(27,j) = surf_bs(27,j) - surqsalt(j,8) !hco3
+<span class="text-muted"> 276</span> surf_bs(28,j) = surf_bs(28,j) - urbqsalt(j,1) !so4
+<span class="text-muted"> 277</span> surf_bs(29,j) = surf_bs(29,j) - urbqsalt(j,2) !ca
+<span class="text-muted"> 278</span> surf_bs(30,j) = surf_bs(30,j) - urbqsalt(j,3) !mg
+<span class="text-muted"> 279</span> surf_bs(31,j) = surf_bs(31,j) - urbqsalt(j,4) !na
+<span class="text-muted"> 280</span> surf_bs(32,j) = surf_bs(32,j) - urbqsalt(j,5) !k
+<span class="text-muted"> 281</span> surf_bs(33,j) = surf_bs(33,j) - urbqsalt(j,6) !cl
+<span class="text-muted"> 282</span> surf_bs(34,j) = surf_bs(34,j) - urbqsalt(j,7) !co3
+<span class="text-muted"> 283</span> surf_bs(35,j) = surf_bs(35,j) - urbqsalt(j,8) !hco3
+<span class="text-muted"> 285</span> surf_bs(36,j) = surf_bs(36,j) - wetqsalt(j,1) !so4
+<span class="text-muted"> 286</span> surf_bs(37,j) = surf_bs(37,j) - wetqsalt(j,2) !ca
+<span class="text-muted"> 287</span> surf_bs(38,j) = surf_bs(38,j) - wetqsalt(j,3) !mg
+<span class="text-muted"> 288</span> surf_bs(39,j) = surf_bs(39,j) - wetqsalt(j,4) !na
+<span class="text-muted"> 289</span> surf_bs(40,j) = surf_bs(40,j) - wetqsalt(j,5) !k
+<span class="text-muted"> 290</span> surf_bs(41,j) = surf_bs(41,j) - wetqsalt(j,6) !cl
+<span class="text-muted"> 291</span> surf_bs(42,j) = surf_bs(42,j) - wetqsalt(j,7) !co3
+<span class="text-muted"> 292</span> surf_bs(43,j) = surf_bs(43,j) - wetqsalt(j,8) !hco3
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 293</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -869,22 +835,26 @@ surf_bs(43,j) = surf_bs(43,j) - wetqsalt(j,8) !hco3</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>cs_db%num_cs > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 296-313</span>
                   </div>
                 </a>
                 <div id="block-11" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>surf_bs(44,j) = surf_bs(44,j) - surqcs(j,1) !seo4
-surf_bs(45,j) = surf_bs(45,j) - surqcs(j,2) !seo3
-surf_bs(46,j) = surf_bs(46,j) - surqcs(j,3) !boron
-surf_bs(47,j) = surf_bs(47,j) - sedmcs(j,1) !seo4
-surf_bs(48,j) = surf_bs(48,j) - sedmcs(j,2) !seo3
-surf_bs(49,j) = surf_bs(49,j) - sedmcs(j,3) !boron
-surf_bs(50,j) = surf_bs(50,j) - urbqcs(j,1) !seo4
-surf_bs(51,j) = surf_bs(51,j) - urbqcs(j,2) !seo3
-surf_bs(52,j) = surf_bs(52,j) - urbqcs(j,3) !boron
-surf_bs(53,j) = surf_bs(53,j) - wetqcs(j,1) !seo4
-surf_bs(54,j) = surf_bs(54,j) - wetqcs(j,2) !seo3
-surf_bs(55,j) = surf_bs(55,j) - wetqcs(j,3) !boron</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted"> 298</span> surf_bs(44,j) = surf_bs(44,j) - surqcs(j,1) !seo4
+<span class="text-muted"> 299</span> surf_bs(45,j) = surf_bs(45,j) - surqcs(j,2) !seo3
+<span class="text-muted"> 300</span> surf_bs(46,j) = surf_bs(46,j) - surqcs(j,3) !boron
+<span class="text-muted"> 302</span> surf_bs(47,j) = surf_bs(47,j) - sedmcs(j,1) !seo4
+<span class="text-muted"> 303</span> surf_bs(48,j) = surf_bs(48,j) - sedmcs(j,2) !seo3
+<span class="text-muted"> 304</span> surf_bs(49,j) = surf_bs(49,j) - sedmcs(j,3) !boron
+<span class="text-muted"> 306</span> surf_bs(50,j) = surf_bs(50,j) - urbqcs(j,1) !seo4
+<span class="text-muted"> 307</span> surf_bs(51,j) = surf_bs(51,j) - urbqcs(j,2) !seo3
+<span class="text-muted"> 308</span> surf_bs(52,j) = surf_bs(52,j) - urbqcs(j,3) !boron
+<span class="text-muted"> 310</span> surf_bs(53,j) = surf_bs(53,j) - wetqcs(j,1) !seo4
+<span class="text-muted"> 311</span> surf_bs(54,j) = surf_bs(54,j) - wetqcs(j,2) !seo3
+<span class="text-muted"> 312</span> surf_bs(55,j) = surf_bs(55,j) - wetqcs(j,3) !boron
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 313</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -892,13 +862,116 @@ surf_bs(55,j) = surf_bs(55,j) - wetqcs(j,3) !boron</code></pre>
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>return</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted"> 315</span> return
+</code></pre>
                   </div>
                 </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
+         aria-expanded="false" 
+         aria-controls="local-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Local Variables
+        </h3>
+      </a>
+      <div id="local-variables-section" class="collapse">
+        <div class="card-body">
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="var-j"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>j</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-k"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>k</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-sedprev"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sedprev</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
 
         </div>
       </div>
     </div>
+    <br>
+
+    <br>
+
     <br>
 
 

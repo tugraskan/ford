@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -167,8 +168,6 @@
     </div>
 
 
-
-
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#arguments-section" 
          aria-expanded="true" 
@@ -192,7 +191,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-op~2"></span>
+              <span class="anchor" id="variable-op~4"></span>
               character(len=2),
             </td>
 <td>intent(in)</td>
@@ -207,7 +206,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-var_cur~2"></span>
+              <span class="anchor" id="variable-var_cur~5"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -222,7 +221,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-var_tbl~2"></span>
+              <span class="anchor" id="variable-var_tbl~4"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -242,7 +241,21 @@
       </div>
     </div>
 
-
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#outside-variables-section" 
@@ -250,12 +263,12 @@
          aria-controls="outside-variables-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
         </h3>
       </a>
       <div id="outside-variables-section" class="collapse">
         <div class="card-body">
-              
+                
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
           <h3 class="accordion-header" id="headingcharacter_len_1_">
@@ -291,23 +304,19 @@
         </div>
       </div>
     </div>
-    <br>
 
 
-    <br>
-
-    <br>
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
          aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
+         aria-controls="control-flow-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+          <i class="fa fa-caret-down me-2"></i>Control Flow
         </h3>
       </a>
-      <div id="logic-blocks-section" class="collapse">
+      <div id="control-flow-section" class="collapse">
         <div class="card-body">
           <p class="text-muted mb-3">
             Control flow structures organized as they appear in the source code. 
@@ -315,15 +324,44 @@
           </p>
           
                         
-                <div class="card mb-2 ms-0">
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>op == "<"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 11-15</span>
+                  </div>
+                </a>
+                <div id="block-1" class="collapse">
                   <div class="card-body">
-                    <pre class="mb-0"><code>use reservoir_conditions_module
-implicit none
-character(2), intent (in) :: op       !       |operator - <, <=, >, >=, =, /=
-integer, intent (in)  :: var_cur      !       |current variable to check alternative
-integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpare with</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>var_cur >= var_tbl</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 12-14</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  13</span> hit = "n"
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 14</span>                    </div>
                   </div>
                 </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 15</span>                    </div>
+                  </div>
+                </div>
+              </div>
 
                         
               <div class="card mb-2 ms-0">
@@ -332,7 +370,8 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>op == "<"</code>) <strong>THEN</strong>
+                    <strong>IF</strong> (<code>op == ">"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 16-20</span>
                   </div>
                 </a>
                 <div id="block-2" class="collapse">
@@ -344,16 +383,22 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>var_cur >= var_tbl</code>) <strong>THEN</strong>
+                    <strong>IF</strong> (<code>var_cur <= var_tbl</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 17-19</span>
                   </div>
                 </a>
                 <div id="block-2-block-1" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hit = "n"</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  18</span> hit = "n"
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 19</span>                    </div>
                   </div>
                 </div>
               </div>
 
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 20</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -365,7 +410,8 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>op == ">"</code>) <strong>THEN</strong>
+                    <strong>IF</strong> (<code>op == "<="</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 21-25</span>
                   </div>
                 </a>
                 <div id="block-3" class="collapse">
@@ -377,16 +423,22 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>var_cur <= var_tbl</code>) <strong>THEN</strong>
+                    <strong>IF</strong> (<code>var_cur > var_tbl</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 22-24</span>
                   </div>
                 </a>
                 <div id="block-3-block-1" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hit = "n"</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  23</span> hit = "n"
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 24</span>                    </div>
                   </div>
                 </div>
               </div>
 
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 25</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -398,7 +450,8 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>op == "<="</code>) <strong>THEN</strong>
+                    <strong>IF</strong> (<code>op == ">="</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 26-30</span>
                   </div>
                 </a>
                 <div id="block-4" class="collapse">
@@ -410,16 +463,22 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>var_cur > var_tbl</code>) <strong>THEN</strong>
+                    <strong>IF</strong> (<code>var_cur < var_tbl</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 27-29</span>
                   </div>
                 </a>
                 <div id="block-4-block-1" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hit = "n"</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  28</span> hit = "n"
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 29</span>                    </div>
                   </div>
                 </div>
               </div>
 
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 30</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -431,7 +490,8 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>op == ">="</code>) <strong>THEN</strong>
+                    <strong>IF</strong> (<code>op == "="</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 31-35</span>
                   </div>
                 </a>
                 <div id="block-5" class="collapse">
@@ -443,16 +503,22 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>var_cur < var_tbl</code>) <strong>THEN</strong>
+                    <strong>IF</strong> (<code>var_cur /= var_tbl</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 32-34</span>
                   </div>
                 </a>
                 <div id="block-5-block-1" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hit = "n"</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  33</span> hit = "n"
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 34</span>                    </div>
                   </div>
                 </div>
               </div>
 
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 35</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -464,7 +530,8 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>op == "="</code>) <strong>THEN</strong>
+                    <strong>IF</strong> (<code>op == "/="</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 36-40</span>
                   </div>
                 </a>
                 <div id="block-6" class="collapse">
@@ -476,49 +543,22 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>var_cur /= var_tbl</code>) <strong>THEN</strong>
+                    <strong>IF</strong> (<code>var_cur == var_tbl</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 37-39</span>
                   </div>
                 </a>
                 <div id="block-6-block-1" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>hit = "n"</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  38</span> hit = "n"
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 39</span>                    </div>
                   </div>
                 </div>
               </div>
 
-                  </div>
-                </div>
-              </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-7" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>op == "/="</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-7" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-7-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>var_cur == var_tbl</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-7-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>hit = "n"</code></pre>
-                  </div>
-                </div>
-              </div>
-
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 40</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -526,13 +566,37 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>return</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">  42</span> return
+</code></pre>
                   </div>
                 </div>
 
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+
+
+
+    <br>
+
     <br>
 
 
@@ -550,7 +614,7 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-op~2"></span>
+              <span class="anchor" id="variable-op~4"></span>
               character(len=2),
             </td>
               <td>public</td>
@@ -567,7 +631,7 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-var_cur~2"></span>
+              <span class="anchor" id="variable-var_cur~5"></span>
               integer,
             </td>
               <td>public</td>
@@ -584,7 +648,7 @@ integer, intent (in)  :: var_tbl      !       |decision table variable to cpmpar
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-var_tbl~2"></span>
+              <span class="anchor" id="variable-var_tbl~4"></span>
               integer,
             </td>
               <td>public</td>

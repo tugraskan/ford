@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -159,37 +160,14 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <div class="codehilite"><pre><span></span><code><span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">PURPOSE</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="n">this</span> <span class="n">subroutine</span> <span class="n">generates</span> <span class="n">wind</span> <span class="n">speed</span>
-
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">INCOMING</span> <span class="n">VARIABLES</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="n">name</span>        <span class="p">|</span><span class="n">units</span>         <span class="p">|</span><span class="n">definition</span>
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> 
-<span class="n">idg</span><span class="p">(:)</span>      <span class="p">|</span><span class="n">none</span>          <span class="p">|</span><span class="n">array</span> <span class="n">location</span> <span class="n">of</span> <span class="n">random</span> <span class="n">number</span> <span class="n">seed</span> <span class="n">used</span>
-                           <span class="p">|</span><span class="n">for</span> <span class="n">a</span> <span class="n">given</span> <span class="n">process</span>
-<span class="n">j</span>           <span class="p">|</span><span class="n">none</span>          <span class="p">|</span><span class="n">HRU</span> <span class="n">number</span>
-<span class="n">rndseed</span><span class="p">(:,:)|</span><span class="n">none</span>          <span class="p">|</span><span class="n">random</span> <span class="n">number</span> <span class="n">seeds</span>
-<span class="n">wndav</span><span class="p">(:,:)</span>  <span class="p">|</span><span class="n">m</span><span class="o">/</span><span class="n">s</span>           <span class="p">|</span><span class="n">average</span> <span class="n">wind</span> <span class="n">speed</span> <span class="n">for</span> <span class="n">the</span> <span class="n">month</span> <span class="n">in</span> <span class="n">HRU</span>
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">SUBROUTINES</span><span class="o">/</span><span class="n">FUNCTIONS</span> <span class="n">CALLED</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="n">Intrinsic</span><span class="p">:</span> <span class="n">Log</span>
-<span class="n">SWAT</span><span class="p">:</span> <span class="n">Aunif</span>
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="kr">END</span> <span class="n">SPECIFICATIONS</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-</code></pre></div>
-
-<p>Generate wind speed !!
- Generate wind direction !!
-! set to zero, no longer attempt to read in</p>
 
 
     <div class="card mb-3">
@@ -215,7 +193,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwgn~18"></span>
+              <span class="anchor" id="variable-iwgn~22"></span>
               integer
             </td>
 <td></td>
@@ -234,6 +212,401 @@
         </div>
       </div>
     </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headinginteger">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseinteger" aria-expanded="false" 
+                    aria-controls="collapseinteger">
+              integer
+              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapseinteger" class="accordion-collapse collapse" 
+               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>iwst</strong></td>
+                      <td><p>| </p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>idg</strong></td>
+                      <td><p>none |array location of random number seed</p><a href="../module/climate_module.html#variable-idg" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rndseed</strong></td>
+                      <td><p>none |random number generator seeds</p><a href="../module/climate_module.html#variable-rndseed" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(1 attribute from time_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>time%mo</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_weather_generator_db_html__weather_generator_db__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_weather_generator_db_html__weather_generator_db__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_weather_generator_db_html__weather_generator_db__a__">
+              type(<a href='../type/weather_generator_db.html'>weather_generator_db</a>)
+              <small class="text-muted ms-2">(1 attribute from climate_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_weather_generator_db_html__weather_generator_db__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_weather_generator_db_html__weather_generator_db__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wgn</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_wind_direction_db_html__wind_direction_db__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_wind_direction_db_html__wind_direction_db__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_wind_direction_db_html__wind_direction_db__a__">
+              type(<a href='../type/wind_direction_db.html'>wind_direction_db</a>)
+              <small class="text-muted ms-2">(1 attribute from climate_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_wind_direction_db_html__wind_direction_db__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_wind_direction_db_html__wind_direction_db__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wnd_dir</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_weather_station_html__weather_station__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_weather_station_html__weather_station__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_weather_station_html__weather_station__a__">
+              type(<a href='../type/weather_station.html'>weather_station</a>)
+              <small class="text-muted ms-2">(1 attribute from climate_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_weather_station_html__weather_station__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_weather_station_html__weather_station__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wst</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <div class="codehilite"><pre><span></span><code><span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">PURPOSE</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="n">this</span> <span class="n">subroutine</span> <span class="n">generates</span> <span class="n">wind</span> <span class="n">speed</span>
+
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">INCOMING</span> <span class="n">VARIABLES</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="n">name</span>        <span class="p">|</span><span class="n">units</span>         <span class="p">|</span><span class="n">definition</span>
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> 
+<span class="n">idg</span><span class="p">(:)</span>      <span class="p">|</span><span class="n">none</span>          <span class="p">|</span><span class="n">array</span> <span class="n">location</span> <span class="n">of</span> <span class="n">random</span> <span class="n">number</span> <span class="n">seed</span> <span class="n">used</span>
+                           <span class="p">|</span><span class="n">for</span> <span class="n">a</span> <span class="n">given</span> <span class="n">process</span>
+<span class="n">j</span>           <span class="p">|</span><span class="n">none</span>          <span class="p">|</span><span class="n">HRU</span> <span class="n">number</span>
+<span class="n">rndseed</span><span class="p">(:,:)|</span><span class="n">none</span>          <span class="p">|</span><span class="n">random</span> <span class="n">number</span> <span class="n">seeds</span>
+<span class="n">wndav</span><span class="p">(:,:)</span>  <span class="p">|</span><span class="n">m</span><span class="o">/</span><span class="n">s</span>           <span class="p">|</span><span class="n">average</span> <span class="n">wind</span> <span class="n">speed</span> <span class="n">for</span> <span class="n">the</span> <span class="n">month</span> <span class="n">in</span> <span class="n">HRU</span>
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">SUBROUTINES</span><span class="o">/</span><span class="n">FUNCTIONS</span> <span class="n">CALLED</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="n">Intrinsic</span><span class="p">:</span> <span class="n">Log</span>
+<span class="n">SWAT</span><span class="p">:</span> <span class="n">Aunif</span>
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="kr">END</span> <span class="n">SPECIFICATIONS</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+</code></pre></div>
+
+<p>Generate wind speed !!
+ Generate wind direction !!
+! set to zero, no longer attempt to read in</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  39</span> pi2 = 6.283185
+<span class="text-muted">  40</span> mo = time%mo
+<span class="text-muted">  43</span> v6 = Aunif(rndseed(idg(5),iwgn))
+<span class="text-muted">  44</span> wst(iwst)%weat%windsp = wgn(iwgn)%windav(time%mo) * (-Log(v6)) ** 0.3
+<span class="text-muted">  48</span> iwndir = 0
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iwndir > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 49-70</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  50</span> idir1 = 16
+<span class="text-muted">  51</span> idir2 = 15
+<span class="text-muted">  52</span> v7 = Aunif(rndseed(idg(5),iwgn))
+<span class="text-muted">  67</span> rdir2 = float (idir2)
+<span class="text-muted">  68</span> wst(iwst)%weat%wndir = pi2 * (g + rdir2 - .5) / 16.
+<span class="text-muted">  69</span> wst(iwst)%weat%wndir = pi2 + wst(iwst)%weat%wndir
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>idir = 1, 16</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 53-59</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wnd_dir(iwndir)%dir(mo,idir) > v7</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 54-58</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  55</span> idir1 = idir
+<span class="text-muted">  56</span> idir2 = idir - 1
+<span class="text-muted">  57</span> exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 58</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 59</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>idir1 == 1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 60-61</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  61</span> g = v7 / wnd_dir(iwndir)%dir(mo,idir1)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 61</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 62-65</span>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  63</span> g = (v7 - wnd_dir(iwndir)%dir(mo,idir2)) /                        &
+<span class="text-muted">  64</span> (wnd_dir(iwndir)%dir(mo,idir1) - wnd_dir(iwndir)%dir(mo,idir2))
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 65</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 70</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  72</span> return
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
     <div class="card mb-3">
@@ -452,329 +825,8 @@
     </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headinginteger">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseinteger" aria-expanded="false" 
-                    aria-controls="collapseinteger">
-              integer
-              <small class="text-muted ms-2">(3 attributes from climate_module)</small>
-            </button>
-          </h3>
-          <div id="collapseinteger" class="accordion-collapse collapse" 
-               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>idg</strong></td>
-                      <td><p>none |array location of random number seed</p><a href="../module/climate_module.html#variable-idg" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rndseed</strong></td>
-                      <td><p>none |random number generator seeds</p><a href="../module/climate_module.html#variable-rndseed" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                    <tr>
-                      <td><strong>iwst</strong></td>
-                      <td><p>| </p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_weather_generator_db_html__weather_generator_db__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_weather_generator_db_html__weather_generator_db__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_weather_generator_db_html__weather_generator_db__a__">
-              type(<a href='../type/weather_generator_db.html'>weather_generator_db</a>)
-              <small class="text-muted ms-2">(1 attribute from climate_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_weather_generator_db_html__weather_generator_db__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_weather_generator_db_html__weather_generator_db__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wgn</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_wind_direction_db_html__wind_direction_db__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_wind_direction_db_html__wind_direction_db__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_wind_direction_db_html__wind_direction_db__a__">
-              type(<a href='../type/wind_direction_db.html'>wind_direction_db</a>)
-              <small class="text-muted ms-2">(1 attribute from climate_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_wind_direction_db_html__wind_direction_db__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_wind_direction_db_html__wind_direction_db__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wnd_dir</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_weather_station_html__weather_station__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_weather_station_html__weather_station__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_weather_station_html__weather_station__a__">
-              type(<a href='../type/weather_station.html'>weather_station</a>)
-              <small class="text-muted ms-2">(1 attribute from climate_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_weather_station_html__weather_station__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_weather_station_html__weather_station__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wst</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(1 attribute from time_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>time%mo</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use hydrograph_module
-use climate_module
-use time_module
-implicit none
-real :: v6 = 0.             !none          |random number between 0.0 and 1.0
-real :: v7 = 0.             !              |
-real :: rdir2 = 0.          !              |
-real :: pi2 = 0.            !              |
-integer :: idir = 0         !none          |counter
-integer :: idir1 = 0        !              |
-integer :: idir2 = 0        !              |
-integer :: mo = 0           !              |
-integer :: iwgn             !              |
-integer :: iwndir = 0       !              |
-real :: aunif               !              |
-real :: g = 0.              !              |
-pi2 = 6.283185
-mo = time%mo
-v6 = Aunif(rndseed(idg(5),iwgn))
-wst(iwst)%weat%windsp = wgn(iwgn)%windav(time%mo) * (-Log(v6)) ** 0.3
-iwndir = 0</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>iwndir > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>idir1 = 16
-idir2 = 15
-v7 = Aunif(rndseed(idg(5),iwgn))
-rdir2 = float (idir2)
-wst(iwst)%weat%wndir = pi2 * (g + rdir2 - .5) / 16.
-wst(iwst)%weat%wndir = pi2 + wst(iwst)%weat%wndir</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>idir = 1, 16</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wnd_dir(iwndir)%dir(mo,idir) > v7</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>idir1 = idir
-idir2 = idir - 1
-exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>idir1 == 1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>g = v7 / wnd_dir(iwndir)%dir(mo,idir1)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>g = (v7 - wnd_dir(iwndir)%dir(mo,idir2)) /                        &
-(wnd_dir(iwndir)%dir(mo,idir1) - wnd_dir(iwndir)%dir(mo,idir2))</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>return</code></pre>
-                  </div>
-                </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
 
@@ -792,7 +844,7 @@ exit</code></pre>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwgn~18"></span>
+              <span class="anchor" id="variable-iwgn~22"></span>
               integer,
             </td>
               <td>public</td>

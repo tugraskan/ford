@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -155,15 +156,6 @@
 </h2>
     
 
-    <p>~ ~ ~ PURPOSE ~ ~ ~
-this function calculates the plant stress factor caused by limited
-supply of nitrogen or phosphorus
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-Intrinsic: Exp</p>
-<p>~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</p>
-
-
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#arguments-section" 
          aria-expanded="true" 
@@ -237,24 +229,71 @@ Intrinsic: Exp</p>
       </div>
     </div>
 
-
-
-
-
-    <br>
-
-    <br>
-
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
          aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
+         aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
-      <div id="logic-blocks-section" class="collapse">
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>~ ~ ~ PURPOSE ~ ~ ~
+this function calculates the plant stress factor caused by limited
+supply of nitrogen or phosphorus
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+Intrinsic: Exp</p>
+<p>~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
         <div class="card-body">
           <p class="text-muted mb-3">
             Control flow structures organized as they appear in the source code. 
@@ -264,12 +303,9 @@ Intrinsic: Exp</p>
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>implicit none
-real, intent (in) :: u1      !kg/ha         |actual amount of element in plant
-real, intent (in) :: u2      !kg/ha         |optimal amount of element in plant
-real, intent (out) :: uu     !none          |fraction of optimal plant growth achieved
-uu = 0.
-uu = 200. * (u1 / (u2 + .0001) - .5)</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">  20</span> uu = 0.
+<span class="text-muted">  22</span> uu = 200. * (u1 / (u2 + .0001) - .5)
+</code></pre>
                   </div>
                 </div>
 
@@ -281,11 +317,15 @@ uu = 200. * (u1 / (u2 + .0001) - .5)</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>uu <= 0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 24-25</span>
                   </div>
                 </a>
                 <div id="block-2" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>uu = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  25</span> uu = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 25</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -298,6 +338,7 @@ uu = 200. * (u1 / (u2 + .0001) - .5)</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 26-32</span>
                   </div>
                 </a>
                 <div id="block-3" class="collapse">
@@ -310,11 +351,15 @@ uu = 200. * (u1 / (u2 + .0001) - .5)</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>uu < 99.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 27-28</span>
                   </div>
                 </a>
                 <div id="block-3-block-1" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>uu = uu / (uu + Exp(3.535 - .02597 * uu))</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  28</span> uu = uu / (uu + Exp(3.535 - .02597 * uu))
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 28</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -327,15 +372,23 @@ uu = 200. * (u1 / (u2 + .0001) - .5)</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 29-31</span>
                   </div>
                 </a>
                 <div id="block-3-block-2" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>uu = 1.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  30</span> uu = 1.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 31</span>                    </div>
                   </div>
                 </div>
               </div>
 
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 32</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -343,14 +396,38 @@ uu = 200. * (u1 / (u2 + .0001) - .5)</code></pre>
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>if (u2 <= 1.e-6) uu = 1.
-return</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">  34</span> if (u2 <= 1.e-6) uu = 1.
+<span class="text-muted">  36</span> return
+</code></pre>
                   </div>
                 </div>
 
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+
+
+
+    <br>
+
     <br>
 
 

@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -160,23 +161,15 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/calibration_data_module.html'>calibration_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/calibration_data_module.html'>calibration_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>allocate recall outputsby region
-all hrus are in region 
- setting up regions for recall soft cal and/or output by type
-all hrus are in region 
- if no regions are input, don"t need elements
-read data for each element in all landscape cataloging units</p>
 
 
     <div class="card mb-3">
@@ -190,7 +183,7 @@ read data for each element in all landscape cataloging units</p>
       </a>
       <div id="arguments-section" class="collapse show">
         <div class="card-body">
-            <em>None</em>
+            <em>n/a</em>
         </div>
       </div>
     </div>
@@ -201,727 +194,889 @@ read data for each element in all landscape cataloging units</p>
          aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Inputs and Outputs
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
       <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-              
-        
-        
-        
-    
-      <div class="alert alert-info mb-3">
-        <h6 class="alert-heading"><i class="fa fa-info-circle"></i> File I/O Summary</h6>
-        <div class="row">
-            <div class="col-md-4">
-              <strong><i class="fa fa-download"></i> Input Files:</strong>
-              <ul class="mb-0">
-                  <li><code>unit_in_regs%def_psc</code> <small class="text-muted">(unit in_regs%def_psc)</small></li>
-                  <li><code>unit_in_regs%def_psc_reg</code> <small class="text-muted">(unit in_regs%def_psc_reg)</small></li>
-                  <li><code>unit_in_regs%ele_psc</code> <small class="text-muted">(unit in_regs%ele_psc)</small></li>
-              </ul>
-            </div>
+          <p class="text-muted mb-3">
+            I/O units used in this subroutine.
+          </p>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Type</th>
+                <th>Filename</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>in_regs%def_psc</code></td>
+                <td>
+                      <span class="badge bg-success">Input</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+              <tr>
+                <td><code>in_regs%def_psc_reg</code></td>
+                <td>
+                      <span class="badge bg-success">Input</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+              <tr>
+                <td><code>in_regs%ele_psc</code></td>
+                <td>
+                      <span class="badge bg-success">Input</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
 
-              
-      <div class="alert alert-secondary mb-3">
-        <h6 class="alert-heading"><i class="fa fa-list"></i> Parameters Accessed</h6>
-        <div class="row">
-            <div class="col-md-6">
-              <strong><i class="fa fa-arrow-down"></i> Read Parameters:</strong>
-              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
-                  <li><code>titldum</code></li>
-                  <li><code>mreg</code></li>
-                  <li><code>header</code></li>
-                  <li><code>k</code></li>
-                  <li><code>pcu_out(i)%name</code></li>
-                  <li><code>pcu_out(i)%area_ha</code></li>
-                  <li><code>nspu</code></li>
-                  <li><code>elem_cnt(isp), isp = 1, nspu</code></li>
-                  <li><code>pcu_reg(i)%name</code></li>
-                  <li><code>pcu_reg(i)%area_ha</code></li>
-                  <li><code>i</code></li>
-                  <li><code>pcu_elem(i)%name</code></li>
-                  <li><code>pcu_elem(i)%obtyp</code></li>
-                  <li><code>pcu_elem(i)%obtypno</code></li>
-                  <li><code>pcu_elem(i)%bsn_frac</code></li>
-                  <li><code>pcu_elem(i)%ru_frac</code></li>
-                  <li><code>pcu_elem(i)%reg_frac</code></li>
-              </ul>
-            </div>
-        </div>
-      </div>
-
-          
-          <div class="card mb-3 mt-3">
-            <a data-bs-toggle="collapse" href="#io-operations-section" 
-               aria-expanded="false" 
-               aria-controls="io-operations-section" 
-               class="text-decoration-none">
-              <h4 class="card-header bg-light text-dark">
-                <i class="fa fa-caret-down me-2"></i>I/O Operations
-              </h4>
-            </a>
-            <div id="io-operations-section" class="collapse">
-              <div class="card-body">
-                    <!-- First, collect all conditions across all units -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-    
-    <div class="accordion" id="ioConditionsAccordion">
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__i_exist__or__in_regs_pct_def_psc_____null__">
+          <h3 class="accordion-header" id="headingtype">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__i_exist__or__in_regs_pct_def_psc_____null__" aria-expanded="false" 
-                    aria-controls="collapseCondif__i_exist__or__in_regs_pct_def_psc_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (i_exist .or. in_regs%def_psc /= "null")</strong>
-                  <small class="text-muted ms-2">(line 29)</small>
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(7 attributes from input_file_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__i_exist__or__in_regs_pct_def_psc_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__i_exist__or__in_regs_pct_def_psc_____null__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_regs%def_psc</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">open</span></td>
-                            <td><code>open (107,file=in_regs%def_psc)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>31</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) titldum</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>titldum</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>32</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) mreg</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>mreg</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>34</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) header</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>header</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>36</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) k, pcu_out(i)%name, pcu_out(i)%area_ha, nspu</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>k</code></small></li>
-                                    <li><small><code>pcu_out(i)%name</code></small></li>
-                                    <li><small><code>pcu_out(i)%area_ha</code></small></li>
-                                    <li><small><code>nspu</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>47</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>in_regs%def_psc</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>in_regs%ele_psc</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>in_regs%def_psc_reg</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>sp_ob%hru</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>sp_ob%recall</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%rec_out</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%rec_reg</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__nspu___0_">
+          <h3 class="accordion-header" id="headinginteger">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__nspu___0_" aria-expanded="false" 
-                    aria-controls="collapseCondif__nspu___0_">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (nspu > 0)</strong>
-                  <small class="text-muted ms-2">(line 49)</small>
+                    data-bs-target="#collapseinteger" aria-expanded="false" 
+                    aria-controls="collapseinteger">
+              integer
+              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__nspu___0_" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__nspu___0_" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapseinteger" class="accordion-collapse collapse" 
+               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_regs%def_psc</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">backspace</span></td>
-                            <td><code>backspace (107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>51</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) k, pcu_out(i)%name, pcu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>k</code></small></li>
-                                    <li><small><code>pcu_out(i)%name</code></small></li>
-                                    <li><small><code>pcu_out(i)%area_ha</code></small></li>
-                                    <li><small><code>nspu</code></small></li>
-                                    <li><small><code>elem_cnt(isp), isp = 1, nspu</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>52</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_regs%def_psc_reg</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">backspace</span></td>
-                            <td><code>backspace (107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>95</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) k, pcu_reg(i)%name, pcu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>k</code></small></li>
-                                    <li><small><code>pcu_reg(i)%name</code></small></li>
-                                    <li><small><code>pcu_reg(i)%area_ha</code></small></li>
-                                    <li><small><code>nspu</code></small></li>
-                                    <li><small><code>elem_cnt(isp), isp = 1, nspu</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>96</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>elem_cnt</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>defunit_num</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>ielem_ru</strong></td>
+                      <td><p>sequential counter for ru the hru is in</p></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__i_exist__or__in_regs_pct_def_psc_reg_____null__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__i_exist__or__in_regs_pct_def_psc_reg_____null__" aria-expanded="false" 
-                    aria-controls="collapseCondif__i_exist__or__in_regs_pct_def_psc_reg_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (i_exist .or. in_regs%def_psc_reg /= "null")</strong>
-                  <small class="text-muted ms-2">(line 79)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+              type(<a href='../type/hyd_output.html'>hyd_output</a>)
+              <small class="text-muted ms-2">(4 attributes from hydrograph_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__i_exist__or__in_regs_pct_def_psc_reg_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__i_exist__or__in_regs_pct_def_psc_reg_____null__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_regs%def_psc_reg</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">open</span></td>
-                            <td><code>open (107,file=in_regs%def_psc_reg)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>81</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) titldum</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>titldum</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>82</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) mreg</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>mreg</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>84</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) header</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>header</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>86</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) k, pcu_reg(i)%name, pcu_reg(i)%area_ha, nspu</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>k</code></small></li>
-                                    <li><small><code>pcu_reg(i)%name</code></small></li>
-                                    <li><small><code>pcu_reg(i)%area_ha</code></small></li>
-                                    <li><small><code>nspu</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>91</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>srec_d</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>srec_m</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>srec_y</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>srec_a</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__i_exist__or__in_regs_pct_ele_psc_____null__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__i_exist__or__in_regs_pct_ele_psc_____null__" aria-expanded="false" 
-                    aria-controls="collapseCondif__i_exist__or__in_regs_pct_ele_psc_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (i_exist .or. in_regs%ele_psc /= "null")</strong>
-                  <small class="text-muted ms-2">(line 132)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__">
+              type(<a href='../type/cataloging_units.html'>cataloging_units</a>)
+              <small class="text-muted ms-2">(1 attribute from calibration_data_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__i_exist__or__in_regs_pct_ele_psc_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__i_exist__or__in_regs_pct_ele_psc_____null__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_regs%ele_psc</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">open</span></td>
-                            <td><code>open (107,file=in_regs%ele_psc)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>134</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) titldum</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>titldum</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>135</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) header</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>header</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>137</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) i</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>i</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>141</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">rewind</span></td>
-                            <td><code>rewind (107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>148</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) titldum</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>titldum</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>149</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) header</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>header</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>151</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) i</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>i</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>157</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">backspace</span></td>
-                            <td><code>backspace (107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>159</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) k, pcu_elem(i)%name, pcu_elem(i)%obtyp, pcu_elem(i)%obtypno, pcu_elem(i)%bsn_frac, pcu_elem(i)%ru_frac, pcu_elem(i)%reg_frac</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>k</code></small></li>
-                                    <li><small><code>pcu_elem(i)%name</code></small></li>
-                                    <li><small><code>pcu_elem(i)%obtyp</code></small></li>
-                                    <li><small><code>pcu_elem(i)%obtypno</code></small></li>
-                                    <li><small><code>pcu_elem(i)%bsn_frac</code></small></li>
-                                    <li><small><code>pcu_elem(i)%ru_frac</code></small></li>
-                                    <li><small><code>pcu_elem(i)%reg_frac</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>161</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">close</span></td>
-                            <td><code>close (107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>178</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">close</span></td>
-                            <td><code>close(107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>-</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pcu_cal</strong></td>
+                      <td><p>point source cataoging unit region</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_units_html__landscape_units__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_units_html__landscape_units__a__">
+              type(<a href='../type/landscape_units.html'>landscape_units</a>)
+              <small class="text-muted ms-2">(2 attributes from calibration_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pcu_out</strong></td>
+                      <td><p>dimension by region for point sources</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>pcu_reg</strong></td>
+                      <td><p>dimension by region for point sources</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__">
+              type(<a href='../type/landscape_elements.html'>landscape_elements</a>)
+              <small class="text-muted ms-2">(1 attribute from calibration_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pcu_elem</strong></td>
+                      <td><p>point source cataoging unit</p></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
     </div>
 
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>allocate recall outputsby region
+all hrus are in region 
+ setting up regions for recall soft cal and/or output by type
+all hrus are in region 
+ if no regions are input, don"t need elements
+read data for each element in all landscape cataloging units</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  24</span> imax = 0
+<span class="text-muted">  25</span> mcal = 0
+<span class="text-muted">  26</span> mreg = 0
+<span class="text-muted">  28</span> inquire (file=in_regs%def_psc, exist=i_exist)
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_exist .or. in_regs%def_psc /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 29-75</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  30</span> do
+<span class="text-muted">  31</span> open (107,file=in_regs%def_psc)
+<span class="text-muted">  32</span> read (107,*,iostat=eof) titldum
+<span class="text-muted">  33</span> if (eof < 0) exit
+<span class="text-muted">  34</span> read (107,*,iostat=eof) mreg
+<span class="text-muted">  35</span> if (eof < 0) exit
+<span class="text-muted">  36</span> read (107,*,iostat=eof) header
+<span class="text-muted">  37</span> if (eof < 0) exit
+<span class="text-muted">  40</span> allocate (srec_d(0:mreg))
+<span class="text-muted">  41</span> allocate (srec_m(0:mreg))
+<span class="text-muted">  42</span> allocate (srec_y(0:mreg))
+<span class="text-muted">  43</span> allocate (srec_a(0:mreg))
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>i = 1, mreg</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 45-74</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  47</span> read (107,*,iostat=eof) k, pcu_out(i)%name, pcu_out(i)%area_ha, nspu
+<span class="text-muted">  48</span> if (eof < 0) exit
+<span class="text-muted">  70</span> end do    ! i = 1, mreg
+<span class="text-muted">  71</span> exit
+<span class="text-muted">  73</span> db_mx%rec_out = mreg
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>nspu > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 49-60</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  50</span> allocate (elem_cnt(nspu), source = 0)
+<span class="text-muted">  51</span> backspace (107)
+<span class="text-muted">  52</span> read (107,*,iostat=eof) k, pcu_out(i)%name, pcu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
+<span class="text-muted">  53</span> if (eof < 0) exit
+<span class="text-muted">  55</span> call define_unit_elements (nspu, ielem1)
+<span class="text-muted">  57</span> allocate (pcu_out(i)%num(ielem1), source = 0)
+<span class="text-muted">  58</span> pcu_out(i)%num = defunit_num
+<span class="text-muted">  59</span> pcu_out(i)%num_tot = ielem1
+<span class="text-muted">  60</span> deallocate (defunit_num)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 60</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 61-68</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  63</span> allocate (pcu_out(i)%num(sp_ob%hru), source = 0)
+<span class="text-muted">  64</span> pcu_out(i)%num_tot = sp_ob%recall
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>irec = 1, sp_ob%recall</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 65-67</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  66</span> pcu_out(i)%num(irec) = irec
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 67</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 68</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 74</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 75</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  78</span> inquire (file=in_regs%def_psc_reg, exist=i_exist)
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_exist .or. in_regs%def_psc_reg /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 79-119</span>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  80</span> do
+<span class="text-muted">  81</span> open (107,file=in_regs%def_psc_reg)
+<span class="text-muted">  82</span> read (107,*,iostat=eof) titldum
+<span class="text-muted">  83</span> if (eof < 0) exit
+<span class="text-muted">  84</span> read (107,*,iostat=eof) mreg
+<span class="text-muted">  85</span> if (eof < 0) exit
+<span class="text-muted">  86</span> read (107,*,iostat=eof) header
+<span class="text-muted">  87</span> if (eof < 0) exit
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>i = 1, mreg</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 89-118</span>
+                  </div>
+                </a>
+                <div id="block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  91</span> read (107,*,iostat=eof) k, pcu_reg(i)%name, pcu_reg(i)%area_ha, nspu
+<span class="text-muted">  92</span> if (eof < 0) exit
+<span class="text-muted"> 114</span> end do    ! i = 1, mreg
+<span class="text-muted"> 115</span> exit
+<span class="text-muted"> 117</span> db_mx%rec_reg = mreg
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>nspu > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 93-104</span>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  94</span> allocate (elem_cnt(nspu), source = 0)
+<span class="text-muted">  95</span> backspace (107)
+<span class="text-muted">  96</span> read (107,*,iostat=eof) k, pcu_reg(i)%name, pcu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
+<span class="text-muted">  97</span> if (eof < 0) exit
+<span class="text-muted">  99</span> call define_unit_elements (nspu, ielem1)
+<span class="text-muted"> 101</span> allocate (pcu_reg(i)%num(ielem1), source = 0)
+<span class="text-muted"> 102</span> pcu_reg(i)%num = defunit_num
+<span class="text-muted"> 103</span> pcu_reg(i)%num_tot = ielem1
+<span class="text-muted"> 104</span> deallocate (defunit_num)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 104</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 105-112</span>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 107</span> allocate (pcu_reg(i)%num(sp_ob%recall), source = 0)
+<span class="text-muted"> 108</span> pcu_reg(i)%num_tot = sp_ob%recall
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>irec = 1, sp_ob%recall</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 109-111</span>
+                  </div>
+                </a>
+                <div id="block-4-block-1-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 110</span> pcu_reg(i)%num(irec) = irec
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 111</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 112</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 118</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 119</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>mreg > 0</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 128</span> end if    ! mreg > 0
+<span class="text-muted"> 131</span> inquire (file=in_regs%ele_psc, exist=i_exist)
+<span class="text-muted"> 178</span> close (107)
+<span class="text-muted"> 180</span> return
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-5-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ireg = 1, mreg</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 123-127</span>
+                  </div>
+                </a>
+                <div id="block-5-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 124</span> pcu_cal(ireg)%lum_ha_tot = 0.
+<span class="text-muted"> 125</span> pcu_cal(ireg)%lum_num_tot = 0
+<span class="text-muted"> 126</span> pcu_cal(ireg)%lum_ha_tot = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 127</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-5-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_exist .or. in_regs%ele_psc /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 132-166</span>
+                  </div>
+                </a>
+                <div id="block-5-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 133</span> do
+<span class="text-muted"> 134</span> open (107,file=in_regs%ele_psc)
+<span class="text-muted"> 135</span> read (107,*,iostat=eof) titldum
+<span class="text-muted"> 136</span> if (eof < 0) exit
+<span class="text-muted"> 137</span> read (107,*,iostat=eof) header
+<span class="text-muted"> 138</span> if (eof < 0) exit
+<span class="text-muted"> 139</span> imax = 0
+<span class="text-muted"> 146</span> allocate (pcu_elem(imax))
+<span class="text-muted"> 148</span> rewind (107)
+<span class="text-muted"> 149</span> read (107,*,iostat=eof) titldum
+<span class="text-muted"> 150</span> if (eof < 0) exit
+<span class="text-muted"> 151</span> read (107,*,iostat=eof) header
+<span class="text-muted"> 152</span> if (eof < 0) exit
+<span class="text-muted"> 154</span> ielem_ru = 0
+<span class="text-muted"> 164</span> exit
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-5-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 140-144</span>
+                  </div>
+                </a>
+                <div id="block-5-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 141</span> read (107,*,iostat=eof) i
+<span class="text-muted"> 142</span> if (eof < 0) exit
+<span class="text-muted"> 143</span> imax = Max(i,imax)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 144</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-5-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isp = 1, imax</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 156-163</span>
+                  </div>
+                </a>
+                <div id="block-5-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 157</span> read (107,*,iostat=eof) i
+<span class="text-muted"> 158</span> if (eof < 0) exit
+<span class="text-muted"> 159</span> backspace (107)
+<span class="text-muted"> 160</span> read (107,*,iostat=eof) k, pcu_elem(i)%name, pcu_elem(i)%obtyp, pcu_elem(i)%obtypno,      &
+<span class="text-muted"> 161</span> pcu_elem(i)%bsn_frac, pcu_elem(i)%ru_frac, pcu_elem(i)%reg_frac
+<span class="text-muted"> 162</span> if (eof < 0) exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 163</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 166</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-5-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ireg = 1, mreg</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 169-176</span>
+                  </div>
+                </a>
+                <div id="block-5-block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-5-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>irec = 1, pcu_reg(ireg)%num_tot</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 170-175</span>
+                  </div>
+                </a>
+                <div id="block-5-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 171</span> ielem1 = pcu_reg(ireg)%num(irec)
+<span class="text-muted"> 173</span> pcu_cal(ireg)%num(irec) = pcu_elem(ielem1)%obtypno
+<span class="text-muted"> 174</span> pcu_cal(ireg)%hru_ha(irec) = pcu_elem(ielem1)%ru_frac * pcu_cal(ireg)%area_ha
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 175</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 176</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>                    </div>
+                  </div>
+                </div>
+              </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                <p class="text-muted mb-3">
+                  Memory allocations and deallocations grouped by variable.
+                </p>
+                <table class="table table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Allocations</th>
+                      <th>Deallocations</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>srec_d</code></td>
+                      <td>
+                            <span class="badge bg-success">line 40</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>srec_m</code></td>
+                      <td>
+                            <span class="badge bg-success">line 41</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>srec_y</code></td>
+                      <td>
+                            <span class="badge bg-success">line 42</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>srec_a</code></td>
+                      <td>
+                            <span class="badge bg-success">line 43</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>elem_cnt</code></td>
+                      <td>
+                            <span class="badge bg-success">line 50</span>,                             <span class="badge bg-success">line 94</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>pcu_out</code></td>
+                      <td>
+                            <span class="badge bg-success">line 57</span>,                             <span class="badge bg-success">line 63</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>defunit_num</code></td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                      <td>
+                            <span class="badge bg-warning text-dark">line 60</span>,                             <span class="badge bg-warning text-dark">line 104</span>                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>pcu_reg</code></td>
+                      <td>
+                            <span class="badge bg-success">line 101</span>,                             <span class="badge bg-success">line 107</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>pcu_elem</code></td>
+                      <td>
+                            <span class="badge bg-success">line 146</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <br>
+
+
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#local-variables-section" 
@@ -1190,887 +1345,8 @@ read data for each element in all landscape cataloging units</p>
     </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(7 attributes from maximum_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>db_mx%rec_reg</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%rec_out</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>in_regs%def_psc</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>in_regs%def_psc_reg</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>in_regs%ele_psc</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>sp_ob%hru</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>sp_ob%recall</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__">
-              type(<a href='../type/cataloging_units.html'>cataloging_units</a>)
-              <small class="text-muted ms-2">(1 attribute from calibration_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pcu_cal</strong></td>
-                      <td><p>point source cataoging unit region</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_landscape_units_html__landscape_units__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_units_html__landscape_units__a__">
-              type(<a href='../type/landscape_units.html'>landscape_units</a>)
-              <small class="text-muted ms-2">(2 attributes from calibration_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pcu_out</strong></td>
-                      <td><p>dimension by region for point sources</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>pcu_reg</strong></td>
-                      <td><p>dimension by region for point sources</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__">
-              type(<a href='../type/landscape_elements.html'>landscape_elements</a>)
-              <small class="text-muted ms-2">(1 attribute from calibration_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pcu_elem</strong></td>
-                      <td><p>point source cataoging unit</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headinginteger">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseinteger" aria-expanded="false" 
-                    aria-controls="collapseinteger">
-              integer
-              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapseinteger" class="accordion-collapse collapse" 
-               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>elem_cnt</strong></td>
-                      <td><p>|</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>defunit_num</strong></td>
-                      <td><p>|</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>ielem_ru</strong></td>
-                      <td><p>sequential counter for ru the hru is in</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-              type(<a href='../type/hyd_output.html'>hyd_output</a>)
-              <small class="text-muted ms-2">(4 attributes from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>srec_d</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>srec_m</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>srec_y</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>srec_a</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#allocations-section" 
-         aria-expanded="false" 
-         aria-controls="allocations-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Allocations
-        </h3>
-      </a>
-      <div id="allocations-section" class="collapse">
-        <div class="card-body">
-              <div class="accordion" id="allocationConditionsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif__i_exist__or__in_regs_pct_def_psc_____null__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif__i_exist__or__in_regs_pct_def_psc_____null__" aria-expanded="false" 
-                    aria-controls="collapseAllocif__i_exist__or__in_regs_pct_def_psc_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (i_exist .or. in_regs%def_psc /= "null")</strong>
-                  <small class="text-muted ms-2">(line 29)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif__i_exist__or__in_regs_pct_def_psc_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif__i_exist__or__in_regs_pct_def_psc_____null__" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>srec_d(0:mreg</code>                      </td>
-                      <td><code>allocate (srec_d(0:mreg))</code></td>
-                      <td>40</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>srec_m(0:mreg</code>                      </td>
-                      <td><code>allocate (srec_m(0:mreg))</code></td>
-                      <td>41</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>srec_y(0:mreg</code>                      </td>
-                      <td><code>allocate (srec_y(0:mreg))</code></td>
-                      <td>42</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>srec_a(0:mreg</code>                      </td>
-                      <td><code>allocate (srec_a(0:mreg))</code></td>
-                      <td>43</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif__nspu___0_">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif__nspu___0_" aria-expanded="false" 
-                    aria-controls="collapseAllocif__nspu___0_">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (nspu > 0)</strong>
-                  <small class="text-muted ms-2">(line 49)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif__nspu___0_" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif__nspu___0_" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>elem_cnt(nspu</code>                      </td>
-                      <td><code>allocate (elem_cnt(nspu), source = 0)</code></td>
-                      <td>50</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>pcu_out(i</code>                      </td>
-                      <td><code>allocate (pcu_out(i)%num(ielem1), source = 0)</code></td>
-                      <td>57</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-warning">deallocate</span>
-                      </td>
-                      <td>
-                            <code>defunit_num</code>                      </td>
-                      <td><code>deallocate (defunit_num)</code></td>
-                      <td>60</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>pcu_out(i</code>                      </td>
-                      <td><code>allocate (pcu_out(i)%num(sp_ob%hru), source = 0)</code></td>
-                      <td>63</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>elem_cnt(nspu</code>                      </td>
-                      <td><code>allocate (elem_cnt(nspu), source = 0)</code></td>
-                      <td>94</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>pcu_reg(i</code>                      </td>
-                      <td><code>allocate (pcu_reg(i)%num(ielem1), source = 0)</code></td>
-                      <td>101</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-warning">deallocate</span>
-                      </td>
-                      <td>
-                            <code>defunit_num</code>                      </td>
-                      <td><code>deallocate (defunit_num)</code></td>
-                      <td>104</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>pcu_reg(i</code>                      </td>
-                      <td><code>allocate (pcu_reg(i)%num(sp_ob%recall), source = 0)</code></td>
-                      <td>107</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif__i_exist__or__in_regs_pct_ele_psc_____null__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif__i_exist__or__in_regs_pct_ele_psc_____null__" aria-expanded="false" 
-                    aria-controls="collapseAllocif__i_exist__or__in_regs_pct_ele_psc_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (i_exist .or. in_regs%ele_psc /= "null")</strong>
-                  <small class="text-muted ms-2">(line 132)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif__i_exist__or__in_regs_pct_ele_psc_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif__i_exist__or__in_regs_pct_ele_psc_____null__" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>pcu_elem(imax</code>                      </td>
-                      <td><code>allocate (pcu_elem(imax))</code></td>
-                      <td>146</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use input_file_module
-use maximum_data_module
-use calibration_data_module
-use hydrograph_module
-implicit none
-character (len=80) :: titldum = ""!           |title of file
-character (len=80) :: header = "" !           |header of file
-integer :: eof = 0              !           |end of file
-logical :: i_exist              !none       |check to determine if file exists
-integer :: imax = 0             !none       |end of loop
-integer :: isp = 0              !none       |counter
-integer :: mcal = 0             !           |
-integer :: mreg = 0             !none       |end of loop
-integer :: i = 0                !none       |counter
-integer :: k = 0                !           |
-integer :: nspu = 0             !none       |end of loop
-integer :: ielem1 = 0           !           |
-integer :: ireg = 0             !none       |counter
-integer :: irec = 0             !none       |counter
-imax = 0
-mcal = 0
-mreg = 0
-inquire (file=in_regs%def_psc, exist=i_exist)</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>i_exist .or. in_regs%def_psc /= "null"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>do
-open (107,file=in_regs%def_psc)
-read (107,*,iostat=eof) titldum
-if (eof < 0) exit
-read (107,*,iostat=eof) mreg
-if (eof < 0) exit
-read (107,*,iostat=eof) header
-if (eof < 0) exit
-allocate (srec_d(0:mreg))
-allocate (srec_m(0:mreg))
-allocate (srec_y(0:mreg))
-allocate (srec_a(0:mreg))</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>i = 1, mreg</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>read (107,*,iostat=eof) k, pcu_out(i)%name, pcu_out(i)%area_ha, nspu
-if (eof < 0) exit
-end do    ! i = 1, mreg
-exit
-db_mx%rec_out = mreg</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>nspu > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>allocate (elem_cnt(nspu), source = 0)
-backspace (107)
-read (107,*,iostat=eof) k, pcu_out(i)%name, pcu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
-if (eof < 0) exit
-call define_unit_elements (nspu, ielem1)
-allocate (pcu_out(i)%num(ielem1), source = 0)
-pcu_out(i)%num = defunit_num
-pcu_out(i)%num_tot = ielem1
-deallocate (defunit_num)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>allocate (pcu_out(i)%num(sp_ob%hru), source = 0)
-pcu_out(i)%num_tot = sp_ob%recall</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>irec = 1, sp_ob%recall</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>pcu_out(i)%num(irec) = irec</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>inquire (file=in_regs%def_psc_reg, exist=i_exist)</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-4" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>i_exist .or. in_regs%def_psc_reg /= "null"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-4" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>do
-open (107,file=in_regs%def_psc_reg)
-read (107,*,iostat=eof) titldum
-if (eof < 0) exit
-read (107,*,iostat=eof) mreg
-if (eof < 0) exit
-read (107,*,iostat=eof) header
-if (eof < 0) exit</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-4-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>i = 1, mreg</code>
-                  </div>
-                </a>
-                <div id="block-4-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>read (107,*,iostat=eof) k, pcu_reg(i)%name, pcu_reg(i)%area_ha, nspu
-if (eof < 0) exit
-end do    ! i = 1, mreg
-exit
-db_mx%rec_reg = mreg</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-4-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>nspu > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-4-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>allocate (elem_cnt(nspu), source = 0)
-backspace (107)
-read (107,*,iostat=eof) k, pcu_reg(i)%name, pcu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
-if (eof < 0) exit
-call define_unit_elements (nspu, ielem1)
-allocate (pcu_reg(i)%num(ielem1), source = 0)
-pcu_reg(i)%num = defunit_num
-pcu_reg(i)%num_tot = ielem1
-deallocate (defunit_num)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-4-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-4-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>allocate (pcu_reg(i)%num(sp_ob%recall), source = 0)
-pcu_reg(i)%num_tot = sp_ob%recall</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-4-block-1-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>irec = 1, sp_ob%recall</code>
-                  </div>
-                </a>
-                <div id="block-4-block-1-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>pcu_reg(i)%num(irec) = irec</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-5" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>mreg > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-5" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>end if    ! mreg > 0
-inquire (file=in_regs%ele_psc, exist=i_exist)
-close (107)
-return</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-5-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ireg = 1, mreg</code>
-                  </div>
-                </a>
-                <div id="block-5-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>pcu_cal(ireg)%lum_ha_tot = 0.
-pcu_cal(ireg)%lum_num_tot = 0
-pcu_cal(ireg)%lum_ha_tot = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-5-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>i_exist .or. in_regs%ele_psc /= "null"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-5-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>do
-open (107,file=in_regs%ele_psc)
-read (107,*,iostat=eof) titldum
-if (eof < 0) exit
-read (107,*,iostat=eof) header
-if (eof < 0) exit
-imax = 0
-allocate (pcu_elem(imax))
-rewind (107)
-read (107,*,iostat=eof) titldum
-if (eof < 0) exit
-read (107,*,iostat=eof) header
-if (eof < 0) exit
-ielem_ru = 0
-exit</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-5-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>while (eof == 0)</code>
-                  </div>
-                </a>
-                <div id="block-5-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>read (107,*,iostat=eof) i
-if (eof < 0) exit
-imax = Max(i,imax)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-5-block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isp = 1, imax</code>
-                  </div>
-                </a>
-                <div id="block-5-block-2-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>read (107,*,iostat=eof) i
-if (eof < 0) exit
-backspace (107)
-read (107,*,iostat=eof) k, pcu_elem(i)%name, pcu_elem(i)%obtyp, pcu_elem(i)%obtypno,      &
-pcu_elem(i)%bsn_frac, pcu_elem(i)%ru_frac, pcu_elem(i)%reg_frac
-if (eof < 0) exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-5-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ireg = 1, mreg</code>
-                  </div>
-                </a>
-                <div id="block-5-block-3" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-5-block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>irec = 1, pcu_reg(ireg)%num_tot</code>
-                  </div>
-                </a>
-                <div id="block-5-block-3-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>ielem1 = pcu_reg(ireg)%num(irec)
-pcu_cal(ireg)%num(irec) = pcu_elem(ielem1)%obtypno
-pcu_cal(ireg)%hru_ha(irec) = pcu_elem(ielem1)%ru_frac * pcu_cal(ireg)%area_ha</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
 

@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -160,24 +161,18 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
                   <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
                   <li class="list-inline-item"><a href='../module/erosion_module.html'>erosion_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/landuse_data_module.html'>landuse_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>septic has to be set before soils are initialized (making a soil layer for the septic zone)
- allocate erosion output and open file
-!!! new checker.out file - always prints
-!!! new checker.out file - always prints</p>
 
 
     <div class="card mb-3">
@@ -191,7 +186,7 @@
       </a>
       <div id="arguments-section" class="collapse show">
         <div class="card-body">
-            <em>None</em>
+            <em>n/a</em>
         </div>
       </div>
     </div>
@@ -202,119 +197,581 @@
          aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Inputs and Outputs
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
       <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-              
-        
-    
-      <div class="alert alert-info mb-3">
-        <h6 class="alert-heading"><i class="fa fa-info-circle"></i> File I/O Summary</h6>
-        <div class="row">
-            <div class="col-md-4">
-              <strong><i class="fa fa-upload"></i> Output Files:</strong>
-              <ul class="mb-0">
-                  <li><code>unit_unit_9000</code> <small class="text-muted">(unit unit_9000)</small></li>
-              </ul>
-            </div>
+          <p class="text-muted mb-3">
+            I/O units used in this subroutine.
+          </p>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Type</th>
+                <th>Filename</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>erosion.out",recl=1200</code></td>
+                <td>
+                    <span class="badge bg-secondary">Unknown</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+              <tr>
+                <td><code>checker.out",recl=1200</code></td>
+                <td>
+                    <span class="badge bg-secondary">Unknown</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+              <tr>
+                <td><code>unit_9000</code></td>
+                <td>
+                      <span class="badge bg-primary">Output</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
 
-              
-      <div class="alert alert-secondary mb-3">
-        <h6 class="alert-heading"><i class="fa fa-list"></i> Parameters Accessed</h6>
-        <div class="row">
-            <div class="col-md-6">
-              <strong><i class="fa fa-arrow-up"></i> Written Parameters:</strong>
-              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
-                  <li><code>"CHK                       checker.out"</code></li>
-              </ul>
-            </div>
-        </div>
-      </div>
-
-          
-          <div class="card mb-3 mt-3">
-            <a data-bs-toggle="collapse" href="#io-operations-section" 
-               aria-expanded="false" 
-               aria-controls="io-operations-section" 
-               class="text-decoration-none">
-              <h4 class="card-header bg-light text-dark">
-                <i class="fa fa-caret-down me-2"></i>I/O Operations
-              </h4>
-            </a>
-            <div id="io-operations-section" class="collapse">
-              <div class="card-body">
-                    <!-- First, collect all conditions across all units -->
-          
-          <!-- Group by unit within this condition -->
-    
-    <div class="accordion" id="ioConditionsAccordion">
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__lum_ilum__pct_septic_____null__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__lum_ilum__pct_septic_____null__" aria-expanded="false" 
-                    aria-controls="collapseCondif__lum_ilum__pct_septic_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (lum(ilum)%septic /= "null")</strong>
-                  <small class="text-muted ms-2">(line 29)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+              type(<a href='../type/soil_profile.html'>soil_profile</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__lum_ilum__pct_septic_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__lum_ilum__pct_septic_____null__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit unit_9000</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (9000,*) "CHK                       checker.out"</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>"CHK                       checker.out"</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>56</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_html__erosion_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_html__erosion_output__a__">
+              type(<a href='../type/erosion_output.html'>erosion_output</a>)
+              <small class="text-muted ms-2">(1 attribute from erosion_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ero_output</strong></td>
+                      <td><p>dimensioned by hru</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_header_html__erosion_output_header__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_header_html__erosion_output_header__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_header_html__erosion_output_header__a__">
+              type(<a href='../type/erosion_output_header.html'>erosion_output_header</a>)
+              <small class="text-muted ms-2">(1 attribute from erosion_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_header_html__erosion_output_header__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_header_html__erosion_output_header__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ero_hdr</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_header_units_html__erosion_header_units__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_header_units_html__erosion_header_units__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_header_units_html__erosion_header_units__a__">
+              type(<a href='../type/erosion_header_units.html'>erosion_header_units</a>)
+              <small class="text-muted ms-2">(1 attribute from erosion_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_header_units_html__erosion_header_units__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_header_units_html__erosion_header_units__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ero_hdr_units</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(5 attributes from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>sp_ob%hru</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_pests</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_paths</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_salts</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_cs</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_output_checker_header_html__output_checker_header__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_output_checker_header_html__output_checker_header__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_output_checker_header_html__output_checker_header__a__">
+              type(<a href='../type/output_checker_header.html'>output_checker_header</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_output_checker_header_html__output_checker_header__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_output_checker_header_html__output_checker_header__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>chk_hdr</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_output_checker_unit_html__output_checker_unit__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_output_checker_unit_html__output_checker_unit__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_output_checker_unit_html__output_checker_unit__a__">
+              type(<a href='../type/output_checker_unit.html'>output_checker_unit</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_output_checker_unit_html__output_checker_unit__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_output_checker_unit_html__output_checker_unit__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>chk_unit</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_management_html__land_use_management__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_management_html__land_use_management__a__">
+              type(<a href='../type/land_use_management.html'>land_use_management</a>)
+              <small class="text-muted ms-2">(1 attribute from landuse_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>lum</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_structures_html__land_use_structures__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_structures_html__land_use_structures__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_structures_html__land_use_structures__a__">
+              type(<a href='../type/land_use_structures.html'>land_use_structures</a>)
+              <small class="text-muted ms-2">(1 attribute from landuse_data_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_structures_html__land_use_structures__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_structures_html__land_use_structures__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>lum_str</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
+              type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
+              <small class="text-muted ms-2">(1 attribute from hru_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>hru</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
     </div>
 
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>septic has to be set before soils are initialized (making a soil layer for the septic zone)
+ allocate erosion output and open file
+!!! new checker.out file - always prints
+!!! new checker.out file - always prints</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>sp_ob%hru > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 17-65</span>
+                  </div>
+                </a>
+                <div id="block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  18</span> call hru_allo
+<span class="text-muted">  19</span> call hru_read
+<span class="text-muted">  20</span> call hrudb_init
+<span class="text-muted">  21</span> call hru_lum_init_all
+<span class="text-muted">  22</span> call topohyd_init
+<span class="text-muted">  23</span> call hru_output_allo
+<span class="text-muted">  24</span> call carbon_read
+<span class="text-muted">  34</span> call soils_init
+<span class="text-muted">  35</span> call structure_init
+<span class="text-muted">  36</span> call plant_all_init
+<span class="text-muted">  37</span> call cn2_init_all
+<span class="text-muted">  38</span> call hydro_init
+<span class="text-muted">  39</span> if (cs_db%num_pests > 0) call pesticide_init
+<span class="text-muted">  40</span> if (cs_db%num_paths > 0) call pathogen_init
+<span class="text-muted">  41</span> if (cs_db%num_salts > 0) call salt_hru_init !rtb salt
+<span class="text-muted">  42</span> if (cs_db%num_cs > 0) call cs_hru_init !rtb cs
+<span class="text-muted">  45</span> allocate (ero_output(sp_ob%hru))
+<span class="text-muted">  46</span> open (4001,file = "erosion.out",recl=1200)
+<span class="text-muted">  47</span> write (4001,*) bsn%name, prog
+<span class="text-muted">  48</span> write (4001,*) ero_hdr
+<span class="text-muted">  49</span> write (4001,*) ero_hdr_units
+<span class="text-muted">  52</span> open (4000,file = "checker.out",recl=1200)
+<span class="text-muted">  53</span> write (4000,*) bsn%name, prog
+<span class="text-muted">  54</span> write (4000,*) chk_hdr
+<span class="text-muted">  55</span> write (4000,*) chk_unit
+<span class="text-muted">  56</span> write (9000,*) "CHK                       checker.out"
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 27-32</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  28</span> ilum = hru(j)%land_use_mgt
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>lum(ilum)%septic /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 29-31</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  30</span> call structure_set_parms("septic          ", lum_str(ilum)%septic, j)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 31</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 32</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 58-62</span>
+                  </div>
+                </a>
+                <div id="block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  59</span> write (4000,100) soil(j)%snam, soil(j)%hydgrp, soil(j)%zmx, soil(j)%usle_k, soil(j)%sumfc,  &
+<span class="text-muted">  60</span> soil(j)%sumul, hru(j)%lumv%usle_p, hru(j)%lumv%usle_ls, hru(j)%hyd%esco, hru(j)%hyd%epco,      &
+<span class="text-muted">  61</span> hru(j)%hyd%cn3_swf, hru(j)%hyd%perco, hru(j)%hyd%latq_co, hru(j)%tiledrain
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 62</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 65</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  67</span> call rte_read_nut
+<span class="text-muted">  69</span> 100   format(2a16,11f12.4,i12)
+<span class="text-muted">  71</span> return
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                <p class="text-muted mb-3">
+                  Memory allocations and deallocations grouped by variable.
+                </p>
+                <table class="table table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Allocations</th>
+                      <th>Deallocations</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>ero_output</code></td>
+                      <td>
+                            <span class="badge bg-success">line 45</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <br>
+
+
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#local-variables-section" 
@@ -379,531 +836,8 @@
     </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(5 attributes from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>cs_db%num_salts</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%num_paths</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%num_cs</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%num_pests</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>sp_ob%hru</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-              type(<a href='../type/soil_profile.html'>soil_profile</a>)
-              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>soil</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_output_checker_header_html__output_checker_header__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_output_checker_header_html__output_checker_header__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_output_checker_header_html__output_checker_header__a__">
-              type(<a href='../type/output_checker_header.html'>output_checker_header</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_output_checker_header_html__output_checker_header__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_output_checker_header_html__output_checker_header__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>chk_hdr</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_output_checker_unit_html__output_checker_unit__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_output_checker_unit_html__output_checker_unit__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_output_checker_unit_html__output_checker_unit__a__">
-              type(<a href='../type/output_checker_unit.html'>output_checker_unit</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_output_checker_unit_html__output_checker_unit__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_output_checker_unit_html__output_checker_unit__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>chk_unit</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
-              type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
-              <small class="text-muted ms-2">(1 attribute from hru_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>hru</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_erosion_output_html__erosion_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_output_html__erosion_output__a__">
-              type(<a href='../type/erosion_output.html'>erosion_output</a>)
-              <small class="text-muted ms-2">(1 attribute from erosion_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ero_output</strong></td>
-                      <td><p>dimensioned by hru</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_erosion_output_header_html__erosion_output_header__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_output_header_html__erosion_output_header__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_output_header_html__erosion_output_header__a__">
-              type(<a href='../type/erosion_output_header.html'>erosion_output_header</a>)
-              <small class="text-muted ms-2">(1 attribute from erosion_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_output_header_html__erosion_output_header__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_erosion_output_header_html__erosion_output_header__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ero_hdr</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_erosion_header_units_html__erosion_header_units__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_header_units_html__erosion_header_units__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_header_units_html__erosion_header_units__a__">
-              type(<a href='../type/erosion_header_units.html'>erosion_header_units</a>)
-              <small class="text-muted ms-2">(1 attribute from erosion_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_header_units_html__erosion_header_units__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_erosion_header_units_html__erosion_header_units__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ero_hdr_units</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_land_use_management_html__land_use_management__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_land_use_management_html__land_use_management__a__">
-              type(<a href='../type/land_use_management.html'>land_use_management</a>)
-              <small class="text-muted ms-2">(1 attribute from landuse_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>lum</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_land_use_structures_html__land_use_structures__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_land_use_structures_html__land_use_structures__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_land_use_structures_html__land_use_structures__a__">
-              type(<a href='../type/land_use_structures.html'>land_use_structures</a>)
-              <small class="text-muted ms-2">(1 attribute from landuse_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_land_use_structures_html__land_use_structures__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_land_use_structures_html__land_use_structures__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>lum_str</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#allocations-section" 
-         aria-expanded="false" 
-         aria-controls="allocations-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Allocations
-        </h3>
-      </a>
-      <div id="allocations-section" class="collapse">
-        <div class="card-body">
-              <div class="accordion" id="allocationConditionsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif__lum_ilum__pct_septic_____null__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif__lum_ilum__pct_septic_____null__" aria-expanded="false" 
-                    aria-controls="collapseAllocif__lum_ilum__pct_septic_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (lum(ilum)%septic /= "null")</strong>
-                  <small class="text-muted ms-2">(line 29)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif__lum_ilum__pct_septic_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif__lum_ilum__pct_septic_____null__" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>ero_output(sp_ob%hru</code>                      </td>
-                      <td><code>allocate (ero_output(sp_ob%hru))</code></td>
-                      <td>45</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use hydrograph_module
-use maximum_data_module
-use hru_module
-use soil_module
-use constituent_mass_module
-use landuse_data_module
-use erosion_module
-implicit none
-integer :: j = 0          !none       |counter
-integer :: ilum = 0       !none       |counter</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>sp_ob%hru > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>call hru_allo
-call hru_read
-call hrudb_init
-call hru_lum_init_all
-call topohyd_init
-call hru_output_allo
-call carbon_read
-call soils_init
-call structure_init
-call plant_all_init
-call cn2_init_all
-call hydro_init
-if (cs_db%num_pests > 0) call pesticide_init
-if (cs_db%num_paths > 0) call pathogen_init
-if (cs_db%num_salts > 0) call salt_hru_init !rtb salt
-if (cs_db%num_cs > 0) call cs_hru_init !rtb cs
-allocate (ero_output(sp_ob%hru))
-open (4001,file = "erosion.out",recl=1200)
-write (4001,*) bsn%name, prog
-write (4001,*) ero_hdr
-write (4001,*) ero_hdr_units
-open (4000,file = "checker.out",recl=1200)
-write (4000,*) bsn%name, prog
-write (4000,*) chk_hdr
-write (4000,*) chk_unit
-write (9000,*) "CHK                       checker.out"</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>ilum = hru(j)%land_use_mgt</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>lum(ilum)%septic /= "null"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>call structure_set_parms("septic          ", lum_str(ilum)%septic, j)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>write (4000,100) soil(j)%snam, soil(j)%hydgrp, soil(j)%zmx, soil(j)%usle_k, soil(j)%sumfc,  &
-soil(j)%sumul, hru(j)%lumv%usle_p, hru(j)%lumv%usle_ls, hru(j)%hyd%esco, hru(j)%hyd%epco,      &
-hru(j)%hyd%cn3_swf, hru(j)%hyd%perco, hru(j)%hyd%latq_co, hru(j)%tiledrain</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>call rte_read_nut
-100   format(2a16,11f12.4,i12)
-return</code></pre>
-                  </div>
-                </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
 

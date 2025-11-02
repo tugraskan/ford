@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -159,40 +160,20 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/water_allocation_module.html'>water_allocation_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
+                  <li class="list-inline-item"><a href='../module/water_allocation_module.html'>water_allocation_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>check if canal or inflow diversions and set available water from recall object
- set total volumes of canal diversions (source = "div") - rtb
- set total volumes of inflow diversions from recall file
- set total volumes of inflow diversions from monthly flow rate (m3/s)
-loop through each demand object
- zero demand, withdrawal, and unmet for each source
- set demand for each object
- if demand - check source availability
- check if water is available from each source - set withdrawal and unmet
- loop through sources again to check if compensation is allowed
- compute total withdrawal for demand object from all sources
- if irrigating set amount applied and runoff
- irrigation demand
- treatment of withdrawn water
- no treatment - treated = withdrawal
- compute treatment by inputting the mass or concentrations
- transfer (diversion) of withdrawn and possibly treated water
- sum demand, withdrawal, and unmet for entire allocation object</p>
 
 
     <div class="card mb-3">
@@ -218,7 +199,7 @@ loop through each demand object
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwallo~7"></span>
+              <span class="anchor" id="variable-iwallo"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -244,145 +225,1089 @@ loop through each demand object
          aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Inputs and Outputs
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
       <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-              
-        
-    
-      <div class="alert alert-info mb-3">
-        <h6 class="alert-heading"><i class="fa fa-info-circle"></i> File I/O Summary</h6>
-        <div class="row">
-            <div class="col-md-4">
-              <strong><i class="fa fa-upload"></i> Output Files:</strong>
-              <ul class="mb-0">
-                  <li><code>unit_unit_2612</code> <small class="text-muted">(unit unit_2612)</small></li>
-              </ul>
-            </div>
+          <p class="text-muted mb-3">
+            I/O units used in this subroutine.
+          </p>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Type</th>
+                <th>Filename</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>unit_2612</code></td>
+                <td>
+                      <span class="badge bg-primary">Output</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
 
-              
-      <div class="alert alert-secondary mb-3">
-        <h6 class="alert-heading"><i class="fa fa-list"></i> Parameters Accessed</h6>
-        <div class="row">
-            <div class="col-md-6">
-              <strong><i class="fa fa-arrow-up"></i> Written Parameters:</strong>
-              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
-                  <li><code>j</code></li>
-                  <li><code>time%yrc</code></li>
-                  <li><code>time%mo</code></li>
-                  <li><code>time%day_mo</code></li>
-                  <li><code>wallo(iwallo)%name</code></li>
-                  <li><code>"IRRIGATE"</code></li>
-                  <li><code>phubase(j)</code></li>
-                  <li><code>pcom(j)%plcur(1)%phuacc</code></li>
-                  <li><code>soil(j)%sw</code></li>
-                  <li><code>pl_mass(j)%tot(1)%m</code></li>
-                  <li><code>soil1(j)%rsd(1)%m</code></li>
-                  <li><code>sol_sumno3(j)</code></li>
-                  <li><code>sol_sumsolp(j)</code></li>
-                  <li><code>irrig(j)%applied</code></li>
-              </ul>
-            </div>
-        </div>
-      </div>
-
-          
-          <div class="card mb-3 mt-3">
-            <a data-bs-toggle="collapse" href="#io-operations-section" 
-               aria-expanded="false" 
-               aria-controls="io-operations-section" 
-               class="text-decoration-none">
-              <h4 class="card-header bg-light text-dark">
-                <i class="fa fa-caret-down me-2"></i>I/O Operations
-              </h4>
-            </a>
-            <div id="io-operations-section" class="collapse">
-              <div class="card-body">
-                    <!-- First, collect all conditions across all units -->
-          
-          <!-- Group by unit within this condition -->
-    
-    <div class="accordion" id="ioConditionsAccordion">
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__pco_pct_mgtout_____y__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__pco_pct_mgtout_____y__" aria-expanded="false" 
-                    aria-controls="collapseCondif__pco_pct_mgtout_____y__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (pco%mgtout == "y")</strong>
-                  <small class="text-muted ms-2">(line 128)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+              type(<a href='../type/soil_profile.html'>soil_profile</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__pco_pct_mgtout_____y__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__pco_pct_mgtout_____y__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit unit_2612</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, wallo(iwallo)%name, "IRRIGATE", phubase(j), pcom(j)%plcur(1)%phuacc, soil(j)%sw, pl_mass(j)%tot(1)%m, soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>j</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>wallo(iwallo)%name</code></small></li>
-                                    <li><small><code>"IRRIGATE"</code></small></li>
-                                    <li><small><code>phubase(j)</code></small></li>
-                                    <li><small><code>pcom(j)%plcur(1)%phuacc</code></small></li>
-                                    <li><small><code>soil(j)%sw</code></small></li>
-                                    <li><small><code>pl_mass(j)%tot(1)%m</code></small></li>
-                                    <li><small><code>soil1(j)%rsd(1)%m</code></small></li>
-                                    <li><small><code>sol_sumno3(j)</code></small></li>
-                                    <li><small><code>sol_sumsolp(j)</code></small></li>
-                                    <li><small><code>irrig(j)%applied</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>131</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(8 attributes from basin_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pco%mgtout</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%day_mo</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%yrs</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%mo</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%yrc</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%day</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_salts</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_cs</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
+              type(<a href='../type/soil_profile_mass.html'>soil_profile_mass</a>)
+              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil1</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
+              type(<a href='../type/plant_community_mass.html'>plant_community_mass</a>)
+              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pl_mass</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+              type(<a href='../type/hyd_output.html'>hyd_output</a>)
+              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>hd</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>hz</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>trt</strong></td>
+                      <td><p>wastewater treatment plants</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_irrigation_water_transfer_html__irrigation_water_transfer__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_irrigation_water_transfer_html__irrigation_water_transfer__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_irrigation_water_transfer_html__irrigation_water_transfer__a__">
+              type(<a href='../type/irrigation_water_transfer.html'>irrigation_water_transfer</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_irrigation_water_transfer_html__irrigation_water_transfer__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_irrigation_water_transfer_html__irrigation_water_transfer__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>irrig</strong></td>
+                      <td><p>dimension by hru</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_recall_hydrograph_inputs_html__recall_hydrograph_inputs__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_recall_hydrograph_inputs_html__recall_hydrograph_inputs__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_recall_hydrograph_inputs_html__recall_hydrograph_inputs__a__">
+              type(<a href='../type/recall_hydrograph_inputs.html'>recall_hydrograph_inputs</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_recall_hydrograph_inputs_html__recall_hydrograph_inputs__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_recall_hydrograph_inputs_html__recall_hydrograph_inputs__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>recall</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__">
+              type(<a href='../type/plant_community.html'>plant_community</a>)
+              <small class="text-muted ms-2">(1 attribute from plant_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pcom</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingreal">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsereal" aria-expanded="false" 
+                    aria-controls="collapsereal">
+              real
+              <small class="text-muted ms-2">(7 attributes from water_allocation_module)</small>
+            </button>
+          </h3>
+          <div id="collapsereal" class="accordion-collapse collapse" 
+               aria-labelledby="headingreal" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>dmd_m3</strong></td>
+                      <td><p>m3 |demand</p><a href="../module/water_allocation_module.html#variable-dmd_m3" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>div_volume_daily</strong></td>
+                      <td><p>daily volume of canal water added to total</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>div_volume_total</strong></td>
+                      <td><p>volume of canal water available for irrigation</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>div_delay</strong></td>
+                      <td><p>number of days that diverted irrigation water can be used</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>sol_sumno3</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>sol_sumsolp</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>phubase</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_source_output_html__source_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_source_output_html__source_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_source_output_html__source_output__a__">
+              type(<a href='../type/source_output.html'>source_output</a>)
+              <small class="text-muted ms-2">(1 attribute from water_allocation_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_source_output_html__source_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_source_output_html__source_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>walloz</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_allocation_html__water_allocation__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_allocation_html__water_allocation__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_allocation_html__water_allocation__a__">
+              type(<a href='../type/water_allocation.html'>water_allocation</a>)
+              <small class="text-muted ms-2">(1 attribute from water_allocation_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_allocation_html__water_allocation__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_allocation_html__water_allocation__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wallo</strong></td>
+                      <td><p>dimension by water allocation objects</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_allocation_output_html__water_allocation_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_allocation_output_html__water_allocation_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_allocation_output_html__water_allocation_output__a__">
+              type(<a href='../type/water_allocation_output.html'>water_allocation_output</a>)
+              <small class="text-muted ms-2">(1 attribute from water_allocation_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_allocation_output_html__water_allocation_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_water_allocation_output_html__water_allocation_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>wallod_out</strong></td>
+                      <td><p>dimension by demand objects</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
+              type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
+              <small class="text-muted ms-2">(1 attribute from hru_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>hru</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
     </div>
 
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>check if canal or inflow diversions and set available water from recall object
+ set total volumes of canal diversions (source = "div") - rtb
+ set total volumes of inflow diversions from recall file
+ set total volumes of inflow diversions from monthly flow rate (m3/s)
+loop through each demand object
+ zero demand, withdrawal, and unmet for each source
+ set demand for each object
+ if demand - check source availability
+ check if water is available from each source - set withdrawal and unmet
+ loop through sources again to check if compensation is allowed
+ compute total withdrawal for demand object from all sources
+ if irrigating set amount applied and runoff
+ irrigation demand
+ treatment of withdrawn water
+ no treatment - treated = withdrawal
+ compute treatment by inputting the mass or concentrations
+ transfer (diversion) of withdrawn and possibly treated water
+ sum demand, withdrawal, and unmet for entire allocation object</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  28</span> wallo(iwallo)%tot = walloz
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isrc = 1,wallo(iwallo)%src_obs</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 31-61</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wallo(iwallo)%src(isrc)%ob_typ == "div"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 33-47</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  34</span> irec = wallo(iwallo)%src(isrc)%ob_num !number in recall.rec
+<span class="text-muted">  36</span> div_daily = recall(irec)%hd(time%day,time%yrs)%flo * (-1) !m3; make positive
+<span class="text-muted">  40</span> div_total = div_volume_daily(irec) !m3
+<span class="text-muted">  41</span> div_volume_daily(irec) = ((1.-div_delay)*div_daily) + (div_delay*div_total) !m3
+<span class="text-muted">  46</span> div_volume_total(irec) = div_volume_total(irec) + div_volume_daily(irec) !m3
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>div_daily > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 37-39</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  38</span> dum = 10
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 39</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>div_volume_daily(irec) < 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 42-44</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  43</span> div_volume_daily(irec) = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 44</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 47</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wallo(iwallo)%src(isrc)%ob_typ == "div_rec"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 50-54</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  51</span> irec = wallo(iwallo)%src(isrc)%rec_num !number in recall.rec
+<span class="text-muted">  53</span> wallo(iwallo)%src(isrc)%div_vol = recall(irec)%hd(time%day,time%yrs)%flo !m3
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 54</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wallo(iwallo)%src(isrc)%ob_typ == "div_in"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 57-60</span>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  59</span> wallo(iwallo)%src(isrc)%div_vol = wallo(iwallo)%src(isrc)%limit_mon(time%mo) * 86400.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 60</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 61</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>idmd = 1, wallo(iwallo)%dmd_obs</code>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  72</span> call wallo_demand (iwallo, idmd)
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 67-69</span>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  68</span> wallod_out(iwallo)%dmd(idmd)%src(isrc) = walloz
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 69</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wallod_out(iwallo)%dmd(idmd)%dmd_tot > 0.</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  77</span> wallo(iwallo)%dmd(idmd)%hd = hz
+<span class="text-muted">  97</span> wallo(iwallo)%dmd(idmd)%withdr_tot = 0.
+<span class="text-muted"> 136</span> end if      !if there is demand
+<span class="text-muted"> 153</span> wallo(iwallo)%tot%demand = wallo(iwallo)%tot%demand + wallod_out(iwallo)%dmd(idmd)%dmd_tot
+<span class="text-muted"> 154</span> wallo(iwallo)%tot%withdr = wallo(iwallo)%tot%withdr + wallo(iwallo)%dmd(idmd)%withdr_tot
+<span class="text-muted"> 155</span> wallo(iwallo)%tot%unmet = wallo(iwallo)%tot%unmet + wallo(iwallo)%dmd(idmd)%unmet_m3
+<span class="text-muted"> 157</span> end do        !demand object loop
+<span class="text-muted"> 159</span> return
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 79-84</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  80</span> dmd_m3 = wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>dmd_m3 > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 81-83</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  82</span> call wallo_withdraw (iwallo, idmd, isrc)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 83</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 84</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 87-94</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wallo(iwallo)%dmd(idmd)%src(isrc)%comp == "y"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 88-93</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  89</span> dmd_m3 = wallo(iwallo)%dmd(idmd)%unmet_m3
+</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>dmd_m3 > 1.e-6</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 90-92</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  91</span> call wallo_withdraw (iwallo, idmd, isrc)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 92</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 93</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 94</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 98-101</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  99</span> wallo(iwallo)%dmd(idmd)%withdr_tot = wallo(iwallo)%dmd(idmd)%withdr_tot +           &
+<span class="text-muted"> 100</span> wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 101</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>wallo(iwallo)%dmd(idmd)%ob_typ</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 104-134</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-4" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"hru"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 106-133</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-4-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wallo(iwallo)%dmd(idmd)%withdr_tot > 0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 107-133</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 108</span> j = wallo(iwallo)%dmd(idmd)%ob_num
+<span class="text-muted"> 109</span> irr_mm = wallo(iwallo)%dmd(idmd)%withdr_tot / (hru(j)%area_ha * 10.)      !mm = m3 / (ha * 10.)
+<span class="text-muted"> 110</span> irrig(j)%applied = irr_mm * wallo(iwallo)%dmd(idmd)%irr_eff * (1. - wallo(iwallo)%dmd(idmd)%surq)
+<span class="text-muted"> 111</span> irrig(j)%runoff = wallo(iwallo)%dmd(idmd)%amount * wallo(iwallo)%dmd(idmd)%surq
+<span class="text-muted"> 112</span> pcom(j)%days_irr = 1            ! reset days since last irrigation
+<span class="text-muted"> 126</span> hru(j)%irr_yr = hru(j)%irr_yr + irrig(j)%applied
+</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>cs_db%num_salts > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 115-118</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-4-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 116</span> jj = idmd !to avoid a compiler warning
+<span class="text-muted"> 117</span> call salt_irrig(iwallo,jj,j)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 118</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>cs_db%num_cs > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 120-123</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-4-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 121</span> jj = idmd !to avoid a compiler warning
+<span class="text-muted"> 122</span> call cs_irrig(iwallo,jj,j)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 123</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-1-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pco%mgtout == "y"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 128-132</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-4-block-1-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 129</span> write (2612, *) j, time%yrc, time%mo, time%day_mo, wallo(iwallo)%name, "IRRIGATE", phubase(j),  &
+<span class="text-muted"> 130</span> pcom(j)%plcur(1)%phuacc, soil(j)%sw, pl_mass(j)%tot(1)%m, soil1(j)%rsd(1)%m,           &
+<span class="text-muted"> 131</span> sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 132</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 133</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 134</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wallo(iwallo)%dmd(idmd)%treat_typ == "out"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 139-141</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 141</span> wallo(iwallo)%dmd(idmd)%trt = wallo(iwallo)%dmd(idmd)%hd
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 141</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 142-145</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 144</span> call wallo_treatment (iwallo, idmd)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 145</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>wallo(iwallo)%dmd(idmd)%rcv_ob  /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 148-150</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-7" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 149</span> call wallo_transfer (iwallo, idmd)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 150</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong>                    </div>
+                  </div>
+                </div>
+              </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <br>
+
+
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#local-variables-section" 
@@ -566,940 +1491,8 @@ loop through each demand object
     </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingreal">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsereal" aria-expanded="false" 
-                    aria-controls="collapsereal">
-              real
-              <small class="text-muted ms-2">(7 attributes from water_allocation_module)</small>
-            </button>
-          </h3>
-          <div id="collapsereal" class="accordion-collapse collapse" 
-               aria-labelledby="headingreal" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>dmd_m3</strong></td>
-                      <td><p>m3 |demand</p><a href="../module/water_allocation_module.html#variable-dmd_m3" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                    <tr>
-                      <td><strong>div_volume_daily</strong></td>
-                      <td><p>daily volume of canal water added to total</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>div_volume_total</strong></td>
-                      <td><p>volume of canal water available for irrigation</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>div_delay</strong></td>
-                      <td><p>number of days that diverted irrigation water can be used</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>sol_sumno3</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>sol_sumsolp</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>phubase</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_source_output_html__source_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_source_output_html__source_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_source_output_html__source_output__a__">
-              type(<a href='../type/source_output.html'>source_output</a>)
-              <small class="text-muted ms-2">(1 attribute from water_allocation_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_source_output_html__source_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_source_output_html__source_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>walloz</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_water_allocation_html__water_allocation__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_water_allocation_html__water_allocation__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_water_allocation_html__water_allocation__a__">
-              type(<a href='../type/water_allocation.html'>water_allocation</a>)
-              <small class="text-muted ms-2">(1 attribute from water_allocation_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_water_allocation_html__water_allocation__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_water_allocation_html__water_allocation__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wallo</strong></td>
-                      <td><p>dimension by water allocation objects</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_water_allocation_output_html__water_allocation_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_water_allocation_output_html__water_allocation_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_water_allocation_output_html__water_allocation_output__a__">
-              type(<a href='../type/water_allocation_output.html'>water_allocation_output</a>)
-              <small class="text-muted ms-2">(1 attribute from water_allocation_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_water_allocation_output_html__water_allocation_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_water_allocation_output_html__water_allocation_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>wallod_out</strong></td>
-                      <td><p>dimension by demand objects</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(8 attributes from time_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>time%mo</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%day_mo</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%day</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%yrs</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%yrc</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%num_salts</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%num_cs</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>pco%mgtout</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-              type(<a href='../type/soil_profile.html'>soil_profile</a>)
-              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>soil</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-              type(<a href='../type/hyd_output.html'>hyd_output</a>)
-              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>hd</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>hz</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>trt</strong></td>
-                      <td><p>wastewater treatment plants</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_irrigation_water_transfer_html__irrigation_water_transfer__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_irrigation_water_transfer_html__irrigation_water_transfer__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_irrigation_water_transfer_html__irrigation_water_transfer__a__">
-              type(<a href='../type/irrigation_water_transfer.html'>irrigation_water_transfer</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_irrigation_water_transfer_html__irrigation_water_transfer__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_irrigation_water_transfer_html__irrigation_water_transfer__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>irrig</strong></td>
-                      <td><p>dimension by hru</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_recall_hydrograph_inputs_html__recall_hydrograph_inputs__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_recall_hydrograph_inputs_html__recall_hydrograph_inputs__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_recall_hydrograph_inputs_html__recall_hydrograph_inputs__a__">
-              type(<a href='../type/recall_hydrograph_inputs.html'>recall_hydrograph_inputs</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_recall_hydrograph_inputs_html__recall_hydrograph_inputs__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_recall_hydrograph_inputs_html__recall_hydrograph_inputs__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>recall</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
-              type(<a href='../type/soil_profile_mass.html'>soil_profile_mass</a>)
-              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>soil1</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
-              type(<a href='../type/plant_community_mass.html'>plant_community_mass</a>)
-              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pl_mass</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__">
-              type(<a href='../type/plant_community.html'>plant_community</a>)
-              <small class="text-muted ms-2">(1 attribute from plant_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pcom</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
-              type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
-              <small class="text-muted ms-2">(1 attribute from hru_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>hru</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use water_allocation_module
-use hydrograph_module, only : irrig, hz, recall
-use hru_module
-use basin_module
-use time_module
-use plant_module
-use soil_module
-use organic_mineral_mass_module
-use constituent_mass_module !rtb
-implicit none
-integer, intent (inout) :: iwallo     !water allocation object number
-integer :: idmd = 0                   !water demand object number
-integer :: isrc = 0                   !source object number
-integer :: j = 0                      !hru number
-integer :: jj = 0                     !variable for passing
-integer :: irec = 0                   !recall id
-integer :: dum = 0
-real :: irr_mm = 0.                   !mm     |irrigation applied
-real :: div_total = 0.                !m3     |cumulative available diversion water
-real :: div_daily = 0.                !m3     |daily water diverted for irrigation
-wallo(iwallo)%tot = walloz</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isrc = 1,wallo(iwallo)%src_obs</code>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wallo(iwallo)%src(isrc)%ob_typ == "div"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>irec = wallo(iwallo)%src(isrc)%ob_num !number in recall.rec
-div_daily = recall(irec)%hd(time%day,time%yrs)%flo * (-1) !m3; make positive
-div_total = div_volume_daily(irec) !m3
-div_volume_daily(irec) = ((1.-div_delay)*div_daily) + (div_delay*div_total) !m3
-div_volume_total(irec) = div_volume_total(irec) + div_volume_daily(irec) !m3</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>div_daily > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>dum = 10</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>div_volume_daily(irec) < 1.e-6</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>div_volume_daily(irec) = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wallo(iwallo)%src(isrc)%ob_typ == "div_rec"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>irec = wallo(iwallo)%src(isrc)%rec_num !number in recall.rec
-wallo(iwallo)%src(isrc)%div_vol = recall(irec)%hd(time%day,time%yrs)%flo !m3</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wallo(iwallo)%src(isrc)%ob_typ == "div_in"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wallo(iwallo)%src(isrc)%div_vol = wallo(iwallo)%src(isrc)%limit_mon(time%mo) * 86400.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>idmd = 1, wallo(iwallo)%dmd_obs</code>
-                  </div>
-                </a>
-                <div id="block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>call wallo_demand (iwallo, idmd)</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs</code>
-                  </div>
-                </a>
-                <div id="block-3-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wallod_out(iwallo)%dmd(idmd)%src(isrc) = walloz</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-3-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wallod_out(iwallo)%dmd(idmd)%dmd_tot > 0.</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wallo(iwallo)%dmd(idmd)%hd = hz
-wallo(iwallo)%dmd(idmd)%withdr_tot = 0.
-end if      !if there is demand
-wallo(iwallo)%tot%demand = wallo(iwallo)%tot%demand + wallod_out(iwallo)%dmd(idmd)%dmd_tot
-wallo(iwallo)%tot%withdr = wallo(iwallo)%tot%withdr + wallo(iwallo)%dmd(idmd)%withdr_tot
-wallo(iwallo)%tot%unmet = wallo(iwallo)%tot%unmet + wallo(iwallo)%dmd(idmd)%unmet_m3
-end do        !demand object loop
-return</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs</code>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>dmd_m3 = wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>dmd_m3 > 1.e-6</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>call wallo_withdraw (iwallo, idmd, isrc)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs</code>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-2" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wallo(iwallo)%dmd(idmd)%src(isrc)%comp == "y"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>dmd_m3 = wallo(iwallo)%dmd(idmd)%unmet_m3</code></pre>
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>dmd_m3 > 1.e-6</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>call wallo_withdraw (iwallo, idmd, isrc)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs</code>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wallo(iwallo)%dmd(idmd)%withdr_tot = wallo(iwallo)%dmd(idmd)%withdr_tot +           &
-wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>SELECT CASE</strong> (<code>wallo(iwallo)%dmd(idmd)%ob_typ</code>)
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-4" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>CASE</strong> (<code>"hru"</code>)
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-4-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wallo(iwallo)%dmd(idmd)%withdr_tot > 0.</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-4-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>j = wallo(iwallo)%dmd(idmd)%ob_num
-irr_mm = wallo(iwallo)%dmd(idmd)%withdr_tot / (hru(j)%area_ha * 10.)      !mm = m3 / (ha * 10.)
-irrig(j)%applied = irr_mm * wallo(iwallo)%dmd(idmd)%irr_eff * (1. - wallo(iwallo)%dmd(idmd)%surq)
-irrig(j)%runoff = wallo(iwallo)%dmd(idmd)%amount * wallo(iwallo)%dmd(idmd)%surq
-pcom(j)%days_irr = 1            ! reset days since last irrigation
-hru(j)%irr_yr = hru(j)%irr_yr + irrig(j)%applied</code></pre>
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>cs_db%num_salts > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-4-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>jj = idmd !to avoid a compiler warning
-call salt_irrig(iwallo,jj,j)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-1-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>cs_db%num_cs > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-4-block-1-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>jj = idmd !to avoid a compiler warning
-call cs_irrig(iwallo,jj,j)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-4-block-1-block-1-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>pco%mgtout == "y"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-4-block-1-block-1-block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>write (2612, *) j, time%yrc, time%mo, time%day_mo, wallo(iwallo)%name, "IRRIGATE", phubase(j),  &
-pcom(j)%plcur(1)%phuacc, soil(j)%sw, pl_mass(j)%tot(1)%m, soil1(j)%rsd(1)%m,           &
-sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-5" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wallo(iwallo)%dmd(idmd)%treat_typ == "out"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-5" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>wallo(iwallo)%dmd(idmd)%trt = wallo(iwallo)%dmd(idmd)%hd</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-6" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-6" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>call wallo_treatment (iwallo, idmd)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-7" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>wallo(iwallo)%dmd(idmd)%rcv_ob  /= "null"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-7" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>call wallo_transfer (iwallo, idmd)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
 
@@ -1517,7 +1510,7 @@ sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied</code></pre>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwallo~7"></span>
+              <span class="anchor" id="variable-iwallo"></span>
               integer,
             </td>
               <td>public</td>

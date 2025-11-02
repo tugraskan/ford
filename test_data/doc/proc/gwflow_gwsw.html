@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -159,20 +160,15 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/sd_channel_module.html'>sd_channel_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/sd_channel_module.html'>sd_channel_module</a></li>
+                  <li class="list-inline-item"><a href='../module/gwflow_module.html'>gwflow_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>~ ~ ~ PURPOSE ~ ~ ~
-this subroutine calculates the water exchange volume between the channel and the connected grid cells
-(exchange volumes are used in gwflow_simulate, in groundwater balance equations)</p>
 
 
     <div class="card mb-3">
@@ -198,7 +194,7 @@ this subroutine calculates the water exchange volume between the channel and the
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chan_id~3"></span>
+              <span class="anchor" id="variable-chan_id~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -217,6 +213,1079 @@ this subroutine calculates the water exchange volume between the channel and the
         </div>
       </div>
     </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+              type(<a href='../type/hyd_output.html'>hyd_output</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ch_stor</strong></td>
+                      <td><p>channel storage - max bankfull</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(2 attributes from constituent_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>cs_db%num_salts</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>cs_db%num_cs</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
+              type(<a href='../type/constituent_mass.html'>constituent_mass</a>)
+              <small class="text-muted ms-2">(1 attribute from constituent_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ch_water</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__">
+              type(<a href='../type/swatdeg_channel_dynamic.html'>swatdeg_channel_dynamic</a>)
+              <small class="text-muted ms-2">(1 attribute from sd_channel_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>sd_ch</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_groundwater_state_html__groundwater_state__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_groundwater_state_html__groundwater_state__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_groundwater_state_html__groundwater_state__a__">
+              type(<a href='../type/groundwater_state.html'>groundwater_state</a>)
+              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_groundwater_state_html__groundwater_state__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_groundwater_state_html__groundwater_state__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>gw_state</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_groundwater_ss_html__groundwater_ss__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_groundwater_ss_html__groundwater_ss__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_groundwater_ss_html__groundwater_ss__a__">
+              type(<a href='../type/groundwater_ss.html'>groundwater_ss</a>)
+              <small class="text-muted ms-2">(2 attributes from gwflow_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_groundwater_ss_html__groundwater_ss__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_groundwater_ss_html__groundwater_ss__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>gw_ss</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>gw_ss_sum</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingreal">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsereal" aria-expanded="false" 
+                    aria-controls="collapsereal">
+              real
+              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
+            </button>
+          </h3>
+          <div id="collapsereal" class="accordion-collapse collapse" 
+               aria-labelledby="headingreal" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>gw_bed_change</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_cell_channel_info_html__cell_channel_info__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_cell_channel_info_html__cell_channel_info__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_cell_channel_info_html__cell_channel_info__a__">
+              type(<a href='../type/cell_channel_info.html'>cell_channel_info</a>)
+              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_cell_channel_info_html__cell_channel_info__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_cell_channel_info_html__cell_channel_info__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>gw_chan_info</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headinginteger">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseinteger" aria-expanded="false" 
+                    aria-controls="collapseinteger">
+              integer
+              <small class="text-muted ms-2">(4 attributes from gwflow_module)</small>
+            </button>
+          </h3>
+          <div id="collapseinteger" class="accordion-collapse collapse" 
+               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>gw_solute_flag</strong></td>
+                      <td><p>|main flag</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>gw_nsolute</strong></td>
+                      <td><p>|number of solutes</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>gwsol_salt</strong></td>
+                      <td><p>|flag for simulating salt ion groundwater transport (so4,ca,mg,na,k,cl,co3,hco3)</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>gwsol_cons</strong></td>
+                      <td><p>|flag for simulating constituent groundwater transport (seo4,seo3,boron)</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_state_html__object_solute_state__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_state_html__object_solute_state__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_state_html__object_solute_state__a__">
+              type(<a href='../type/object_solute_state.html'>object_solute_state</a>)
+              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_state_html__object_solute_state__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_state_html__object_solute_state__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>gwsol_state</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_ss_html__object_solute_ss__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_ss_html__object_solute_ss__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_ss_html__object_solute_ss__a__">
+              type(<a href='../type/object_solute_ss.html'>object_solute_ss</a>)
+              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_ss_html__object_solute_ss__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_ss_html__object_solute_ss__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>gwsol_ss</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_ss_sum_html__object_solute_ss_sum__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_ss_sum_html__object_solute_ss_sum__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_ss_sum_html__object_solute_ss_sum__a__">
+              type(<a href='../type/object_solute_ss_sum.html'>object_solute_ss_sum</a>)
+              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_ss_sum_html__object_solute_ss_sum__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_solute_ss_sum_html__object_solute_ss_sum__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>gwsol_ss_sum</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>~ ~ ~ PURPOSE ~ ~ ~
+this subroutine calculates the water exchange volume between the channel and the connected grid cells
+(exchange volumes are used in gwflow_simulate, in groundwater balance equations)</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  39</span> chan_volume = ch_stor(chan_id)%flo
+<span class="text-muted">  42</span> chan_depth = sd_ch(chan_id)%chd !depth (m) of water in channel
+<span class="text-muted">  43</span> chan_width = sd_ch(chan_id)%chw !width (m) of channel
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>k=1,gw_chan_info(chan_id)%ncon</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  49</span> cell_id = gw_chan_info(chan_id)%cells(k)
+<span class="text-muted">  86</span> gw_ss(cell_id)%gwsw = gw_ss(cell_id)%gwsw + Q
+<span class="text-muted">  87</span> gw_state(cell_id)%stor = gw_state(cell_id)%stor + Q !update available groundwater in the cell
+<span class="text-muted">  88</span> else !channel --> aquifer
+<span class="text-muted">  89</span> if(Q > ch_stor(chan_id)%flo) then !can only remove what is there
+<span class="text-muted">  90</span> Q = ch_stor(chan_id)%flo
+<span class="text-muted">  92</span> gw_ss(cell_id)%swgw = gw_ss(cell_id)%swgw + Q
+<span class="text-muted">  94</span> gw_ss_sum(cell_id)%gwsw = gw_ss_sum(cell_id)%gwsw + Q !track for annual values
+<span class="text-muted">  97</span> ch_stor(chan_id)%flo = ch_stor(chan_id)%flo + (Q*(-1))
+<span class="text-muted"> 197</span> endif !end solutes
+<span class="text-muted"> 199</span> endif !check if cell is active
+<span class="text-muted"> 201</span> enddo !go to next cell
+<span class="text-muted"> 203</span> return
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>gw_state(cell_id)%stat == 1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 52-85</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  55</span> chan_length = gw_chan_info(chan_id)%leng(k)
+<span class="text-muted">  56</span> bed_elev = gw_chan_info(chan_id)%elev(k) - gw_bed_change
+<span class="text-muted">  57</span> bed_K = gw_chan_info(chan_id)%hydc(k)
+<span class="text-muted">  58</span> bed_thick = gw_chan_info(chan_id)%thck(k)
+<span class="text-muted">  61</span> chan_stage = bed_elev + chan_depth !stage of water in channel (m)
+<span class="text-muted">  62</span> flow_area = chan_width * chan_length !water exchange flow area (m2)
+<span class="text-muted">  66</span> gw_head = gw_state(cell_id)%head
+<span class="text-muted">  67</span> Q = 0.
+<span class="text-muted">  80</span> if(Q < 0) then !aquifer --> channel
+<span class="text-muted">  82</span> if (-Q  >= gw_state(cell_id)%stor) then !can only remove what is there
+<span class="text-muted">  84</span> Q = -gw_state(cell_id)%stor
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>gw_head < bed_elev</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 68-70</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  69</span> head_diff = chan_depth
+<span class="text-muted">  70</span> Q =  bed_K * (head_diff / bed_thick) * flow_area !stream leakage (positive Q: entering aquifer)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 70</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE IF</strong> (<code>gw_head > chan_stage</code>) <strong>THEN</strong>
+                    <span class="badge bg-light text-dark ms-2">Lines 71-73</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  72</span> head_diff = gw_head - chan_stage
+<span class="text-muted">  73</span> Q = bed_K * (head_diff / bed_thick) * flow_area * (-1) !gw discharge (negative Q: leaving aquifer)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 73</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE IF</strong> (<code>gw_head > bed_elev .and. gw_head < chan_stage</code>) <strong>THEN</strong>
+                    <span class="badge bg-light text-dark ms-2">Lines 74-77</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  75</span> head_diff = chan_stage - gw_head
+<span class="text-muted">  76</span> Q = bed_K * (head_diff / bed_thick) * flow_area !stream leakage (positive Q: entering aquifer)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 77</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 85</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>gw_solute_flag == 1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 100-195</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 101</span> chan_csol = 0.
+<span class="text-muted"> 102</span> solmass = 0.
+<span class="text-muted"> 103</span> if(Q < 0) then !mass leaving the cell (aquifer --> channel)
+<span class="text-muted"> 113</span> ch_stor(chan_id)%no3 = ch_stor(chan_id)%no3 + (solmass(1)*(-1)/1000.) !kg
+<span class="text-muted"> 114</span> ch_stor(chan_id)%solp = ch_stor(chan_id)%solp + (solmass(2)*(-1)/1000.) !kg
+<span class="text-muted"> 115</span> sol_index = 2
+<span class="text-muted"> 130</span> else !mass entering cell (channel --> aquifer)
+<span class="text-muted"> 163</span> ch_stor(chan_id)%no3 = ch_stor(chan_id)%no3 - (solmass(1)/1000.) !kg
+<span class="text-muted"> 168</span> ch_stor(chan_id)%solp = ch_stor(chan_id)%solp - (solmass(2)/1000.) !kg
+<span class="text-muted"> 169</span> sol_index = 2
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>s=1,gw_nsolute !loop through the solutes</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 104-111</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 105</span> solmass(s) = Q * gwsol_state(cell_id)%solute(s)%conc !g
+<span class="text-muted"> 106</span> if(solmass(s) > gwsol_state(cell_id)%solute(s)%mass) then !can only remove what is there
+<span class="text-muted"> 107</span> solmass(s) = gwsol_state(cell_id)%solute(s)%mass
+<span class="text-muted"> 109</span> gwsol_ss(cell_id)%solute(s)%gwsw = solmass(s)
+<span class="text-muted"> 110</span> gwsol_ss_sum(cell_id)%solute(s)%gwsw = gwsol_ss_sum(cell_id)%solute(s)%gwsw + solmass(s)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 111</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>gwsol_salt == 1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 117-122</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 118-121</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 119</span> sol_index = sol_index + 1
+<span class="text-muted"> 120</span> ch_water(chan_id)%salt(isalt) = ch_water(chan_id)%salt(isalt) + (solmass(sol_index)*(-1)/1000.) !kg
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 121</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 122</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>gwsol_cons == 1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 124-129</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ics=1,cs_db%num_cs</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 125-128</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 126</span> sol_index = sol_index + 1
+<span class="text-muted"> 127</span> ch_water(chan_id)%cs(ics) = ch_water(chan_id)%cs(ics) + (solmass(sol_index)*(-1)/1000.) !kg
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 128</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 129</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>chan_volume > 10.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 132-153</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 133</span> chan_csol(1) = (ch_stor(chan_id)%no3 * 1000.) / chan_volume !no3 g/m3 in channel
+<span class="text-muted"> 134</span> chan_csol(2) = (ch_stor(chan_id)%solp * 1000.) / chan_volume !p g/m3 in channel
+<span class="text-muted"> 135</span> sol_index = 2
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>gwsol_salt == 1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 137-142</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-4-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 138-141</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 139</span> sol_index = sol_index + 1
+<span class="text-muted"> 140</span> chan_csol(sol_index) = (ch_water(chan_id)%salt(isalt)*1000.) / chan_volume !g/m3 in channel water
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 141</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 142</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>gwsol_cons == 1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 144-152</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-4-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ics=1,cs_db%num_cs</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 145-151</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-4-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 146</span> sol_index = sol_index + 1
+<span class="text-muted"> 147</span> chan_csol(sol_index) = (ch_water(chan_id)%cs(ics)*1000.) / chan_volume !g/m3 in channel water
+</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4-block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>chan_csol(sol_index) < 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 148-150</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-4-block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 149</span> dum = 10
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 150</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 151</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 152</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 153</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>s=1,gw_nsolute</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 155-157</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 156</span> solmass(s) = Q * chan_csol(s)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 157</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>(solmass(1)/1000.) > ch_stor(chan_id)%no3</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 160-162</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 161</span> solmass(1) = ch_stor(chan_id)%no3 * 1000. !g
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 162</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>(solmass(2)/1000.) > ch_stor(chan_id)%solp</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 165-167</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-7" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 166</span> solmass(2) = ch_stor(chan_id)%solp * 1000. !g
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 167</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>gwsol_salt == 1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 171-179</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-8" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-8-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 172-178</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-8-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 173</span> sol_index = sol_index + 1
+<span class="text-muted"> 177</span> ch_water(chan_id)%salt(isalt) = ch_water(chan_id)%salt(isalt) - (solmass(sol_index)/1000.) !kg
+</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-8-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>(solmass(sol_index)/1000.) > ch_water(chan_id)%salt(isalt)</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 174-176</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-8-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 175</span> solmass(sol_index) = ch_water(chan_id)%salt(isalt) * 1000. !g
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 176</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 178</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 179</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-9" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>gwsol_cons == 1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 181-189</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-9" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-9-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ics=1,cs_db%num_cs</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 182-188</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-9-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 183</span> sol_index = sol_index + 1
+<span class="text-muted"> 187</span> ch_water(chan_id)%cs(ics) = ch_water(chan_id)%cs(ics) - (solmass(sol_index)/1000.) !kg
+</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-9-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>(solmass(sol_index)/1000.) > ch_water(chan_id)%cs(ics)</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 184-186</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-9-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 185</span> solmass(sol_index) = ch_water(chan_id)%cs(ics) * 1000. !g
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 186</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 188</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 189</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-10" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>s=1,gw_nsolute !loop through the solutes</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 191-194</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-10" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 192</span> gwsol_ss(cell_id)%solute(s)%swgw = solmass(s)
+<span class="text-muted"> 193</span> gwsol_ss_sum(cell_id)%solute(s)%gwsw = gwsol_ss_sum(cell_id)%solute(s)%gwsw + solmass(s)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 194</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 195</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong>                    </div>
+                  </div>
+                </div>
+              </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
     <div class="card mb-3">
@@ -605,954 +1674,8 @@ this subroutine calculates the water exchange volume between the channel and the
     </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__">
-              type(<a href='../type/swatdeg_channel_dynamic.html'>swatdeg_channel_dynamic</a>)
-              <small class="text-muted ms-2">(1 attribute from sd_channel_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>sd_ch</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(2 attributes from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>cs_db%num_salts</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cs_db%num_cs</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__">
-              type(<a href='../type/constituent_mass.html'>constituent_mass</a>)
-              <small class="text-muted ms-2">(1 attribute from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_constituent_mass_html__constituent_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ch_water</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_groundwater_state_html__groundwater_state__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_groundwater_state_html__groundwater_state__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_groundwater_state_html__groundwater_state__a__">
-              type(<a href='../type/groundwater_state.html'>groundwater_state</a>)
-              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_groundwater_state_html__groundwater_state__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_groundwater_state_html__groundwater_state__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>gw_state</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_groundwater_ss_html__groundwater_ss__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_groundwater_ss_html__groundwater_ss__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_groundwater_ss_html__groundwater_ss__a__">
-              type(<a href='../type/groundwater_ss.html'>groundwater_ss</a>)
-              <small class="text-muted ms-2">(2 attributes from gwflow_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_groundwater_ss_html__groundwater_ss__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_groundwater_ss_html__groundwater_ss__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>gw_ss</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>gw_ss_sum</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingreal">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsereal" aria-expanded="false" 
-                    aria-controls="collapsereal">
-              real
-              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
-            </button>
-          </h3>
-          <div id="collapsereal" class="accordion-collapse collapse" 
-               aria-labelledby="headingreal" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>gw_bed_change</strong></td>
-                      <td><p>|</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_cell_channel_info_html__cell_channel_info__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_cell_channel_info_html__cell_channel_info__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_cell_channel_info_html__cell_channel_info__a__">
-              type(<a href='../type/cell_channel_info.html'>cell_channel_info</a>)
-              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_cell_channel_info_html__cell_channel_info__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_cell_channel_info_html__cell_channel_info__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>gw_chan_info</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headinginteger">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseinteger" aria-expanded="false" 
-                    aria-controls="collapseinteger">
-              integer
-              <small class="text-muted ms-2">(4 attributes from gwflow_module)</small>
-            </button>
-          </h3>
-          <div id="collapseinteger" class="accordion-collapse collapse" 
-               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>gw_solute_flag</strong></td>
-                      <td><p>|main flag</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>gw_nsolute</strong></td>
-                      <td><p>|number of solutes</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>gwsol_salt</strong></td>
-                      <td><p>|flag for simulating salt ion groundwater transport (so4,ca,mg,na,k,cl,co3,hco3)</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>gwsol_cons</strong></td>
-                      <td><p>|flag for simulating constituent groundwater transport (seo4,seo3,boron)</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_object_solute_state_html__object_solute_state__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_object_solute_state_html__object_solute_state__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_solute_state_html__object_solute_state__a__">
-              type(<a href='../type/object_solute_state.html'>object_solute_state</a>)
-              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_solute_state_html__object_solute_state__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_object_solute_state_html__object_solute_state__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>gwsol_state</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_object_solute_ss_html__object_solute_ss__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_object_solute_ss_html__object_solute_ss__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_solute_ss_html__object_solute_ss__a__">
-              type(<a href='../type/object_solute_ss.html'>object_solute_ss</a>)
-              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_solute_ss_html__object_solute_ss__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_object_solute_ss_html__object_solute_ss__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>gwsol_ss</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_object_solute_ss_sum_html__object_solute_ss_sum__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_object_solute_ss_sum_html__object_solute_ss_sum__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_solute_ss_sum_html__object_solute_ss_sum__a__">
-              type(<a href='../type/object_solute_ss_sum.html'>object_solute_ss_sum</a>)
-              <small class="text-muted ms-2">(1 attribute from gwflow_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_solute_ss_sum_html__object_solute_ss_sum__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_object_solute_ss_sum_html__object_solute_ss_sum__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>gwsol_ss_sum</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-              type(<a href='../type/hyd_output.html'>hyd_output</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ch_stor</strong></td>
-                      <td><p>channel storage - max bankfull</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use gwflow_module
-use hydrograph_module, only : ch_stor
-use sd_channel_module, only : sd_ch
-use constituent_mass_module
-implicit none
-integer, intent (in) :: chan_id    !       |channel number
-integer :: k = 0                   !       |counter
-integer :: s = 0                   !       |solute counter
-integer :: cell_id = 0             !       |cell in connection with the channel
-integer :: isalt = 0               !       |salt ion counter
-integer :: ics = 0                 !       |constituent counter
-integer :: sol_index = 0           !
-integer :: dum = 0
-real :: chan_depth = 0.            !m      |channel depth
-real :: chan_width = 0.            !m      |channel width
-real :: chan_length = 0.           !m      |length of channel, in cell
-real :: bed_elev = 0.              !m      |elevation of channel bed, in cell
-real :: bed_K = 0.                 !m/day  |hydraulic conductivity of channel bed, in cell
-real :: bed_thick = 0.             !m      |thickness of channel bed, in cell
-real :: chan_stage = 0.            !m      |elevation of water in channel, in cell
-real :: flow_area = 0.             !m2     |groundwater flow area of water exchange, in cell
-real :: gw_head = 0.               !m      |current groundwater head in cell
-real :: Q = 0.                     !m3/day |water exchange flow rate, calculated by Darcy's Law
-real :: head_diff = 0.             !m      |head difference between channel stage and groundwater head
-real :: chan_volume = 0.           !m3     |water volume in channel before groundwater exchange occurs
-real :: chan_csol(100) = 0.        !g/m3   |solute concentration in channel water
-real :: solmass(100) = 0.          !g      |solute mass transferred
-chan_volume = ch_stor(chan_id)%flo
-chan_depth = sd_ch(chan_id)%chd !depth (m) of water in channel
-chan_width = sd_ch(chan_id)%chw !width (m) of channel</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>k=1,gw_chan_info(chan_id)%ncon</code>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>cell_id = gw_chan_info(chan_id)%cells(k)
-gw_ss(cell_id)%gwsw = gw_ss(cell_id)%gwsw + Q
-gw_state(cell_id)%stor = gw_state(cell_id)%stor + Q !update available groundwater in the cell
-else !channel --> aquifer
-if(Q > ch_stor(chan_id)%flo) then !can only remove what is there
-Q = ch_stor(chan_id)%flo
-gw_ss(cell_id)%swgw = gw_ss(cell_id)%swgw + Q
-gw_ss_sum(cell_id)%gwsw = gw_ss_sum(cell_id)%gwsw + Q !track for annual values
-ch_stor(chan_id)%flo = ch_stor(chan_id)%flo + (Q*(-1))
-endif !end solutes
-endif !check if cell is active
-enddo !go to next cell
-return</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>gw_state(cell_id)%stat == 1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>chan_length = gw_chan_info(chan_id)%leng(k)
-bed_elev = gw_chan_info(chan_id)%elev(k) - gw_bed_change
-bed_K = gw_chan_info(chan_id)%hydc(k)
-bed_thick = gw_chan_info(chan_id)%thck(k)
-chan_stage = bed_elev + chan_depth !stage of water in channel (m)
-flow_area = chan_width * chan_length !water exchange flow area (m2)
-gw_head = gw_state(cell_id)%head
-Q = 0.
-if(Q < 0) then !aquifer --> channel
-if (-Q  >= gw_state(cell_id)%stor) then !can only remove what is there
-Q = -gw_state(cell_id)%stor</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>gw_head < bed_elev</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>head_diff = chan_depth
-Q =  bed_K * (head_diff / bed_thick) * flow_area !stream leakage (positive Q: entering aquifer)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE IF</strong> (<code>gw_head > chan_stage</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>head_diff = gw_head - chan_stage
-Q = bed_K * (head_diff / bed_thick) * flow_area * (-1) !gw discharge (negative Q: leaving aquifer)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE IF</strong> (<code>gw_head > bed_elev .and. gw_head < chan_stage</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>head_diff = chan_stage - gw_head
-Q = bed_K * (head_diff / bed_thick) * flow_area !stream leakage (positive Q: entering aquifer)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>gw_solute_flag == 1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>chan_csol = 0.
-solmass = 0.
-if(Q < 0) then !mass leaving the cell (aquifer --> channel)
-ch_stor(chan_id)%no3 = ch_stor(chan_id)%no3 + (solmass(1)*(-1)/1000.) !kg
-ch_stor(chan_id)%solp = ch_stor(chan_id)%solp + (solmass(2)*(-1)/1000.) !kg
-sol_index = 2
-else !mass entering cell (channel --> aquifer)
-ch_stor(chan_id)%no3 = ch_stor(chan_id)%no3 - (solmass(1)/1000.) !kg
-ch_stor(chan_id)%solp = ch_stor(chan_id)%solp - (solmass(2)/1000.) !kg
-sol_index = 2</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>s=1,gw_nsolute !loop through the solutes</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>solmass(s) = Q * gwsol_state(cell_id)%solute(s)%conc !g
-if(solmass(s) > gwsol_state(cell_id)%solute(s)%mass) then !can only remove what is there
-solmass(s) = gwsol_state(cell_id)%solute(s)%mass
-gwsol_ss(cell_id)%solute(s)%gwsw = solmass(s)
-gwsol_ss_sum(cell_id)%solute(s)%gwsw = gwsol_ss_sum(cell_id)%solute(s)%gwsw + solmass(s)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>gwsol_salt == 1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-2" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>sol_index = sol_index + 1
-ch_water(chan_id)%salt(isalt) = ch_water(chan_id)%salt(isalt) + (solmass(sol_index)*(-1)/1000.) !kg</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>gwsol_cons == 1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-3" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ics=1,cs_db%num_cs</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-3-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>sol_index = sol_index + 1
-ch_water(chan_id)%cs(ics) = ch_water(chan_id)%cs(ics) + (solmass(sol_index)*(-1)/1000.) !kg</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>chan_volume > 10.</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-4" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>chan_csol(1) = (ch_stor(chan_id)%no3 * 1000.) / chan_volume !no3 g/m3 in channel
-chan_csol(2) = (ch_stor(chan_id)%solp * 1000.) / chan_volume !p g/m3 in channel
-sol_index = 2</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>gwsol_salt == 1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-4-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-4-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>sol_index = sol_index + 1
-chan_csol(sol_index) = (ch_water(chan_id)%salt(isalt)*1000.) / chan_volume !g/m3 in channel water</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>gwsol_cons == 1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-4-block-2" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ics=1,cs_db%num_cs</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-4-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>sol_index = sol_index + 1
-chan_csol(sol_index) = (ch_water(chan_id)%cs(ics)*1000.) / chan_volume !g/m3 in channel water</code></pre>
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4-block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>chan_csol(sol_index) < 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-4-block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>dum = 10</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-5" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>s=1,gw_nsolute</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-5" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>solmass(s) = Q * chan_csol(s)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-6" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>(solmass(1)/1000.) > ch_stor(chan_id)%no3</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-6" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>solmass(1) = ch_stor(chan_id)%no3 * 1000. !g</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-7" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>(solmass(2)/1000.) > ch_stor(chan_id)%solp</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-7" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>solmass(2) = ch_stor(chan_id)%solp * 1000. !g</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-8" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>gwsol_salt == 1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-8" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-8-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isalt=1,cs_db%num_salts</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-8-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>sol_index = sol_index + 1
-ch_water(chan_id)%salt(isalt) = ch_water(chan_id)%salt(isalt) - (solmass(sol_index)/1000.) !kg</code></pre>
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-8-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>(solmass(sol_index)/1000.) > ch_water(chan_id)%salt(isalt)</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-8-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>solmass(sol_index) = ch_water(chan_id)%salt(isalt) * 1000. !g</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-9" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>gwsol_cons == 1</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-9" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-9-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ics=1,cs_db%num_cs</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-9-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>sol_index = sol_index + 1
-ch_water(chan_id)%cs(ics) = ch_water(chan_id)%cs(ics) - (solmass(sol_index)/1000.) !kg</code></pre>
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-9-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>(solmass(sol_index)/1000.) > ch_water(chan_id)%cs(ics)</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-9-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>solmass(sol_index) = ch_water(chan_id)%cs(ics) * 1000. !g</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-10" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>s=1,gw_nsolute !loop through the solutes</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-10" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>gwsol_ss(cell_id)%solute(s)%swgw = solmass(s)
-gwsol_ss_sum(cell_id)%solute(s)%gwsw = gwsol_ss_sum(cell_id)%solute(s)%gwsw + solmass(s)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-        </div>
-      </div>
-    </div>
     <br>
 
 
@@ -1570,7 +1693,7 @@ gwsol_ss_sum(cell_id)%solute(s)%gwsw = gwsol_ss_sum(cell_id)%solute(s)%gwsw + so
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chan_id~3"></span>
+              <span class="anchor" id="variable-chan_id~2"></span>
               integer,
             </td>
               <td>public</td>
