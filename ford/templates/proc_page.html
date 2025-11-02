@@ -67,29 +67,36 @@
          aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Inputs and Outputs
+          <i class="fa fa-caret-down me-2"></i>I/O Units
         </h3>
       </a>
       <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-          {{ macros.io_file_summary(procedure.io_operations) }}
-          {{ macros.io_parameters_accessed(procedure.io_operations) }}
-          
-          <div class="card mb-3 mt-3">
-            <a data-bs-toggle="collapse" href="#io-operations-section" 
-               aria-expanded="false" 
-               aria-controls="io-operations-section" 
-               class="text-decoration-none">
-              <h4 class="card-header bg-light text-dark">
-                <i class="fa fa-caret-down me-2"></i>I/O Operations
-              </h4>
-            </a>
-            <div id="io-operations-section" class="collapse">
-              <div class="card-body">
-                {{ macros.io_operations_list(procedure.io_operations, procedure) }}
-              </div>
-            </div>
-          </div>
+          <p class="text-muted mb-3">
+            I/O units used in this subroutine.
+          </p>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Filename</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for unit, operations in procedure.io_operations.items() %}
+              <tr>
+                <td><code>{{ unit }}</code></td>
+                <td>
+                  {% if operations.filename %}
+                    <code>{{ operations.filename }}</code>
+                  {% else %}
+                    <em>not specified</em>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
