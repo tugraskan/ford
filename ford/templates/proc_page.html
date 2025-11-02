@@ -79,6 +79,7 @@
             <thead>
               <tr>
                 <th>Unit</th>
+                <th>Type</th>
                 <th>Filename</th>
               </tr>
             </thead>
@@ -86,6 +87,30 @@
               {% for unit, operations in procedure.io_operations.items() %}
               <tr>
                 <td><code>{{ unit }}</code></td>
+                <td>
+                  {% if operations.timeline %}
+                    {% set has_read = namespace(value=false) %}
+                    {% set has_write = namespace(value=false) %}
+                    {% for op in operations.timeline %}
+                      {% if op.kind == 'read' %}
+                        {% set has_read.value = true %}
+                      {% elif op.kind == 'write' %}
+                        {% set has_write.value = true %}
+                      {% endif %}
+                    {% endfor %}
+                    {% if has_read.value and has_write.value %}
+                      <span class="badge bg-info">Input/Output</span>
+                    {% elif has_read.value %}
+                      <span class="badge bg-success">Input</span>
+                    {% elif has_write.value %}
+                      <span class="badge bg-primary">Output</span>
+                    {% else %}
+                      <span class="badge bg-secondary">Unknown</span>
+                    {% endif %}
+                  {% else %}
+                    <span class="badge bg-secondary">Unknown</span>
+                  {% endif %}
+                </td>
                 <td>
                   {% if operations.filename %}
                     <code>{{ operations.filename }}</code>
