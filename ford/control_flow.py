@@ -473,6 +473,25 @@ def parse_control_flow(
 
 
 @dataclass
+class AllocationSummary:
+    """Summary of allocations and deallocations grouped by variable
+
+    Attributes
+    ----------
+    variable_name : str
+        Name of the variable being allocated/deallocated
+    allocate_lines : List[int]
+        Line numbers where this variable is allocated
+    deallocate_lines : List[int]
+        Line numbers where this variable is deallocated
+    """
+
+    variable_name: str
+    allocate_lines: List[int] = field(default_factory=list)
+    deallocate_lines: List[int] = field(default_factory=list)
+
+
+@dataclass
 class LogicBlock:
     """Represents a logic block in a procedure for hierarchical display
 
@@ -544,10 +563,15 @@ class LogicBlockExtractor:
         re.IGNORECASE,
     )
 
+    # Regular expressions for allocation/deallocation statements
+    ALLOCATE_RE = re.compile(r"^\s*allocate\s*\((.*?)\)", re.IGNORECASE)
+    DEALLOCATE_RE = re.compile(r"^\s*deallocate\s*\((.*?)\)", re.IGNORECASE)
+
     def __init__(self, source_code: str, procedure_name: str, procedure_type: str):
         self.source_code = source_code
         self.procedure_name = procedure_name
         self.procedure_type = procedure_type
+        self.allocations: Dict[str, AllocationSummary] = {}
 
     def _is_declaration_or_use(self, line_stripped: str) -> bool:
         """Check if a line is a USE, IMPLICIT, or type declaration statement
@@ -567,6 +591,83 @@ class LogicBlockExtractor:
             or self.IMPLICIT_RE.match(line_stripped)
             or self.DECLARATION_RE.match(line_stripped)
         )
+
+    def _extract_variable_names(self, alloc_content: str) -> List[str]:
+        """Extract variable names from allocation statement content
+
+        Parameters
+        ----------
+        alloc_content : str
+            The content inside allocate() or deallocate() parentheses
+
+        Returns
+        -------
+        List[str]
+            List of variable names being allocated/deallocated
+        """
+        variables = []
+        # Split by comma, but need to handle nested parentheses
+        parts = []
+        current = []
+        paren_depth = 0
+
+        for char in alloc_content:
+            if char == '(':
+                paren_depth += 1
+                current.append(char)
+            elif char == ')':
+                paren_depth -= 1
+                current.append(char)
+            elif char == ',' and paren_depth == 0:
+                parts.append(''.join(current))
+                current = []
+            else:
+                current.append(char)
+
+        if current:
+            parts.append(''.join(current))
+
+        # Extract variable name from each part
+        for part in parts:
+            part = part.strip()
+            if not part:
+                continue
+
+            # Variable name is the first identifier before ( or =
+            # Examples: "hru(10)", "res", "var = value"
+            var_match = re.match(r'^([a-zA-Z_]\w*)', part)
+            if var_match:
+                variables.append(var_match.group(1))
+
+        return variables
+
+    def _track_allocation(self, line_stripped: str, line_num: int):
+        """Track allocation/deallocation statements
+
+        Parameters
+        ----------
+        line_stripped : str
+            The stripped line to check
+        line_num : int
+            Line number (1-indexed)
+        """
+        # Check for allocate statement
+        if match := self.ALLOCATE_RE.search(line_stripped):
+            alloc_content = match.group(1)
+            variables = self._extract_variable_names(alloc_content)
+            for var in variables:
+                if var not in self.allocations:
+                    self.allocations[var] = AllocationSummary(variable_name=var)
+                self.allocations[var].allocate_lines.append(line_num)
+
+        # Check for deallocate statement
+        elif match := self.DEALLOCATE_RE.search(line_stripped):
+            dealloc_content = match.group(1)
+            variables = self._extract_variable_names(dealloc_content)
+            for var in variables:
+                if var not in self.allocations:
+                    self.allocations[var] = AllocationSummary(variable_name=var)
+                self.allocations[var].deallocate_lines.append(line_num)
 
     def extract(self) -> List[LogicBlock]:
         """Extract logic blocks from the source code
@@ -826,6 +927,9 @@ class LogicBlockExtractor:
             else:
                 # Regular statement - skip USE, IMPLICIT, and declarations
                 if not self._is_declaration_or_use(line_stripped):
+                    # Track allocation/deallocation statements
+                    self._track_allocation(line_stripped, line_num)
+
                     if stack:
                         # We're inside a block, add to that block's statements
                         stack[-1][1].append(line_stripped)
@@ -905,7 +1009,7 @@ class LogicBlockExtractor:
 
 def extract_logic_blocks(
     source_code: str, procedure_name: str, procedure_type: str
-) -> Optional[List[LogicBlock]]:
+) -> Optional[Tuple[List[LogicBlock], List[AllocationSummary]]]:
     """Extract logic blocks from Fortran procedure source code
 
     Parameters
@@ -919,11 +1023,13 @@ def extract_logic_blocks(
 
     Returns
     -------
-    List[LogicBlock] or None
-        List of logic blocks, or None if extraction fails
+    Tuple[List[LogicBlock], List[AllocationSummary]] or None
+        Tuple of (list of logic blocks, list of allocation summaries), or None if extraction fails
     """
     try:
         extractor = LogicBlockExtractor(source_code, procedure_name, procedure_type)
-        return extractor.extract()
+        blocks = extractor.extract()
+        allocations = list(extractor.allocations.values())
+        return (blocks, allocations)
     except Exception:
         return None

@@ -67,29 +67,61 @@
          aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Inputs and Outputs
+          <i class="fa fa-caret-down me-2"></i>I/O Units
         </h3>
       </a>
       <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-          {{ macros.io_file_summary(procedure.io_operations) }}
-          {{ macros.io_parameters_accessed(procedure.io_operations) }}
-          
-          <div class="card mb-3 mt-3">
-            <a data-bs-toggle="collapse" href="#io-operations-section" 
-               aria-expanded="false" 
-               aria-controls="io-operations-section" 
-               class="text-decoration-none">
-              <h4 class="card-header bg-light text-dark">
-                <i class="fa fa-caret-down me-2"></i>I/O Operations
-              </h4>
-            </a>
-            <div id="io-operations-section" class="collapse">
-              <div class="card-body">
-                {{ macros.io_operations_list(procedure.io_operations, procedure) }}
-              </div>
-            </div>
-          </div>
+          <p class="text-muted mb-3">
+            I/O units used in this subroutine.
+          </p>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Type</th>
+                <th>Filename</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for unit, operations in procedure.io_operations.items() %}
+              <tr>
+                <td><code>{{ unit }}</code></td>
+                <td>
+                  {% if operations.timeline %}
+                    {% set has_read = namespace(value=false) %}
+                    {% set has_write = namespace(value=false) %}
+                    {% for op in operations.timeline %}
+                      {% if op.kind == 'read' %}
+                        {% set has_read.value = true %}
+                      {% elif op.kind == 'write' %}
+                        {% set has_write.value = true %}
+                      {% endif %}
+                    {% endfor %}
+                    {% if has_read.value and has_write.value %}
+                      <span class="badge bg-info">Input/Output</span>
+                    {% elif has_read.value %}
+                      <span class="badge bg-success">Input</span>
+                    {% elif has_write.value %}
+                      <span class="badge bg-primary">Output</span>
+                    {% else %}
+                      <span class="badge bg-secondary">Unknown</span>
+                    {% endif %}
+                  {% else %}
+                    <span class="badge bg-secondary">Unknown</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if operations.filename %}
+                    <code>{{ operations.filename }}</code>
+                  {% else %}
+                    <em>not specified</em>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -443,6 +475,54 @@
           {% for block in procedure.logic_blocks %}
             {{ render_logic_block(block, loop.index) }}
           {% endfor %}
+          
+          {# Allocation Summary Section #}
+          {% if procedure.allocation_summary %}
+          <div class="card mt-4 mb-2">
+            <div class="card-header bg-secondary bg-opacity-10">
+              <strong>Allocations Summary</strong>
+            </div>
+            <div class="card-body">
+              <p class="text-muted mb-3">
+                Memory allocations and deallocations grouped by variable.
+              </p>
+              <table class="table table-sm table-striped">
+                <thead>
+                  <tr>
+                    <th>Variable</th>
+                    <th>Allocations</th>
+                    <th>Deallocations</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for alloc in procedure.allocation_summary %}
+                  <tr>
+                    <td><code>{{ alloc.variable_name }}</code></td>
+                    <td>
+                      {% if alloc.allocate_lines %}
+                        {% for line in alloc.allocate_lines %}
+                          <span class="badge bg-success">line {{ line }}</span>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                      {% else %}
+                        <em>none</em>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if alloc.deallocate_lines %}
+                        {% for line in alloc.deallocate_lines %}
+                          <span class="badge bg-warning text-dark">line {{ line }}</span>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                      {% else %}
+                        <em>none</em>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>

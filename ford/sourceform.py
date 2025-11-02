@@ -4002,9 +4002,20 @@ class FortranProcedure(FortranCodeUnit):
             if not source_text:
                 return None
 
-            # Extract logic blocks
-            return extract_logic_blocks(source_text, self.name, self.proctype.lower())
+            # Extract logic blocks and allocation summary
+            result = extract_logic_blocks(source_text, self.name, self.proctype.lower())
+            if result:
+                blocks, allocations = result
+                # Store allocation summary for use in template
+                self.allocation_summary = allocations
+                return blocks
+            else:
+                # Initialize to empty list if extraction fails
+                self.allocation_summary = []
+                return None
         except Exception:
+            # Initialize to empty list on exception
+            self.allocation_summary = []
             return None
 
 
