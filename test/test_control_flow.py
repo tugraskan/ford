@@ -509,22 +509,22 @@ end subroutine test_allocations
 
     assert result is not None
     blocks, allocations = result
-    
+
     # Should have tracked allocations
     assert len(allocations) > 0
-    
+
     # Find hru allocation
     hru_alloc = _find_allocation_by_name(allocations, "hru")
     assert hru_alloc is not None
     assert len(hru_alloc.allocate_lines) == 2  # Allocated twice
     assert len(hru_alloc.deallocate_lines) == 1  # Deallocated once
-    
+
     # Find res allocation
     res_alloc = _find_allocation_by_name(allocations, "res")
     assert res_alloc is not None
     assert len(res_alloc.allocate_lines) == 1
     assert len(res_alloc.deallocate_lines) == 1
-    
+
     # temp should not be tracked (never allocated/deallocated)
     temp_alloc = _find_allocation_by_name(allocations, "temp")
     assert temp_alloc is None
@@ -552,7 +552,7 @@ end subroutine test_alloc_control
 
     assert result is not None
     blocks, allocations = result
-    
+
     # Should have tracked allocation of arr
     assert len(allocations) > 0
     arr_alloc = _find_allocation_by_name(allocations, "arr")

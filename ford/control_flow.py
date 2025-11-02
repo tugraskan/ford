@@ -612,20 +612,20 @@ class LogicBlockExtractor:
         paren_depth = 0
 
         for char in alloc_content:
-            if char == '(':
+            if char == "(":
                 paren_depth += 1
                 current.append(char)
-            elif char == ')':
+            elif char == ")":
                 paren_depth -= 1
                 current.append(char)
-            elif char == ',' and paren_depth == 0:
-                parts.append(''.join(current))
+            elif char == "," and paren_depth == 0:
+                parts.append("".join(current))
                 current = []
             else:
                 current.append(char)
 
         if current:
-            parts.append(''.join(current))
+            parts.append("".join(current))
 
         # Extract variable name from each part
         for part in parts:
@@ -635,7 +635,7 @@ class LogicBlockExtractor:
 
             # Variable name is the first identifier before ( or =
             # Examples: "hru(10)", "res", "var = value"
-            var_match = re.match(r'^([a-zA-Z_]\w*)', part)
+            var_match = re.match(r"^([a-zA-Z_]\w*)", part)
             if var_match:
                 variables.append(var_match.group(1))
 
