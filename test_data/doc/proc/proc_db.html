@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -156,7 +157,67 @@
 </h2>
     
 
-    <p>databases used by all spatial modules
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#arguments-section" 
+         aria-expanded="true" 
+         aria-controls="arguments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Arguments
+        </h3>
+      </a>
+      <div id="arguments-section" class="collapse show">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>databases used by all spatial modules
 read the plant parameter database
 initialize plant parameters
 read plant transplant data
@@ -169,43 +230,23 @@ read the pathogen data parameters
 read management scheduling and data files    <br>
 read structural operations files
 read the plant community database</p>
-
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#arguments-section" 
-         aria-expanded="true" 
-         aria-controls="arguments-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Arguments
-        </h3>
-      </a>
-      <div id="arguments-section" class="collapse show">
-        <div class="card-body">
-            <em>None</em>
         </div>
       </div>
     </div>
 
-
-
-
-
-    <br>
-
-    <br>
-
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
          aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
+         aria-controls="control-flow-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+          <i class="fa fa-caret-down me-2"></i>Control Flow
         </h3>
       </a>
-      <div id="logic-blocks-section" class="collapse">
+      <div id="control-flow-section" class="collapse">
         <div class="card-body">
+
+          <h4>Logic Blocks</h4>
           <p class="text-muted mb-3">
             Control flow structures organized as they appear in the source code. 
             Each block is collapsible to help navigate complex procedures.
@@ -214,44 +255,79 @@ read the plant community database</p>
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>implicit none
-call plant_parm_read                          !! read the plant parameter database
-call plantparm_init                           !! initialize plant parameters
-call plant_transplant_read                    !! read plant transplant data
-call till_parm_read                           !! read the tillage database
-call pest_parm_read                           !! read the pesticide database
-call fert_parm_read                           !! read the fertilizer/nutrient database
-call manure_parm_read                         !! read the manure database - includes pathogens/antibiotics
-call urban_parm_read                          !! read the urban land types database
-call path_parm_read                           !! read the pathogen data parameters
-call septic_parm_read
-call mgt_read_irrops
-call mgt_read_chemapp
-call mgt_read_harvops
-call mgt_read_grazeops
-call mgt_read_sweepops
-call mgt_read_fireops
-call mgt_read_mgtops
-call mgt_read_puddle
-call sdr_read
-call sep_read
-call scen_read_grwway
-call scen_read_filtstrip
-call scen_read_bmpuser
-call sat_buff_read
-call readpcom
-call cntbl_read
-call cons_prac_read
-call overland_n_read
-call landuse_read
-return</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">   6</span> call plant_parm_read                          !! read the plant parameter database
+<span class="text-muted">   7</span> call plantparm_init                           !! initialize plant parameters
+<span class="text-muted">   8</span> call plant_transplant_read                    !! read plant transplant data
+<span class="text-muted">   9</span> call till_parm_read                           !! read the tillage database
+<span class="text-muted">  10</span> call pest_parm_read                           !! read the pesticide database
+<span class="text-muted">  11</span> call fert_parm_read                           !! read the fertilizer/nutrient database
+<span class="text-muted">  12</span> call manure_parm_read                         !! read the manure database - includes pathogens/antibiotics
+<span class="text-muted">  13</span> call urban_parm_read                          !! read the urban land types database
+<span class="text-muted">  14</span> call path_parm_read                           !! read the pathogen data parameters
+<span class="text-muted">  15</span> call septic_parm_read
+<span class="text-muted">  18</span> call mgt_read_irrops
+<span class="text-muted">  19</span> call mgt_read_chemapp
+<span class="text-muted">  20</span> call mgt_read_harvops
+<span class="text-muted">  21</span> call mgt_read_grazeops
+<span class="text-muted">  22</span> call mgt_read_sweepops
+<span class="text-muted">  23</span> call mgt_read_fireops
+<span class="text-muted">  24</span> call mgt_read_mgtops
+<span class="text-muted">  25</span> call mgt_read_puddle
+<span class="text-muted">  28</span> call sdr_read
+<span class="text-muted">  29</span> call sep_read
+<span class="text-muted">  30</span> call scen_read_grwway
+<span class="text-muted">  31</span> call scen_read_filtstrip
+<span class="text-muted">  32</span> call scen_read_bmpuser
+<span class="text-muted">  33</span> call sat_buff_read
+<span class="text-muted">  36</span> call readpcom
+<span class="text-muted">  38</span> call cntbl_read
+<span class="text-muted">  39</span> call cons_prac_read
+<span class="text-muted">  40</span> call overland_n_read
+<span class="text-muted">  41</span> call landuse_read
+<span class="text-muted">  43</span> return
+</code></pre>
                   </div>
                 </div>
 
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
+
 
 
     

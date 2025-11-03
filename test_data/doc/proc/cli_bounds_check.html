@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -159,18 +160,13 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>~ ~ ~ PURPOSE ~ ~ ~
-   this subroutine checks to see if climate data is in current simulation day</p>
-<p>check if climate data starts after simulation</p>
 
 
     <div class="card mb-3">
@@ -241,7 +237,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-end_yr~4"></span>
+              <span class="anchor" id="variable-end_yr"></span>
               integer
             </td>
 <td></td>
@@ -276,7 +272,21 @@
       </div>
     </div>
 
-
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#outside-variables-section" 
@@ -284,12 +294,12 @@
          aria-controls="outside-variables-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
         </h3>
       </a>
       <div id="outside-variables-section" class="collapse">
         <div class="card-body">
-              
+                
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype">
@@ -312,11 +322,11 @@
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>time%yrc</strong></td>
+                      <td><strong>time%day</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%day</strong></td>
+                      <td><strong>time%yrc</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -329,42 +339,64 @@
         </div>
       </div>
     </div>
-    <br>
 
-
-    <br>
-
-    <br>
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
          aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
+         aria-controls="bang-comments-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
         </h3>
       </a>
-      <div id="logic-blocks-section" class="collapse">
+      <div id="bang-comments-section" class="collapse">
         <div class="card-body">
+          <p>~ ~ ~ PURPOSE ~ ~ ~
+   this subroutine checks to see if climate data is in current simulation day</p>
+<p>check if climate data starts after simulation</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+
+          <h4>Logic Blocks</h4>
           <p class="text-muted mb-3">
             Control flow structures organized as they appear in the source code. 
             Each block is collapsible to help navigate complex procedures.
           </p>
           
                         
-                <div class="card mb-2 ms-0">
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>st_yr > time%yrc</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 18-19</span>
+                  </div>
+                </a>
+                <div id="block-1" class="collapse">
                   <div class="card-body">
-                    <pre class="mb-0"><code>use time_module
-use climate_module
-implicit none
-character(len=1) :: out_bounds    ! none          |y==out of bounds; n==not out
-integer :: st_day                 ! none          |start day of measured climate data
-integer :: end_day                ! none          |end day of measured climate data
-integer :: st_yr                  ! none          |start year of measured climate data
-integer :: end_yr                 ! none          |end year of measured climate data</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  19</span> out_bounds = "y"
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 19</span>                    </div>
                   </div>
                 </div>
+              </div>
 
                         
               <div class="card mb-2 ms-0">
@@ -373,12 +405,55 @@ integer :: end_yr                 ! none          |end year of measured climate 
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>st_yr > time%yrc</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 20-26</span>
                   </div>
                 </a>
                 <div id="block-2" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>out_bounds = "y"</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>st_yr == time%yrc</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 21-25</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>st_day > time%day</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 22-24</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  23</span> out_bounds = "y"
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 24</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 25</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 26</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -390,44 +465,16 @@ integer :: end_yr                 ! none          |end year of measured climate 
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
+                    <strong>IF</strong> (<code>end_yr < time%yrc</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 29-30</span>
                   </div>
                 </a>
                 <div id="block-3" class="collapse">
                   <div class="card-body">
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>st_yr == time%yrc</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>st_day > time%day</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>out_bounds = "y"</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
+                      <pre class="mb-0"><code><span class="text-muted">  30</span> out_bounds = "y"
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 30</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -439,61 +486,55 @@ integer :: end_yr                 ! none          |end year of measured climate 
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>end_yr < time%yrc</code>) <strong>THEN</strong>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 31-37</span>
                   </div>
                 </a>
                 <div id="block-4" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>out_bounds = "y"</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-5" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-5" class="collapse">
-                  <div class="card-body">
                                   
               <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-5-block-1" 
+                <a data-bs-toggle="collapse" href="#block-4-block-1" 
                    aria-expanded="false" 
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>end_yr == time%yrc</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 32-36</span>
                   </div>
                 </a>
-                <div id="block-5-block-1" class="collapse">
+                <div id="block-4-block-1" class="collapse">
                   <div class="card-body">
                                   
               <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-5-block-1-block-1" 
+                <a data-bs-toggle="collapse" href="#block-4-block-1-block-1" 
                    aria-expanded="false" 
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>end_day < time%day</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 33-35</span>
                   </div>
                 </a>
-                <div id="block-5-block-1-block-1" class="collapse">
+                <div id="block-4-block-1-block-1" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>out_bounds = "y"</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  34</span> out_bounds = "y"
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 35</span>                    </div>
                   </div>
                 </div>
               </div>
 
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 36</span>                    </div>
                   </div>
                 </div>
               </div>
 
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 37</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -501,14 +542,50 @@ integer :: end_yr                 ! none          |end year of measured climate 
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>return</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">  39</span> return
+</code></pre>
                   </div>
                 </div>
 
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
+
 
 
     <section>    
@@ -576,7 +653,7 @@ integer :: end_yr                 ! none          |end year of measured climate 
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-end_yr~4"></span>
+              <span class="anchor" id="variable-end_yr"></span>
               integer,
             </td>
               <td>public</td>

@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -155,26 +156,6 @@
 </h2>
     
 
-    <p>~ ~ ~ PURPOSE ~ ~ ~
-this function computes new parameter value based on 
-user defined change</p>
-<p>~ ~ ~ INCOMING VARIABLES ~ ~ ~
-name        |units         |definition
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-val_cur     |variable      |current parameter value
-                           |the standard temperature (20 degrees C)
-chg_typ     |variable      |type of change (absval, abschg, pctchg)
-chg_val     |variable      |amount of change
-parm_num    |              |calibration parameter number
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</p>
-<p>~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-name        |units         |definition
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-chg_par     |variable      |new parameter value
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</p>
-<p>~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</p>
-
-
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#arguments-section" 
          aria-expanded="true" 
@@ -198,7 +179,7 @@ chg_par     |variable      |new parameter value
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-val_cur"></span>
+              <span class="anchor" id="variable-val_cur~2"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -213,7 +194,7 @@ chg_par     |variable      |new parameter value
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-chg_typ"></span>
+              <span class="anchor" id="variable-chg_typ~6"></span>
               character(len=16),
             </td>
 <td>intent(in)</td>
@@ -228,7 +209,7 @@ chg_par     |variable      |new parameter value
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-chg_val~7"></span>
+              <span class="anchor" id="variable-chg_val~10"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -243,7 +224,7 @@ chg_par     |variable      |new parameter value
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-absmin"></span>
+              <span class="anchor" id="variable-absmin~4"></span>
               real
             </td>
 <td></td>
@@ -258,7 +239,7 @@ chg_par     |variable      |new parameter value
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-absmax"></span>
+              <span class="anchor" id="variable-absmax~4"></span>
               real
             </td>
 <td></td>
@@ -277,14 +258,241 @@ chg_par     |variable      |new parameter value
         </div>
       </div>
     </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>~ ~ ~ PURPOSE ~ ~ ~
+this function computes new parameter value based on 
+user defined change</p>
+<p>~ ~ ~ INCOMING VARIABLES ~ ~ ~
+name        |units         |definition
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+val_cur     |variable      |current parameter value
+                           |the standard temperature (20 degrees C)
+chg_typ     |variable      |type of change (absval, abschg, pctchg)
+chg_val     |variable      |amount of change
+parm_num    |              |calibration parameter number
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</p>
+<p>~ ~ ~ OUTGOING VARIABLES ~ ~ ~
+name        |units         |definition
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+chg_par     |variable      |new parameter value
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</p>
+<p>~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>chg_typ</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 36-50</span>
+                  </div>
+                </a>
+                <div id="block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"absval"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 38-40</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  39</span> chg_par = chg_val
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"abschg"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 41-43</span>
+                  </div>
+                </a>
+                <div id="block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  42</span> chg_par = val_cur + chg_val
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"pctchg"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 44-46</span>
+                  </div>
+                </a>
+                <div id="block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  45</span> chg_par = (1. + chg_val / 100.) * val_cur
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"relchg"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 47-49</span>
+                  </div>
+                </a>
+                <div id="block-1-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  48</span> chg_par = (1. + chg_val) * val_cur
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 50</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  52</span> chg_par = Max(chg_par, absmin)
+<span class="text-muted">  53</span> chg_par = amin1(chg_par, absmax)
+<span class="text-muted">  55</span> return
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-chg_par~2"></span>
+          <span class="anchor" id="variable-chg_par~5"></span>
           real
         </small>
       </h3>
       
-
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#local-variables-section" 
@@ -350,140 +558,6 @@ chg_par     |variable      |new parameter value
     <br>
 
 
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>implicit none
-real, intent (in) :: val_cur                    !variable      |current parameter value
-real, intent (in) :: chg_val                    !variable      |amount of change
-character(len=16), intent (in) :: chg_typ       !variable      |type of change (absval, abschg, pctchg)
-real :: chg_par                                 !variable      |new parameter value
-real :: absmin                                  !minimum range for variable
-real :: absmax                                  !maximum change for variable
-real :: amin1                                   !units         |description</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>SELECT CASE</strong> (<code>chg_typ</code>)
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>CASE</strong> (<code>"absval"</code>)
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>chg_par = chg_val</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>CASE</strong> (<code>"abschg"</code>)
-                  </div>
-                </a>
-                <div id="block-2-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>chg_par = val_cur + chg_val</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>CASE</strong> (<code>"pctchg"</code>)
-                  </div>
-                </a>
-                <div id="block-2-block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>chg_par = (1. + chg_val / 100.) * val_cur</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-4" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>CASE</strong> (<code>"relchg"</code>)
-                  </div>
-                </a>
-                <div id="block-2-block-4" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>chg_par = (1. + chg_val) * val_cur</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>chg_par = Max(chg_par, absmin)
-chg_par = amin1(chg_par, absmax)
-return</code></pre>
-                  </div>
-                </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-
     <section>    
       <h2>Variables</h2>
       <table class="table table-striped varlist">
@@ -498,7 +572,7 @@ return</code></pre>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-val_cur"></span>
+              <span class="anchor" id="variable-val_cur~2"></span>
               real,
             </td>
               <td>public</td>
@@ -515,7 +589,7 @@ return</code></pre>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-chg_typ"></span>
+              <span class="anchor" id="variable-chg_typ~6"></span>
               character(len=16),
             </td>
               <td>public</td>
@@ -532,7 +606,7 @@ return</code></pre>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-chg_val~7"></span>
+              <span class="anchor" id="variable-chg_val~10"></span>
               real,
             </td>
               <td>public</td>
@@ -549,7 +623,7 @@ return</code></pre>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-absmin"></span>
+              <span class="anchor" id="variable-absmin~4"></span>
               real,
             </td>
               <td>public</td>
@@ -566,7 +640,7 @@ return</code></pre>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-absmax"></span>
+              <span class="anchor" id="variable-absmax~4"></span>
               real,
             </td>
               <td>public</td>

@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -160,26 +161,18 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
                   <li class="list-inline-item"><a href='../module/landuse_data_module.html'>landuse_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/calibration_data_module.html'>calibration_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
                   <li class="list-inline-item"><a href='../module/output_landscape_module.html'>output_landscape_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>setting up regions for landscape soft cal and/or output by landuse
- allocate regional output files
- if no regions are input, don"t need elements
- allocate land use within each region for soft cal and output
-all hrus are in region 
-read data for each element in all landscape cataloging units</p>
 
 
     <div class="card mb-3">
@@ -193,7 +186,7 @@ read data for each element in all landscape cataloging units</p>
       </a>
       <div id="arguments-section" class="collapse show">
         <div class="card-body">
-            <em>None</em>
+            <em>n/a</em>
         </div>
       </div>
     </div>
@@ -204,684 +197,1306 @@ read data for each element in all landscape cataloging units</p>
          aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Inputs and Outputs
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
       <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-              
-        
-        
-    
-      <div class="alert alert-info mb-3">
-        <h6 class="alert-heading"><i class="fa fa-info-circle"></i> File I/O Summary</h6>
-        <div class="row">
-            <div class="col-md-4">
-              <strong><i class="fa fa-download"></i> Input Files:</strong>
-              <ul class="mb-0">
-                  <li><code>unit_in_regs%def_reg</code> <small class="text-muted">(unit in_regs%def_reg)</small></li>
-                  <li><code>unit_in_regs%ele_reg</code> <small class="text-muted">(unit in_regs%ele_reg)</small></li>
-              </ul>
-            </div>
+          <p class="text-muted mb-3">
+            I/O units used in this subroutine.
+          </p>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Type</th>
+                <th>Filename</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>in_regs%def_reg</code></td>
+                <td>
+                      <span class="badge bg-success">Input</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+              <tr>
+                <td><code>in_regs%ele_reg</code></td>
+                <td>
+                      <span class="badge bg-success">Input</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
 
-              
-      <div class="alert alert-secondary mb-3">
-        <h6 class="alert-heading"><i class="fa fa-list"></i> Parameters Accessed</h6>
-        <div class="row">
-            <div class="col-md-6">
-              <strong><i class="fa fa-arrow-down"></i> Read Parameters:</strong>
-              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
-                  <li><code>titldum</code></li>
-                  <li><code>mreg</code></li>
-                  <li><code>mlug</code></li>
-                  <li><code>i</code></li>
-                  <li><code>lum_grp%num</code></li>
-                  <li><code>lum_grp%name(ilum), ilum = 1, mlug</code></li>
-                  <li><code>header</code></li>
-                  <li><code>k</code></li>
-                  <li><code>lsu_reg(i)%name</code></li>
-                  <li><code>lsu_reg(i)%area_ha</code></li>
-                  <li><code>nspu</code></li>
-                  <li><code>elem_cnt(isp), isp = 1, nspu</code></li>
-                  <li><code>reg_elem(i)%name</code></li>
-                  <li><code>reg_elem(i)%ha</code></li>
-                  <li><code>reg_elem(i)%obtyp</code></li>
-                  <li><code>reg_elem(i)%obtypno</code></li>
-              </ul>
-            </div>
-        </div>
-      </div>
-
-          
-          <div class="card mb-3 mt-3">
-            <a data-bs-toggle="collapse" href="#io-operations-section" 
-               aria-expanded="false" 
-               aria-controls="io-operations-section" 
-               class="text-decoration-none">
-              <h4 class="card-header bg-light text-dark">
-                <i class="fa fa-caret-down me-2"></i>I/O Operations
-              </h4>
-            </a>
-            <div id="io-operations-section" class="collapse">
-              <div class="card-body">
-                    <!-- First, collect all conditions across all units -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-    
-    <div class="accordion" id="ioConditionsAccordion">
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__i_exist__or__in_regs_pct_def_reg_____null__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_management_html__land_use_management__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__i_exist__or__in_regs_pct_def_reg_____null__" aria-expanded="false" 
-                    aria-controls="collapseCondif__i_exist__or__in_regs_pct_def_reg_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (i_exist .or. in_regs%def_reg /= "null")</strong>
-                  <small class="text-muted ms-2">(line 38)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_management_html__land_use_management__a__">
+              type(<a href='../type/land_use_management.html'>land_use_management</a>)
+              <small class="text-muted ms-2">(1 attribute from landuse_data_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__i_exist__or__in_regs_pct_def_reg_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__i_exist__or__in_regs_pct_def_reg_____null__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_regs%def_reg</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">open</span></td>
-                            <td><code>open (107,file=in_regs%def_reg)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>40</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) titldum</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>titldum</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>41</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) mreg, mlug</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>mreg</code></small></li>
-                                    <li><small><code>mlug</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>43</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>lum</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__mlug___0_">
+          <h3 class="accordion-header" id="headingtype">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__mlug___0_" aria-expanded="false" 
-                    aria-controls="collapseCondif__mlug___0_">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (mlug > 0)</strong>
-                  <small class="text-muted ms-2">(line 71)</small>
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(8 attributes from landuse_data_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__mlug___0_" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__mlug___0_" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_regs%def_reg</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">backspace</span></td>
-                            <td><code>backspace (107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>72</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) i, lum_grp%num, (lum_grp%name(ilum), ilum = 1, mlug)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>i</code></small></li>
-                                    <li><small><code>lum_grp%num</code></small></li>
-                                    <li><small><code>lum_grp%name(ilum), ilum = 1, mlug</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>73</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) header</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>header</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>76</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>lum_grp%name</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>lum_grp%num</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%reg_elem</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%lsu_reg</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>db_mx%landuse</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>sp_ob%hru</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>in_regs%def_reg</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>in_regs%ele_reg</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__mreg___0_">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__mreg___0_" aria-expanded="false" 
-                    aria-controls="collapseCondif__mreg___0_">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (mreg > 0)</strong>
-                  <small class="text-muted ms-2">(line 80)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__">
+              type(<a href='../type/cataloging_units.html'>cataloging_units</a>)
+              <small class="text-muted ms-2">(1 attribute from calibration_data_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__mreg___0_" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__mreg___0_" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_regs%def_reg</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) k, lsu_reg(i)%name, lsu_reg(i)%area_ha, nspu</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>k</code></small></li>
-                                    <li><small><code>lsu_reg(i)%name</code></small></li>
-                                    <li><small><code>lsu_reg(i)%area_ha</code></small></li>
-                                    <li><small><code>nspu</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>99</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>region</strong></td>
+                      <td><p>dimension by region for hru"s</p></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__nspu___0_">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_units_html__landscape_units__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__nspu___0_" aria-expanded="false" 
-                    aria-controls="collapseCondif__nspu___0_">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (nspu > 0)</strong>
-                  <small class="text-muted ms-2">(line 101)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_units_html__landscape_units__a__">
+              type(<a href='../type/landscape_units.html'>landscape_units</a>)
+              <small class="text-muted ms-2">(2 attributes from calibration_data_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__nspu___0_" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__nspu___0_" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_regs%def_reg</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">backspace</span></td>
-                            <td><code>backspace (107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>103</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) k, lsu_reg(i)%name, lsu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>k</code></small></li>
-                                    <li><small><code>lsu_reg(i)%name</code></small></li>
-                                    <li><small><code>lsu_reg(i)%area_ha</code></small></li>
-                                    <li><small><code>nspu</code></small></li>
-                                    <li><small><code>elem_cnt(isp), isp = 1, nspu</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>104</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>lsu_out</strong></td>
+                      <td><p>dimension by region for hrus</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>lsu_reg</strong></td>
+                      <td><p>dimension by region for hrus</p></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__i_exist__or__in_regs_pct_ele_reg_____null__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_region_elements_html__landscape_region_elements__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__i_exist__or__in_regs_pct_ele_reg_____null__" aria-expanded="false" 
-                    aria-controls="collapseCondif__i_exist__or__in_regs_pct_ele_reg_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (i_exist .or. in_regs%ele_reg /= "null")</strong>
-                  <small class="text-muted ms-2">(line 129)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_region_elements_html__landscape_region_elements__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_region_elements_html__landscape_region_elements__a__">
+              type(<a href='../type/landscape_region_elements.html'>landscape_region_elements</a>)
+              <small class="text-muted ms-2">(1 attribute from calibration_data_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__i_exist__or__in_regs_pct_ele_reg_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__i_exist__or__in_regs_pct_ele_reg_____null__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_region_elements_html__landscape_region_elements__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_region_elements_html__landscape_region_elements__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_regs%ele_reg</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">open</span></td>
-                            <td><code>open (107,file=in_regs%ele_reg)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>131</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) titldum</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>titldum</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>132</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) header</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>header</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>134</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) i</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>i</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>138</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">rewind</span></td>
-                            <td><code>rewind (107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>145</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) titldum</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>titldum</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>146</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) header</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>header</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>148</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) i</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>i</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>153</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">backspace</span></td>
-                            <td><code>backspace (107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>154</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (107,*,iostat=eof) k, reg_elem(i)%name, reg_elem(i)%ha, reg_elem(i)%obtyp, reg_elem(i)%obtypno</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>k</code></small></li>
-                                    <li><small><code>reg_elem(i)%name</code></small></li>
-                                    <li><small><code>reg_elem(i)%ha</code></small></li>
-                                    <li><small><code>reg_elem(i)%obtyp</code></small></li>
-                                    <li><small><code>reg_elem(i)%obtypno</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>155</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>reg_elem</strong></td>
+                      <td><p>landscape region elements</p></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondcase___lsu__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondcase___lsu__" aria-expanded="false" 
-                    aria-controls="collapseCondcase___lsu__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>case ("lsu")</strong>
-                  <small class="text-muted ms-2">(line 189)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__">
+              type(<a href='../type/landscape_elements.html'>landscape_elements</a>)
+              <small class="text-muted ms-2">(1 attribute from calibration_data_module)</small>
             </button>
           </h3>
-          <div id="collapseCondcase___lsu__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondcase___lsu__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_regs%ele_reg</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">close</span></td>
-                            <td><code>close (107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>200</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">close</span></td>
-                            <td><code>close(107)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>-</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>lsu_elem</strong></td>
+                      <td><p>landscape cataoging unit</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
+              type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
+              <small class="text-muted ms-2">(1 attribute from hru_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>hru</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headinginteger">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseinteger" aria-expanded="false" 
+                    aria-controls="collapseinteger">
+              integer
+              <small class="text-muted ms-2">(3 attributes from hru_module)</small>
+            </button>
+          </h3>
+          <div id="collapseinteger" class="accordion-collapse collapse" 
+               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ihru</strong></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~25" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>elem_cnt</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>defunit_num</strong></td>
+                      <td><p>|</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_waterbal_html__regional_output_waterbal__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_waterbal_html__regional_output_waterbal__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_waterbal_html__regional_output_waterbal__a__">
+              type(<a href='../type/regional_output_waterbal.html'>regional_output_waterbal</a>)
+              <small class="text-muted ms-2">(4 attributes from output_landscape_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_waterbal_html__regional_output_waterbal__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_waterbal_html__regional_output_waterbal__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>rwb_d</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rwb_m</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rwb_y</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rwb_a</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_nutbal_html__regional_output_nutbal__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_nutbal_html__regional_output_nutbal__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_nutbal_html__regional_output_nutbal__a__">
+              type(<a href='../type/regional_output_nutbal.html'>regional_output_nutbal</a>)
+              <small class="text-muted ms-2">(4 attributes from output_landscape_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_nutbal_html__regional_output_nutbal__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_nutbal_html__regional_output_nutbal__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>rnb_d</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rnb_m</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rnb_y</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rnb_a</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_losses_html__regional_output_losses__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_losses_html__regional_output_losses__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_losses_html__regional_output_losses__a__">
+              type(<a href='../type/regional_output_losses.html'>regional_output_losses</a>)
+              <small class="text-muted ms-2">(4 attributes from output_landscape_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_losses_html__regional_output_losses__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_losses_html__regional_output_losses__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>rls_d</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rls_m</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rls_y</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rls_a</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_plantweather_html__regional_output_plantweather__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_plantweather_html__regional_output_plantweather__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_plantweather_html__regional_output_plantweather__a__">
+              type(<a href='../type/regional_output_plantweather.html'>regional_output_plantweather</a>)
+              <small class="text-muted ms-2">(4 attributes from output_landscape_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_plantweather_html__regional_output_plantweather__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_regional_output_plantweather_html__regional_output_plantweather__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>rpw_d</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rpw_m</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rpw_y</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>rpw_a</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
     </div>
 
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>setting up regions for landscape soft cal and/or output by landuse
+ allocate regional output files
+ if no regions are input, don"t need elements
+ allocate land use within each region for soft cal and output
+all hrus are in region 
+read data for each element in all landscape cataloging units</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  32</span> imax = 0
+<span class="text-muted">  33</span> mcal = 0
+<span class="text-muted">  34</span> mreg = 0
+<span class="text-muted">  37</span> inquire (file=in_regs%def_reg, exist=i_exist)
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_exist .or. in_regs%def_reg /= "null"</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  39</span> do
+<span class="text-muted">  40</span> open (107,file=in_regs%def_reg)
+<span class="text-muted">  41</span> read (107,*,iostat=eof) titldum
+<span class="text-muted">  42</span> if (eof < 0) exit
+<span class="text-muted">  43</span> read (107,*,iostat=eof) mreg, mlug
+<span class="text-muted">  44</span> if (eof < 0) exit
+<span class="text-muted">  47</span> allocate (lsu_reg(0:mreg))
+<span class="text-muted">  48</span> allocate (region(0:mreg))
+<span class="text-muted">  49</span> allocate (rwb_d(mreg))
+<span class="text-muted">  50</span> allocate (rwb_m(mreg))
+<span class="text-muted">  51</span> allocate (rwb_y(mreg))
+<span class="text-muted">  52</span> allocate (rwb_a(mreg))
+<span class="text-muted">  53</span> allocate (rnb_d(mreg))
+<span class="text-muted">  54</span> allocate (rnb_m(mreg))
+<span class="text-muted">  55</span> allocate (rnb_y(mreg))
+<span class="text-muted">  56</span> allocate (rnb_a(mreg))
+<span class="text-muted">  57</span> allocate (rls_d(mreg))
+<span class="text-muted">  58</span> allocate (rls_m(mreg))
+<span class="text-muted">  59</span> allocate (rls_y(mreg))
+<span class="text-muted">  60</span> allocate (rls_a(mreg))
+<span class="text-muted">  61</span> allocate (rpw_d(mreg))
+<span class="text-muted">  62</span> allocate (rpw_m(mreg))
+<span class="text-muted">  63</span> allocate (rpw_y(mreg))
+<span class="text-muted">  64</span> allocate (rpw_a(mreg))
+<span class="text-muted">  66</span> db_mx%landuse = mlug
+<span class="text-muted">  69</span> allocate (region(ireg)%lumc(mlug))
+<span class="text-muted">  70</span> allocate (lum_grp%name(mlug))
+<span class="text-muted">  76</span> read (107,*,iostat=eof) header
+<span class="text-muted">  77</span> if (eof < 0) exit
+<span class="text-muted"> 128</span> inquire (file=in_regs%ele_reg, exist=i_exist)
+<span class="text-muted"> 200</span> close (107)
+<span class="text-muted"> 202</span> return
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>mlug > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 71-75</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  72</span> backspace (107)
+<span class="text-muted">  73</span> read (107,*,iostat=eof) i, lum_grp%num, (lum_grp%name(ilum), ilum = 1, mlug)
+<span class="text-muted">  74</span> if (eof < 0) exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 75</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>mreg > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 80-125</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  94</span> end if    ! mreg > 0
+<span class="text-muted">  96</span> db_mx%lsu_reg = mreg
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ireg = 1, mreg</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 83-93</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  84</span> allocate (region(ireg)%lum_ha_tot(mlug), source = 0.)
+<span class="text-muted">  85</span> allocate (region(ireg)%lum_num_tot(mlug), source = 0)
+<span class="text-muted">  86</span> region(ireg)%lum_ha_tot = 0.
+<span class="text-muted">  87</span> region(ireg)%lum_num_tot = 0
+<span class="text-muted">  88</span> region(ireg)%lum_ha_tot = 0.
+<span class="text-muted">  89</span> allocate (rwb_a(ireg)%lum(mlug))
+<span class="text-muted">  90</span> allocate (rnb_a(ireg)%lum(mlug))
+<span class="text-muted">  91</span> allocate (rls_a(ireg)%lum(mlug))
+<span class="text-muted">  92</span> allocate (rpw_a(ireg)%lum(mlug))
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 93</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>i = 1, mreg</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 97-124</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  99</span> read (107,*,iostat=eof) k, lsu_reg(i)%name, lsu_reg(i)%area_ha, nspu
+<span class="text-muted"> 100</span> if (eof < 0) exit
+<span class="text-muted"> 122</span> end do    ! i = 1, mreg
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>nspu > 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 101-112</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 102</span> allocate (elem_cnt(nspu), source = 0)
+<span class="text-muted"> 103</span> backspace (107)
+<span class="text-muted"> 104</span> read (107,*,iostat=eof) k, lsu_reg(i)%name, lsu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
+<span class="text-muted"> 105</span> if (eof < 0) exit
+<span class="text-muted"> 107</span> call define_unit_elements (nspu, ielem1)
+<span class="text-muted"> 109</span> allocate (lsu_reg(i)%num(ielem1), source = 0)
+<span class="text-muted"> 110</span> lsu_reg(i)%num = defunit_num
+<span class="text-muted"> 111</span> lsu_reg(i)%num_tot = ielem1
+<span class="text-muted"> 112</span> deallocate (defunit_num)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 112</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 113-120</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 115</span> allocate (lsu_reg(i)%num(sp_ob%hru), source = 0)
+<span class="text-muted"> 116</span> lsu_reg(i)%num_tot = sp_ob%hru
+</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ihru = 1, sp_ob%hru</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 117-119</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 118</span> lsu_reg(i)%num(ihru) = ihru
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 119</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 120</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 124</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 125</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_exist .or. in_regs%ele_reg /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 129-160</span>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 130</span> do
+<span class="text-muted"> 131</span> open (107,file=in_regs%ele_reg)
+<span class="text-muted"> 132</span> read (107,*,iostat=eof) titldum
+<span class="text-muted"> 133</span> if (eof < 0) exit
+<span class="text-muted"> 134</span> read (107,*,iostat=eof) header
+<span class="text-muted"> 135</span> if (eof < 0) exit
+<span class="text-muted"> 136</span> imax = 0
+<span class="text-muted"> 143</span> allocate (reg_elem(imax))
+<span class="text-muted"> 145</span> rewind (107)
+<span class="text-muted"> 146</span> read (107,*,iostat=eof) titldum
+<span class="text-muted"> 147</span> if (eof < 0) exit
+<span class="text-muted"> 148</span> read (107,*,iostat=eof) header
+<span class="text-muted"> 149</span> if (eof < 0) exit
+<span class="text-muted"> 151</span> db_mx%reg_elem = imax
+<span class="text-muted"> 158</span> exit
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>while (eof == 0)</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 137-141</span>
+                  </div>
+                </a>
+                <div id="block-2-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 138</span> read (107,*,iostat=eof) i
+<span class="text-muted"> 139</span> if (eof < 0) exit
+<span class="text-muted"> 140</span> imax = Max(i,imax)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 141</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>isp = 1, imax</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 152-157</span>
+                  </div>
+                </a>
+                <div id="block-2-block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 153</span> read (107,*,iostat=eof) i
+<span class="text-muted"> 154</span> backspace (107)
+<span class="text-muted"> 155</span> read (107,*,iostat=eof) k, reg_elem(i)%name, reg_elem(i)%ha, reg_elem(i)%obtyp, reg_elem(i)%obtypno
+<span class="text-muted"> 156</span> if (eof < 0) exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 157</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 160</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ireg = 1, mreg</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 163-174</span>
+                  </div>
+                </a>
+                <div id="block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 164</span> ihru_tot = 0
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ielem1 = 1, db_mx%lsu_reg     !lsu_reg(ireg)%num_tot      !elements - lsu, hru or hru_lte</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 165-173</span>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>reg_elem(ielem1)%obtyp</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 166-172</span>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"hru"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 167-168</span>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 168</span> ihru_tot = ihru_tot + 1
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"lsu"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 169-171</span>
+                  </div>
+                </a>
+                <div id="block-2-block-4-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 170</span> ilsu = reg_elem(ielem1)%obtypno
+<span class="text-muted"> 171</span> ihru_tot = ihru_tot + lsu_out(ilsu)%num_tot
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 172</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 173</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 174</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ireg = 1, mreg</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 177-198</span>
+                  </div>
+                </a>
+                <div id="block-2-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 178</span> ihru = 0
+<span class="text-muted"> 179</span> region(ireg)%num_tot = ihru_tot
+<span class="text-muted"> 180</span> allocate (region(ireg)%num(ihru_tot), source = 0)
+<span class="text-muted"> 181</span> allocate (region(ireg)%hru_ha(ihru_tot), source = 0.)
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-5-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ielem1 = 1, db_mx%lsu_reg     !lsu_reg(ireg)%num_tot      !elements - lsu, hru or hru_lte</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 182-197</span>
+                  </div>
+                </a>
+                <div id="block-2-block-5-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-5-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>reg_elem(ireg)%obtyp</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 183-196</span>
+                  </div>
+                </a>
+                <div id="block-2-block-5-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-5-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"hru"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 184-188</span>
+                  </div>
+                </a>
+                <div id="block-2-block-5-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 186</span> ihru = ihru + 1
+<span class="text-muted"> 187</span> region(ireg)%num(ihru) = reg_elem(ielem1)%obtypno
+<span class="text-muted"> 188</span> region(ireg)%hru_ha(ihru) = hru(ihru)%area_ha
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-5-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"lsu"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 189-195</span>
+                  </div>
+                </a>
+                <div id="block-2-block-5-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 190</span> ilsu = reg_elem(ielem1)%obtypno
+</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-5-block-1-block-1-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iihru = 1, lsu_out(ilsu)%num_tot</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 191-195</span>
+                  </div>
+                </a>
+                <div id="block-2-block-5-block-1-block-1-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 192</span> ihru = ihru + 1
+<span class="text-muted"> 193</span> region(ireg)%num(ihru) = lsu_elem(iihru)%obtypno
+<span class="text-muted"> 194</span> region(ireg)%hru_ha(ihru) = lsu_elem(iihru)%ru_frac * lsu_out(ilsu)%area_ha
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 195</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 196</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 197</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 198</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>                    </div>
+                  </div>
+                </div>
+              </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                <p class="text-muted mb-3">
+                  Memory allocations and deallocations grouped by variable.
+                </p>
+                <table class="table table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Allocations</th>
+                      <th>Deallocations</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>lsu_reg</code></td>
+                      <td>
+                            <span class="badge bg-success">line 47</span>,                             <span class="badge bg-success">line 109</span>,                             <span class="badge bg-success">line 115</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>region</code></td>
+                      <td>
+                            <span class="badge bg-success">line 48</span>,                             <span class="badge bg-success">line 69</span>,                             <span class="badge bg-success">line 84</span>,                             <span class="badge bg-success">line 85</span>,                             <span class="badge bg-success">line 180</span>,                             <span class="badge bg-success">line 181</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rwb_d</code></td>
+                      <td>
+                            <span class="badge bg-success">line 49</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rwb_m</code></td>
+                      <td>
+                            <span class="badge bg-success">line 50</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rwb_y</code></td>
+                      <td>
+                            <span class="badge bg-success">line 51</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rwb_a</code></td>
+                      <td>
+                            <span class="badge bg-success">line 52</span>,                             <span class="badge bg-success">line 89</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rnb_d</code></td>
+                      <td>
+                            <span class="badge bg-success">line 53</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rnb_m</code></td>
+                      <td>
+                            <span class="badge bg-success">line 54</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rnb_y</code></td>
+                      <td>
+                            <span class="badge bg-success">line 55</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rnb_a</code></td>
+                      <td>
+                            <span class="badge bg-success">line 56</span>,                             <span class="badge bg-success">line 90</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rls_d</code></td>
+                      <td>
+                            <span class="badge bg-success">line 57</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rls_m</code></td>
+                      <td>
+                            <span class="badge bg-success">line 58</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rls_y</code></td>
+                      <td>
+                            <span class="badge bg-success">line 59</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rls_a</code></td>
+                      <td>
+                            <span class="badge bg-success">line 60</span>,                             <span class="badge bg-success">line 91</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rpw_d</code></td>
+                      <td>
+                            <span class="badge bg-success">line 61</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rpw_m</code></td>
+                      <td>
+                            <span class="badge bg-success">line 62</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rpw_y</code></td>
+                      <td>
+                            <span class="badge bg-success">line 63</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>rpw_a</code></td>
+                      <td>
+                            <span class="badge bg-success">line 64</span>,                             <span class="badge bg-success">line 92</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>lum_grp</code></td>
+                      <td>
+                            <span class="badge bg-success">line 70</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>elem_cnt</code></td>
+                      <td>
+                            <span class="badge bg-success">line 102</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>defunit_num</code></td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                      <td>
+                            <span class="badge bg-warning text-dark">line 112</span>                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>reg_elem</code></td>
+                      <td>
+                            <span class="badge bg-success">line 143</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#local-variables-section" 
@@ -1212,1429 +1827,6 @@ read data for each element in all landscape cataloging units</p>
         </tr>
     </tbody>
   </table>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headinginteger">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseinteger" aria-expanded="false" 
-                    aria-controls="collapseinteger">
-              integer
-              <small class="text-muted ms-2">(3 attributes from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapseinteger" class="accordion-collapse collapse" 
-               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>elem_cnt</strong></td>
-                      <td><p>|</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>defunit_num</strong></td>
-                      <td><p>|</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~24" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(8 attributes from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>sp_ob%hru</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%landuse</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%lsu_reg</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%reg_elem</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>lum_grp%num</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>lum_grp%name</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>in_regs%def_reg</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>in_regs%ele_reg</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
-              type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
-              <small class="text-muted ms-2">(1 attribute from hru_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>hru</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_land_use_management_html__land_use_management__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_land_use_management_html__land_use_management__a__">
-              type(<a href='../type/land_use_management.html'>land_use_management</a>)
-              <small class="text-muted ms-2">(1 attribute from landuse_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_land_use_management_html__land_use_management__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>lum</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__">
-              type(<a href='../type/cataloging_units.html'>cataloging_units</a>)
-              <small class="text-muted ms-2">(1 attribute from calibration_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_cataloging_units_html__cataloging_units__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>region</strong></td>
-                      <td><p>dimension by region for hru"s</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_landscape_units_html__landscape_units__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_units_html__landscape_units__a__">
-              type(<a href='../type/landscape_units.html'>landscape_units</a>)
-              <small class="text-muted ms-2">(2 attributes from calibration_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_landscape_units_html__landscape_units__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>lsu_out</strong></td>
-                      <td><p>dimension by region for hrus</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>lsu_reg</strong></td>
-                      <td><p>dimension by region for hrus</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_landscape_region_elements_html__landscape_region_elements__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_region_elements_html__landscape_region_elements__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_region_elements_html__landscape_region_elements__a__">
-              type(<a href='../type/landscape_region_elements.html'>landscape_region_elements</a>)
-              <small class="text-muted ms-2">(1 attribute from calibration_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_region_elements_html__landscape_region_elements__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_landscape_region_elements_html__landscape_region_elements__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>reg_elem</strong></td>
-                      <td><p>landscape region elements</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__">
-              type(<a href='../type/landscape_elements.html'>landscape_elements</a>)
-              <small class="text-muted ms-2">(1 attribute from calibration_data_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_landscape_elements_html__landscape_elements__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>lsu_elem</strong></td>
-                      <td><p>landscape cataoging unit</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_regional_output_waterbal_html__regional_output_waterbal__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_waterbal_html__regional_output_waterbal__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_waterbal_html__regional_output_waterbal__a__">
-              type(<a href='../type/regional_output_waterbal.html'>regional_output_waterbal</a>)
-              <small class="text-muted ms-2">(4 attributes from output_landscape_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_waterbal_html__regional_output_waterbal__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_regional_output_waterbal_html__regional_output_waterbal__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>rwb_d</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rwb_m</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rwb_y</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rwb_a</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_regional_output_nutbal_html__regional_output_nutbal__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_nutbal_html__regional_output_nutbal__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_nutbal_html__regional_output_nutbal__a__">
-              type(<a href='../type/regional_output_nutbal.html'>regional_output_nutbal</a>)
-              <small class="text-muted ms-2">(4 attributes from output_landscape_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_nutbal_html__regional_output_nutbal__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_regional_output_nutbal_html__regional_output_nutbal__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>rnb_d</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rnb_m</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rnb_y</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rnb_a</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_regional_output_losses_html__regional_output_losses__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_losses_html__regional_output_losses__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_losses_html__regional_output_losses__a__">
-              type(<a href='../type/regional_output_losses.html'>regional_output_losses</a>)
-              <small class="text-muted ms-2">(4 attributes from output_landscape_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_losses_html__regional_output_losses__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_regional_output_losses_html__regional_output_losses__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>rls_d</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rls_m</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rls_y</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rls_a</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_regional_output_plantweather_html__regional_output_plantweather__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_plantweather_html__regional_output_plantweather__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_plantweather_html__regional_output_plantweather__a__">
-              type(<a href='../type/regional_output_plantweather.html'>regional_output_plantweather</a>)
-              <small class="text-muted ms-2">(4 attributes from output_landscape_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_regional_output_plantweather_html__regional_output_plantweather__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_regional_output_plantweather_html__regional_output_plantweather__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>rpw_d</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rpw_m</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rpw_y</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>rpw_a</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#allocations-section" 
-         aria-expanded="false" 
-         aria-controls="allocations-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Allocations
-        </h3>
-      </a>
-      <div id="allocations-section" class="collapse">
-        <div class="card-body">
-              <div class="accordion" id="allocationConditionsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif__i_exist__or__in_regs_pct_def_reg_____null__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif__i_exist__or__in_regs_pct_def_reg_____null__" aria-expanded="false" 
-                    aria-controls="collapseAllocif__i_exist__or__in_regs_pct_def_reg_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (i_exist .or. in_regs%def_reg /= "null")</strong>
-                  <small class="text-muted ms-2">(line 38)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif__i_exist__or__in_regs_pct_def_reg_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif__i_exist__or__in_regs_pct_def_reg_____null__" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>lsu_reg(0:mreg</code>                      </td>
-                      <td><code>allocate (lsu_reg(0:mreg))</code></td>
-                      <td>47</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>region(0:mreg</code>                      </td>
-                      <td><code>allocate (region(0:mreg))</code></td>
-                      <td>48</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rwb_d(mreg</code>                      </td>
-                      <td><code>allocate (rwb_d(mreg))</code></td>
-                      <td>49</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rwb_m(mreg</code>                      </td>
-                      <td><code>allocate (rwb_m(mreg))</code></td>
-                      <td>50</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rwb_y(mreg</code>                      </td>
-                      <td><code>allocate (rwb_y(mreg))</code></td>
-                      <td>51</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rwb_a(mreg</code>                      </td>
-                      <td><code>allocate (rwb_a(mreg))</code></td>
-                      <td>52</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rnb_d(mreg</code>                      </td>
-                      <td><code>allocate (rnb_d(mreg))</code></td>
-                      <td>53</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rnb_m(mreg</code>                      </td>
-                      <td><code>allocate (rnb_m(mreg))</code></td>
-                      <td>54</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rnb_y(mreg</code>                      </td>
-                      <td><code>allocate (rnb_y(mreg))</code></td>
-                      <td>55</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rnb_a(mreg</code>                      </td>
-                      <td><code>allocate (rnb_a(mreg))</code></td>
-                      <td>56</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rls_d(mreg</code>                      </td>
-                      <td><code>allocate (rls_d(mreg))</code></td>
-                      <td>57</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rls_m(mreg</code>                      </td>
-                      <td><code>allocate (rls_m(mreg))</code></td>
-                      <td>58</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rls_y(mreg</code>                      </td>
-                      <td><code>allocate (rls_y(mreg))</code></td>
-                      <td>59</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rls_a(mreg</code>                      </td>
-                      <td><code>allocate (rls_a(mreg))</code></td>
-                      <td>60</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rpw_d(mreg</code>                      </td>
-                      <td><code>allocate (rpw_d(mreg))</code></td>
-                      <td>61</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rpw_m(mreg</code>                      </td>
-                      <td><code>allocate (rpw_m(mreg))</code></td>
-                      <td>62</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rpw_y(mreg</code>                      </td>
-                      <td><code>allocate (rpw_y(mreg))</code></td>
-                      <td>63</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rpw_a(mreg</code>                      </td>
-                      <td><code>allocate (rpw_a(mreg))</code></td>
-                      <td>64</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>region(ireg</code>                      </td>
-                      <td><code>allocate (region(ireg)%lumc(mlug))</code></td>
-                      <td>69</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>lum_grp%name(mlug</code>                      </td>
-                      <td><code>allocate (lum_grp%name(mlug))</code></td>
-                      <td>70</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif__mreg___0_">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif__mreg___0_" aria-expanded="false" 
-                    aria-controls="collapseAllocif__mreg___0_">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (mreg > 0)</strong>
-                  <small class="text-muted ms-2">(line 80)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif__mreg___0_" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif__mreg___0_" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>region(ireg</code>                      </td>
-                      <td><code>allocate (region(ireg)%lum_ha_tot(mlug), source = 0.)</code></td>
-                      <td>84</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>region(ireg</code>                      </td>
-                      <td><code>allocate (region(ireg)%lum_num_tot(mlug), source = 0)</code></td>
-                      <td>85</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rwb_a(ireg</code>                      </td>
-                      <td><code>allocate (rwb_a(ireg)%lum(mlug))</code></td>
-                      <td>89</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rnb_a(ireg</code>                      </td>
-                      <td><code>allocate (rnb_a(ireg)%lum(mlug))</code></td>
-                      <td>90</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rls_a(ireg</code>                      </td>
-                      <td><code>allocate (rls_a(ireg)%lum(mlug))</code></td>
-                      <td>91</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>rpw_a(ireg</code>                      </td>
-                      <td><code>allocate (rpw_a(ireg)%lum(mlug))</code></td>
-                      <td>92</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif__nspu___0_">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif__nspu___0_" aria-expanded="false" 
-                    aria-controls="collapseAllocif__nspu___0_">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (nspu > 0)</strong>
-                  <small class="text-muted ms-2">(line 101)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif__nspu___0_" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif__nspu___0_" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>elem_cnt(nspu</code>                      </td>
-                      <td><code>allocate (elem_cnt(nspu), source = 0)</code></td>
-                      <td>102</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>lsu_reg(i</code>                      </td>
-                      <td><code>allocate (lsu_reg(i)%num(ielem1), source = 0)</code></td>
-                      <td>109</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-warning">deallocate</span>
-                      </td>
-                      <td>
-                            <code>defunit_num</code>                      </td>
-                      <td><code>deallocate (defunit_num)</code></td>
-                      <td>112</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>lsu_reg(i</code>                      </td>
-                      <td><code>allocate (lsu_reg(i)%num(sp_ob%hru), source = 0)</code></td>
-                      <td>115</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif__i_exist__or__in_regs_pct_ele_reg_____null__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif__i_exist__or__in_regs_pct_ele_reg_____null__" aria-expanded="false" 
-                    aria-controls="collapseAllocif__i_exist__or__in_regs_pct_ele_reg_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (i_exist .or. in_regs%ele_reg /= "null")</strong>
-                  <small class="text-muted ms-2">(line 129)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif__i_exist__or__in_regs_pct_ele_reg_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif__i_exist__or__in_regs_pct_ele_reg_____null__" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>reg_elem(imax</code>                      </td>
-                      <td><code>allocate (reg_elem(imax))</code></td>
-                      <td>143</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAlloccase___lsu__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAlloccase___lsu__" aria-expanded="false" 
-                    aria-controls="collapseAlloccase___lsu__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>case ("lsu")</strong>
-                  <small class="text-muted ms-2">(line 169)</small>
-            </button>
-          </h3>
-          <div id="collapseAlloccase___lsu__" class="accordion-collapse collapse" 
-               aria-labelledby="headingAlloccase___lsu__" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>region(ireg</code>                      </td>
-                      <td><code>allocate (region(ireg)%num(ihru_tot), source = 0)</code></td>
-                      <td>180</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>region(ireg</code>                      </td>
-                      <td><code>allocate (region(ireg)%hru_ha(ihru_tot), source = 0.)</code></td>
-                      <td>181</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use input_file_module
-use maximum_data_module
-use calibration_data_module
-use landuse_data_module
-use hydrograph_module
-use hru_module, only : hru, ihru
-use output_landscape_module
-implicit none
-character (len=80) :: titldum = ""  !             |title of file
-character (len=80) :: header = "" !             |header of file
-integer :: eof = 0                !             |end of file
-logical :: i_exist                !none         |check to determine if file exists
-integer :: imax = 0               !             |determine max number for array (imax) and total number in file
-integer :: mcal = 0               !             |
-integer :: mreg = 0               !             |
-integer :: mlug = 0
-integer :: ireg = 0
-integer :: i = 0                  !none         |counter
-integer :: k = 0                  !             |
-integer :: ilum = 0
-integer :: nspu = 0               !             |
-integer :: isp = 0                !             |
-integer :: ielem1 = 0             !none         |counter
-integer :: iihru = 0              !none         |counter
-integer :: ihru_tot = 0           !             |
-integer :: ilsu = 0               !             |
-imax = 0
-mcal = 0
-mreg = 0
-inquire (file=in_regs%def_reg, exist=i_exist)</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>i_exist .or. in_regs%def_reg /= "null"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>do
-open (107,file=in_regs%def_reg)
-read (107,*,iostat=eof) titldum
-if (eof < 0) exit
-read (107,*,iostat=eof) mreg, mlug
-if (eof < 0) exit
-allocate (lsu_reg(0:mreg))
-allocate (region(0:mreg))
-allocate (rwb_d(mreg))
-allocate (rwb_m(mreg))
-allocate (rwb_y(mreg))
-allocate (rwb_a(mreg))
-allocate (rnb_d(mreg))
-allocate (rnb_m(mreg))
-allocate (rnb_y(mreg))
-allocate (rnb_a(mreg))
-allocate (rls_d(mreg))
-allocate (rls_m(mreg))
-allocate (rls_y(mreg))
-allocate (rls_a(mreg))
-allocate (rpw_d(mreg))
-allocate (rpw_m(mreg))
-allocate (rpw_y(mreg))
-allocate (rpw_a(mreg))
-db_mx%landuse = mlug
-allocate (region(ireg)%lumc(mlug))
-allocate (lum_grp%name(mlug))
-read (107,*,iostat=eof) header
-if (eof < 0) exit
-inquire (file=in_regs%ele_reg, exist=i_exist)
-close (107)
-return</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>mlug > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>backspace (107)
-read (107,*,iostat=eof) i, lum_grp%num, (lum_grp%name(ilum), ilum = 1, mlug)
-if (eof < 0) exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>mreg > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>end if    ! mreg > 0
-db_mx%lsu_reg = mreg</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ireg = 1, mreg</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>allocate (region(ireg)%lum_ha_tot(mlug), source = 0.)
-allocate (region(ireg)%lum_num_tot(mlug), source = 0)
-region(ireg)%lum_ha_tot = 0.
-region(ireg)%lum_num_tot = 0
-region(ireg)%lum_ha_tot = 0.
-allocate (rwb_a(ireg)%lum(mlug))
-allocate (rnb_a(ireg)%lum(mlug))
-allocate (rls_a(ireg)%lum(mlug))
-allocate (rpw_a(ireg)%lum(mlug))</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>i = 1, mreg</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>read (107,*,iostat=eof) k, lsu_reg(i)%name, lsu_reg(i)%area_ha, nspu
-if (eof < 0) exit
-end do    ! i = 1, mreg</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>nspu > 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>allocate (elem_cnt(nspu), source = 0)
-backspace (107)
-read (107,*,iostat=eof) k, lsu_reg(i)%name, lsu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
-if (eof < 0) exit
-call define_unit_elements (nspu, ielem1)
-allocate (lsu_reg(i)%num(ielem1), source = 0)
-lsu_reg(i)%num = defunit_num
-lsu_reg(i)%num_tot = ielem1
-deallocate (defunit_num)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-2-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>allocate (lsu_reg(i)%num(sp_ob%hru), source = 0)
-lsu_reg(i)%num_tot = sp_ob%hru</code></pre>
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ihru = 1, sp_ob%hru</code>
-                  </div>
-                </a>
-                <div id="block-2-block-2-block-2-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>lsu_reg(i)%num(ihru) = ihru</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>i_exist .or. in_regs%ele_reg /= "null"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>do
-open (107,file=in_regs%ele_reg)
-read (107,*,iostat=eof) titldum
-if (eof < 0) exit
-read (107,*,iostat=eof) header
-if (eof < 0) exit
-imax = 0
-allocate (reg_elem(imax))
-rewind (107)
-read (107,*,iostat=eof) titldum
-if (eof < 0) exit
-read (107,*,iostat=eof) header
-if (eof < 0) exit
-db_mx%reg_elem = imax
-exit</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>while (eof == 0)</code>
-                  </div>
-                </a>
-                <div id="block-2-block-3-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>read (107,*,iostat=eof) i
-if (eof < 0) exit
-imax = Max(i,imax)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-3-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>isp = 1, imax</code>
-                  </div>
-                </a>
-                <div id="block-2-block-3-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>read (107,*,iostat=eof) i
-backspace (107)
-read (107,*,iostat=eof) k, reg_elem(i)%name, reg_elem(i)%ha, reg_elem(i)%obtyp, reg_elem(i)%obtypno
-if (eof < 0) exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-4" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ireg = 1, mreg</code>
-                  </div>
-                </a>
-                <div id="block-2-block-4" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>ihru_tot = 0</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ielem1 = 1, db_mx%lsu_reg     !lsu_reg(ireg)%num_tot      !elements - lsu, hru or hru_lte</code>
-                  </div>
-                </a>
-                <div id="block-2-block-4-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>SELECT CASE</strong> (<code>reg_elem(ielem1)%obtyp</code>)
-                  </div>
-                </a>
-                <div id="block-2-block-4-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>CASE</strong> (<code>"hru"</code>)
-                  </div>
-                </a>
-                <div id="block-2-block-4-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>ihru_tot = ihru_tot + 1</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-4-block-1-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>CASE</strong> (<code>"lsu"</code>)
-                  </div>
-                </a>
-                <div id="block-2-block-4-block-1-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>ilsu = reg_elem(ielem1)%obtypno
-ihru_tot = ihru_tot + lsu_out(ilsu)%num_tot</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-5" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ireg = 1, mreg</code>
-                  </div>
-                </a>
-                <div id="block-2-block-5" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>ihru = 0
-region(ireg)%num_tot = ihru_tot
-allocate (region(ireg)%num(ihru_tot), source = 0)
-allocate (region(ireg)%hru_ha(ihru_tot), source = 0.)</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-5-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ielem1 = 1, db_mx%lsu_reg     !lsu_reg(ireg)%num_tot      !elements - lsu, hru or hru_lte</code>
-                  </div>
-                </a>
-                <div id="block-2-block-5-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-5-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>SELECT CASE</strong> (<code>reg_elem(ireg)%obtyp</code>)
-                  </div>
-                </a>
-                <div id="block-2-block-5-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-5-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>CASE</strong> (<code>"hru"</code>)
-                  </div>
-                </a>
-                <div id="block-2-block-5-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>ihru = ihru + 1
-region(ireg)%num(ihru) = reg_elem(ielem1)%obtypno
-region(ireg)%hru_ha(ihru) = hru(ihru)%area_ha</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-5-block-1-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>CASE</strong> (<code>"lsu"</code>)
-                  </div>
-                </a>
-                <div id="block-2-block-5-block-1-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>ilsu = reg_elem(ielem1)%obtypno</code></pre>
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-2-block-5-block-1-block-1-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>iihru = 1, lsu_out(ilsu)%num_tot</code>
-                  </div>
-                </a>
-                <div id="block-2-block-5-block-1-block-1-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>ihru = ihru + 1
-region(ireg)%num(ihru) = lsu_elem(iihru)%obtypno
-region(ireg)%hru_ha(ihru) = lsu_elem(iihru)%ru_frac * lsu_out(ilsu)%area_ha</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
 
         </div>
       </div>

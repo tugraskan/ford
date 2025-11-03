@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -160,59 +161,15 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/erosion_module.html'>erosion_module</a></li>
                   <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
                   <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
-                  <li class="list-inline-item"><a href='../module/erosion_module.html'>erosion_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <div class="codehilite"><pre><span></span><code><span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">PURPOSE</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="n">this</span> <span class="n">subroutine</span> <span class="n">predicts</span> <span class="n">daily</span> <span class="n">soil</span> <span class="n">loss</span> <span class="n">caused</span> <span class="n">by</span> <span class="n">water</span> <span class="n">erosion</span>
-<span class="n">using</span> <span class="n">the</span> <span class="n">modified</span> <span class="n">universal</span> <span class="n">soil</span> <span class="n">loss</span> <span class="n">equation</span>
-
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">INCOMING</span> <span class="n">VARIABLES</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="n">name</span>        <span class="p">|</span><span class="n">units</span>         <span class="p">|</span><span class="n">definition</span>
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="n">cvm</span><span class="p">(:)</span>      <span class="p">|</span><span class="n">none</span>          <span class="p">|</span><span class="n">natural</span> <span class="n">log</span> <span class="n">of</span> <span class="n">USLE_C</span> <span class="p">(</span><span class="n">the</span> <span class="n">minimum</span> <span class="n">value</span>
-                           <span class="p">|</span><span class="n">of</span> <span class="n">the</span> <span class="n">USLE</span> <span class="n">C</span> <span class="n">factor</span> <span class="n">for</span> <span class="n">the</span> <span class="n">land</span> <span class="n">cover</span><span class="p">)</span>
-<span class="n">hru_km</span><span class="p">(:)</span>   <span class="p">|</span><span class="n">km</span><span class="o">**</span><span class="mi">2</span>         <span class="p">|</span><span class="n">area</span> <span class="n">of</span> <span class="n">HRU</span> <span class="n">in</span> <span class="n">square</span> <span class="n">kilometers</span>
-<span class="n">qp_cms</span>      <span class="p">|</span><span class="n">m</span><span class="o">^</span><span class="mi">3</span><span class="o">/</span><span class="n">s</span>         <span class="p">|</span><span class="n">peak</span> <span class="n">runoff</span> <span class="n">rate</span>
-<span class="n">surfq</span><span class="p">(:)</span>    <span class="p">|</span><span class="n">mm</span> <span class="n">H2O</span>        <span class="p">|</span><span class="n">surface</span> <span class="n">runoff</span> <span class="n">for</span> <span class="n">the</span> <span class="n">day</span> <span class="n">in</span> <span class="n">HRU</span>
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">OUTGOING</span> <span class="n">VARIABLES</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="n">name</span>        <span class="p">|</span><span class="n">units</span>         <span class="p">|</span><span class="n">definition</span>
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="n">cklsp</span><span class="p">(:)</span>    <span class="p">|</span>
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">LOCAL</span> <span class="n">DEFINITIONS</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="n">name</span>        <span class="p">|</span><span class="n">units</span>         <span class="p">|</span><span class="n">definition</span>
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="n">bio_frcov</span>   <span class="p">|</span>              <span class="p">|</span><span class="n">fraction</span> <span class="n">of</span> <span class="n">cover</span> <span class="n">by</span> <span class="n">biomass</span> <span class="o">-</span> <span class="n">adjusted</span> <span class="n">for</span>
-                              <span class="n">canopy</span> <span class="n">height</span>
-<span class="n">grcov_fr</span>    <span class="p">|</span>              <span class="p">|</span><span class="n">fraction</span> <span class="n">of</span> <span class="n">cover</span> <span class="n">by</span> <span class="n">biomass</span> <span class="n">as</span> <span class="n">function</span> <span class="n">of</span> <span class="n">lai</span>
-<span class="n">rsd_frcov</span>   <span class="p">|</span>              <span class="p">|</span><span class="n">fraction</span> <span class="n">of</span> <span class="n">cover</span> <span class="n">by</span> <span class="n">residue</span>
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">SUBROUTINES</span><span class="o">/</span><span class="n">FUNCTIONS</span> <span class="n">CALLED</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-<span class="n">Intrinsic</span><span class="p">:</span> <span class="n">Exp</span>
-
-<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="kr">END</span> <span class="n">SPECIFICATIONS</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
-</code></pre></div>
-
-<p>initialize variables
- compute sediment yield with musle - t
- this is the form of MUSLE in APEX documentation - same results as swat equation above ! t/ha</p>
-<p>adjust sediment yield for protection of snow cover
- Particle size distribution of sediment yield</p>
-<p>compute erosion with usle (written to output for comparison)
- erosion output variables
- sum daily erosion output</p>
 
 
     <div class="card mb-3">
@@ -226,91 +183,26 @@
       </a>
       <div id="arguments-section" class="collapse show">
         <div class="card-body">
-            <em>None</em>
+            <em>n/a</em>
         </div>
       </div>
     </div>
-
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#local-variables-section" 
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
          aria-expanded="false" 
-         aria-controls="local-variables-section" 
+         aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Local Variables
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
-      <div id="local-variables-section" class="collapse">
+      <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-            <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-<th></th><th scope="col">Initial</th>        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="var-j"></span>
-              integer,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>j</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-usle"></span>
-              real,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>usle</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="var-rock"></span>
-              real,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>rock</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
+            <em>n/a</em>
         </div>
       </div>
     </div>
-    <br>
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#outside-variables-section" 
@@ -318,13 +210,42 @@
          aria-controls="outside-variables-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
         </h3>
       </a>
       <div id="outside-variables-section" class="collapse">
         <div class="card-body">
-              
+                
     <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_html__erosion_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_html__erosion_output__a__">
+              type(<a href='../type/erosion_output.html'>erosion_output</a>)
+              <small class="text-muted ms-2">(1 attribute from erosion_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ero_output</strong></td>
+                      <td><p>dimensioned by hru</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
         <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
@@ -355,16 +276,16 @@
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
               type(<a href='../type/soil_profile.html'>soil_profile</a>)
               <small class="text-muted ms-2">(1 attribute from soil_module)</small>
             </button>
           </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
               <table class="table table-sm">
                 <thead>
@@ -384,16 +305,16 @@
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__">
               type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
               <small class="text-muted ms-2">(1 attribute from hru_module)</small>
             </button>
           </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" data-bs-parent="#outsideVarsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hydrologic_response_unit_html__hydrologic_response_unit__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
               <table class="table table-sm">
                 <thead>
@@ -507,36 +428,7 @@
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~24" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_erosion_output_html__erosion_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_output_html__erosion_output__a__">
-              type(<a href='../type/erosion_output.html'>erosion_output</a>)
-              <small class="text-muted ms-2">(1 attribute from erosion_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_erosion_output_html__erosion_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ero_output</strong></td>
-                      <td><p>dimensioned by hru</p></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~25" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -548,24 +440,78 @@
         </div>
       </div>
     </div>
-    <br>
 
-
-    <br>
-
-    <br>
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
          aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
+         aria-controls="bang-comments-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
         </h3>
       </a>
-      <div id="logic-blocks-section" class="collapse">
+      <div id="bang-comments-section" class="collapse">
         <div class="card-body">
+          <div class="codehilite"><pre><span></span><code><span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">PURPOSE</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="n">this</span> <span class="n">subroutine</span> <span class="n">predicts</span> <span class="n">daily</span> <span class="n">soil</span> <span class="n">loss</span> <span class="n">caused</span> <span class="n">by</span> <span class="n">water</span> <span class="n">erosion</span>
+<span class="n">using</span> <span class="n">the</span> <span class="n">modified</span> <span class="n">universal</span> <span class="n">soil</span> <span class="n">loss</span> <span class="n">equation</span>
+
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">INCOMING</span> <span class="n">VARIABLES</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="n">name</span>        <span class="p">|</span><span class="n">units</span>         <span class="p">|</span><span class="n">definition</span>
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="n">cvm</span><span class="p">(:)</span>      <span class="p">|</span><span class="n">none</span>          <span class="p">|</span><span class="n">natural</span> <span class="n">log</span> <span class="n">of</span> <span class="n">USLE_C</span> <span class="p">(</span><span class="n">the</span> <span class="n">minimum</span> <span class="n">value</span>
+                           <span class="p">|</span><span class="n">of</span> <span class="n">the</span> <span class="n">USLE</span> <span class="n">C</span> <span class="n">factor</span> <span class="n">for</span> <span class="n">the</span> <span class="n">land</span> <span class="n">cover</span><span class="p">)</span>
+<span class="n">hru_km</span><span class="p">(:)</span>   <span class="p">|</span><span class="n">km</span><span class="o">**</span><span class="mi">2</span>         <span class="p">|</span><span class="n">area</span> <span class="n">of</span> <span class="n">HRU</span> <span class="n">in</span> <span class="n">square</span> <span class="n">kilometers</span>
+<span class="n">qp_cms</span>      <span class="p">|</span><span class="n">m</span><span class="o">^</span><span class="mi">3</span><span class="o">/</span><span class="n">s</span>         <span class="p">|</span><span class="n">peak</span> <span class="n">runoff</span> <span class="n">rate</span>
+<span class="n">surfq</span><span class="p">(:)</span>    <span class="p">|</span><span class="n">mm</span> <span class="n">H2O</span>        <span class="p">|</span><span class="n">surface</span> <span class="n">runoff</span> <span class="n">for</span> <span class="n">the</span> <span class="n">day</span> <span class="n">in</span> <span class="n">HRU</span>
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">OUTGOING</span> <span class="n">VARIABLES</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="n">name</span>        <span class="p">|</span><span class="n">units</span>         <span class="p">|</span><span class="n">definition</span>
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="n">cklsp</span><span class="p">(:)</span>    <span class="p">|</span>
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">LOCAL</span> <span class="n">DEFINITIONS</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="n">name</span>        <span class="p">|</span><span class="n">units</span>         <span class="p">|</span><span class="n">definition</span>
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="n">bio_frcov</span>   <span class="p">|</span>              <span class="p">|</span><span class="n">fraction</span> <span class="n">of</span> <span class="n">cover</span> <span class="n">by</span> <span class="n">biomass</span> <span class="o">-</span> <span class="n">adjusted</span> <span class="n">for</span>
+                              <span class="n">canopy</span> <span class="n">height</span>
+<span class="n">grcov_fr</span>    <span class="p">|</span>              <span class="p">|</span><span class="n">fraction</span> <span class="n">of</span> <span class="n">cover</span> <span class="n">by</span> <span class="n">biomass</span> <span class="n">as</span> <span class="n">function</span> <span class="n">of</span> <span class="n">lai</span>
+<span class="n">rsd_frcov</span>   <span class="p">|</span>              <span class="p">|</span><span class="n">fraction</span> <span class="n">of</span> <span class="n">cover</span> <span class="n">by</span> <span class="n">residue</span>
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="n">SUBROUTINES</span><span class="o">/</span><span class="n">FUNCTIONS</span> <span class="n">CALLED</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+<span class="n">Intrinsic</span><span class="p">:</span> <span class="n">Exp</span>
+
+<span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="kr">END</span> <span class="n">SPECIFICATIONS</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span> <span class="o">~</span>
+</code></pre></div>
+
+<p>initialize variables
+ compute sediment yield with musle - t
+ this is the form of MUSLE in APEX documentation - same results as swat equation above ! t/ha</p>
+<p>adjust sediment yield for protection of snow cover
+ Particle size distribution of sediment yield</p>
+<p>compute erosion with usle (written to output for comparison)
+ erosion output variables
+ sum daily erosion output</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+
+          <h4>Logic Blocks</h4>
           <p class="text-muted mb-3">
             Control flow structures organized as they appear in the source code. 
             Each block is collapsible to help navigate complex procedures.
@@ -574,20 +520,13 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>use hru_module, only : hru, usle_cfac, cklsp, surfq, sedyld, sanyld, silyld, clayld, lagyld, sagyld,  &
-ihru, qp_cms, usle_ei
-use soil_module
-use erosion_module
-use climate_module
-implicit none
-integer :: j = 0       !none                   |HRU number
-real :: usle = 0.      !metric tons/ha         | daily soil loss predicted with USLE equation
-real :: rock = 0.      !percent                |rock fragments
-j = ihru
-cklsp(j) = usle_cfac(j) * hru(j)%lumv%usle_mult
-rock = Exp(-.053 * soil(j)%phys(1)%rock)
-sedyld(j) = (10. * surfq(j) * qp_cms * hru(j)%area_ha) ** .56 * cklsp(j)
-if (sedyld(j) < 0.) sedyld(j) = 0.</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">  37</span> ihru, qp_cms, usle_ei
+<span class="text-muted">  48</span> j = ihru
+<span class="text-muted">  51</span> cklsp(j) = usle_cfac(j) * hru(j)%lumv%usle_mult
+<span class="text-muted">  52</span> rock = Exp(-.053 * soil(j)%phys(1)%rock)
+<span class="text-muted">  55</span> sedyld(j) = (10. * surfq(j) * qp_cms * hru(j)%area_ha) ** .56 * cklsp(j)
+<span class="text-muted">  62</span> if (sedyld(j) < 0.) sedyld(j) = 0.
+</code></pre>
                   </div>
                 </div>
 
@@ -599,11 +538,15 @@ if (sedyld(j) < 0.) sedyld(j) = 0.</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>IF</strong> (<code>hru(j)%sno_mm > 0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 65-66</span>
                   </div>
                 </a>
                 <div id="block-2" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>if (sedyld(j) < 1.e-6) sedyld(j) = 0.0</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  66</span> if (sedyld(j) < 1.e-6) sedyld(j) = 0.0
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 66</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -616,11 +559,16 @@ if (sedyld(j) < 0.) sedyld(j) = 0.</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>ELSE IF</strong> (<code>hru(j)%sno_mm > 100.</code>) <strong>THEN</strong>
+                    <span class="badge bg-light text-dark ms-2">Lines 67-68</span>
                   </div>
                 </a>
                 <div id="block-3" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>sedyld(j) = 0.</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  68</span> sedyld(j) = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 68</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -633,11 +581,16 @@ if (sedyld(j) < 0.) sedyld(j) = 0.</code></pre>
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
                     <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 69-71</span>
                   </div>
                 </a>
                 <div id="block-4" class="collapse">
                   <div class="card-body">
-                      <pre class="mb-0"><code>sedyld(j) = sedyld(j) / Exp(hru(j)%sno_mm * 3. / 25.4)</code></pre>
+                      <pre class="mb-0"><code><span class="text-muted">  70</span> sedyld(j) = sedyld(j) / Exp(hru(j)%sno_mm * 3. / 25.4)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 71</span>                    </div>
                   </div>
                 </div>
               </div>
@@ -645,16 +598,131 @@ if (sedyld(j) < 0.) sedyld(j) = 0.</code></pre>
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>usle = 1.292 * usle_ei * cklsp(j) / 11.8
-ero_output(j)%ero_d%sedyld = sedyld(j)
-ero_output(j)%ero_d%precip = w%precip
-ero_output(j)%ero_d%surfq = surfq(j)
-ero_output(j)%ero_d%peak = qp_cms
-ero_output(j)%n_events = ero_output(j)%n_events
-ero_output(j)%ero_ave = ero_output(j)%ero_ave + ero_output(j)%ero_d
-return</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">  81</span> usle = 1.292 * usle_ei * cklsp(j) / 11.8
+<span class="text-muted">  84</span> ero_output(j)%ero_d%sedyld = sedyld(j)
+<span class="text-muted">  85</span> ero_output(j)%ero_d%precip = w%precip
+<span class="text-muted">  86</span> ero_output(j)%ero_d%surfq = surfq(j)
+<span class="text-muted">  87</span> ero_output(j)%ero_d%peak = qp_cms
+<span class="text-muted">  89</span> ero_output(j)%n_events = ero_output(j)%n_events
+<span class="text-muted">  90</span> ero_output(j)%ero_ave = ero_output(j)%ero_ave + ero_output(j)%ero_d
+<span class="text-muted">  92</span> return
+</code></pre>
                   </div>
                 </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
+         aria-expanded="false" 
+         aria-controls="local-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Local Variables
+        </h3>
+      </a>
+      <div id="local-variables-section" class="collapse">
+        <div class="card-body">
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="var-j"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>j</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-usle"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>usle</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-rock"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rock</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
 
         </div>
       </div>

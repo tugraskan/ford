@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -159,26 +160,14 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <div class="codehilite"><pre><span></span><code><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nv">PURPOSE</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
-<span class="nv">this</span><span class="w"> </span><span class="nv">subroutine</span><span class="w"> </span><span class="nv">determines</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">subdaily</span><span class="w"> </span><span class="nv">flow</span><span class="w"> </span><span class="nv">hydrographs</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">hru</span><span class="s1">&#39;s, ru&#39;</span><span class="nv">s</span><span class="w"> </span><span class="nv">and</span><span class="w"> </span><span class="nv">inflow</span><span class="w"> </span><span class="nv">fractions</span>
-</code></pre></div>
-
-<p>subsurface flow = lateral + tile --&gt; assume uniform throughout the day
- sum flow in case hydrograph exceeds max days
-zero previous day flow hydrograph and total hydrographs
- use unit hydrograph to compute subdaily flow hydrographs
- only add subsurface flow today - already lagged and assumed uniform for the day
- set current and previous days</p>
 
 
     <div class="card mb-3">
@@ -219,7 +208,7 @@ zero previous day flow hydrograph and total hydrographs
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-surfq~3"></span>
+              <span class="anchor" id="variable-surfq"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -249,7 +238,7 @@ zero previous day flow hydrograph and total hydrographs
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-tileq~5"></span>
+              <span class="anchor" id="variable-tileq~3"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -264,7 +253,7 @@ zero previous day flow hydrograph and total hydrographs
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uh~4"></span>
+              <span class="anchor" id="variable-uh"></span>
               real,
             </td>
 <td>intent(in),</td>
@@ -279,7 +268,7 @@ zero previous day flow hydrograph and total hydrographs
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-hyd_flo~6"></span>
+              <span class="anchor" id="variable-hyd_flo~2"></span>
               real,
             </td>
 <td>intent(inout),</td>
@@ -298,6 +287,224 @@ zero previous day flow hydrograph and total hydrographs
         </div>
       </div>
     </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(2 attributes from time_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>time%step</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>bsn_prm%day_lag_mx</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <div class="codehilite"><pre><span></span><code><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nv">PURPOSE</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">~</span>
+<span class="nv">this</span><span class="w"> </span><span class="nv">subroutine</span><span class="w"> </span><span class="nv">determines</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">subdaily</span><span class="w"> </span><span class="nv">flow</span><span class="w"> </span><span class="nv">hydrographs</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">hru</span><span class="s1">&#39;s, ru&#39;</span><span class="nv">s</span><span class="w"> </span><span class="nv">and</span><span class="w"> </span><span class="nv">inflow</span><span class="w"> </span><span class="nv">fractions</span>
+</code></pre></div>
+
+<p>subsurface flow = lateral + tile --&gt; assume uniform throughout the day
+ sum flow in case hydrograph exceeds max days
+zero previous day flow hydrograph and total hydrographs
+ use unit hydrograph to compute subdaily flow hydrographs
+ only add subsurface flow today - already lagged and assumed uniform for the day
+ set current and previous days</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  27</span> iday_cur = iday_start
+<span class="text-muted">  28</span> iday_prev = iday_start - 1
+<span class="text-muted">  29</span> if (iday_prev < 1) iday_prev = bsn_prm%day_lag_mx
+<span class="text-muted">  32</span> ssq = (latq + tileq)  / time%step
+<span class="text-muted">  35</span> sumflo = 0.
+<span class="text-muted">  38</span> hyd_flo(iday_prev,:) = 0.     !iob is incoming
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iday = 1, bsn_prm%day_lag_mx</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 41-54</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  43</span> if (iday > 1) ssq = 0.
+<span class="text-muted">  50</span> iday_cur = iday_cur + 1
+<span class="text-muted">  51</span> if (iday_cur > bsn_prm%day_lag_mx) iday_cur = 1
+<span class="text-muted">  52</span> iday_prev = iday_prev + 1
+<span class="text-muted">  53</span> if (iday_prev > bsn_prm%day_lag_mx) iday_prev = 1
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>istep = 1, time%step</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 44-47</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  45</span> sq = uh(iday,istep) * surfq
+<span class="text-muted">  46</span> hyd_flo(iday_cur,istep) = hyd_flo(iday_cur,istep) + sq
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 47</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 54</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  63</span> return
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
 
 
     <div class="card mb-3">
@@ -448,160 +655,6 @@ zero previous day flow hydrograph and total hydrographs
     </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(2 attributes from basin_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>bsn_prm%day_lag_mx</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%step</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use hydrograph_module
-use time_module
-use basin_module
-implicit none
-integer, intent (in) :: iday_start    !           |current start day in hydrograph
-real, intent (in) :: surfq            !m3         |surface runoff
-real, intent (in) :: latq             !m3         |lateral soil flow
-real, intent (in) :: tileq            !m3         |tile flow
-real, intent (in), dimension(bsn_prm%day_lag_mx,time%step) :: uh              !unit hydrograph
-real, intent (in out), dimension(bsn_prm%day_lag_mx,time%step) :: hyd_flo     !surface runoff hydrograph
-integer :: istep = 0                  !none       |counter
-integer :: iday = 0                   !           |
-integer :: iday_prev = 0              !           |
-integer :: iday_cur = 0               !           |
-real :: ssq = 0.                      !           |
-real :: sq = 0.                       !           |
-real :: sumflo = 0.                   !           |
-iday_cur = iday_start
-iday_prev = iday_start - 1
-if (iday_prev < 1) iday_prev = bsn_prm%day_lag_mx
-ssq = (latq + tileq)  / time%step
-sumflo = 0.
-hyd_flo(iday_prev,:) = 0.     !iob is incoming</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>iday = 1, bsn_prm%day_lag_mx</code>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>if (iday > 1) ssq = 0.
-iday_cur = iday_cur + 1
-if (iday_cur > bsn_prm%day_lag_mx) iday_cur = 1
-iday_prev = iday_prev + 1
-if (iday_prev > bsn_prm%day_lag_mx) iday_prev = 1</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>istep = 1, time%step</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>sq = uh(iday,istep) * surfq
-hyd_flo(iday_cur,istep) = hyd_flo(iday_cur,istep) + sq</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>return</code></pre>
-                  </div>
-                </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
 
     <section>    
       <h2>Variables</h2>
@@ -634,7 +687,7 @@ hyd_flo(iday_cur,istep) = hyd_flo(iday_cur,istep) + sq</code></pre>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-surfq~3"></span>
+              <span class="anchor" id="variable-surfq"></span>
               real,
             </td>
               <td>public</td>
@@ -668,7 +721,7 @@ hyd_flo(iday_cur,istep) = hyd_flo(iday_cur,istep) + sq</code></pre>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-tileq~5"></span>
+              <span class="anchor" id="variable-tileq~3"></span>
               real,
             </td>
               <td>public</td>
@@ -685,7 +738,7 @@ hyd_flo(iday_cur,istep) = hyd_flo(iday_cur,istep) + sq</code></pre>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uh~4"></span>
+              <span class="anchor" id="variable-uh"></span>
               real,
             </td>
               <td>public,</td>
@@ -702,7 +755,7 @@ hyd_flo(iday_cur,istep) = hyd_flo(iday_cur,istep) + sq</code></pre>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-hyd_flo~6"></span>
+              <span class="anchor" id="variable-hyd_flo~2"></span>
               real,
             </td>
               <td>public,</td>

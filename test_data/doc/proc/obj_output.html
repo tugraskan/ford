@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -160,29 +161,17 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>zero out accumulators
-!! DUMMY OBJ FOR CARBON
-!! check for specific days
-!! zero out microb accumulated for each hru
-!! zero out tot
-!! zero out totc
-!! Carbon
-!! tot accumulated microb for layer
-!! Carbon w microb accumulated</p>
-<p>!! Dummy Carbon output for hru</p>
 
 
     <div class="card mb-3">
@@ -196,7 +185,7 @@
       </a>
       <div id="arguments-section" class="collapse show">
         <div class="card-body">
-            <em>None</em>
+            <em>n/a</em>
         </div>
       </div>
     </div>
@@ -207,689 +196,1237 @@
          aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Inputs and Outputs
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
       <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-              
-        
-    
-      <div class="alert alert-info mb-3">
-        <h6 class="alert-heading"><i class="fa fa-info-circle"></i> File I/O Summary</h6>
-        <div class="row">
-            <div class="col-md-4">
-              <strong><i class="fa fa-upload"></i> Output Files:</strong>
-              <ul class="mb-0">
-                  <li><code>unit_unit_iunit+itot</code> <small class="text-muted">(unit unit_iunit+itot)</small></li>
-              </ul>
-            </div>
+          <p class="text-muted mb-3">
+            I/O units used in this subroutine.
+          </p>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Type</th>
+                <th>Filename</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>unit_iunit+itot</code></td>
+                <td>
+                      <span class="badge bg-primary">Output</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
 
-              
-      <div class="alert alert-secondary mb-3">
-        <h6 class="alert-heading"><i class="fa fa-list"></i> Parameters Accessed</h6>
-        <div class="row">
-            <div class="col-md-6">
-              <strong><i class="fa fa-arrow-up"></i> Written Parameters:</strong>
-              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
-                  <li><code>time%day</code></li>
-                  <li><code>time%mo</code></li>
-                  <li><code>time%day_mo</code></li>
-                  <li><code>time%yrc</code></li>
-                  <li><code>ob(iob)%typ</code></li>
-                  <li><code>ob(iob)%name</code></li>
-                  <li><code>iob</code></li>
-                  <li><code>ii</code></li>
-                  <li><code>ob(iob)%hyd_flo(1,ii)</code></li>
-                  <li><code>ob(iob)%hd(ihd)</code></li>
-                  <li><code>ob(j)%name</code></li>
-                  <li><code>ob(j)%typ</code></li>
-                  <li><code>soil(j)%phys(nly)%st, nly = 1,soil(j)%nly</code></li>
-                  <li><code>soil(iob)%phys(nly)%st, nly = 1,soil(iob)%nly</code></li>
-                  <li><code>soil1(j)%mn(nly)</code></li>
-                  <li><code>soil1(j)%hact(nly)%n</code></li>
-                  <li><code>soil1(j)%hsta(nly)%n</code></li>
-                  <li><code>soil1(j)%hs(nly)%n</code></li>
-                  <li><code>soil1(j)%hp(nly)%n</code></li>
-                  <li><code>soil1(j)%rsd(nly)%n</code></li>
-                  <li><code>soil1(j)%mp(nly)</code></li>
-                  <li><code>soil1(j)%hact(nly)%p</code></li>
-                  <li><code>soil1(j)%hsta(nly)%p</code></li>
-                  <li><code>soil1(j)%hs(nly)%p</code></li>
-                  <li><code>soil1(j)%hp(nly)%p</code></li>
-                  <li><code>soil1(j)%rsd(nly)%p</code></li>
-                  <li><code>soil_prof_mn</code></li>
-                  <li><code>soil_prof_mp</code></li>
-                  <li><code>soil_prof_hact</code></li>
-                  <li><code>soil_prof_hsta</code></li>
-                  <li><code>soil_prof_hs</code></li>
-                  <li><code>soil_prof_hp</code></li>
-                  <li><code>soil_prof_rsd</code></li>
-                  <li><code>ch_fp_wb(jrch)</code></li>
-                  <li><code>'---'</code></li>
-                  <li><code>'    jday                    m           d           yr'</code></li>
-                  <li><code>'***'</code></li>
-                  <li><code>'    jday        m       d       yr'</code></li>
-                  <li><code>"  hact         hsta         microb(ly)        tot%C     Mgc/ha"</code></li>
-                  <li><code>"           hact         hsta         microb(acc)        SOM%C         Mgc/ha"</code></li>
-                  <li><code>nly</code></li>
-                  <li><code>soil1(j)%hact(nly)%c</code></li>
-                  <li><code>soil1(j)%hsta(nly)%c</code></li>
-                  <li><code>soil1(j)%microb(nly)%c</code></li>
-                  <li><code>soil1(j)%tot_org%c</code></li>
-                  <li><code>soil1(j)%tot_org%c/1000</code></li>
-                  <li><code>soil_prof_microb%c</code></li>
-                  <li><code>soil_prof_somc%c</code></li>
-                  <li><code>soil_prof_somc%c/1000</code></li>
-                  <li><code>soil1(iob)%tot_org%c/1000</code></li>
-              </ul>
-            </div>
-        </div>
-      </div>
-
-          
-          <div class="card mb-3 mt-3">
-            <a data-bs-toggle="collapse" href="#io-operations-section" 
-               aria-expanded="false" 
-               aria-controls="io-operations-section" 
-               class="text-decoration-none">
-              <h4 class="card-header bg-light text-dark">
-                <i class="fa fa-caret-down me-2"></i>I/O Operations
-              </h4>
-            </a>
-            <div id="io-operations-section" class="collapse">
-              <div class="card-body">
-                    <!-- First, collect all conditions across all units -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-    
-    <div class="accordion" id="ioConditionsAccordion">
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__ob_out_itot__pct_hydtyp_____subday__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__ob_out_itot__pct_hydtyp_____subday__" aria-expanded="false" 
-                    aria-controls="collapseCondif__ob_out_itot__pct_hydtyp_____subday__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (ob_out(itot)%hydtyp == "subday")</strong>
-                  <small class="text-muted ms-2">(line 37)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
+              type(<a href='../type/soil_profile.html'>soil_profile</a>)
+              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__ob_out_itot__pct_hydtyp_____subday__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__ob_out_itot__pct_hydtyp_____subday__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit unit_iunit+itot</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%typ, ob(iob)%name, iob, ii, ob(iob)%hyd_flo(1,ii)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>ob(iob)%typ</code></small></li>
-                                    <li><small><code>ob(iob)%name</code></small></li>
-                                    <li><small><code>iob</code></small></li>
-                                    <li><small><code>ii</code></small></li>
-                                    <li><small><code>ob(iob)%hyd_flo(1,ii)</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>41</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%typ, ob(iob)%name, ob(iob)%hd(ihd)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>ob(iob)%typ</code></small></li>
-                                    <li><small><code>ob(iob)%name</code></small></li>
-                                    <li><small><code>ob(iob)%hd(ihd)</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>44</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__iob____0_">
+          <h3 class="accordion-header" id="headinginteger">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__iob____0_" aria-expanded="false" 
-                    aria-controls="collapseCondif__iob____0_">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (iob == 0)</strong>
-                  <small class="text-muted ms-2">(line 48)</small>
+                    data-bs-target="#collapseinteger" aria-expanded="false" 
+                    aria-controls="collapseinteger">
+              integer
+              <small class="text-muted ms-2">(4 attributes from hru_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__iob____0_" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__iob____0_" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapseinteger" class="accordion-collapse collapse" 
+               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit unit_iunit+itot</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ, (soil(j)%phys(nly)%st, nly = 1,soil(j)%nly)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>ob(j)%name</code></small></li>
-                                    <li><small><code>ob(j)%typ</code></small></li>
-                                    <li><small><code>soil(j)%phys(nly)%st, nly = 1,soil(j)%nly</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>51</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%name, ob(iob)%typ, (soil(iob)%phys(nly)%st, nly = 1,soil(iob)%nly)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>ob(iob)%name</code></small></li>
-                                    <li><small><code>ob(iob)%typ</code></small></li>
-                                    <li><small><code>soil(iob)%phys(nly)%st, nly = 1,soil(iob)%nly</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>55</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ, soil1(j)%mn(nly), soil1(j)%hact(nly)%n, soil1(j)%hsta(nly)%n, soil1(j)%hs(nly)%n, soil1(j)%hp(nly)%n, soil1(j)%rsd(nly)%n, soil1(j)%mp(nly), soil1(j)%hact(nly)%p, soil1(j)%hsta(nly)%p, soil1(j)%hs(nly)%p, soil1(j)%hp(nly)%p, soil1(j)%rsd(nly)%p</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>ob(j)%name</code></small></li>
-                                    <li><small><code>ob(j)%typ</code></small></li>
-                                    <li><small><code>soil1(j)%mn(nly)</code></small></li>
-                                    <li><small><code>soil1(j)%hact(nly)%n</code></small></li>
-                                    <li><small><code>soil1(j)%hsta(nly)%n</code></small></li>
-                                    <li><small><code>soil1(j)%hs(nly)%n</code></small></li>
-                                    <li><small><code>soil1(j)%hp(nly)%n</code></small></li>
-                                    <li><small><code>soil1(j)%rsd(nly)%n</code></small></li>
-                                    <li><small><code>soil1(j)%mp(nly)</code></small></li>
-                                    <li><small><code>soil1(j)%hact(nly)%p</code></small></li>
-                                    <li><small><code>soil1(j)%hsta(nly)%p</code></small></li>
-                                    <li><small><code>soil1(j)%hs(nly)%p</code></small></li>
-                                    <li><small><code>soil1(j)%hp(nly)%p</code></small></li>
-                                    <li><small><code>soil1(j)%rsd(nly)%p</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>65</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ, soil1(j)%mn(nly), soil1(j)%hact(nly)%n, soil1(j)%hsta(nly)%n, soil1(j)%hs(nly)%n, soil1(j)%hp(nly)%n, soil1(j)%rsd(nly)%n, soil1(j)%mp(nly), soil1(j)%hact(nly)%p, soil1(j)%hsta(nly)%p, soil1(j)%hs(nly)%p, soil1(j)%hp(nly)%p, soil1(j)%rsd(nly)%p</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>ob(j)%name</code></small></li>
-                                    <li><small><code>ob(j)%typ</code></small></li>
-                                    <li><small><code>soil1(j)%mn(nly)</code></small></li>
-                                    <li><small><code>soil1(j)%hact(nly)%n</code></small></li>
-                                    <li><small><code>soil1(j)%hsta(nly)%n</code></small></li>
-                                    <li><small><code>soil1(j)%hs(nly)%n</code></small></li>
-                                    <li><small><code>soil1(j)%hp(nly)%n</code></small></li>
-                                    <li><small><code>soil1(j)%rsd(nly)%n</code></small></li>
-                                    <li><small><code>soil1(j)%mp(nly)</code></small></li>
-                                    <li><small><code>soil1(j)%hact(nly)%p</code></small></li>
-                                    <li><small><code>soil1(j)%hsta(nly)%p</code></small></li>
-                                    <li><small><code>soil1(j)%hs(nly)%p</code></small></li>
-                                    <li><small><code>soil1(j)%hp(nly)%p</code></small></li>
-                                    <li><small><code>soil1(j)%rsd(nly)%p</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>73</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*)  time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ, soil_prof_mn, soil_prof_mp, soil_prof_hact, soil_prof_hsta,  soil_prof_hs, soil_prof_hp, soil_prof_rsd</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>ob(j)%name</code></small></li>
-                                    <li><small><code>ob(j)%typ</code></small></li>
-                                    <li><small><code>soil_prof_mn</code></small></li>
-                                    <li><small><code>soil_prof_mp</code></small></li>
-                                    <li><small><code>soil_prof_hact</code></small></li>
-                                    <li><small><code>soil_prof_hsta</code></small></li>
-                                    <li><small><code>soil_prof_hs</code></small></li>
-                                    <li><small><code>soil_prof_hp</code></small></li>
-                                    <li><small><code>soil_prof_rsd</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>91</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*)  time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ, soil_prof_mn, soil_prof_mp, soil_prof_hact, soil_prof_hsta,  soil_prof_hs, soil_prof_hp, soil_prof_rsd</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>ob(j)%name</code></small></li>
-                                    <li><small><code>ob(j)%typ</code></small></li>
-                                    <li><small><code>soil_prof_mn</code></small></li>
-                                    <li><small><code>soil_prof_mp</code></small></li>
-                                    <li><small><code>soil_prof_hact</code></small></li>
-                                    <li><small><code>soil_prof_hsta</code></small></li>
-                                    <li><small><code>soil_prof_hs</code></small></li>
-                                    <li><small><code>soil_prof_hp</code></small></li>
-                                    <li><small><code>soil_prof_rsd</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>106</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,'(1(4I), 1((7X, 1A), (1X, 1A))'//lineFmt) time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ, (pcom(j)%pl(ipl), pcom(j)%plcur(ipl)%gro, pcom(j)%plcur(ipl)%idorm, pcom(j)%plg(ipl)%lai, pcom(j)%plg(ipl)%cht, pcom(j)%plg(ipl)%root_dep, pcom(j)%plcur(ipl)%phuacc, pl_mass(j)%tot(ipl)%m, pl_mass(j)%ab_gr(ipl)%m, pl_mass(j)%leaf(ipl)%m, pl_mass(j)%root(ipl)%m, pl_mass(j)%stem(ipl)%m, pl_mass(j)%seed(ipl)%m, ipl = 1, pcom(j)%npl)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>127</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,'(1(4I), 1((7X, 1A), (1X, 1A))'//lineFmt) time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ, (pcom(j)%pl(ipl), pcom(j)%plcur(ipl)%gro, pcom(j)%plcur(ipl)%idorm, pcom(j)%plg(ipl)%lai, pcom(j)%plg(ipl)%cht, pcom(j)%plg(ipl)%root_dep, pcom(j)%plcur(ipl)%phuacc, pl_mass(j)%tot(ipl)%m, pl_mass(j)%ab_gr(ipl)%m, pl_mass(j)%leaf(ipl)%m, pl_mass(j)%root(ipl)%m, pl_mass(j)%stem(ipl)%m, pl_mass(j)%seed(ipl)%m, ipl = 1, pcom(j)%npl)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>137</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%name, ob(iob)%typ, ch_fp_wb(jrch)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>ob(iob)%name</code></small></li>
-                                    <li><small><code>ob(iob)%typ</code></small></li>
-                                    <li><small><code>ch_fp_wb(jrch)</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>143</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%name, ob(iob)%typ, ch_fp_wb(jrch)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>ob(iob)%name</code></small></li>
-                                    <li><small><code>ob(iob)%typ</code></small></li>
-                                    <li><small><code>ch_fp_wb(jrch)</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>147</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ipl</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>ihru</strong></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~25" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>jrch</strong></td>
+                      <td><p>none |reach number</p><a href="../module/hydrograph_module.html#variable-jrch~4" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>mobj_out</strong></td>
+                      <td><p>none |end of loop</p><a href="../module/hydrograph_module.html#variable-mobj_out" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif___time_pct_yrc____2007__and__time_pct_day____213___or___time_pct_yrc____2010__and__time_pct_day____319___or__time_pct_yrc____2011__and__time_pct_day____324__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif___time_pct_yrc____2007__and__time_pct_day____213___or___time_pct_yrc____2010__and__time_pct_day____319___or__time_pct_yrc____2011__and__time_pct_day____324__" aria-expanded="false" 
-                    aria-controls="collapseCondif___time_pct_yrc____2007__and__time_pct_day____213___or___time_pct_yrc____2010__and__time_pct_day____319___or__time_pct_yrc____2011__and__time_pct_day____324__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if ((time%yrc == 2007 .and. time%day == 213) .or. (time%yrc == 2010 .and. time%day == 319) .or.(time%yrc == 2011 .and. time%day == 324))</strong>
-                  <small class="text-muted ms-2">(line 153)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__">
+              type(<a href='../type/plant_community.html'>plant_community</a>)
+              <small class="text-muted ms-2">(1 attribute from plant_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif___time_pct_yrc____2007__and__time_pct_day____213___or___time_pct_yrc____2010__and__time_pct_day____319___or__time_pct_yrc____2011__and__time_pct_day____324__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif___time_pct_yrc____2007__and__time_pct_day____213___or___time_pct_yrc____2010__and__time_pct_day____319___or__time_pct_yrc____2011__and__time_pct_day____324__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit unit_iunit+itot</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) '---', '    jday                    m           d           yr'</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>'---'</code></small></li>
-                                    <li><small><code>'    jday                    m           d           yr'</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>154</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) '***',time%day, time%mo, time%day_mo, time%yrc</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>'***'</code></small></li>
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>155</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) '---', '    jday        m       d       yr'</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>'---'</code></small></li>
-                                    <li><small><code>'    jday        m       d       yr'</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>157</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*)time%day, time%mo, time%day_mo, time%yrc</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>158</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) ob(j)%name, "  hact         hsta         microb(ly)        tot%C     Mgc/ha", "           hact         hsta         microb(acc)        SOM%C         Mgc/ha"</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>ob(j)%name</code></small></li>
-                                    <li><small><code>"  hact         hsta         microb(ly)        tot%C     Mgc/ha"</code></small></li>
-                                    <li><small><code>"           hact         hsta         microb(acc)        SOM%C         Mgc/ha"</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>163</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*)nly, soil1(j)%hact(nly)%c, soil1(j)%hsta(nly)%c, soil1(j)%microb(nly)%c, soil1(j)%tot_org%c, (soil1(j)%tot_org%c/1000), soil1(j)%hact(nly)%c, soil1(j)%hsta(nly)%c, soil_prof_microb%c, soil_prof_somc%c, (soil_prof_somc%c/1000)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>nly</code></small></li>
-                                    <li><small><code>soil1(j)%hact(nly)%c</code></small></li>
-                                    <li><small><code>soil1(j)%hsta(nly)%c</code></small></li>
-                                    <li><small><code>soil1(j)%microb(nly)%c</code></small></li>
-                                    <li><small><code>soil1(j)%tot_org%c</code></small></li>
-                                    <li><small><code>soil1(j)%tot_org%c/1000</code></small></li>
-                                    <li><small><code>soil1(j)%hact(nly)%c</code></small></li>
-                                    <li><small><code>soil1(j)%hsta(nly)%c</code></small></li>
-                                    <li><small><code>soil_prof_microb%c</code></small></li>
-                                    <li><small><code>soil_prof_somc%c</code></small></li>
-                                    <li><small><code>soil_prof_somc%c/1000</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>174</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">write</span></td>
-                            <td><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%typ, ob(iob)%name, iob, nly, (soil1(iob)%tot_org%c/1000)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>time%day</code></small></li>
-                                    <li><small><code>time%mo</code></small></li>
-                                    <li><small><code>time%day_mo</code></small></li>
-                                    <li><small><code>time%yrc</code></small></li>
-                                    <li><small><code>ob(iob)%typ</code></small></li>
-                                    <li><small><code>ob(iob)%name</code></small></li>
-                                    <li><small><code>iob</code></small></li>
-                                    <li><small><code>nly</code></small></li>
-                                    <li><small><code>soil1(iob)%tot_org%c/1000</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>185</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pcom</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(11 attributes from time_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>time%day</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%step</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%day_mo</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%yrc</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%mo</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>sp_ob%objs</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>sp_ob%hru</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>sp_ob%chandeg</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>soil_prof_microb%c</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>soil_org_z%c</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>soil_prof_somc%c</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
+              type(<a href='../type/hyd_output.html'>hyd_output</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>hd</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_output_html__object_output__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_output_html__object_output__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_output_html__object_output__a__">
+              type(<a href='../type/object_output.html'>object_output</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_output_html__object_output__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_output_html__object_output__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ob_out</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_channel_floodplain_water_balance_html__channel_floodplain_water_balance__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_channel_floodplain_water_balance_html__channel_floodplain_water_balance__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_channel_floodplain_water_balance_html__channel_floodplain_water_balance__a__">
+              type(<a href='../type/channel_floodplain_water_balance.html'>channel_floodplain_water_balance</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_channel_floodplain_water_balance_html__channel_floodplain_water_balance__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_channel_floodplain_water_balance_html__channel_floodplain_water_balance__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ch_fp_wb</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__">
+              type(<a href='../type/object_connectivity.html'>object_connectivity</a>)
+              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ob</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_organic_mass_html__organic_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_organic_mass_html__organic_mass__a__">
+              type(<a href='../type/organic_mass.html'>organic_mass</a>)
+              <small class="text-muted ms-2">(6 attributes from organic_mineral_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>orgz</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>soil_prof_rsd</strong></td>
+                      <td><p>|total fresh organic residue pool for profile (summed by lower layers)</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>soil_prof_hact</strong></td>
+                      <td><p>|total active humus pool for profile (summed by layer)</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>soil_prof_hsta</strong></td>
+                      <td><p>|total stable huumus pool for profile (summed by layer)</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>soil_prof_hs</strong></td>
+                      <td><p>|total slow humus pool for profile (summed by layer)</p></td>
+                    </tr>
+                    <tr>
+                      <td><strong>soil_prof_hp</strong></td>
+                      <td><p>|total passive humus pool for profile (summed by layer)</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_mineral_nitrogen_html__mineral_nitrogen__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_mineral_nitrogen_html__mineral_nitrogen__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_mineral_nitrogen_html__mineral_nitrogen__a__">
+              type(<a href='../type/mineral_nitrogen.html'>mineral_nitrogen</a>)
+              <small class="text-muted ms-2">(2 attributes from organic_mineral_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_mineral_nitrogen_html__mineral_nitrogen__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_mineral_nitrogen_html__mineral_nitrogen__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>mnz</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>soil_prof_mn</strong></td>
+                      <td><p>|mineral n pool (summed by layer)</p></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_mineral_phosphorus_html__mineral_phosphorus__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_mineral_phosphorus_html__mineral_phosphorus__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_mineral_phosphorus_html__mineral_phosphorus__a__">
+              type(<a href='../type/mineral_phosphorus.html'>mineral_phosphorus</a>)
+              <small class="text-muted ms-2">(2 attributes from organic_mineral_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_mineral_phosphorus_html__mineral_phosphorus__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_mineral_phosphorus_html__mineral_phosphorus__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>mpz</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>soil_prof_mp</strong></td>
+                      <td><p>|mineral p pool (summed by layer)</p><a href="../module/organic_mineral_mass_module.html#variable-soil_prof_mp" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
+              type(<a href='../type/soil_profile_mass.html'>soil_profile_mass</a>)
+              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil1</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
+              type(<a href='../type/plant_community_mass.html'>plant_community_mass</a>)
+              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pl_mass</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
     </div>
 
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>zero out accumulators
+!! DUMMY OBJ FOR CARBON
+!! check for specific days
+!! zero out microb accumulated for each hru
+!! zero out tot
+!! zero out totc
+!! Carbon
+!! tot accumulated microb for layer
+!! Carbon w microb accumulated</p>
+<p>!! Dummy Carbon output for hru</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  24</span> lineFmt ='1((4X, 1A),(16X, 1A),(18X, 1A), 10(4X,F)),1(17XA, 2(12X,A), 4X, 10(4X,F)))'
+<span class="text-muted">  26</span> j = ihru
+<span class="text-muted">  28</span> do
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>itot = 1, mobj_out</code>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  30</span> iob = ob_out(itot)%objno
+<span class="text-muted">  31</span> ihd = ob_out(itot)%hydno
+<span class="text-muted">  32</span> iunit = ob_out(itot)%unitno
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iob <= sp_ob%objs</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 190</span> end if        ! iob <= sp_ob%objs
+<span class="text-muted"> 191</span> end do          ! itot = 1, mobj_out
+<span class="text-muted"> 192</span> exit
+<span class="text-muted"> 195</span> return
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>ob_out(itot)%hydno</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 35-189</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>ob_out(itot)%hydtyp == "subday"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 37-42</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ii = 1, time%step</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 38-42</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  40</span> write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%typ, ob(iob)%name, iob, ii, &
+<span class="text-muted">  41</span> ob(iob)%hyd_flo(1,ii)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 42</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 42</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 43-45</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  44</span> write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%typ, ob(iob)%name, ob(iob)%hd(ihd)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 45</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iob == 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 48-52</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 49-52</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  50</span> write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ, &
+<span class="text-muted">  51</span> (soil(j)%phys(nly)%st, nly = 1,soil(j)%nly)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 52</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 52</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 53-56</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  54</span> write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%name, ob(iob)%typ, &
+<span class="text-muted">  55</span> (soil(iob)%phys(nly)%st, nly = 1,soil(iob)%nly)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 56</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iob == 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 59-67</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-5" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-5-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 60-67</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-5-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-5-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>nly = 1, soil(iob)%nly</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 61-66</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-5-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  62</span> write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,      &
+<span class="text-muted">  63</span> soil1(j)%mn(nly), soil1(j)%hact(nly)%n, soil1(j)%hsta(nly)%n, soil1(j)%hs(nly)%n,         &
+<span class="text-muted">  64</span> soil1(j)%hp(nly)%n, soil1(j)%rsd(nly)%n, soil1(j)%mp(nly), soil1(j)%hact(nly)%p,          &
+<span class="text-muted">  65</span> soil1(j)%hsta(nly)%p, soil1(j)%hs(nly)%p, soil1(j)%hp(nly)%p, soil1(j)%rsd(nly)%p
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 66</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 67</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 67</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 68-75</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-6" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-6-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>nly = 1, soil(iob)%nly</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 69-74</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-6-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  70</span> write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,     &
+<span class="text-muted">  71</span> soil1(j)%mn(nly), soil1(j)%hact(nly)%n, soil1(j)%hsta(nly)%n, soil1(j)%hs(nly)%n,        &
+<span class="text-muted">  72</span> soil1(j)%hp(nly)%n, soil1(j)%rsd(nly)%n, soil1(j)%mp(nly), soil1(j)%hact(nly)%p,         &
+<span class="text-muted">  73</span> soil1(j)%hsta(nly)%p, soil1(j)%hs(nly)%p, soil1(j)%hp(nly)%p, soil1(j)%rsd(nly)%p
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 74</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 75</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iob == 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 78-92</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-7" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-7-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 79-92</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-7-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  89</span> write (iunit+itot,*)  time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,     &
+<span class="text-muted">  90</span> soil_prof_mn, soil_prof_mp, soil_prof_hact, soil_prof_hsta,  soil_prof_hs,             &
+<span class="text-muted">  91</span> soil_prof_hp, soil_prof_rsd
+</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-7-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ly = 1, soil(j)%nly</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 80-88</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-7-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  81</span> soil_prof_mn = soil_prof_mn + soil1(j)%mn(ly)
+<span class="text-muted">  82</span> soil_prof_mp = soil_prof_mp + soil1(j)%mp(ly)
+<span class="text-muted">  83</span> soil_prof_hact = soil_prof_hact + soil1(j)%hact(ly)
+<span class="text-muted">  84</span> soil_prof_hsta = soil_prof_hsta + soil1(j)%hsta(ly)
+<span class="text-muted">  85</span> soil_prof_hs = soil_prof_hs + soil1(j)%hs(ly)
+<span class="text-muted">  86</span> soil_prof_hp = soil_prof_hp + soil1(j)%hp(ly)
+<span class="text-muted">  87</span> soil_prof_rsd = soil_prof_rsd + soil1(j)%rsd(ly)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 88</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 92</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 92</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 93-107</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-8" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  94</span> j = iob
+<span class="text-muted"> 104</span> write (iunit+itot,*)  time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,     &
+<span class="text-muted"> 105</span> soil_prof_mn, soil_prof_mp, soil_prof_hact, soil_prof_hsta,  soil_prof_hs,             &
+<span class="text-muted"> 106</span> soil_prof_hp, soil_prof_rsd
+</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-8-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>ly = 1, soil(j)%nly</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 95-103</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-8-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  96</span> soil_prof_mn = soil_prof_mn + soil1(j)%mn(ly)
+<span class="text-muted">  97</span> soil_prof_mp = soil_prof_mp + soil1(j)%mp(ly)
+<span class="text-muted">  98</span> soil_prof_hact = soil_prof_hact + soil1(j)%hact(ly)
+<span class="text-muted">  99</span> soil_prof_hsta = soil_prof_hsta + soil1(j)%hsta(ly)
+<span class="text-muted"> 100</span> soil_prof_hs = soil_prof_hs + soil1(j)%hs(ly)
+<span class="text-muted"> 101</span> soil_prof_hp = soil_prof_hp + soil1(j)%hp(ly)
+<span class="text-muted"> 102</span> soil_prof_rsd = soil_prof_rsd + soil1(j)%rsd(ly)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 103</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 107</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-9" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iob == 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 119-128</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-9" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-9-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 120-128</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-9-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 121</span> write (iunit+itot,'(1(4I), 1((7X, 1A), (1X, 1A))'//lineFmt) time%day, time%mo,         &
+<span class="text-muted"> 122</span> time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,                                       &
+<span class="text-muted"> 123</span> (pcom(j)%pl(ipl), pcom(j)%plcur(ipl)%gro, pcom(j)%plcur(ipl)%idorm,                 &
+<span class="text-muted"> 124</span> pcom(j)%plg(ipl)%lai, pcom(j)%plg(ipl)%cht, pcom(j)%plg(ipl)%root_dep,              &
+<span class="text-muted"> 125</span> pcom(j)%plcur(ipl)%phuacc, pl_mass(j)%tot(ipl)%m, pl_mass(j)%ab_gr(ipl)%m,          &
+<span class="text-muted"> 126</span> pl_mass(j)%leaf(ipl)%m, pl_mass(j)%root(ipl)%m, pl_mass(j)%stem(ipl)%m,             &
+<span class="text-muted"> 127</span> pl_mass(j)%seed(ipl)%m, ipl = 1, pcom(j)%npl)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 128</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 128</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-10" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 129-138</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-10" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 130</span> j = iob
+<span class="text-muted"> 131</span> write (iunit+itot,'(1(4I), 1((7X, 1A), (1X, 1A))'//lineFmt) time%day, time%mo,         &
+<span class="text-muted"> 132</span> time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,  &
+<span class="text-muted"> 133</span> (pcom(j)%pl(ipl), pcom(j)%plcur(ipl)%gro, pcom(j)%plcur(ipl)%idorm,                  &
+<span class="text-muted"> 134</span> pcom(j)%plg(ipl)%lai, pcom(j)%plg(ipl)%cht, pcom(j)%plg(ipl)%root_dep,              &
+<span class="text-muted"> 135</span> pcom(j)%plcur(ipl)%phuacc, pl_mass(j)%tot(ipl)%m, pl_mass(j)%ab_gr(ipl)%m,          &
+<span class="text-muted"> 136</span> pl_mass(j)%leaf(ipl)%m, pl_mass(j)%root(ipl)%m, pl_mass(j)%stem(ipl)%m,             &
+<span class="text-muted"> 137</span> pl_mass(j)%seed(ipl)%m, ipl = 1, pcom(j)%npl)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 138</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-11" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iob == 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 141-144</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-11" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-11-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>jrch = 1, sp_ob%chandeg</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 142-144</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-11-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 143</span> write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%name, ob(iob)%typ, ch_fp_wb(jrch)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 144</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 144</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-12" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 145-148</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-12" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 146</span> jrch = ob(iob)%sp_ob_no
+<span class="text-muted"> 147</span> write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%name, ob(iob)%typ, ch_fp_wb(jrch)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 148</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-13" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 160-177</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-13" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 161</span> soil_prof_microb%c = soil_org_z%c !!!! zero out microb accumulated for each hru
+<span class="text-muted"> 162</span> write (iunit+itot,*) ob(j)%name, "  hact         hsta         microb(ly)        tot%C     Mgc/ha", &
+<span class="text-muted"> 163</span> "           hact         hsta         microb(acc)        SOM%C         Mgc/ha"
+</code></pre>
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-13-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>nly = 1, soil(iob)%nly</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 164-175</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-13-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 165</span> soil1(j)%tot_org%c = soil_org_z%c !!!! zero out tot
+<span class="text-muted"> 166</span> soil_prof_somc%c = soil_org_z%c !!!! zero out totc
+<span class="text-muted"> 167</span> soil1(j)%tot_org%c = soil1(j)%hact(nly)%c + soil1(j)%hsta(nly)%c + soil1(j)%microb(nly)%c !!!! Carbon
+<span class="text-muted"> 168</span> soil_prof_microb%c = soil_prof_microb%c + soil1(j)%microb(nly)%c !!!! tot accumulated microb for layer
+<span class="text-muted"> 169</span> soil_prof_somc%c =    soil1(j)%hact(nly)%c + soil1(j)%hsta(nly)%c + soil_prof_microb%c !!!! Carbon w microb accumulated
+<span class="text-muted"> 171</span> write (iunit+itot,*)nly, soil1(j)%hact(nly)%c, soil1(j)%hsta(nly)%c, soil1(j)%microb(nly)%c, &
+<span class="text-muted"> 172</span> soil1(j)%tot_org%c, (soil1(j)%tot_org%c/1000), &
+<span class="text-muted"> 173</span> soil1(j)%hact(nly)%c, soil1(j)%hsta(nly)%c, soil_prof_microb%c, &
+<span class="text-muted"> 174</span> soil_prof_somc%c, (soil_prof_somc%c/1000)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 175</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 177</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-14" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>nly = 1, soil(iob)%nly</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 182-186</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1-block-14" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 183</span> soil1(iob)%tot_org%c = soil1(iob)%hact(nly)%c + soil1(iob)%hsta(nly)%c + soil1(iob)%microb(nly)%c
+<span class="text-muted"> 184</span> write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%typ, ob(iob)%name, iob, nly, &
+<span class="text-muted"> 185</span> (soil1(iob)%tot_org%c/1000)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 186</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 189</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong>                    </div>
+                  </div>
+                </div>
+              </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#local-variables-section" 
@@ -1067,1059 +1604,6 @@
         </tr>
     </tbody>
   </table>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(11 attributes from time_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>time%mo</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%day_mo</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%day</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%yrc</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%step</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>sp_ob%hru</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>sp_ob%chandeg</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>sp_ob%objs</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>soil_prof_microb%c</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>soil_org_z%c</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>soil_prof_somc%c</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__">
-              type(<a href='../type/soil_profile.html'>soil_profile</a>)
-              <small class="text-muted ms-2">(1 attribute from soil_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_html__soil_profile__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>soil</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headinginteger">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseinteger" aria-expanded="false" 
-                    aria-controls="collapseinteger">
-              integer
-              <small class="text-muted ms-2">(4 attributes from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapseinteger" class="accordion-collapse collapse" 
-               aria-labelledby="headinginteger" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>jrch</strong></td>
-                      <td><p>none |reach number</p><a href="../module/hydrograph_module.html#variable-jrch~2" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                    <tr>
-                      <td><strong>mobj_out</strong></td>
-                      <td><p>none |end of loop</p><a href="../module/hydrograph_module.html#variable-mobj_out" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                    <tr>
-                      <td><strong>ipl</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~24" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__">
-              type(<a href='../type/hyd_output.html'>hyd_output</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_hyd_output_html__hyd_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>hd</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_object_output_html__object_output__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_object_output_html__object_output__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_output_html__object_output__a__">
-              type(<a href='../type/object_output.html'>object_output</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_output_html__object_output__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_object_output_html__object_output__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ob_out</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_channel_floodplain_water_balance_html__channel_floodplain_water_balance__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_floodplain_water_balance_html__channel_floodplain_water_balance__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_floodplain_water_balance_html__channel_floodplain_water_balance__a__">
-              type(<a href='../type/channel_floodplain_water_balance.html'>channel_floodplain_water_balance</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_floodplain_water_balance_html__channel_floodplain_water_balance__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_channel_floodplain_water_balance_html__channel_floodplain_water_balance__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ch_fp_wb</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__">
-              type(<a href='../type/object_connectivity.html'>object_connectivity</a>)
-              <small class="text-muted ms-2">(1 attribute from hydrograph_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_object_connectivity_html__object_connectivity__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ob</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_organic_mass_html__organic_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_organic_mass_html__organic_mass__a__">
-              type(<a href='../type/organic_mass.html'>organic_mass</a>)
-              <small class="text-muted ms-2">(6 attributes from organic_mineral_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>orgz</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>soil_prof_rsd</strong></td>
-                      <td><p>|total fresh organic residue pool for profile (summed by lower layers)</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>soil_prof_hact</strong></td>
-                      <td><p>|total active humus pool for profile (summed by layer)</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>soil_prof_hsta</strong></td>
-                      <td><p>|total stable huumus pool for profile (summed by layer)</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>soil_prof_hs</strong></td>
-                      <td><p>|total slow humus pool for profile (summed by layer)</p></td>
-                    </tr>
-                    <tr>
-                      <td><strong>soil_prof_hp</strong></td>
-                      <td><p>|total passive humus pool for profile (summed by layer)</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_mineral_nitrogen_html__mineral_nitrogen__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_mineral_nitrogen_html__mineral_nitrogen__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_mineral_nitrogen_html__mineral_nitrogen__a__">
-              type(<a href='../type/mineral_nitrogen.html'>mineral_nitrogen</a>)
-              <small class="text-muted ms-2">(2 attributes from organic_mineral_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_mineral_nitrogen_html__mineral_nitrogen__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_mineral_nitrogen_html__mineral_nitrogen__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>mnz</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>soil_prof_mn</strong></td>
-                      <td><p>|mineral n pool (summed by layer)</p></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_mineral_phosphorus_html__mineral_phosphorus__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_mineral_phosphorus_html__mineral_phosphorus__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_mineral_phosphorus_html__mineral_phosphorus__a__">
-              type(<a href='../type/mineral_phosphorus.html'>mineral_phosphorus</a>)
-              <small class="text-muted ms-2">(2 attributes from organic_mineral_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_mineral_phosphorus_html__mineral_phosphorus__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_mineral_phosphorus_html__mineral_phosphorus__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>mpz</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>soil_prof_mp</strong></td>
-                      <td><p>|mineral p pool (summed by layer)</p><a href="../module/organic_mineral_mass_module.html#variable-soil_prof_mp" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
-              type(<a href='../type/soil_profile_mass.html'>soil_profile_mass</a>)
-              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>soil1</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
-              type(<a href='../type/plant_community_mass.html'>plant_community_mass</a>)
-              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pl_mass</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__">
-              type(<a href='../type/plant_community.html'>plant_community</a>)
-              <small class="text-muted ms-2">(1 attribute from plant_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pcom</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use time_module
-use hydrograph_module
-use soil_module
-use hru_module, only : ihru
-use organic_mineral_mass_module
-use plant_module
-implicit none
-integer :: ihd = 0       !            |
-integer :: iob = 0       !            |
-integer :: iunit = 0     !            |
-integer :: itot = 0      !none        |counter
-integer :: nly = 0
-integer :: ly = 0
-integer :: j = 0
-integer :: ii = 0
-integer :: ipl = 0
-character(100) :: lineFmt = ""!used to format plant status write statement
-lineFmt ='1((4X, 1A),(16X, 1A),(18X, 1A), 10(4X,F)),1(17XA, 2(12X,A), 4X, 10(4X,F)))'
-j = ihru
-do</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>itot = 1, mobj_out</code>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>iob = ob_out(itot)%objno
-ihd = ob_out(itot)%hydno
-iunit = ob_out(itot)%unitno</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>iob <= sp_ob%objs</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>end if        ! iob <= sp_ob%objs
-end do          ! itot = 1, mobj_out
-exit
-return</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-success bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>SELECT CASE</strong> (<code>ob_out(itot)%hydno</code>)
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>ob_out(itot)%hydtyp == "subday"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ii = 1, time%step</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%typ, ob(iob)%name, iob, ii, &
-ob(iob)%hyd_flo(1,ii)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%typ, ob(iob)%name, ob(iob)%hd(ihd)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>iob == 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-3" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-3-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ, &
-(soil(j)%phys(nly)%st, nly = 1,soil(j)%nly)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-4" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-4" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%name, ob(iob)%typ, &
-(soil(iob)%phys(nly)%st, nly = 1,soil(iob)%nly)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-5" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>iob == 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-5" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-5-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-5-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-5-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>nly = 1, soil(iob)%nly</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-5-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,      &
-soil1(j)%mn(nly), soil1(j)%hact(nly)%n, soil1(j)%hsta(nly)%n, soil1(j)%hs(nly)%n,         &
-soil1(j)%hp(nly)%n, soil1(j)%rsd(nly)%n, soil1(j)%mp(nly), soil1(j)%hact(nly)%p,          &
-soil1(j)%hsta(nly)%p, soil1(j)%hs(nly)%p, soil1(j)%hp(nly)%p, soil1(j)%rsd(nly)%p</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-6" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-6" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-6-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>nly = 1, soil(iob)%nly</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-6-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,     &
-soil1(j)%mn(nly), soil1(j)%hact(nly)%n, soil1(j)%hsta(nly)%n, soil1(j)%hs(nly)%n,        &
-soil1(j)%hp(nly)%n, soil1(j)%rsd(nly)%n, soil1(j)%mp(nly), soil1(j)%hact(nly)%p,         &
-soil1(j)%hsta(nly)%p, soil1(j)%hs(nly)%p, soil1(j)%hp(nly)%p, soil1(j)%rsd(nly)%p</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-7" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>iob == 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-7" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-7-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-7-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>write (iunit+itot,*)  time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,     &
-soil_prof_mn, soil_prof_mp, soil_prof_hact, soil_prof_hsta,  soil_prof_hs,             &
-soil_prof_hp, soil_prof_rsd</code></pre>
-                                  
-              <div class="card mb-2 ms-15">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-7-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ly = 1, soil(j)%nly</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-7-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>soil_prof_mn = soil_prof_mn + soil1(j)%mn(ly)
-soil_prof_mp = soil_prof_mp + soil1(j)%mp(ly)
-soil_prof_hact = soil_prof_hact + soil1(j)%hact(ly)
-soil_prof_hsta = soil_prof_hsta + soil1(j)%hsta(ly)
-soil_prof_hs = soil_prof_hs + soil1(j)%hs(ly)
-soil_prof_hp = soil_prof_hp + soil1(j)%hp(ly)
-soil_prof_rsd = soil_prof_rsd + soil1(j)%rsd(ly)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-8" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-8" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>j = iob
-write (iunit+itot,*)  time%day, time%mo, time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,     &
-soil_prof_mn, soil_prof_mp, soil_prof_hact, soil_prof_hsta,  soil_prof_hs,             &
-soil_prof_hp, soil_prof_rsd</code></pre>
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-8-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>ly = 1, soil(j)%nly</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-8-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>soil_prof_mn = soil_prof_mn + soil1(j)%mn(ly)
-soil_prof_mp = soil_prof_mp + soil1(j)%mp(ly)
-soil_prof_hact = soil_prof_hact + soil1(j)%hact(ly)
-soil_prof_hsta = soil_prof_hsta + soil1(j)%hsta(ly)
-soil_prof_hs = soil_prof_hs + soil1(j)%hs(ly)
-soil_prof_hp = soil_prof_hp + soil1(j)%hp(ly)
-soil_prof_rsd = soil_prof_rsd + soil1(j)%rsd(ly)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-9" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>iob == 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-9" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-9-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-9-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>write (iunit+itot,'(1(4I), 1((7X, 1A), (1X, 1A))'//lineFmt) time%day, time%mo,         &
-time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,                                       &
-(pcom(j)%pl(ipl), pcom(j)%plcur(ipl)%gro, pcom(j)%plcur(ipl)%idorm,                 &
-pcom(j)%plg(ipl)%lai, pcom(j)%plg(ipl)%cht, pcom(j)%plg(ipl)%root_dep,              &
-pcom(j)%plcur(ipl)%phuacc, pl_mass(j)%tot(ipl)%m, pl_mass(j)%ab_gr(ipl)%m,          &
-pl_mass(j)%leaf(ipl)%m, pl_mass(j)%root(ipl)%m, pl_mass(j)%stem(ipl)%m,             &
-pl_mass(j)%seed(ipl)%m, ipl = 1, pcom(j)%npl)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-10" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-10" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>j = iob
-write (iunit+itot,'(1(4I), 1((7X, 1A), (1X, 1A))'//lineFmt) time%day, time%mo,         &
-time%day_mo, time%yrc, ob(j)%name, ob(j)%typ,  &
-(pcom(j)%pl(ipl), pcom(j)%plcur(ipl)%gro, pcom(j)%plcur(ipl)%idorm,                  &
-pcom(j)%plg(ipl)%lai, pcom(j)%plg(ipl)%cht, pcom(j)%plg(ipl)%root_dep,              &
-pcom(j)%plcur(ipl)%phuacc, pl_mass(j)%tot(ipl)%m, pl_mass(j)%ab_gr(ipl)%m,          &
-pl_mass(j)%leaf(ipl)%m, pl_mass(j)%root(ipl)%m, pl_mass(j)%stem(ipl)%m,             &
-pl_mass(j)%seed(ipl)%m, ipl = 1, pcom(j)%npl)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-11" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>iob == 0</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-11" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-11-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>jrch = 1, sp_ob%chandeg</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-11-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%name, ob(iob)%typ, ch_fp_wb(jrch)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-12" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-12" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>jrch = ob(iob)%sp_ob_no
-write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%name, ob(iob)%typ, ch_fp_wb(jrch)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-13" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>j = 1, sp_ob%hru</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-13" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>soil_prof_microb%c = soil_org_z%c !!!! zero out microb accumulated for each hru
-write (iunit+itot,*) ob(j)%name, "  hact         hsta         microb(ly)        tot%C     Mgc/ha", &
-"           hact         hsta         microb(acc)        SOM%C         Mgc/ha"</code></pre>
-                                  
-              <div class="card mb-2 ms-12">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-13-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>nly = 1, soil(iob)%nly</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-13-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>soil1(j)%tot_org%c = soil_org_z%c !!!! zero out tot
-soil_prof_somc%c = soil_org_z%c !!!! zero out totc
-soil1(j)%tot_org%c = soil1(j)%hact(nly)%c + soil1(j)%hsta(nly)%c + soil1(j)%microb(nly)%c !!!! Carbon
-soil_prof_microb%c = soil_prof_microb%c + soil1(j)%microb(nly)%c !!!! tot accumulated microb for layer
-soil_prof_somc%c =    soil1(j)%hact(nly)%c + soil1(j)%hsta(nly)%c + soil_prof_microb%c !!!! Carbon w microb accumulated
-write (iunit+itot,*)nly, soil1(j)%hact(nly)%c, soil1(j)%hsta(nly)%c, soil1(j)%microb(nly)%c, &
-soil1(j)%tot_org%c, (soil1(j)%tot_org%c/1000), &
-soil1(j)%hact(nly)%c, soil1(j)%hsta(nly)%c, soil_prof_microb%c, &
-soil_prof_somc%c, (soil_prof_somc%c/1000)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1-block-14" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>nly = 1, soil(iob)%nly</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1-block-1-block-14" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>soil1(iob)%tot_org%c = soil1(iob)%hact(nly)%c + soil1(iob)%hsta(nly)%c + soil1(iob)%microb(nly)%c
-write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%typ, ob(iob)%name, iob, nly, &
-(soil1(iob)%tot_org%c/1000)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
 
         </div>
       </div>

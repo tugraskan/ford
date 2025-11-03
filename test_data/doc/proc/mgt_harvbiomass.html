@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -160,33 +161,17 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
-                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
                   <li class="list-inline-item"><a href='../module/mgt_operations_module.html'>mgt_operations_module</a></li>
                   <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
                   <li class="list-inline-item"><a href='../module/carbon_module.html'>carbon_module</a></li>
+                  <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>~ ~ ~ PURPOSE ~ ~ ~
-   this subroutine performs the harvest operation for above ground biomass (no kill)</p>
-<p>remove yield from seed, leaf, and stem - using hi_ovr for all parts
-check if above ground &gt; minimum biomass to cut
-apply pest stress to harvest index - mass lost due to pests - don't add to residue
-add plant carbon for printing
-adjust foliar and internal pesticide for plant removal
-calculate amount of pesticide removed with yield and clippings
-add pesticide in clippings to soil surface
-update remaining plant organic pools
-add clippings (biomass left behind) to slow humus pool of soil
-calculation for dead roots allocations, resetting phenology, updating other pools
-reset leaf area index and fraction of growing season
-assume the lai biomass relationship - 0.5 lai decline for biomass removal</p>
 
 
     <div class="card mb-3">
@@ -212,7 +197,7 @@ assume the lai biomass relationship - 0.5 lai decline for biomass removal</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-jj~6"></span>
+              <span class="anchor" id="variable-jj~10"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -227,7 +212,7 @@ assume the lai biomass relationship - 0.5 lai decline for biomass removal</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-iplant"></span>
+              <span class="anchor" id="variable-iplant~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -242,7 +227,7 @@ assume the lai biomass relationship - 0.5 lai decline for biomass removal</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-iharvop"></span>
+              <span class="anchor" id="variable-iharvop~3"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -261,6 +246,564 @@ assume the lai biomass relationship - 0.5 lai decline for biomass removal</p>
         </div>
       </div>
     </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_harvest_operation_html__harvest_operation__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_harvest_operation_html__harvest_operation__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_harvest_operation_html__harvest_operation__a__">
+              type(<a href='../type/harvest_operation.html'>harvest_operation</a>)
+              <small class="text-muted ms-2">(1 attribute from mgt_operations_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_harvest_operation_html__harvest_operation__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_harvest_operation_html__harvest_operation__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>harvop_db</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(3 attributes from constituent_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>cs_db%num_pests</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>pl_yield%c</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>pl_yield%m</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_constituent_mass_html__soil_constituent_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_constituent_mass_html__soil_constituent_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_constituent_mass_html__soil_constituent_mass__a__">
+              type(<a href='../type/soil_constituent_mass.html'>soil_constituent_mass</a>)
+              <small class="text-muted ms-2">(1 attribute from constituent_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_constituent_mass_html__soil_constituent_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_constituent_mass_html__soil_constituent_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>cs_soil</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_constituent_mass_html__plant_constituent_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_constituent_mass_html__plant_constituent_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_constituent_mass_html__plant_constituent_mass__a__">
+              type(<a href='../type/plant_constituent_mass.html'>plant_constituent_mass</a>)
+              <small class="text-muted ms-2">(1 attribute from constituent_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_constituent_mass_html__plant_constituent_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_constituent_mass_html__plant_constituent_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>cs_pl</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__">
+              type(<a href='../type/plant_community.html'>plant_community</a>)
+              <small class="text-muted ms-2">(1 attribute from plant_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_html__plant_community__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pcom</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_carbon_residue_gain_losses_html__carbon_residue_gain_losses__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_carbon_residue_gain_losses_html__carbon_residue_gain_losses__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_carbon_residue_gain_losses_html__carbon_residue_gain_losses__a__">
+              type(<a href='../type/carbon_residue_gain_losses.html'>carbon_residue_gain_losses</a>)
+              <small class="text-muted ms-2">(1 attribute from carbon_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_carbon_residue_gain_losses_html__carbon_residue_gain_losses__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_carbon_residue_gain_losses_html__carbon_residue_gain_losses__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>hrc_d</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_carbon_plant_gain_losses_html__carbon_plant_gain_losses__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_carbon_plant_gain_losses_html__carbon_plant_gain_losses__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_carbon_plant_gain_losses_html__carbon_plant_gain_losses__a__">
+              type(<a href='../type/carbon_plant_gain_losses.html'>carbon_plant_gain_losses</a>)
+              <small class="text-muted ms-2">(1 attribute from carbon_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_carbon_plant_gain_losses_html__carbon_plant_gain_losses__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_carbon_plant_gain_losses_html__carbon_plant_gain_losses__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>hpc_d</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
+              type(<a href='../type/soil_profile_mass.html'>soil_profile_mass</a>)
+              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>soil1</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
+              type(<a href='../type/plant_community_mass.html'>plant_community_mass</a>)
+              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>pl_mass</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_organic_mass_html__organic_mass__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_organic_mass_html__organic_mass__a__">
+              type(<a href='../type/organic_mass.html'>organic_mass</a>)
+              <small class="text-muted ms-2">(4 attributes from organic_mineral_mass_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>harv_seed</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>harv_leaf</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>harv_stem</strong></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>harv_left</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>~ ~ ~ PURPOSE ~ ~ ~
+   this subroutine performs the harvest operation for above ground biomass (no kill)</p>
+<p>remove yield from seed, leaf, and stem - using hi_ovr for all parts
+check if above ground &gt; minimum biomass to cut
+apply pest stress to harvest index - mass lost due to pests - don't add to residue
+add plant carbon for printing
+adjust foliar and internal pesticide for plant removal
+calculate amount of pesticide removed with yield and clippings
+add pesticide in clippings to soil surface
+update remaining plant organic pools
+add clippings (biomass left behind) to slow humus pool of soil
+calculation for dead roots allocations, resetting phenology, updating other pools
+reset leaf area index and fraction of growing season
+assume the lai biomass relationship - 0.5 lai decline for biomass removal</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  31</span> j = jj
+<span class="text-muted">  32</span> ipl = iplant
+<span class="text-muted">  34</span> idp = pcom(j)%plcur(ipl)%idplt
+<span class="text-muted">  35</span> hi_ovr = harvop_db(iharvop)%hi_ovr
+<span class="text-muted">  36</span> harveff = harvop_db(iharvop)%eff
+<span class="text-muted">  39</span> hi_tot = hi_ovr * harveff
+<span class="text-muted">  40</span> harv_seed = hi_tot * pl_mass(j)%seed(ipl)
+<span class="text-muted">  41</span> harv_leaf = hi_tot * pl_mass(j)%leaf(ipl)
+<span class="text-muted">  42</span> harv_stem = hi_tot * pl_mass(j)%stem(ipl)
+<span class="text-muted">  43</span> pl_yield = harv_seed + harv_leaf + harv_stem
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pl_mass(j)%ab_gr(ipl)%m - pl_yield%m > harvop_db(iharvop)%bm_min</code>) <strong>THEN</strong>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  49</span> pl_yield = (1. - pcom(j)%plcur(ipl)%pest_stress) * pl_yield
+<span class="text-muted">  51</span> hrc_d(j)%plant_surf_c = hrc_d(j)%plant_surf_c + pl_yield%c
+<span class="text-muted">  52</span> hpc_d(j)%harv_abgr_c = hpc_d(j)%harv_abgr_c + pl_yield%c
+<span class="text-muted">  73</span> pl_mass(j)%seed(ipl) = pl_mass(j)%seed(ipl) - harv_seed
+<span class="text-muted">  74</span> pl_mass(j)%leaf(ipl) = pl_mass(j)%leaf(ipl) - harv_leaf
+<span class="text-muted">  75</span> pl_mass(j)%stem(ipl) = pl_mass(j)%stem(ipl) - harv_stem
+<span class="text-muted">  76</span> pl_mass(j)%tot(ipl) = pl_mass(j)%tot(ipl) - pl_yield
+<span class="text-muted">  77</span> pl_mass(j)%ab_gr(ipl) = pl_mass(j)%ab_gr(ipl) - pl_yield
+<span class="text-muted">  80</span> clip = 1. - harveff
+<span class="text-muted">  81</span> harv_left = clip * pl_yield
+<span class="text-muted">  82</span> soil1(j)%rsd(1) = harv_left + soil1(j)%rsd(1)
+<span class="text-muted">  97</span> end if   !ab_gr_bm > bm_min
+<span class="text-muted">  99</span> return
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>k = 1, cs_db%num_pests</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 55-70</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  57</span> yld_rto = (hi_tot * pl_mass(j)%ab_gr(ipl)%m) / pl_mass(j)%tot(ipl)%m
+<span class="text-muted">  58</span> yldpst = yld_rto * (cs_pl(j)%pl_in(ipl)%pest(k) + cs_pl(j)%pl_on(ipl)%pest(k))
+<span class="text-muted">  59</span> cs_pl(j)%pl_in(ipl)%pest(k) = cs_pl(j)%pl_in(ipl)%pest(k) - (1. - yld_rto) *    &
+<span class="text-muted">  60</span> cs_pl(j)%pl_in(ipl)%pest(k)
+<span class="text-muted">  61</span> cs_pl(j)%pl_in(ipl)%pest(k) = Max (0., cs_pl(j)%pl_in(ipl)%pest(k))
+<span class="text-muted">  62</span> cs_pl(j)%pl_on(ipl)%pest(k) = cs_pl(j)%pl_on(ipl)%pest(k) - (1. - yld_rto) *    &
+<span class="text-muted">  63</span> cs_pl(j)%pl_on(ipl)%pest(k)
+<span class="text-muted">  64</span> cs_pl(j)%pl_on(ipl)%pest(k) = Max (0., cs_pl(j)%pl_on(ipl)%pest(k))
+<span class="text-muted">  66</span> clippst = (1. - harveff) * (cs_pl(j)%pl_in(ipl)%pest(k) + cs_pl(j)%pl_on(ipl)%pest(k))
+<span class="text-muted">  67</span> if (clippst < 0.) clippst = 0.
+<span class="text-muted">  69</span> cs_soil(j)%ly(1)%pest(k) = cs_soil(j)%ly(1)%pest(k) + clippst
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 70</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>pl_mass(j)%tot(ipl)%m > 0.001</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 86-90</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  88</span> pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai * (1. - 0.5 * hi_tot)
+<span class="text-muted">  89</span> pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc * (1. - 0.5 * hi_tot)
+<span class="text-muted">  90</span> pcom(j)%plg(ipl)%root_frac = pl_mass(j)%root(ipl)%m / pl_mass(j)%tot(ipl)%m
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 90</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 91-95</span>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  92</span> pl_mass(j)%tot(ipl)%m = 0.
+<span class="text-muted">  93</span> pcom(j)%plg(ipl)%lai = 0.
+<span class="text-muted">  94</span> pcom(j)%plcur(ipl)%phuacc = 0.
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 95</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>                    </div>
+                  </div>
+                </div>
+              </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
 
 
     <div class="card mb-3">
@@ -479,494 +1022,6 @@ assume the lai biomass relationship - 0.5 lai decline for biomass removal</p>
     </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(3 attributes from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>cs_db%num_pests</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>pl_yield%m</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>pl_yield%c</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_constituent_mass_html__soil_constituent_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_constituent_mass_html__soil_constituent_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_constituent_mass_html__soil_constituent_mass__a__">
-              type(<a href='../type/soil_constituent_mass.html'>soil_constituent_mass</a>)
-              <small class="text-muted ms-2">(1 attribute from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_constituent_mass_html__soil_constituent_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_constituent_mass_html__soil_constituent_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>cs_soil</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_constituent_mass_html__plant_constituent_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_constituent_mass_html__plant_constituent_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_constituent_mass_html__plant_constituent_mass__a__">
-              type(<a href='../type/plant_constituent_mass.html'>plant_constituent_mass</a>)
-              <small class="text-muted ms-2">(1 attribute from constituent_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_constituent_mass_html__plant_constituent_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_constituent_mass_html__plant_constituent_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>cs_pl</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__">
-              type(<a href='../type/soil_profile_mass.html'>soil_profile_mass</a>)
-              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_soil_profile_mass_html__soil_profile_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>soil1</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__">
-              type(<a href='../type/plant_community_mass.html'>plant_community_mass</a>)
-              <small class="text-muted ms-2">(1 attribute from organic_mineral_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_mass_html__plant_community_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pl_mass</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_organic_mass_html__organic_mass__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_organic_mass_html__organic_mass__a__">
-              type(<a href='../type/organic_mass.html'>organic_mass</a>)
-              <small class="text-muted ms-2">(4 attributes from organic_mineral_mass_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_organic_mass_html__organic_mass__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>harv_seed</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>harv_leaf</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>harv_stem</strong></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td><strong>harv_left</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__">
-              type(<a href='../type/plant_community.html'>plant_community</a>)
-              <small class="text-muted ms-2">(1 attribute from plant_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_plant_community_html__plant_community__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>pcom</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_harvest_operation_html__harvest_operation__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_harvest_operation_html__harvest_operation__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_harvest_operation_html__harvest_operation__a__">
-              type(<a href='../type/harvest_operation.html'>harvest_operation</a>)
-              <small class="text-muted ms-2">(1 attribute from mgt_operations_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_harvest_operation_html__harvest_operation__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_harvest_operation_html__harvest_operation__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>harvop_db</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_carbon_residue_gain_losses_html__carbon_residue_gain_losses__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_carbon_residue_gain_losses_html__carbon_residue_gain_losses__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_carbon_residue_gain_losses_html__carbon_residue_gain_losses__a__">
-              type(<a href='../type/carbon_residue_gain_losses.html'>carbon_residue_gain_losses</a>)
-              <small class="text-muted ms-2">(1 attribute from carbon_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_carbon_residue_gain_losses_html__carbon_residue_gain_losses__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_carbon_residue_gain_losses_html__carbon_residue_gain_losses__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>hrc_d</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_carbon_plant_gain_losses_html__carbon_plant_gain_losses__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_carbon_plant_gain_losses_html__carbon_plant_gain_losses__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_carbon_plant_gain_losses_html__carbon_plant_gain_losses__a__">
-              type(<a href='../type/carbon_plant_gain_losses.html'>carbon_plant_gain_losses</a>)
-              <small class="text-muted ms-2">(1 attribute from carbon_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_carbon_plant_gain_losses_html__carbon_plant_gain_losses__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_carbon_plant_gain_losses_html__carbon_plant_gain_losses__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>hpc_d</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use organic_mineral_mass_module
-use soil_module
-use plant_module
-use plant_data_module
-use mgt_operations_module
-use constituent_mass_module
-use carbon_module
-implicit none
-integer :: j = 0                  !none               |HRU number
-integer :: k = 0                  !none               |pesticide counter
-integer :: idp = 0                !                   |
-integer, intent (in) :: jj        !none               |counter
-integer, intent (in) :: iplant    !                   |plant number xwalked from hlt_db()%plant and plants.plt
-integer, intent (in) :: iharvop   !                   |harvest operation type
-integer :: ipl = 0                !none               |counter
-real :: clippst = 0.              !kg pst/ha          |pesticide in clippings
-real :: yldpst = 0.               !kg pst/ha          |pesticide removed in yield
-real :: hi_tot = 0.               !kg/ha)/(kg/ha)     |total harvest index = hi_ovr * harveff
-real :: hi_ovr = 0.               !kg/ha)/(kg/ha)     |harvest index target specified at harvest
-real :: harveff = 0.              !0-1                |harvest efficiency
-real :: clip = 0.                 !0-1                |1.-harveff
-real :: yld_rto = 0.              !0-1            |yield to total biomass ratio
-j = jj
-ipl = iplant
-idp = pcom(j)%plcur(ipl)%idplt
-hi_ovr = harvop_db(iharvop)%hi_ovr
-harveff = harvop_db(iharvop)%eff
-hi_tot = hi_ovr * harveff
-harv_seed = hi_tot * pl_mass(j)%seed(ipl)
-harv_leaf = hi_tot * pl_mass(j)%leaf(ipl)
-harv_stem = hi_tot * pl_mass(j)%stem(ipl)
-pl_yield = harv_seed + harv_leaf + harv_stem</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>pl_mass(j)%ab_gr(ipl)%m - pl_yield%m > harvop_db(iharvop)%bm_min</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>pl_yield = (1. - pcom(j)%plcur(ipl)%pest_stress) * pl_yield
-hrc_d(j)%plant_surf_c = hrc_d(j)%plant_surf_c + pl_yield%c
-hpc_d(j)%harv_abgr_c = hpc_d(j)%harv_abgr_c + pl_yield%c
-pl_mass(j)%seed(ipl) = pl_mass(j)%seed(ipl) - harv_seed
-pl_mass(j)%leaf(ipl) = pl_mass(j)%leaf(ipl) - harv_leaf
-pl_mass(j)%stem(ipl) = pl_mass(j)%stem(ipl) - harv_stem
-pl_mass(j)%tot(ipl) = pl_mass(j)%tot(ipl) - pl_yield
-pl_mass(j)%ab_gr(ipl) = pl_mass(j)%ab_gr(ipl) - pl_yield
-clip = 1. - harveff
-harv_left = clip * pl_yield
-soil1(j)%rsd(1) = harv_left + soil1(j)%rsd(1)
-end if   !ab_gr_bm > bm_min
-return</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>k = 1, cs_db%num_pests</code>
-                  </div>
-                </a>
-                <div id="block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>yld_rto = (hi_tot * pl_mass(j)%ab_gr(ipl)%m) / pl_mass(j)%tot(ipl)%m
-yldpst = yld_rto * (cs_pl(j)%pl_in(ipl)%pest(k) + cs_pl(j)%pl_on(ipl)%pest(k))
-cs_pl(j)%pl_in(ipl)%pest(k) = cs_pl(j)%pl_in(ipl)%pest(k) - (1. - yld_rto) *    &
-cs_pl(j)%pl_in(ipl)%pest(k)
-cs_pl(j)%pl_in(ipl)%pest(k) = Max (0., cs_pl(j)%pl_in(ipl)%pest(k))
-cs_pl(j)%pl_on(ipl)%pest(k) = cs_pl(j)%pl_on(ipl)%pest(k) - (1. - yld_rto) *    &
-cs_pl(j)%pl_on(ipl)%pest(k)
-cs_pl(j)%pl_on(ipl)%pest(k) = Max (0., cs_pl(j)%pl_on(ipl)%pest(k))
-clippst = (1. - harveff) * (cs_pl(j)%pl_in(ipl)%pest(k) + cs_pl(j)%pl_on(ipl)%pest(k))
-if (clippst < 0.) clippst = 0.
-cs_soil(j)%ly(1)%pest(k) = cs_soil(j)%ly(1)%pest(k) + clippst</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>pl_mass(j)%tot(ipl)%m > 0.001</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai * (1. - 0.5 * hi_tot)
-pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc * (1. - 0.5 * hi_tot)
-pcom(j)%plg(ipl)%root_frac = pl_mass(j)%root(ipl)%m / pl_mass(j)%tot(ipl)%m</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-2-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-2-block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>pl_mass(j)%tot(ipl)%m = 0.
-pcom(j)%plg(ipl)%lai = 0.
-pcom(j)%plcur(ipl)%phuacc = 0.</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
 
     <section>    
       <h2>Variables</h2>
@@ -982,7 +1037,7 @@ pcom(j)%plcur(ipl)%phuacc = 0.</code></pre>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-jj~6"></span>
+              <span class="anchor" id="variable-jj~10"></span>
               integer,
             </td>
               <td>public</td>
@@ -999,7 +1054,7 @@ pcom(j)%plcur(ipl)%phuacc = 0.</code></pre>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-iplant"></span>
+              <span class="anchor" id="variable-iplant~2"></span>
               integer,
             </td>
               <td>public</td>
@@ -1016,7 +1071,7 @@ pcom(j)%plcur(ipl)%phuacc = 0.</code></pre>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-iharvop"></span>
+              <span class="anchor" id="variable-iharvop~3"></span>
               integer,
             </td>
               <td>public</td>

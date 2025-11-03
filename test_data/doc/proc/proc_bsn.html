@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -168,12 +169,6 @@
     </div>
 
 
-    <p>!  open file to print all output files that are written
-!  open diagnostics.out file to print problems with various files
-ext to 8000 recl per email 8/2/21 - Kai-Uwe
-!  open drainage areas output file</p>
-
-
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#arguments-section" 
          aria-expanded="true" 
@@ -185,7 +180,7 @@ ext to 8000 recl per email 8/2/21 - Kai-Uwe
       </a>
       <div id="arguments-section" class="collapse show">
         <div class="card-body">
-            <em>None</em>
+            <em>n/a</em>
         </div>
       </div>
     </div>
@@ -196,41 +191,55 @@ ext to 8000 recl per email 8/2/21 - Kai-Uwe
          aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Inputs and Outputs
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
       <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-              
-    
-
-              
-
-          
-          <div class="card mb-3 mt-3">
-            <a data-bs-toggle="collapse" href="#io-operations-section" 
-               aria-expanded="false" 
-               aria-controls="io-operations-section" 
-               class="text-decoration-none">
-              <h4 class="card-header bg-light text-dark">
-                <i class="fa fa-caret-down me-2"></i>I/O Operations
-              </h4>
-            </a>
-            <div id="io-operations-section" class="collapse">
-              <div class="card-body">
-                    <!-- First, collect all conditions across all units -->
-    
-    <div class="accordion" id="ioConditionsAccordion">
-    </div>
-
-              </div>
-            </div>
-          </div>
+          <p class="text-muted mb-3">
+            I/O units used in this subroutine.
+          </p>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Type</th>
+                <th>Filename</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>files_out.out</code></td>
+                <td>
+                    <span class="badge bg-secondary">Unknown</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+              <tr>
+                <td><code>diagnostics.out", recl=8000</code></td>
+                <td>
+                    <span class="badge bg-secondary">Unknown</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+              <tr>
+                <td><code>area_calc.out", recl=8000</code></td>
+                <td>
+                    <span class="badge bg-secondary">Unknown</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-    <br>
-
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#outside-variables-section" 
@@ -238,12 +247,12 @@ ext to 8000 recl per email 8/2/21 - Kai-Uwe
          aria-controls="outside-variables-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
         </h3>
       </a>
       <div id="outside-variables-section" class="collapse">
         <div class="card-body">
-              
+                
     <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
           <h3 class="accordion-header" id="headingtype">
@@ -283,24 +292,40 @@ ext to 8000 recl per email 8/2/21 - Kai-Uwe
         </div>
       </div>
     </div>
-    <br>
 
-
-    <br>
-
-    <br>
 
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
          aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
+         aria-controls="bang-comments-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
         </h3>
       </a>
-      <div id="logic-blocks-section" class="collapse">
+      <div id="bang-comments-section" class="collapse">
         <div class="card-body">
+          <p>!  open file to print all output files that are written
+!  open diagnostics.out file to print problems with various files
+ext to 8000 recl per email 8/2/21 - Kai-Uwe
+!  open drainage areas output file</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+
+          <h4>Logic Blocks</h4>
           <p class="text-muted mb-3">
             Control flow structures organized as they appear in the source code. 
             Each block is collapsible to help navigate complex procedures.
@@ -309,31 +334,65 @@ ext to 8000 recl per email 8/2/21 - Kai-Uwe
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code>use time_module
-implicit none
-open (9000,file="files_out.out")
-write (9000,*) "files_out.out - OUTPUT FILES WRITTEN"
-open (9001,file="diagnostics.out", recl=8000)  !!ext to 8000 recl per email 8/2/21 - Kai-Uwe
-write (9001,*) "DIAGNOSTICS.OUT FILE"
-open (9004,file="area_calc.out", recl=8000)
-call basin_read_cc
-call basin_read_objs
-call time_read
-time%dtm = 1440. / time%step
-call readcio_read
-call basin_read_prm
-call basin_prm_default
-call basin_print_codes_read
-call co2_read
-call carbon_coef_read
-return</code></pre>
+                    <pre class="mb-0"><code><span class="text-muted">   8</span> open (9000,file="files_out.out")
+<span class="text-muted">   9</span> write (9000,*) "files_out.out - OUTPUT FILES WRITTEN"
+<span class="text-muted">  11</span> open (9001,file="diagnostics.out", recl=8000)  !!ext to 8000 recl per email 8/2/21 - Kai-Uwe
+<span class="text-muted">  12</span> write (9001,*) "DIAGNOSTICS.OUT FILE"
+<span class="text-muted">  14</span> open (9004,file="area_calc.out", recl=8000)
+<span class="text-muted">  16</span> call basin_read_cc
+<span class="text-muted">  17</span> call basin_read_objs
+<span class="text-muted">  18</span> call time_read
+<span class="text-muted">  21</span> time%dtm = 1440. / time%step
+<span class="text-muted">  24</span> call readcio_read
+<span class="text-muted">  26</span> call basin_read_prm
+<span class="text-muted">  27</span> call basin_prm_default
+<span class="text-muted">  28</span> call basin_print_codes_read
+<span class="text-muted">  29</span> call co2_read
+<span class="text-muted">  30</span> call carbon_coef_read
+<span class="text-muted">  32</span> return
+</code></pre>
                   </div>
                 </div>
 
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
+
 
 
     

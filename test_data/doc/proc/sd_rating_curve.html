@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -159,24 +160,14 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/channel_velocity_module.html'>channel_velocity_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/sd_channel_module.html'>sd_channel_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>check if bottom width (b) is &lt; 0
-compute rating curve at 0.1 and 1.0 times bankfull depth
-c^2=a^2+b^2 - a=dep; a/b=slope; b^2=a^2/slope^2
-save bankfull depth and area for flood plain calculations
-compute rating curve at 1.2 and 2.0 times bankfull depth (flood plain)
-dep = depth above bankfull
-flood plain perimeter - p^2 = dep^2 + width^2
-flood plain cross section area - dep*width = dep^2 / slope (slope = dep/width)</p>
 
 
     <div class="card mb-3">
@@ -202,7 +193,7 @@ flood plain cross section area - dep*width = dep^2 / slope (slope = dep/width)</
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-i~49"></span>
+              <span class="anchor" id="variable-i~26"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -221,6 +212,315 @@ flood plain cross section area - dep*width = dep^2 / slope (slope = dep/width)</
         </div>
       </div>
     </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__">
+              type(<a href='../type/swatdeg_channel_dynamic.html'>swatdeg_channel_dynamic</a>)
+              <small class="text-muted ms-2">(1 attribute from sd_channel_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>sd_ch</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_channel_rating_curve_html__channel_rating_curve__a__">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_channel_rating_curve_html__channel_rating_curve__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_channel_rating_curve_html__channel_rating_curve__a__">
+              type(<a href='../type/channel_rating_curve.html'>channel_rating_curve</a>)
+              <small class="text-muted ms-2">(1 attribute from sd_channel_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_channel_rating_curve_html__channel_rating_curve__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_channel_rating_curve_html__channel_rating_curve__a__" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>ch_rcurv</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>check if bottom width (b) is &lt; 0
+compute rating curve at 0.1 and 1.0 times bankfull depth
+c^2=a^2+b^2 - a=dep; a/b=slope; b^2=a^2/slope^2
+save bankfull depth and area for flood plain calculations
+compute rating curve at 1.2 and 2.0 times bankfull depth (flood plain)
+dep = depth above bankfull
+flood plain perimeter - p^2 = dep^2 + width^2
+flood plain cross section area - dep*width = dep^2 / slope (slope = dep/width)</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  26</span> b = sd_ch(i)%chw - 2. * sd_ch(i)%chd * sd_ch(i)%chss
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>b <= 0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 28-32</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  29</span> b = .5 * sd_ch(i)%chw
+<span class="text-muted">  30</span> b = Max(0., b)
+<span class="text-muted">  31</span> sd_ch(i)%chss = (sd_ch(i)%chw - b) / (2. * sd_ch(i)%chd)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 32</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>i_dep = 1, 2</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 35-62</span>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  36</span> if (i_dep == 1) dep = 0.1 * sd_ch(i)%chd
+<span class="text-muted">  37</span> if (i_dep == 2) dep = sd_ch(i)%chd
+<span class="text-muted">  39</span> p = b + 2. * Sqrt(dep ** 2 * (1. + 1. / (sd_ch(i)%chss ** 2)))
+<span class="text-muted">  40</span> a = b * dep + dep / sd_ch(i)%chss
+<span class="text-muted">  41</span> rh = a / p
+<span class="text-muted">  42</span> ch_rcurv(i)%elev(i_dep)%dep = dep
+<span class="text-muted">  43</span> ch_rcurv(i)%elev(i_dep)%wet_perim = p
+<span class="text-muted">  44</span> ch_rcurv(i)%elev(i_dep)%xsec_area = a
+<span class="text-muted">  46</span> ch_rcurv(i)%elev(i_dep)%top_wid = b + 2. * dep * sd_ch(i)%chss
+<span class="text-muted">  47</span> ch_rcurv(i)%elev(i_dep)%surf_area = ch_rcurv(i)%elev(i_dep)%top_wid * sd_ch(i)%chl
+<span class="text-muted">  48</span> ch_rcurv(i)%elev(i_dep)%vol = a * sd_ch(i)%chl * 1000.
+<span class="text-muted">  49</span> ch_rcurv(i)%elev(i_dep)%vol_ch = ch_rcurv(i)%elev(i_dep)%vol
+<span class="text-muted">  50</span> ch_rcurv(i)%elev(i_dep)%vol_fp = 0.
+<span class="text-muted">  52</span> ch_rcurv(i)%elev(i_dep)%flo_rate = Qman(a, rh, sd_ch(i)%chn, sd_ch(i)%chs)
+<span class="text-muted">  53</span> vel = Qman(1., rh, sd_ch(i)%chn, sd_ch(i)%chs)
+<span class="text-muted">  54</span> ch_rcurv(i)%elev(i_dep)%ttime = sd_ch(i)%chl / (3.6 * vel)
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>i_dep == 2</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 57-61</span>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  58</span> p_bf = p
+<span class="text-muted">  59</span> a_bf = a
+<span class="text-muted">  60</span> vol_bf = ch_rcurv(i)%elev(i_dep)%vol_ch
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 61</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 62</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>i_dep = 1, 2</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 65-87</span>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  67</span> if (i_dep == 1) frac_abov = 0.2
+<span class="text-muted">  68</span> if (i_dep == 2) frac_abov = 1.
+<span class="text-muted">  69</span> dep = frac_abov * sd_ch(i)%chd
+<span class="text-muted">  71</span> p = p_bf + 2. * Sqrt(dep ** 2 * (1. + 1. / (sd_ch(i)%fps ** 2)))
+<span class="text-muted">  73</span> a = a_bf + b * dep + dep ** 2 / sd_ch(i)%fps
+<span class="text-muted">  74</span> rh = a / p
+<span class="text-muted">  75</span> ifp_dep = i_dep + 2
+<span class="text-muted">  76</span> ch_rcurv(i)%elev(ifp_dep)%dep = (1. + frac_abov) * sd_ch(i)%chd
+<span class="text-muted">  77</span> ch_rcurv(i)%elev(ifp_dep)%wet_perim = p
+<span class="text-muted">  78</span> ch_rcurv(i)%elev(ifp_dep)%xsec_area = a
+<span class="text-muted">  79</span> ch_rcurv(i)%elev(ifp_dep)%top_wid = sd_ch(i)%chw + 2. * dep / sd_ch(i)%fps
+<span class="text-muted">  80</span> ch_rcurv(i)%elev(ifp_dep)%surf_area = ch_rcurv(i)%elev(ifp_dep)%top_wid * sd_ch(i)%chl
+<span class="text-muted">  81</span> ch_rcurv(i)%elev(ifp_dep)%vol_ch = vol_bf
+<span class="text-muted">  82</span> ch_rcurv(i)%elev(ifp_dep)%vol_fp = ch_rcurv(i)%elev(ifp_dep)%top_wid * dep * sd_ch(i)%chl * 1000.
+<span class="text-muted">  83</span> ch_rcurv(i)%elev(ifp_dep)%vol = vol_bf + ch_rcurv(i)%elev(ifp_dep)%vol_fp
+<span class="text-muted">  84</span> ch_rcurv(i)%elev(ifp_dep)%flo_rate = Qman(a, rh, sd_ch(i)%fpn, sd_ch(i)%chs)
+<span class="text-muted">  85</span> vel = Qman(1., rh, sd_ch(i)%fpn, sd_ch(i)%chs)
+<span class="text-muted">  86</span> ch_rcurv(i)%elev(ifp_dep)%ttime = sd_ch(i)%chl / (3.6 * vel)
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 87</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  89</span> return
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
 
 
     <div class="card mb-3">
@@ -473,246 +773,6 @@ flood plain cross section area - dep*width = dep^2 / slope (slope = dep/width)</
     </div>
     <br>
 
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__">
-              type(<a href='../type/swatdeg_channel_dynamic.html'>swatdeg_channel_dynamic</a>)
-              <small class="text-muted ms-2">(1 attribute from sd_channel_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_swatdeg_channel_dynamic_html__swatdeg_channel_dynamic__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>sd_ch</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_channel_rating_curve_html__channel_rating_curve__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_rating_curve_html__channel_rating_curve__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_rating_curve_html__channel_rating_curve__a__">
-              type(<a href='../type/channel_rating_curve.html'>channel_rating_curve</a>)
-              <small class="text-muted ms-2">(1 attribute from sd_channel_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_channel_rating_curve_html__channel_rating_curve__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_channel_rating_curve_html__channel_rating_curve__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>ch_rcurv</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use sd_channel_module
-use channel_velocity_module
-use maximum_data_module
-implicit none
-integer, intent (in) :: i     !none           |counter
-integer :: i_dep = 0          !none           |counter
-integer :: ifp_dep = 0        !none           |counter
-real :: a = 0.                !m^2            |cross-sectional area of channel
-real :: b = 0.                !m              |bottom width of channel
-real :: p = 0.                !m              |wetting perimeter
-real :: rh = 0.               !m              |hydraulic radius
-real :: qman                  !m^3/s or m/s   |flow rate or flow velocity
-real :: dep = 0.              !               |
-real :: a_bf = 0.             !               |
-real :: p_bf = 0.             !               |
-real :: vol_bf = 0.
-real :: vel = 0.              !               |
-real :: frac_abov = 0.
-b = sd_ch(i)%chw - 2. * sd_ch(i)%chd * sd_ch(i)%chss</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>b <= 0.</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>b = .5 * sd_ch(i)%chw
-b = Max(0., b)
-sd_ch(i)%chss = (sd_ch(i)%chw - b) / (2. * sd_ch(i)%chd)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>i_dep = 1, 2</code>
-                  </div>
-                </a>
-                <div id="block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>if (i_dep == 1) dep = 0.1 * sd_ch(i)%chd
-if (i_dep == 2) dep = sd_ch(i)%chd
-p = b + 2. * Sqrt(dep ** 2 * (1. + 1. / (sd_ch(i)%chss ** 2)))
-a = b * dep + dep / sd_ch(i)%chss
-rh = a / p
-ch_rcurv(i)%elev(i_dep)%dep = dep
-ch_rcurv(i)%elev(i_dep)%wet_perim = p
-ch_rcurv(i)%elev(i_dep)%xsec_area = a
-ch_rcurv(i)%elev(i_dep)%top_wid = b + 2. * dep * sd_ch(i)%chss
-ch_rcurv(i)%elev(i_dep)%surf_area = ch_rcurv(i)%elev(i_dep)%top_wid * sd_ch(i)%chl
-ch_rcurv(i)%elev(i_dep)%vol = a * sd_ch(i)%chl * 1000.
-ch_rcurv(i)%elev(i_dep)%vol_ch = ch_rcurv(i)%elev(i_dep)%vol
-ch_rcurv(i)%elev(i_dep)%vol_fp = 0.
-ch_rcurv(i)%elev(i_dep)%flo_rate = Qman(a, rh, sd_ch(i)%chn, sd_ch(i)%chs)
-vel = Qman(1., rh, sd_ch(i)%chn, sd_ch(i)%chs)
-ch_rcurv(i)%elev(i_dep)%ttime = sd_ch(i)%chl / (3.6 * vel)</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>i_dep == 2</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>p_bf = p
-a_bf = a
-vol_bf = ch_rcurv(i)%elev(i_dep)%vol_ch</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-4" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>i_dep = 1, 2</code>
-                  </div>
-                </a>
-                <div id="block-4" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>if (i_dep == 1) frac_abov = 0.2
-if (i_dep == 2) frac_abov = 1.
-dep = frac_abov * sd_ch(i)%chd
-p = p_bf + 2. * Sqrt(dep ** 2 * (1. + 1. / (sd_ch(i)%fps ** 2)))
-a = a_bf + b * dep + dep ** 2 / sd_ch(i)%fps
-rh = a / p
-ifp_dep = i_dep + 2
-ch_rcurv(i)%elev(ifp_dep)%dep = (1. + frac_abov) * sd_ch(i)%chd
-ch_rcurv(i)%elev(ifp_dep)%wet_perim = p
-ch_rcurv(i)%elev(ifp_dep)%xsec_area = a
-ch_rcurv(i)%elev(ifp_dep)%top_wid = sd_ch(i)%chw + 2. * dep / sd_ch(i)%fps
-ch_rcurv(i)%elev(ifp_dep)%surf_area = ch_rcurv(i)%elev(ifp_dep)%top_wid * sd_ch(i)%chl
-ch_rcurv(i)%elev(ifp_dep)%vol_ch = vol_bf
-ch_rcurv(i)%elev(ifp_dep)%vol_fp = ch_rcurv(i)%elev(ifp_dep)%top_wid * dep * sd_ch(i)%chl * 1000.
-ch_rcurv(i)%elev(ifp_dep)%vol = vol_bf + ch_rcurv(i)%elev(ifp_dep)%vol_fp
-ch_rcurv(i)%elev(ifp_dep)%flo_rate = Qman(a, rh, sd_ch(i)%fpn, sd_ch(i)%chs)
-vel = Qman(1., rh, sd_ch(i)%fpn, sd_ch(i)%chs)
-ch_rcurv(i)%elev(ifp_dep)%ttime = sd_ch(i)%chl / (3.6 * vel)</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>return</code></pre>
-                  </div>
-                </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
 
     <section>    
       <h2>Variables</h2>
@@ -728,7 +788,7 @@ ch_rcurv(i)%elev(ifp_dep)%ttime = sd_ch(i)%chl / (3.6 * vel)</code></pre>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-i~49"></span>
+              <span class="anchor" id="variable-i~26"></span>
               integer,
             </td>
               <td>public</td>

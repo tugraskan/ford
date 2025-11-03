@@ -36,6 +36,7 @@
     <link href="../css/local.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
     <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
   </head>
 
   <body>
@@ -160,19 +161,16 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
                   <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
               </ul>
             </li>
         </ul>
       </div>
     </div>
-
-
-    <p>no filename </p>
 
 
     <div class="card mb-3">
@@ -186,7 +184,7 @@
       </a>
       <div id="arguments-section" class="collapse show">
         <div class="card-body">
-            <em>None</em>
+            <em>n/a</em>
         </div>
       </div>
     </div>
@@ -197,578 +195,625 @@
          aria-controls="inputs-outputs-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Inputs and Outputs
+          <i class="fa fa-caret-down me-2"></i>I/O
         </h3>
       </a>
       <div id="inputs-outputs-section" class="collapse">
         <div class="card-body">
-              
-        
-    
-      <div class="alert alert-info mb-3">
-        <h6 class="alert-heading"><i class="fa fa-info-circle"></i> File I/O Summary</h6>
-        <div class="row">
-            <div class="col-md-4">
-              <strong><i class="fa fa-download"></i> Input Files:</strong>
-              <ul class="mb-0">
-                  <li><code>unit_in_cli%atmo_cli</code> <small class="text-muted">(unit in_cli%atmo_cli)</small></li>
-              </ul>
-            </div>
+          <p class="text-muted mb-3">
+            I/O units used in this subroutine.
+          </p>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Type</th>
+                <th>Filename</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>in_cli%atmo_cli</code></td>
+                <td>
+                      <span class="badge bg-success">Input</span>
+                </td>
+                <td>
+                    <em>not specified</em>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
 
-              
-      <div class="alert alert-secondary mb-3">
-        <h6 class="alert-heading"><i class="fa fa-list"></i> Parameters Accessed</h6>
-        <div class="row">
-            <div class="col-md-6">
-              <strong><i class="fa fa-arrow-down"></i> Read Parameters:</strong>
-              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
-                  <li><code>titldum</code></li>
-                  <li><code>header</code></li>
-                  <li><code>atmodep_cont%num_sta</code></li>
-                  <li><code>atmodep_cont%timestep</code></li>
-                  <li><code>atmodep_cont%mo_init</code></li>
-                  <li><code>atmodep_cont%yr_init</code></li>
-                  <li><code>atmodep_cont%num</code></li>
-                  <li><code>atmodep(iadep)%name</code></li>
-                  <li><code>atmodep(iadep)%nh4_rf</code></li>
-                  <li><code>atmodep(iadep)%no3_rf</code></li>
-                  <li><code>atmodep(iadep)%nh4_dry</code></li>
-                  <li><code>atmodep(iadep)%no3_dry</code></li>
-                  <li><code>atmodep(iadep)%nh4_rfmo(imo), imo = 1,atmodep_cont%num</code></li>
-                  <li><code>atmodep(iadep)%no3_rfmo(imo), imo = 1,atmodep_cont%num</code></li>
-                  <li><code>atmodep(iadep)%nh4_drymo(imo),imo = 1,atmodep_cont%num</code></li>
-                  <li><code>atmodep(iadep)%no3_drymo(imo),imo = 1,atmodep_cont%num</code></li>
-                  <li><code>atmodep(iadep)%nh4_rfyr(iyr), iyr = 1,atmodep_cont%num</code></li>
-                  <li><code>atmodep(iadep)%no3_rfyr(iyr), iyr = 1,atmodep_cont%num</code></li>
-                  <li><code>atmodep(iadep)%nh4_dryyr(iyr),iyr = 1,atmodep_cont%num</code></li>
-                  <li><code>atmodep(iadep)%no3_dryyr(iyr),iyr = 1,atmodep_cont%num</code></li>
-              </ul>
-            </div>
-        </div>
-      </div>
-
-          
-          <div class="card mb-3 mt-3">
-            <a data-bs-toggle="collapse" href="#io-operations-section" 
-               aria-expanded="false" 
-               aria-controls="io-operations-section" 
-               class="text-decoration-none">
-              <h4 class="card-header bg-light text-dark">
-                <i class="fa fa-caret-down me-2"></i>I/O Operations
-              </h4>
-            </a>
-            <div id="io-operations-section" class="collapse">
-              <div class="card-body">
-                    <!-- First, collect all conditions across all units -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-          
-          <!-- Group by unit within this condition -->
-    
-    <div class="accordion" id="ioConditionsAccordion">
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+         aria-expanded="false" 
+         aria-controls="outside-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+        </h3>
+      </a>
+      <div id="outside-variables-section" class="collapse">
+        <div class="card-body">
+                
+    <div class="accordion" id="outsideVarsAccordion">
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif___not__i_exist__or__in_cli_pct_atmo_cli_____null__">
+          <h3 class="accordion-header" id="headingtype">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif___not__i_exist__or__in_cli_pct_atmo_cli_____null__" aria-expanded="false" 
-                    aria-controls="collapseCondif___not__i_exist__or__in_cli_pct_atmo_cli_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (.not. i_exist .or. in_cli%atmo_cli == "null")</strong>
-                  <small class="text-muted ms-2">(line 24)</small>
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(11 attributes from maximum_data_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif___not__i_exist__or__in_cli_pct_atmo_cli_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif___not__i_exist__or__in_cli_pct_atmo_cli_____null__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_cli%atmo_cli</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">open</span></td>
-                            <td><code>open (127,file = in_cli%atmo_cli)</code></td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>31</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) titldum</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>titldum</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>32</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) header</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>header</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>34</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) atmodep_cont%num_sta, atmodep_cont%timestep, atmodep_cont%mo_init, atmodep_cont%yr_init, atmodep_cont%num</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep_cont%num_sta</code></small></li>
-                                    <li><small><code>atmodep_cont%timestep</code></small></li>
-                                    <li><small><code>atmodep_cont%mo_init</code></small></li>
-                                    <li><small><code>atmodep_cont%yr_init</code></small></li>
-                                    <li><small><code>atmodep_cont%num</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>37</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>db_mx%atmodep</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%yrc_start</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%mo_start</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>in_cli%atmo_cli</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>atmodep_cont%first</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>atmodep_cont%yr_init</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>atmodep_cont%mo_init</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>atmodep_cont%num_sta</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>atmodep_cont%timestep</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>atmodep_cont%num</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>atmodep_cont%ts</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__atmodep_cont_pct_timestep_____aa__">
+          <h3 class="accordion-header" id="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_atmospheric_deposition_html__atmospheric_deposition__a__">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__atmodep_cont_pct_timestep_____aa__" aria-expanded="false" 
-                    aria-controls="collapseCondif__atmodep_cont_pct_timestep_____aa__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (atmodep_cont%timestep == "aa")</strong>
-                  <small class="text-muted ms-2">(line 73)</small>
+                    data-bs-target="#collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_atmospheric_deposition_html__atmospheric_deposition__a__" aria-expanded="false" 
+                    aria-controls="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_atmospheric_deposition_html__atmospheric_deposition__a__">
+              type(<a href='../type/atmospheric_deposition.html'>atmospheric_deposition</a>)
+              <small class="text-muted ms-2">(1 attribute from climate_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__atmodep_cont_pct_timestep_____aa__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__atmodep_cont_pct_timestep_____aa__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsetype__a_href___home_runner_work_ford_ford_test_data_doc_type_atmospheric_deposition_html__atmospheric_deposition__a__" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype__a_href___home_runner_work_ford_ford_test_data_doc_type_atmospheric_deposition_html__atmospheric_deposition__a__" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_cli%atmo_cli</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) atmodep(iadep)%name</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%name</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>74</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof)   atmodep(iadep)%nh4_rf</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%nh4_rf</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>77</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof)   atmodep(iadep)%no3_rf</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%no3_rf</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>79</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof)   atmodep(iadep)%nh4_dry</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%nh4_dry</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>81</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof)   atmodep(iadep)%no3_dry</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%no3_dry</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>83</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>atmodep</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
         <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__atmodep_cont_pct_timestep_____mo__">
+          <h3 class="accordion-header" id="headingcharacter_len_50_">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__atmodep_cont_pct_timestep_____mo__" aria-expanded="false" 
-                    aria-controls="collapseCondif__atmodep_cont_pct_timestep_____mo__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (atmodep_cont%timestep == "mo")</strong>
-                  <small class="text-muted ms-2">(line 87)</small>
+                    data-bs-target="#collapsecharacter_len_50_" aria-expanded="false" 
+                    aria-controls="collapsecharacter_len_50_">
+              character(len=50)
+              <small class="text-muted ms-2">(1 attribute from climate_module)</small>
             </button>
           </h3>
-          <div id="collapseCondif__atmodep_cont_pct_timestep_____mo__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__atmodep_cont_pct_timestep_____mo__" data-bs-parent="#ioConditionsAccordion">
+          <div id="collapsecharacter_len_50_" class="accordion-collapse collapse" 
+               aria-labelledby="headingcharacter_len_50_" data-bs-parent="#outsideVarsAccordion">
             <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_cli%atmo_cli</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) atmodep(iadep)%name</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%name</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>92</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) (atmodep(iadep)%nh4_rfmo(imo), imo = 1,atmodep_cont%num)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%nh4_rfmo(imo), imo = 1,atmodep_cont%num</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>95</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) (atmodep(iadep)%no3_rfmo(imo), imo = 1,atmodep_cont%num)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%no3_rfmo(imo), imo = 1,atmodep_cont%num</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>97</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) (atmodep(iadep)%nh4_drymo(imo),imo = 1,atmodep_cont%num)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%nh4_drymo(imo),imo = 1,atmodep_cont%num</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>99</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) (atmodep(iadep)%no3_drymo(imo),imo = 1,atmodep_cont%num)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%no3_drymo(imo),imo = 1,atmodep_cont%num</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>101</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingCondif__atmodep_cont_pct_timestep_____yr__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseCondif__atmodep_cont_pct_timestep_____yr__" aria-expanded="false" 
-                    aria-controls="collapseCondif__atmodep_cont_pct_timestep_____yr__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (atmodep_cont%timestep == "yr")</strong>
-                  <small class="text-muted ms-2">(line 105)</small>
-            </button>
-          </h3>
-          <div id="collapseCondif__atmodep_cont_pct_timestep_____yr__" class="accordion-collapse collapse" 
-               aria-labelledby="headingCondif__atmodep_cont_pct_timestep_____yr__" data-bs-parent="#ioConditionsAccordion">
-            <div class="accordion-body">
-                <div class="unit-section mb-3">
-                  <h6 class="text-secondary">
-                    <i class="fa fa-file-o me-1"></i>
-                    <strong>Unit in_cli%atmo_cli</strong>
-                  </h6>
-                  <div class="ms-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Operation</th>
-                          <th>Details</th>
-                          <th>Parameters</th>
-                          <th>Variable Defaults</th>
-                          <th>Local</th>
-                          <th>Line</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) atmodep(iadep)%name</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%name</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>110</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) (atmodep(iadep)%nh4_rfyr(iyr), iyr = 1,atmodep_cont%num)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%nh4_rfyr(iyr), iyr = 1,atmodep_cont%num</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>113</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) (atmodep(iadep)%no3_rfyr(iyr), iyr = 1,atmodep_cont%num)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%no3_rfyr(iyr), iyr = 1,atmodep_cont%num</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>115</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) (atmodep(iadep)%nh4_dryyr(iyr),iyr = 1,atmodep_cont%num)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%nh4_dryyr(iyr),iyr = 1,atmodep_cont%num</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>117</td>
-                          </tr>
-                          <tr>
-                            <td><span class="badge bg-primary">read</span></td>
-                            <td><code>read (127,*,iostat=eof) (atmodep(iadep)%no3_dryyr(iyr),iyr = 1,atmodep_cont%num)</code></td>
-                            <td>
-                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
-                                    <li><small><code>atmodep(iadep)%no3_dryyr(iyr),iyr = 1,atmodep_cont%num</code></small></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">-</small>
-                            </td>
-                            <td>119</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>atmo_n</strong></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
     </div>
 
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#bang-comments-section" 
+         aria-expanded="false" 
+         aria-controls="bang-comments-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
+        </h3>
+      </a>
+      <div id="bang-comments-section" class="collapse">
+        <div class="card-body">
+          <p>no filename </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                    <pre class="mb-0"><code><span class="text-muted">  21</span> eof = 0
+<span class="text-muted">  23</span> inquire (file=in_cli%atmo_cli,exist=i_exist)
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>.not. i_exist .or. in_cli%atmo_cli == "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 24-28</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  26</span> allocate (atmodep(0:0))
+<span class="text-muted">  27</span> allocate (atmo_n(0:0))
+<span class="text-muted">  28</span> db_mx%atmodep = 0
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 28</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  30</span> do
+<span class="text-muted">  31</span> open (127,file = in_cli%atmo_cli)
+<span class="text-muted">  32</span> read (127,*,iostat=eof) titldum
+<span class="text-muted">  33</span> if (eof < 0) exit
+<span class="text-muted">  34</span> read (127,*,iostat=eof) header
+<span class="text-muted">  35</span> if (eof < 0) exit
+<span class="text-muted">  36</span> read (127,*,iostat=eof) atmodep_cont%num_sta, atmodep_cont%timestep, atmodep_cont%mo_init, atmodep_cont%yr_init, &
+<span class="text-muted">  37</span> atmodep_cont%num
+<span class="text-muted">  38</span> if (eof < 0) exit
+<span class="text-muted">  41</span> iyrc_atmo = atmodep_cont%yr_init
+<span class="text-muted">  42</span> imo_atmo = atmodep_cont%mo_init
+<span class="text-muted">  69</span> allocate (atmodep(0:atmodep_cont%num_sta))
+<span class="text-muted">  70</span> allocate (atmo_n(atmodep_cont%num_sta))
+<span class="text-muted"> 125</span> end if        ! if file exists
+<span class="text-muted"> 127</span> db_mx%atmodep = atmodep_cont%num_sta
+<span class="text-muted"> 129</span> return
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>atmodep_cont%timestep == "yr"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 43-52</span>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iyr = 1, atmodep_cont%num</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 44-51</span>
+                  </div>
+                </a>
+                <div id="block-3-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  50</span> iyrc_atmo = iyrc_atmo + 1
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iyrc_atmo == time%yrc_start</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 45-49</span>
+                  </div>
+                </a>
+                <div id="block-3-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  46</span> atmodep_cont%ts = iyr
+<span class="text-muted">  47</span> atmodep_cont%first = 0
+<span class="text-muted">  48</span> exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 49</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 51</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 52</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>atmodep_cont%timestep == "mo"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 54-67</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>imo = 1, atmodep_cont%num</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 55-66</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  61</span> imo_atmo = imo_atmo + 1
+</code></pre>
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>iyrc_atmo == time%yrc_start .and. imo_atmo == time%mo_start</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 56-60</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  57</span> atmodep_cont%ts = 12 * (time%yrc_start - atmodep_cont%yr_init) + imo_atmo
+<span class="text-muted">  58</span> atmodep_cont%first = 0
+<span class="text-muted">  59</span> exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 60</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>imo_atmo > 12</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 62-65</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  63</span> imo_atmo = 1
+<span class="text-muted">  64</span> iyrc_atmo = iyrc_atmo + 1
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 65</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 66</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 67</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>DO</strong> <code>iadep = 1, atmodep_cont%num_sta</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 72-124</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 122</span> end do    ! iadep
+<span class="text-muted"> 123</span> exit
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>atmodep_cont%timestep == "aa"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 73-85</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  74</span> read (127,*,iostat=eof) atmodep(iadep)%name
+<span class="text-muted">  75</span> if (eof < 0) exit
+<span class="text-muted">  76</span> atmo_n(iadep) = atmodep(iadep)%name
+<span class="text-muted">  77</span> read (127,*,iostat=eof)   atmodep(iadep)%nh4_rf
+<span class="text-muted">  78</span> if (eof < 0) exit
+<span class="text-muted">  79</span> read (127,*,iostat=eof)   atmodep(iadep)%no3_rf
+<span class="text-muted">  80</span> if (eof < 0) exit
+<span class="text-muted">  81</span> read (127,*,iostat=eof)   atmodep(iadep)%nh4_dry
+<span class="text-muted">  82</span> if (eof < 0) exit
+<span class="text-muted">  83</span> read (127,*,iostat=eof)   atmodep(iadep)%no3_dry
+<span class="text-muted">  84</span> if (eof < 0) exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 85</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>atmodep_cont%timestep == "mo"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 87-103</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  88</span> allocate (atmodep(iadep)%nh4_rfmo(atmodep_cont%num), source = 0.)
+<span class="text-muted">  89</span> allocate (atmodep(iadep)%no3_rfmo(atmodep_cont%num), source = 0.)
+<span class="text-muted">  90</span> allocate (atmodep(iadep)%nh4_drymo(atmodep_cont%num), source = 0.)
+<span class="text-muted">  91</span> allocate (atmodep(iadep)%no3_drymo(atmodep_cont%num), source = 0.)
+<span class="text-muted">  92</span> read (127,*,iostat=eof) atmodep(iadep)%name
+<span class="text-muted">  93</span> if (eof < 0) exit
+<span class="text-muted">  94</span> atmo_n(iadep) = atmodep(iadep)%name
+<span class="text-muted">  95</span> read (127,*,iostat=eof) (atmodep(iadep)%nh4_rfmo(imo), imo = 1,atmodep_cont%num)
+<span class="text-muted">  96</span> if (eof < 0) exit
+<span class="text-muted">  97</span> read (127,*,iostat=eof) (atmodep(iadep)%no3_rfmo(imo), imo = 1,atmodep_cont%num)
+<span class="text-muted">  98</span> if (eof < 0) exit
+<span class="text-muted">  99</span> read (127,*,iostat=eof) (atmodep(iadep)%nh4_drymo(imo),imo = 1,atmodep_cont%num)
+<span class="text-muted"> 100</span> if (eof < 0) exit
+<span class="text-muted"> 101</span> read (127,*,iostat=eof) (atmodep(iadep)%no3_drymo(imo),imo = 1,atmodep_cont%num)
+<span class="text-muted"> 102</span> if (eof < 0) exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 103</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>IF</strong> (<code>atmodep_cont%timestep == "yr"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 105-121</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 106</span> allocate (atmodep(iadep)%nh4_rfyr(atmodep_cont%num), source = 0.)
+<span class="text-muted"> 107</span> allocate (atmodep(iadep)%no3_rfyr(atmodep_cont%num), source = 0.)
+<span class="text-muted"> 108</span> allocate (atmodep(iadep)%nh4_dryyr(atmodep_cont%num), source = 0.)
+<span class="text-muted"> 109</span> allocate (atmodep(iadep)%no3_dryyr(atmodep_cont%num), source = 0.)
+<span class="text-muted"> 110</span> read (127,*,iostat=eof) atmodep(iadep)%name
+<span class="text-muted"> 111</span> if (eof < 0) exit
+<span class="text-muted"> 112</span> atmo_n(iadep) = atmodep(iadep)%name
+<span class="text-muted"> 113</span> read (127,*,iostat=eof) (atmodep(iadep)%nh4_rfyr(iyr), iyr = 1,atmodep_cont%num)
+<span class="text-muted"> 114</span> if (eof < 0) exit
+<span class="text-muted"> 115</span> read (127,*,iostat=eof) (atmodep(iadep)%no3_rfyr(iyr), iyr = 1,atmodep_cont%num)
+<span class="text-muted"> 116</span> if (eof < 0) exit
+<span class="text-muted"> 117</span> read (127,*,iostat=eof) (atmodep(iadep)%nh4_dryyr(iyr),iyr = 1,atmodep_cont%num)
+<span class="text-muted"> 118</span> if (eof < 0) exit
+<span class="text-muted"> 119</span> read (127,*,iostat=eof) (atmodep(iadep)%no3_dryyr(iyr),iyr = 1,atmodep_cont%num)
+<span class="text-muted"> 120</span> if (eof < 0) exit
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 121</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 124</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                <p class="text-muted mb-3">
+                  Memory allocations and deallocations grouped by variable.
+                </p>
+                <table class="table table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Allocations</th>
+                      <th>Deallocations</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>atmodep</code></td>
+                      <td>
+                            <span class="badge bg-success">line 26</span>,                             <span class="badge bg-success">line 69</span>,                             <span class="badge bg-success">line 88</span>,                             <span class="badge bg-success">line 89</span>,                             <span class="badge bg-success">line 90</span>,                             <span class="badge bg-success">line 91</span>,                             <span class="badge bg-success">line 106</span>,                             <span class="badge bg-success">line 107</span>,                             <span class="badge bg-success">line 108</span>,                             <span class="badge bg-success">line 109</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>atmo_n</code></td>
+                      <td>
+                            <span class="badge bg-success">line 27</span>,                             <span class="badge bg-success">line 70</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <br>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+
 
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#local-variables-section" 
@@ -946,720 +991,6 @@
         </tr>
     </tbody>
   </table>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
-         aria-expanded="false" 
-         aria-controls="outside-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types Used
-        </h3>
-      </a>
-      <div id="outside-variables-section" class="collapse">
-        <div class="card-body">
-              
-    <div class="accordion" id="outsideVarsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(11 attributes from time_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>time%mo_start</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%yrc_start</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>db_mx%atmodep</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>atmodep_cont%first</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>atmodep_cont%num_sta</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>atmodep_cont%yr_init</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>atmodep_cont%ts</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>atmodep_cont%mo_init</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>atmodep_cont%num</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>atmodep_cont%timestep</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>in_cli%atmo_cli</strong></td>
-                      <td>None</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype__a_href___workspaces_ford_test_data_doc_type_atmospheric_deposition_html__atmospheric_deposition__a__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype__a_href___workspaces_ford_test_data_doc_type_atmospheric_deposition_html__atmospheric_deposition__a__" aria-expanded="false" 
-                    aria-controls="collapsetype__a_href___workspaces_ford_test_data_doc_type_atmospheric_deposition_html__atmospheric_deposition__a__">
-              type(<a href='../type/atmospheric_deposition.html'>atmospheric_deposition</a>)
-              <small class="text-muted ms-2">(1 attribute from climate_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype__a_href___workspaces_ford_test_data_doc_type_atmospheric_deposition_html__atmospheric_deposition__a__" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype__a_href___workspaces_ford_test_data_doc_type_atmospheric_deposition_html__atmospheric_deposition__a__" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>atmodep</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingcharacter_len_50_">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsecharacter_len_50_" aria-expanded="false" 
-                    aria-controls="collapsecharacter_len_50_">
-              character(len=50)
-              <small class="text-muted ms-2">(1 attribute from climate_module)</small>
-            </button>
-          </h3>
-          <div id="collapsecharacter_len_50_" class="accordion-collapse collapse" 
-               aria-labelledby="headingcharacter_len_50_" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>atmo_n</strong></td>
-                      <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#allocations-section" 
-         aria-expanded="false" 
-         aria-controls="allocations-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Allocations
-        </h3>
-      </a>
-      <div id="allocations-section" class="collapse">
-        <div class="card-body">
-              <div class="accordion" id="allocationConditionsAccordion">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif___not__i_exist__or__in_cli_pct_atmo_cli_____null__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif___not__i_exist__or__in_cli_pct_atmo_cli_____null__" aria-expanded="false" 
-                    aria-controls="collapseAllocif___not__i_exist__or__in_cli_pct_atmo_cli_____null__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (.not. i_exist .or. in_cli%atmo_cli == "null")</strong>
-                  <small class="text-muted ms-2">(line 24)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif___not__i_exist__or__in_cli_pct_atmo_cli_____null__" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif___not__i_exist__or__in_cli_pct_atmo_cli_____null__" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmodep(0:0</code>                      </td>
-                      <td><code>allocate (atmodep(0:0))</code></td>
-                      <td>26</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmo_n(0:0</code>                      </td>
-                      <td><code>allocate (atmo_n(0:0))</code></td>
-                      <td>27</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif__imo_atmo___12_">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif__imo_atmo___12_" aria-expanded="false" 
-                    aria-controls="collapseAllocif__imo_atmo___12_">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (imo_atmo > 12)</strong>
-                  <small class="text-muted ms-2">(line 62)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif__imo_atmo___12_" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif__imo_atmo___12_" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmodep(0:atmodep_cont%num_sta</code>                      </td>
-                      <td><code>allocate (atmodep(0:atmodep_cont%num_sta))</code></td>
-                      <td>69</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmo_n(atmodep_cont%num_sta</code>                      </td>
-                      <td><code>allocate (atmo_n(atmodep_cont%num_sta))</code></td>
-                      <td>70</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif__atmodep_cont_pct_timestep_____mo__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif__atmodep_cont_pct_timestep_____mo__" aria-expanded="false" 
-                    aria-controls="collapseAllocif__atmodep_cont_pct_timestep_____mo__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (atmodep_cont%timestep == "mo")</strong>
-                  <small class="text-muted ms-2">(line 87)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif__atmodep_cont_pct_timestep_____mo__" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif__atmodep_cont_pct_timestep_____mo__" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmodep(iadep</code>                      </td>
-                      <td><code>allocate (atmodep(iadep)%nh4_rfmo(atmodep_cont%num), source = 0.)</code></td>
-                      <td>88</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmodep(iadep</code>                      </td>
-                      <td><code>allocate (atmodep(iadep)%no3_rfmo(atmodep_cont%num), source = 0.)</code></td>
-                      <td>89</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmodep(iadep</code>                      </td>
-                      <td><code>allocate (atmodep(iadep)%nh4_drymo(atmodep_cont%num), source = 0.)</code></td>
-                      <td>90</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmodep(iadep</code>                      </td>
-                      <td><code>allocate (atmodep(iadep)%no3_drymo(atmodep_cont%num), source = 0.)</code></td>
-                      <td>91</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingAllocif__atmodep_cont_pct_timestep_____yr__">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapseAllocif__atmodep_cont_pct_timestep_____yr__" aria-expanded="false" 
-                    aria-controls="collapseAllocif__atmodep_cont_pct_timestep_____yr__">
-                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
-                <strong>if (atmodep_cont%timestep == "yr")</strong>
-                  <small class="text-muted ms-2">(line 105)</small>
-            </button>
-          </h3>
-          <div id="collapseAllocif__atmodep_cont_pct_timestep_____yr__" class="accordion-collapse collapse" 
-               aria-labelledby="headingAllocif__atmodep_cont_pct_timestep_____yr__" data-bs-parent="#allocationConditionsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Variables</th>
-                    <th>Details</th>
-                    <th>Line</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmodep(iadep</code>                      </td>
-                      <td><code>allocate (atmodep(iadep)%nh4_rfyr(atmodep_cont%num), source = 0.)</code></td>
-                      <td>106</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmodep(iadep</code>                      </td>
-                      <td><code>allocate (atmodep(iadep)%no3_rfyr(atmodep_cont%num), source = 0.)</code></td>
-                      <td>107</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmodep(iadep</code>                      </td>
-                      <td><code>allocate (atmodep(iadep)%nh4_dryyr(atmodep_cont%num), source = 0.)</code></td>
-                      <td>108</td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <span class="badge bg-success">allocate</span>
-                      </td>
-                      <td>
-                            <code>atmodep(iadep</code>                      </td>
-                      <td><code>allocate (atmodep(iadep)%no3_dryyr(atmodep_cont%num), source = 0.)</code></td>
-                      <td>109</td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    </div>
-
-        </div>
-      </div>
-    </div>
-    <br>
-
-    <br>
-
-    <br>
-
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#logic-blocks-section" 
-         aria-expanded="false" 
-         aria-controls="logic-blocks-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Logic Blocks
-        </h3>
-      </a>
-      <div id="logic-blocks-section" class="collapse">
-        <div class="card-body">
-          <p class="text-muted mb-3">
-            Control flow structures organized as they appear in the source code. 
-            Each block is collapsible to help navigate complex procedures.
-          </p>
-          
-                        
-                <div class="card mb-2 ms-0">
-                  <div class="card-body">
-                    <pre class="mb-0"><code>use basin_module
-use input_file_module
-use climate_module
-use time_module
-use maximum_data_module
-implicit none
-character (len=80) :: titldum = ""!           |title of file
-character (len=80) :: header = "" !           |header of file
-integer :: eof = 0              !           |end of file
-integer :: iadep = 0            !           |counter
-integer :: imo = 0              !           |counter
-integer :: iyr = 0              !           |counter
-integer :: imo_atmo = 0         !           |
-logical :: i_exist              !none       |check to determine if file exists
-integer :: iyrc_atmo = 0        !           |
-eof = 0
-inquire (file=in_cli%atmo_cli,exist=i_exist)</code></pre>
-                  </div>
-                </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>.not. i_exist .or. in_cli%atmo_cli == "null"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>allocate (atmodep(0:0))
-allocate (atmo_n(0:0))
-db_mx%atmodep = 0</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                        
-              <div class="card mb-2 ms-0">
-                <a data-bs-toggle="collapse" href="#block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE</strong>
-                  </div>
-                </a>
-                <div id="block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>do
-open (127,file = in_cli%atmo_cli)
-read (127,*,iostat=eof) titldum
-if (eof < 0) exit
-read (127,*,iostat=eof) header
-if (eof < 0) exit
-read (127,*,iostat=eof) atmodep_cont%num_sta, atmodep_cont%timestep, atmodep_cont%mo_init, atmodep_cont%yr_init, &
-atmodep_cont%num
-if (eof < 0) exit
-iyrc_atmo = atmodep_cont%yr_init
-imo_atmo = atmodep_cont%mo_init
-allocate (atmodep(0:atmodep_cont%num_sta))
-allocate (atmo_n(atmodep_cont%num_sta))
-end if        ! if file exists
-db_mx%atmodep = atmodep_cont%num_sta
-return</code></pre>
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>atmodep_cont%timestep == "yr"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-1" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>iyr = 1, atmodep_cont%num</code>
-                  </div>
-                </a>
-                <div id="block-3-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>iyrc_atmo = iyrc_atmo + 1</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-3-block-1-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>iyrc_atmo == time%yrc_start</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-1-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>atmodep_cont%ts = iyr
-atmodep_cont%first = 0
-exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-3-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>atmodep_cont%timestep == "mo"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2" class="collapse">
-                  <div class="card-body">
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>imo = 1, atmodep_cont%num</code>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>imo_atmo = imo_atmo + 1</code></pre>
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>iyrc_atmo == time%yrc_start .and. imo_atmo == time%mo_start</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-1-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>atmodep_cont%ts = 12 * (time%yrc_start - atmodep_cont%yr_init) + imo_atmo
-atmodep_cont%first = 0
-exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-9">
-                <a data-bs-toggle="collapse" href="#block-3-block-2-block-1-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>imo_atmo > 12</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-2-block-1-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>imo_atmo = 1
-iyrc_atmo = iyrc_atmo + 1</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-3">
-                <a data-bs-toggle="collapse" href="#block-3-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-warning bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>iadep = 1, atmodep_cont%num_sta</code>
-                  </div>
-                </a>
-                <div id="block-3-block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>end do    ! iadep
-exit</code></pre>
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-3-block-1" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>atmodep_cont%timestep == "aa"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-3-block-1" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>read (127,*,iostat=eof) atmodep(iadep)%name
-if (eof < 0) exit
-atmo_n(iadep) = atmodep(iadep)%name
-read (127,*,iostat=eof)   atmodep(iadep)%nh4_rf
-if (eof < 0) exit
-read (127,*,iostat=eof)   atmodep(iadep)%no3_rf
-if (eof < 0) exit
-read (127,*,iostat=eof)   atmodep(iadep)%nh4_dry
-if (eof < 0) exit
-read (127,*,iostat=eof)   atmodep(iadep)%no3_dry
-if (eof < 0) exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-3-block-2" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>atmodep_cont%timestep == "mo"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-3-block-2" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>allocate (atmodep(iadep)%nh4_rfmo(atmodep_cont%num), source = 0.)
-allocate (atmodep(iadep)%no3_rfmo(atmodep_cont%num), source = 0.)
-allocate (atmodep(iadep)%nh4_drymo(atmodep_cont%num), source = 0.)
-allocate (atmodep(iadep)%no3_drymo(atmodep_cont%num), source = 0.)
-read (127,*,iostat=eof) atmodep(iadep)%name
-if (eof < 0) exit
-atmo_n(iadep) = atmodep(iadep)%name
-read (127,*,iostat=eof) (atmodep(iadep)%nh4_rfmo(imo), imo = 1,atmodep_cont%num)
-if (eof < 0) exit
-read (127,*,iostat=eof) (atmodep(iadep)%no3_rfmo(imo), imo = 1,atmodep_cont%num)
-if (eof < 0) exit
-read (127,*,iostat=eof) (atmodep(iadep)%nh4_drymo(imo),imo = 1,atmodep_cont%num)
-if (eof < 0) exit
-read (127,*,iostat=eof) (atmodep(iadep)%no3_drymo(imo),imo = 1,atmodep_cont%num)
-if (eof < 0) exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                                  
-              <div class="card mb-2 ms-6">
-                <a data-bs-toggle="collapse" href="#block-3-block-3-block-3" 
-                   aria-expanded="false" 
-                   class="text-decoration-none">
-                  <div class="card-header bg-info bg-opacity-10">
-                    <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>atmodep_cont%timestep == "yr"</code>) <strong>THEN</strong>
-                  </div>
-                </a>
-                <div id="block-3-block-3-block-3" class="collapse">
-                  <div class="card-body">
-                      <pre class="mb-0"><code>allocate (atmodep(iadep)%nh4_rfyr(atmodep_cont%num), source = 0.)
-allocate (atmodep(iadep)%no3_rfyr(atmodep_cont%num), source = 0.)
-allocate (atmodep(iadep)%nh4_dryyr(atmodep_cont%num), source = 0.)
-allocate (atmodep(iadep)%no3_dryyr(atmodep_cont%num), source = 0.)
-read (127,*,iostat=eof) atmodep(iadep)%name
-if (eof < 0) exit
-atmo_n(iadep) = atmodep(iadep)%name
-read (127,*,iostat=eof) (atmodep(iadep)%nh4_rfyr(iyr), iyr = 1,atmodep_cont%num)
-if (eof < 0) exit
-read (127,*,iostat=eof) (atmodep(iadep)%no3_rfyr(iyr), iyr = 1,atmodep_cont%num)
-if (eof < 0) exit
-read (127,*,iostat=eof) (atmodep(iadep)%nh4_dryyr(iyr),iyr = 1,atmodep_cont%num)
-if (eof < 0) exit
-read (127,*,iostat=eof) (atmodep(iadep)%no3_dryyr(iyr),iyr = 1,atmodep_cont%num)
-if (eof < 0) exit</code></pre>
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
-
-                  </div>
-                </div>
-              </div>
 
         </div>
       </div>
