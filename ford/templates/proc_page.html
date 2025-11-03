@@ -161,7 +161,44 @@
       </a>
       <div id="control-flow-section" class="collapse">
         <div class="card-body">
+          {% if procedure.controlflowtgraph_svg %}
+          <h4>Control Flow Graph</h4>
+          <p class="text-muted mb-3">
+            Visual representation of the execution flow within this procedure.
+          </p>
+          <div class="depgraph">
+            {{ procedure.controlflowtgraph_svg }}
+          </div>
+          <div class="mt-3 mb-4">
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#ControlFlowGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="ControlFlowGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Control Flow Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>Control flow graph showing the execution flow within the procedure. Nodes of different colors represent:</p>
+                  <ul>
+                    <li><span style="background-color: #90EE90; padding: 2px 8px;">Entry point</span></li>
+                    <li><span style="background-color: #FFB6C1; padding: 2px 8px;">Exit point</span></li>
+                    <li><span style="background-color: #87CEEB; padding: 2px 8px;">IF condition (diamond)</span></li>
+                    <li><span style="background-color: #DDA0DD; padding: 2px 8px;">DO loop (diamond)</span></li>
+                    <li><span style="background-color: #F0E68C; padding: 2px 8px;">SELECT CASE (diamond)</span></li>
+                    <li><span style="background-color: #FFE4B5; padding: 2px 8px;">CASE block</span></li>
+                    <li><span style="background-color: #E0E0E0; padding: 2px 8px;">Statement block</span></li>
+                  </ul>
+                  <p>Arrows show the possible execution paths through the code. Edges from conditions are labeled with 'T' (true) and 'F' (false), or 'loop' and 'exit' for DO loops.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
           {% if procedure.logic_blocks %}
+          <h4>Logic Blocks</h4>
           <p class="text-muted mb-3">
             Control flow structures organized as they appear in the source code. 
             Each block is collapsible to help navigate complex procedures.
@@ -419,6 +456,45 @@
       </div>
     </div>
 
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#calls-section" 
+         aria-expanded="false" 
+         aria-controls="calls-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Calls
+        </h3>
+      </a>
+      <div id="calls-section" class="collapse">
+        <div class="card-body">
+          {% if procedure.callsgraph or procedure.calledbygraph %}
+            {% if procedure.calledbygraph %}
+            <h4>Called By</h4>
+            <p class="text-muted mb-3">
+              Procedures that call this subroutine.
+            </p>
+            <div class="depgraph">
+              {{ procedure.calledbygraph }}
+            </div>
+            {% endif %}
+            
+            {% if procedure.callsgraph %}
+            {% if procedure.calledbygraph %}<hr class="my-4">{% endif %}
+            <h4>Calls</h4>
+            <p class="text-muted mb-3">
+              Procedures called by this subroutine.
+            </p>
+            <div class="depgraph">
+              {{ procedure.callsgraph }}
+            </div>
+            {% endif %}
+          {% else %}
+            <em>n/a</em>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
     {% if procedure.binding %}
     <h3>Type Bound</h3>
     <p>{{ procedure.binding.parent | relurl(page_url) }}</p>
@@ -452,92 +528,6 @@
     </div>
     <br>
     {% endif %}
-
-    {% if procedure.calledbygraph or procedure.callsgraph %}
-    <br>
-    {% endif %}
-    {% if procedure.callsgraph %}
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#calls-section" 
-         aria-expanded="false" 
-         aria-controls="calls-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Calls
-        </h3>
-      </a>
-      <div id="calls-section" class="collapse">
-        <div class="card-body">
-          {{ procedure.callsgraph }}
-        </div>
-      </div>
-    </div>
-     {% endif %}
-     {% if procedure.calledbygraph %}
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#called-by-section" 
-         aria-expanded="false" 
-         aria-controls="called-by-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Called by
-        </h3>
-      </a>
-      <div id="called-by-section" class="collapse">
-        <div class="card-body">
-          {{ procedure.calledbygraph }}
-        </div>
-      </div>
-    </div>
-     {% endif %}
-    <br>
-
-    {% if procedure.controlflowtgraph_svg %}
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#control-flow-graph-section" 
-         aria-expanded="false" 
-         aria-controls="control-flow-graph-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Control Flow Graph
-        </h3>
-      </a>
-      <div id="control-flow-graph-section" class="collapse">
-        <div class="card-body">
-          <div class="depgraph">
-            {{ procedure.controlflowtgraph_svg }}
-          </div>
-          <div class="mt-3">
-            <a type="button" class="graph-help" data-bs-toggle="modal" href="#ControlFlowGraph-help-text">Help</a>
-          </div>
-          <div class="modal fade" id="ControlFlowGraph-help-text" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h4 class="modal-title">Control Flow Graph Key</h4>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <p>Control flow graph showing the execution flow within the procedure. Nodes of different colors represent:</p>
-                  <ul>
-                    <li><span style="background-color: #90EE90; padding: 2px 8px;">Entry point</span></li>
-                    <li><span style="background-color: #FFB6C1; padding: 2px 8px;">Exit point</span></li>
-                    <li><span style="background-color: #87CEEB; padding: 2px 8px;">IF condition (diamond)</span></li>
-                    <li><span style="background-color: #DDA0DD; padding: 2px 8px;">DO loop (diamond)</span></li>
-                    <li><span style="background-color: #F0E68C; padding: 2px 8px;">SELECT CASE (diamond)</span></li>
-                    <li><span style="background-color: #FFE4B5; padding: 2px 8px;">CASE block</span></li>
-                    <li><span style="background-color: #E0E0E0; padding: 2px 8px;">Statement block</span></li>
-                  </ul>
-                  <p>Arrows show the possible execution paths through the code. Edges from conditions are labeled with 'T' (true) and 'F' (false), or 'loop' and 'exit' for DO loops.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-    <br>
 
     {% if procedure.common %}
     <section>
