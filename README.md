@@ -50,6 +50,8 @@ Current features include:
   not associated with any particular part of the source code.
 - display an entry for non-Fortran source files with file-level documentation
   and syntax highlighted code.
+- **graphs** showing call trees, module dependencies, type inheritance, and control flow
+  (requires [Graphviz](https://graphviz.org/) - see [GRAPH_REQUIREMENTS.md](GRAPH_REQUIREMENTS.md))
 
 ## Installation
 

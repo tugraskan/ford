@@ -1,5 +1,5 @@
 project: test-src-project
 src_dir: ./
-output_dir: ./doc
+output_dir: ../doc
 search: false
-graph: false
+graph: true
