@@ -196,15 +196,11 @@
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>cal_codes%hyd_hrul</strong></td>
+                      <td><strong>cal_codes%chsed</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
                       <td><strong>cal_codes%plt</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>cal_codes%chsed</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -216,7 +212,11 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>db_mx%plcal_reg</strong></td>
+                      <td><strong>cal_codes%hyd_hrul</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%yrs_prt</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -224,11 +224,11 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>db_mx%ch_reg</strong></td>
+                      <td><strong>db_mx%plcal_reg</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%yrs_prt</strong></td>
+                      <td><strong>db_mx%ch_reg</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -398,10 +398,10 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/sd_channel_module.html'>sd_channel_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_lte_module.html'>hru_lte_module</a></li>
                   <li class="list-inline-item"><a href='../module/calibration_data_module.html'>calibration_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_lte_module.html'>hru_lte_module</a></li>
               </ul>
             </li>
         </ul>
@@ -574,6 +574,10 @@
                 </a>
                 <div id="block-1-block-1-block-1-block-1" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>convert back to mm, t/ha, kg/ha</em>
+                            <span class="text-muted small">(line 22)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted">  23</span> lscal(ireg)%lum(ilu)%precip_aa = lscal(ireg)%lum(ilu)%precip_aa / time%yrs_prt
 <span class="text-muted">  24</span> lscal(ireg)%lum(ilu)%precip_aa_sav = lscal(ireg)%lum(ilu)%precip_aa
 <span class="text-muted">  25</span> lscal(ireg)%lum(ilu)%pet_aa = lscal(ireg)%lum(ilu)%pet_aa / time%yrs_prt
@@ -661,6 +665,10 @@
                 </a>
                 <div id="block-2-block-1-block-1-block-1" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>convert back to mm, t/ha, kg/ha</em>
+                            <span class="text-muted small">(line 45)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted">  46</span> lscalt(ireg)%lum(ilu)%precip_aa = lscalt(ireg)%lum(ilu)%precip_aa / time%yrs_prt
 <span class="text-muted">  47</span> lscalt(ireg)%lum(ilu)%precip_aa_sav = lscalt(ireg)%lum(ilu)%precip_aa
 <span class="text-muted">  48</span> lscalt(ireg)%lum(ilu)%aa%srr = lscalt(ireg)%lum(ilu)%aa%srr / time%yrs_prt
@@ -705,6 +713,10 @@
                 </a>
                 <div id="block-3" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>calibrate plnt growth - yield and area summed when harvest (mgt_sched and actions)</em>
+                            <span class="text-muted small">(line 62)</span>
+                        </div>
                                   
               <div class="card mb-2 ms-3">
                 <a data-bs-toggle="collapse" href="#block-3-block-1" 
@@ -717,6 +729,10 @@
                 </a>
                 <div id="block-3-block-1" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>average channel output for soft data calibration</em>
+                                                <span class="text-muted small">(line 96)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted">  72</span> end do    !reg
 <span class="text-muted">  97</span> if (cal_codes%chsed == "y" .and. cal_codes%sed == "n" .and. cal_codes%plt == "n" .and. cal_codes%hyd_hru == "n" .and. &
 <span class="text-muted">  98</span> cal_codes%hyd_hrul == "n") then
@@ -748,6 +764,10 @@
                 </a>
                 <div id="block-3-block-1-block-1-block-1" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>convert back to mm, t/ha, kg/ha</em>
+                            <span class="text-muted small">(line 67)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted">  66</span> plcal(ireg)%lum(ilu)%nbyr = plcal(ireg)%lum(ilu)%nbyr + 1
 <span class="text-muted">  68</span> plcal(ireg)%lum(ilu)%aa%yield = plcal(ireg)%lum(ilu)%sim%yield / plcal(ireg)%lum(ilu)%ha
 <span class="text-muted">  69</span> plcal(ireg)%lum(ilu)%sim = plcal_z  !! zero all calibration parameters
@@ -803,6 +823,10 @@
                 </a>
                 <div id="block-3-block-1-block-2-block-1-block-1" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>soft data for w and d in m/year per m of channel w and d</em>
+                            <span class="text-muted small">(line 102)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted"> 103</span> chcal(ireg)%ord(ich)%aa%chd = chcal(ireg)%ord(ich)%aa%chd / time%yrs_prt
 <span class="text-muted"> 104</span> chcal(ireg)%ord(ich)%aa%chw = chcal(ireg)%ord(ich)%aa%chw / time%yrs_prt
 <span class="text-muted"> 105</span> chcal(ireg)%ord(ich)%aa%hc = chcal(ireg)%ord(ich)%aa%hc / time%yrs_prt

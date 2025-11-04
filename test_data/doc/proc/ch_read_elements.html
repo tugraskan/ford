@@ -229,7 +229,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>sp_ob%res</strong></td>
+                      <td><strong>sp_ob%chan</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -237,11 +237,11 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>sp_ob%chan</strong></td>
+                      <td><strong>sp_ob%res</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>db_mx%cha_reg</strong></td>
+                      <td><strong>in_regs%def_cha_reg</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -249,7 +249,7 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>in_regs%def_cha_reg</strong></td>
+                      <td><strong>db_mx%cha_reg</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -403,9 +403,9 @@
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/sd_channel_module.html'>sd_channel_module</a></li>
+                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
                   <li class="list-inline-item"><a href='../module/calibration_data_module.html'>calibration_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
               </ul>
             </li>
         </ul>
@@ -773,7 +773,7 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  27</span> imax = 0
+                      <pre class="mb-0"><code><span class="text-muted">  27</span> imax = 0
 <span class="text-muted">  28</span> mcal = 0
 <span class="text-muted">  29</span> mreg = 0
 <span class="text-muted">  31</span> inquire (file=in_regs%def_cha, exist=i_exist)
@@ -794,6 +794,10 @@
                 </a>
                 <div id="block-2" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>allocate channel outputs for regions</em>
+                            <span class="text-muted small">(line 41)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted">  33</span> do
 <span class="text-muted">  34</span> open (107,file=in_regs%def_cha)
 <span class="text-muted">  35</span> read (107,*,iostat=eof) titldum
@@ -867,6 +871,10 @@
                 </a>
                 <div id="block-2-block-1-block-2" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>all hrus are in region</em>
+                                                <span class="text-muted small">(line 64)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted">  65</span> allocate (ccu_out(i)%num(sp_ob%hru), source = 0)
 <span class="text-muted">  66</span> ccu_out(i)%num_tot = sp_ob%res
 </code></pre>
@@ -913,7 +921,11 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  80</span> inquire (file=in_regs%def_cha_reg, exist=i_exist)
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>setting up regions for channel soft cal and/or output by order</em>
+                            <span class="text-muted small">(line 79)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  80</span> inquire (file=in_regs%def_cha_reg, exist=i_exist)
 </code></pre>
                   </div>
                 </div>
@@ -1000,6 +1012,10 @@
                 </a>
                 <div id="block-4-block-1-block-2" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>all channels are in region</em>
+                                                <span class="text-muted small">(line 108)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted"> 109</span> allocate (ccu_reg(i)%num(sp_ob%hru), source = 0)
 <span class="text-muted"> 110</span> ccu_reg(i)%num_tot = sp_ob%chan
 </code></pre>
@@ -1055,6 +1071,10 @@
                 </a>
                 <div id="block-5" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>read data for each element in all landscape cataloging units</em>
+                            <span class="text-muted small">(line 139)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted"> 137</span> end if    ! mreg > 0
 <span class="text-muted"> 140</span> inquire (file="element.ccu", exist=i_exist)
 <span class="text-muted"> 185</span> close (107)

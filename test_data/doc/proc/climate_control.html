@@ -270,11 +270,15 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>db_mx%wst</strong></td>
+                      <td><strong>time%mo</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
                       <td><strong>time%yrs</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%step</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -286,11 +290,7 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%mo</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%step</strong></td>
+                      <td><strong>db_mx%wst</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -414,10 +414,10 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
-                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
-                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
               </ul>
             </li>
         </ul>
@@ -762,7 +762,119 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  66</span> call cli_precip_control (1)
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ PURPOSE ~ ~ ~</em>
+                            <span class="text-muted small">(line 3)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>this subroutine controls weather inputs to SWAT. Precipitation and</em>
+                            <span class="text-muted small">(line 4)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>temperature data is read in and the weather generator is called to</em>
+                            <span class="text-muted small">(line 5)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>fill in radiation, wind speed and relative humidity as well as</em>
+                            <span class="text-muted small">(line 6)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>missing precipitation and temperatures. Adjustments for climate</em>
+                            <span class="text-muted small">(line 7)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>changes studies are also made in this subroutine.</em>
+                            <span class="text-muted small">(line 8)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ INCOMING VARIABLES ~ ~ ~</em>
+                            <span class="text-muted small">(line 10)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>name        |units         |definition</em>
+                            <span class="text-muted small">(line 11)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 12)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>elevp(:)    |m             |elevation of precipitation gage station</em>
+                            <span class="text-muted small">(line 13)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>elevt(:)    |m             |elevation of temperature gage station</em>
+                            <span class="text-muted small">(line 14)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>welev(:)    |m             |elevation of weather station used to compile</em>
+                            <span class="text-muted small">(line 15)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>|weather generator data</em>
+                            <span class="text-muted small">(line 16)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 17)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ OUTGOING VARIABLES ~ ~ ~</em>
+                            <span class="text-muted small">(line 19)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>name        |units         |definition</em>
+                            <span class="text-muted small">(line 20)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 21)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ LOCAL DEFINITIONS ~ ~ ~</em>
+                            <span class="text-muted small">(line 23)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>name        |units         |definition</em>
+                            <span class="text-muted small">(line 24)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 25)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 26)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~</em>
+                            <span class="text-muted small">(line 28)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>Intrinsic: Max, Min</em>
+                            <span class="text-muted small">(line 29)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>SWAT: pmeas, tmeas, smeas, hmeas, wmeas</em>
+                            <span class="text-muted small">(line 30)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>SWAT: pgen, tgen, weatgn, clgen, slrgen, rhgen, wndgen</em>
+                            <span class="text-muted small">(line 31)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 33)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>Precipitation:</em>
+                            <span class="text-muted small">(line 65)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>Temperature:</em>
+                            <span class="text-muted small">(line 68)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  66</span> call cli_precip_control (1)
 </code></pre>
                   </div>
                 </div>
@@ -1054,6 +1166,10 @@
                 </a>
                 <div id="block-4" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>simple dewpoint eqn from Lawrence 2005. Bull. Amer. Meteor. Soc.</em>
+                                                <span class="text-muted small">(line 144)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted"> 124</span> iwgn = wst(iwst)%wco%wgn
 <span class="text-muted"> 145</span> wst(iwst)%weat%dewpt = wst(iwst)%weat%tave - (1. - wst(iwst)%weat%rhum) / 5.
 </code></pre>
@@ -1323,6 +1439,14 @@
                 </a>
                 <div id="block-6" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>if using a measured data</em>
+                                                <span class="text-muted small">(line 176)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>if using a measured data</em>
+                                                <span class="text-muted small">(line 176)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted"> 174</span> iwgn = wst(iwst)%wco%wgn
 <span class="text-muted"> 175</span> ig = wst(iwst)%wco%petgage
 </code></pre>
@@ -1401,6 +1525,10 @@
                 </a>
                 <div id="block-6-block-1-block-3" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>Use HARGREAVES POTENTIAL EVAPOTRANSPIRATION METHOD</em>
+                            <span class="text-muted small">(line 189)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted"> 190</span> ramm = wst(iwst)%weat%solradmx * 37.59 / 30.
 </code></pre>
                                   
@@ -1470,7 +1598,11 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted"> 204</span> ppet_mce = ppet_mce + 1
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>Update CMI and Precip minus PET 30 day moving sum</em>
+                            <span class="text-muted small">(line 203)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted"> 204</span> ppet_mce = ppet_mce + 1
 <span class="text-muted"> 205</span> if (ppet_mce > ppet_ndays) ppet_mce = 1
 </code></pre>
                   </div>
@@ -1489,6 +1621,30 @@
                 </a>
                 <div id="block-8" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>calculate climatic moisture index - cumulative p/pet</em>
+                                                <span class="text-muted small">(line 207)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>Use Hargreaves Potential ET Method</em>
+                                                <span class="text-muted small">(line 208)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>subtract the 30 day previous and add the current day precip/pet</em>
+                                                <span class="text-muted small">(line 221)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>Calculate air temperature lag day for stream temperature</em>
+                                                <span class="text-muted small">(line 229)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>replace current day temperature</em>
+                                                <span class="text-muted small">(line 230)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>lag day is the next variable in array</em>
+                                                <span class="text-muted small">(line 232)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted"> 209</span> ramm = wst(iwst)%weat%solradmx * 37.59 / 30.
 <span class="text-muted"> 222</span> iwgn = wst(iwst)%wco%wgn
 <span class="text-muted"> 223</span> wgn_pms(iwgn)%precip_sum = wgn_pms(iwgn)%precip_sum + wst(iwst)%weat%precip - wgn_pms(iwgn)%precip_mce(ppet_mce)
@@ -1738,7 +1894,7 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted"> 278</span> return
+                      <pre class="mb-0"><code><span class="text-muted"> 278</span> return
 </code></pre>
                   </div>
                 </div>

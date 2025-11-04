@@ -181,7 +181,7 @@
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(4 attributes from time_module)</small>
+              <small class="text-muted ms-2">(4 attributes from basin_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -196,6 +196,10 @@
                 </thead>
                 <tbody>
                     <tr>
+                      <td><strong>bsn_prm%co2</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
                       <td><strong>time%nbyr</strong></td>
                       <td>None</td>
                     </tr>
@@ -205,10 +209,6 @@
                     </tr>
                     <tr>
                       <td><strong>time%yrc_start</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>bsn_prm%co2</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -257,10 +257,10 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
-                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
                   <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
               </ul>
             </li>
         </ul>
@@ -602,7 +602,15 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  22</span> type co2
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>output annual CO2</em>
+                            <span class="text-muted small">(line 33)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>read CO2 yearly values</em>
+                            <span class="text-muted small">(line 39)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  22</span> type co2
 <span class="text-muted">  25</span> end type co2
 <span class="text-muted">  27</span> type co2_annual
 <span class="text-muted">  30</span> end type co2_annual
@@ -646,6 +654,10 @@
                 </a>
                 <div id="block-3" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>open output file</em>
+                                                <span class="text-muted small">(line 45)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted">  43</span> do
 <span class="text-muted">  44</span> open (107,file="co2_yr.dat")
 <span class="text-muted">  46</span> read (107,*,iostat=eof) titldum
@@ -690,7 +702,11 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  65</span> allocate (co2y(time%nbyr), source = 0.)
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>no co2 file - default to basin parm</em>
+                            <span class="text-muted small">(line 68)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  65</span> allocate (co2y(time%nbyr), source = 0.)
 <span class="text-muted">  67</span> done = "n"
 </code></pre>
                   </div>
@@ -751,6 +767,14 @@
                 </a>
                 <div id="block-6" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>entire co2 period is before start of simulation</em>
+                            <span class="text-muted small">(line 77)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>entire co2 period is before start of simulation</em>
+                            <span class="text-muted small">(line 77)</span>
+                        </div>
                                   
               <div class="card mb-2 ms-3">
                 <a data-bs-toggle="collapse" href="#block-6-block-1" 
@@ -828,6 +852,14 @@
                 </a>
                 <div id="block-7-block-1" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>co2 record hasn't started so set to basin parm co2</em>
+                                                <span class="text-muted small">(line 90)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>co2 record hasn't started so set to basin parm co2</em>
+                                                <span class="text-muted small">(line 90)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted"> 101</span> iyr_co2 = iyr_co2 + 1
 </code></pre>
                                   
@@ -930,7 +962,11 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted"> 106</span> iyrc = time%yrc_start
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>write to co2.out</em>
+                            <span class="text-muted small">(line 105)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted"> 106</span> iyrc = time%yrc_start
 </code></pre>
                   </div>
                 </div>
@@ -960,7 +996,7 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted"> 112</span> return
+                      <pre class="mb-0"><code><span class="text-muted"> 112</span> return
 </code></pre>
                   </div>
                 </div>

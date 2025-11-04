@@ -196,7 +196,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-surfq"></span>
+              <span class="anchor" id="variable-surfq~3"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -211,7 +211,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-latq~10"></span>
+              <span class="anchor" id="variable-latq~8"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -241,7 +241,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uh~3"></span>
+              <span class="anchor" id="variable-uh~2"></span>
               real,
             </td>
 <td>intent(in),</td>
@@ -256,7 +256,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-hyd_flo~7"></span>
+              <span class="anchor" id="variable-hyd_flo~4"></span>
               real,
             </td>
 <td>intent(inout),</td>
@@ -515,7 +515,35 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  27</span> iday_cur = iday_start
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ PURPOSE ~ ~ ~</em>
+                            <span class="text-muted small">(line 3)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>this subroutine determines the subdaily flow hydrographs for hru's, ru's and inflow fractions</em>
+                            <span class="text-muted small">(line 4)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>set subdaily hydrographs</em>
+                            <span class="text-muted small">(line 26)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>subsurface flow = lateral + tile --> assume uniform throughout the day</em>
+                            <span class="text-muted small">(line 31)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>sum flow in case hydrograph exceeds max days</em>
+                            <span class="text-muted small">(line 34)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>zero previous day flow hydrograph and total hydrographs</em>
+                            <span class="text-muted small">(line 37)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>use unit hydrograph to compute subdaily flow hydrographs</em>
+                            <span class="text-muted small">(line 40)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  27</span> iday_cur = iday_start
 <span class="text-muted">  28</span> iday_prev = iday_start - 1
 <span class="text-muted">  29</span> if (iday_prev < 1) iday_prev = bsn_prm%day_lag_mx
 <span class="text-muted">  32</span> ssq = (latq + tileq)  / time%step
@@ -538,6 +566,14 @@
                 </a>
                 <div id="block-2" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>only add subsurface flow today - already lagged and assumed uniform for the day</em>
+                                                <span class="text-muted small">(line 42)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>set current and previous days</em>
+                                                <span class="text-muted small">(line 49)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted">  43</span> if (iday > 1) ssq = 0.
 <span class="text-muted">  50</span> iday_cur = iday_cur + 1
 <span class="text-muted">  51</span> if (iday_cur > bsn_prm%day_lag_mx) iday_cur = 1
@@ -575,7 +611,7 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  63</span> return
+                      <pre class="mb-0"><code><span class="text-muted">  63</span> return
 </code></pre>
                   </div>
                 </div>
@@ -651,7 +687,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-surfq"></span>
+              <span class="anchor" id="variable-surfq~3"></span>
               real,
             </td>
               <td>public</td>
@@ -668,7 +704,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-latq~10"></span>
+              <span class="anchor" id="variable-latq~8"></span>
               real,
             </td>
               <td>public</td>
@@ -702,7 +738,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uh~3"></span>
+              <span class="anchor" id="variable-uh~2"></span>
               real,
             </td>
               <td>public,</td>
@@ -719,7 +755,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-hyd_flo~7"></span>
+              <span class="anchor" id="variable-hyd_flo~4"></span>
               real,
             </td>
               <td>public,</td>

@@ -181,7 +181,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tc~4"></span>
+              <span class="anchor" id="variable-tc~2"></span>
               real,
             </td>
 <td>intent(in)</td>
@@ -196,7 +196,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uh~4"></span>
+              <span class="anchor" id="variable-uh"></span>
               real,
             </td>
 <td>intent(out),</td>
@@ -222,7 +222,7 @@
                     data-bs-target="#collapsetype" aria-expanded="false" 
                     aria-controls="collapsetype">
               type
-              <small class="text-muted ms-2">(6 attributes from time_module)</small>
+              <small class="text-muted ms-2">(6 attributes from basin_module)</small>
             </button>
           </h3>
           <div id="collapsetype" class="accordion-collapse collapse" 
@@ -237,14 +237,6 @@
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>time%step</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%dtm</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
                       <td><strong>bsn_cc%uhyd</strong></td>
                       <td>None</td>
                     </tr>
@@ -253,11 +245,19 @@
                       <td>None</td>
                     </tr>
                     <tr>
+                      <td><strong>bsn_prm%tb_adj</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
                       <td><strong>bsn_prm%uhalpha</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>bsn_prm%tb_adj</strong></td>
+                      <td><strong>time%dtm</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%step</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -277,8 +277,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
               </ul>
             </li>
         </ul>
@@ -606,7 +606,167 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  73</span> ql = 0.
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ PURPOSE ~ ~ ~</em>
+                            <span class="text-muted small">(line 3)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>This subroutine computes variables related to the watershed hydrology:</em>
+                            <span class="text-muted small">(line 4)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>the time of concentration for the subbasins, lagged surface runoff,</em>
+                            <span class="text-muted small">(line 5)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>the coefficient for the peak runoff rate equation, and lateral flow travel</em>
+                            <span class="text-muted small">(line 6)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>time.</em>
+                            <span class="text-muted small">(line 7)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ INCOMING VARIABLES ~ ~ ~1</em>
+                            <span class="text-muted small">(line 9)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>name        |units         |definition</em>
+                            <span class="text-muted small">(line 10)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 11)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>ch_n(1,:)   |none          |Manning"s "n" value for the tributary channels</em>
+                            <span class="text-muted small">(line 12)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>ch_s(1,:)   |m/m           |average slope of tributary channels</em>
+                            <span class="text-muted small">(line 13)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>gdrain(:)   |hrs           |drain tile lag time: the amount of time</em>
+                            <span class="text-muted small">(line 14)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>|between the transfer of water from the soil</em>
+                            <span class="text-muted small">(line 15)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>|to the drain tile and the release of the</em>
+                            <span class="text-muted small">(line 16)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>|water from the drain tile to the reach.</em>
+                            <span class="text-muted small">(line 17)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>hru_km(:)   |km2           |area of HRU in square kilometers</em>
+                            <span class="text-muted small">(line 18)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>lat_ttime(:)|days          |lateral flow travel time</em>
+                            <span class="text-muted small">(line 19)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>slsoil(:)   |m             |slope length for lateral subsurface flow</em>
+                            <span class="text-muted small">(line 20)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>slsubbsn(:) |m             |average slope length for subbasin</em>
+                            <span class="text-muted small">(line 21)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>tconc(:)     |hr           |time of concentration</em>
+                            <span class="text-muted small">(line 22)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 23)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ OUTGOING VARIABLES ~ ~ ~</em>
+                            <span class="text-muted small">(line 26)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>name        |units         |definition</em>
+                            <span class="text-muted small">(line 27)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 28)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>lat_ttime(:)|none          |Exponential of the lateral flow travel time</em>
+                            <span class="text-muted small">(line 29)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 30)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ LOCAL DEFINITIONS ~ ~ ~</em>
+                            <span class="text-muted small">(line 32)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>name        |units         |definition</em>
+                            <span class="text-muted small">(line 33)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 34)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>l           |none          |counter</em>
+                            <span class="text-muted small">(line 35)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>scmx        |mm/hr         |maximum soil hydraulic conductivity</em>
+                            <span class="text-muted small">(line 36)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>t_ch        |hr            |time for flow entering the farthest upstream</em>
+                            <span class="text-muted small">(line 37)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>|channel to reach the subbasin outlet</em>
+                            <span class="text-muted small">(line 38)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>xx          |none          |variable to hold calculation result</em>
+                            <span class="text-muted small">(line 39)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 40)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~</em>
+                            <span class="text-muted small">(line 42)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>SWAT: Ttcoef</em>
+                            <span class="text-muted small">(line 43)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 45)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>compute unit hydrograph for computing hydrograph from direct runoff</em>
+                            <span class="text-muted small">(line 72)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>sum 20 points on the unit hydrograph to get sum for the time%step</em>
+                            <span class="text-muted small">(line 80)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em></em>
+                            <span class="text-muted small">(line 84)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  73</span> ql = 0.
 <span class="text-muted">  74</span> sumq = 0.
 <span class="text-muted">  75</span> uh = 0.
 <span class="text-muted">  76</span> tb = .5 + .6 * tc + bsn_prm%tb_adj    !baseflow time, hr
@@ -648,6 +808,10 @@
                 </a>
                 <div id="block-2-block-1" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>increment within the time step to get accurate estimates near peak</em>
+                                                <span class="text-muted small">(line 92)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted"> 117</span> if (q < 1.e-4) exit
 </code></pre>
                                   
@@ -663,6 +827,22 @@
                 </a>
                 <div id="block-2-block-1-block-1" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>Triangular Unit Hydrograph</em>
+                                                <span class="text-muted small">(line 96)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>Triangular Unit Hydrograph</em>
+                                                <span class="text-muted small">(line 96)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>Gamma Function Unit Hydrograph</em>
+                                                <span class="text-muted small">(line 107)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>Gamma Function Unit Hydrograph</em>
+                                                <span class="text-muted small">(line 107)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted">  94</span> t_tot = t_tot + t_inc_hr
 <span class="text-muted"> 112</span> q = Max(0.,q)
 <span class="text-muted"> 113</span> uh(iday,istep) = uh(iday,istep) + (q + ql) / 2.
@@ -695,6 +875,10 @@
                 </a>
                 <div id="block-2-block-1-block-1-block-1-block-1" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>rising limb of hydrograph</em>
+                            <span class="text-muted small">(line 99)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted"> 100</span> q = t_tot / tp
 </code></pre>
                     <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
@@ -716,6 +900,10 @@
                 </a>
                 <div id="block-2-block-1-block-1-block-1-block-2" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>falling limb of hydrograph</em>
+                                                <span class="text-muted small">(line 102)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted"> 103</span> q = (tb - t_tot) / (tb - tp)
 </code></pre>
                     <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
@@ -813,7 +1001,7 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted"> 127</span> return
+                      <pre class="mb-0"><code><span class="text-muted"> 127</span> return
 </code></pre>
                   </div>
                 </div>
@@ -881,7 +1069,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tc~4"></span>
+              <span class="anchor" id="variable-tc~2"></span>
               real,
             </td>
               <td>public</td>
@@ -898,7 +1086,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uh~4"></span>
+              <span class="anchor" id="variable-uh"></span>
               real,
             </td>
               <td>public,</td>

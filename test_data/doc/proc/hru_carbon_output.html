@@ -181,7 +181,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-ihru~5"></span>
+              <span class="anchor" id="variable-ihru~13"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -259,14 +259,6 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>pco%nb_hru%a</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>pco%nb_hru%m</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
                       <td><strong>pco%csvout</strong></td>
                       <td>None</td>
                     </tr>
@@ -275,19 +267,11 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%end_sim</strong></td>
+                      <td><strong>pco%nb_hru%m</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>time%end_yr</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%day</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%yrc</strong></td>
+                      <td><strong>pco%nb_hru%a</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -299,11 +283,27 @@
                       <td>None</td>
                     </tr>
                     <tr>
+                      <td><strong>time%yrc</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%end_sim</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
                       <td><strong>time%yrs_prt</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
+                      <td><strong>time%end_yr</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
                       <td><strong>time%day_mo</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%day</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -362,7 +362,7 @@
                 <tbody>
                     <tr>
                       <td><strong>ihru</strong></td>
-                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~33" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                      <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~23" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                     </tr>
                 </tbody>
               </table>
@@ -561,16 +561,16 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
-                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
-                  <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
                   <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
                   <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
-                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/output_landscape_module.html'>output_landscape_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
                   <li class="list-inline-item"><a href='../module/carbon_module.html'>carbon_module</a></li>
+                  <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
+                  <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                  <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
               </ul>
             </li>
         </ul>
@@ -978,7 +978,19 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  23</span> j = ihru
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ PURPOSE ~ ~ ~</em>
+                            <span class="text-muted small">(line 20)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>this subroutine outputs HRU variables on daily, monthly and annual time steps</em>
+                            <span class="text-muted small">(line 21)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>daily print</em>
+                            <span class="text-muted small">(line 32)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  23</span> j = ihru
 <span class="text-muted">  25</span> iob = sp_ob1%hru + j - 1   !!!!!! added for new output write
 <span class="text-muted">  27</span> hsc_m(j) = hsc_m(j) + hsc_d(j)
 <span class="text-muted">  28</span> hrc_m(j) = hrc_m(j) + hrc_d(j)
@@ -1048,6 +1060,22 @@
                 </a>
                 <div id="block-3" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>monthly print</em>
+                            <span class="text-muted small">(line 55)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>monthly print</em>
+                            <span class="text-muted small">(line 55)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>check end of year</em>
+                            <span class="text-muted small">(line 76)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>check end of year</em>
+                            <span class="text-muted small">(line 76)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted">  50</span> hsc_y(j) = hsc_y(j) + hsc_m(j)
 <span class="text-muted">  51</span> hrc_y(j) = hrc_y(j) + hrc_m(j)
 <span class="text-muted">  52</span> hpc_y(j) = hpc_y(j) + hpc_m(j)
@@ -1118,6 +1146,22 @@
                 </a>
                 <div id="block-3-block-2" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>yearly print</em>
+                            <span class="text-muted small">(line 83)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>yearly print</em>
+                            <span class="text-muted small">(line 83)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>average annual print</em>
+                            <span class="text-muted small">(line 104)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>average annual print</em>
+                            <span class="text-muted small">(line 104)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted">  78</span> hsc_a(j) = hsc_a(j) + hsc_y(j)
 <span class="text-muted">  79</span> hrc_a(j) = hrc_a(j) + hrc_y(j)
 <span class="text-muted">  80</span> hpc_a(j) = hpc_a(j) + hpc_y(j)
@@ -1319,7 +1363,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-ihru~5"></span>
+              <span class="anchor" id="variable-ihru~13"></span>
               integer,
             </td>
               <td>public</td>

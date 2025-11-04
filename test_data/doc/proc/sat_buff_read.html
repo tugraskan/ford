@@ -196,11 +196,11 @@
                 </thead>
                 <tbody>
                     <tr>
-                      <td><strong>db_mx%sat_buff</strong></td>
+                      <td><strong>db_mx%dtbl_flo</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>db_mx%dtbl_flo</strong></td>
+                      <td><strong>db_mx%sat_buff</strong></td>
                       <td>None</td>
                     </tr>
                 </tbody>
@@ -308,8 +308,8 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
-                  <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
                   <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
+                  <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
                   <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
               </ul>
             </li>
@@ -575,7 +575,11 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  21</span> msno = 0
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>read snow database data from snow.sno</em>
+                            <span class="text-muted small">(line 25)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  21</span> msno = 0
 <span class="text-muted">  22</span> eof = 0
 <span class="text-muted">  23</span> imax = 0
 <span class="text-muted">  26</span> inquire (file="satbuffer.str", exist=i_exist)
@@ -596,6 +600,14 @@
                 </a>
                 <div id="block-2" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>read saturated buffer inputs for all src/rcv hrus</em>
+                            <span class="text-muted small">(line 49)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>set initial parameters</em>
+                            <span class="text-muted small">(line 55)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted">  29</span> do
 <span class="text-muted">  30</span> open (107,file="satbuffer.str")
 <span class="text-muted">  31</span> read (107,*,iostat=eof) titldum
@@ -668,6 +680,14 @@
                 </a>
                 <div id="block-2-block-3" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>set saturated buffer parameters for source and receiving (buffer) hrus</em>
+                                                <span class="text-muted small">(line 57)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>crosswalk to get number of flow control decision table</em>
+                                                <span class="text-muted small">(line 63)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted">  58</span> hru_src = satbuff_db(ibuff)%hru_src
 <span class="text-muted">  59</span> hru(hru_src)%sb%sb_db = satbuff_db(ibuff)
 <span class="text-muted">  60</span> hru_rcv = satbuff_db(ibuff)%hru_rcv
@@ -728,7 +748,7 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  76</span> close (107)
+                      <pre class="mb-0"><code><span class="text-muted">  76</span> close (107)
 <span class="text-muted">  78</span> db_mx%sat_buff = imax
 <span class="text-muted">  80</span> return
 </code></pre>

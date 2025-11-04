@@ -237,7 +237,11 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>wbody%sag</strong></td>
+                      <td><strong>wbody%lag</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>wbody%sed</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -245,7 +249,7 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>wbody%lag</strong></td>
+                      <td><strong>wbody%san</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -253,15 +257,11 @@
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>wbody%san</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
                       <td><strong>wbody%flo</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
-                      <td><strong>wbody%sed</strong></td>
+                      <td><strong>wbody%sag</strong></td>
                       <td>None</td>
                     </tr>
                     <tr>
@@ -289,13 +289,13 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
-                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
                   <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
+                  <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
                   <li class="list-inline-item"><a href='../module/reservoir_module.html'>reservoir_module</a></li>
+                  <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
                   <li class="list-inline-item"><a href='../module/reservoir_data_module.html'>reservoir_data_module</a></li>
                   <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
-                  <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
               </ul>
             </li>
         </ul>
@@ -489,6 +489,18 @@
                 </a>
                 <div id="block-2" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>compute concentrations</em>
+                                                <span class="text-muted small">(line 29)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>compute change in sediment concentration due to settling</em>
+                                                <span class="text-muted small">(line 37)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>compute change in sediment concentration due to settling</em>
+                                                <span class="text-muted small">(line 37)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted">  30</span> sed_ppm = 1000000. * wbody%sed / wbody%flo
 <span class="text-muted">  31</span> sed_ppm = Max(1.e-6, sed_ppm)
 <span class="text-muted">  32</span> sil_ppm = 1000000. * wbody%sil / wbody%flo
@@ -509,6 +521,18 @@
                 </a>
                 <div id="block-2-block-1" class="collapse">
                   <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>update wetland sediment after settling</em>
+                            <span class="text-muted small">(line 41)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>calculate sediment in the outflow and subtract from wetland</em>
+                            <span class="text-muted small">(line 43)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>assume all sand aggregates and gravel settles</em>
+                            <span class="text-muted small">(line 47)</span>
+                        </div>
                       <pre class="mb-0"><code><span class="text-muted">  39</span> sed_ppm = (sed_ppm - wbody_prm%sed%nsed) * wbody_prm%sed_stlr_co + wbody_prm%sed%nsed
 <span class="text-muted">  40</span> sed_ppm = Max (sed_ppm, wbody_prm%sed%nsed)
 <span class="text-muted">  42</span> wbody%sed = sed_ppm * wbody%flo / 1000000.
@@ -537,7 +561,11 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  62</span> return
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>compute sediment leaving reservoir - ppm -> t</em>
+                            <span class="text-muted small">(line 56)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  62</span> return
 </code></pre>
                   </div>
                 </div>

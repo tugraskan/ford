@@ -181,7 +181,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwgn~20"></span>
+              <span class="anchor" id="variable-iwgn~19"></span>
               integer
             </td>
 <td></td>
@@ -253,43 +253,6 @@
                     <tr>
                       <td><strong>wet</strong></td>
                       <td></td>
-                    </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="headingtype">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapsetype" aria-expanded="false" 
-                    aria-controls="collapsetype">
-              type
-              <small class="text-muted ms-2">(3 attributes from time_module)</small>
-            </button>
-          </h3>
-          <div id="collapsetype" class="accordion-collapse collapse" 
-               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><strong>time%day</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%step</strong></td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td><strong>time%dtm</strong></td>
-                      <td>None</td>
                     </tr>
                 </tbody>
               </table>
@@ -383,6 +346,43 @@
             </div>
           </div>
         </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingtype">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsetype" aria-expanded="false" 
+                    aria-controls="collapsetype">
+              type
+              <small class="text-muted ms-2">(3 attributes from time_module)</small>
+            </button>
+          </h3>
+          <div id="collapsetype" class="accordion-collapse collapse" 
+               aria-labelledby="headingtype" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Attribute Name</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><strong>time%dtm</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%step</strong></td>
+                      <td>None</td>
+                    </tr>
+                    <tr>
+                      <td><strong>time%day</strong></td>
+                      <td>None</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
     </div>
 
         </div>
@@ -396,9 +396,9 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
-                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
-                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
                   <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                  <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
+                  <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
               </ul>
             </li>
         </ul>
@@ -684,7 +684,59 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted">  70</span> sd = Asin(.4 * Sin((Real(time%day) - 82.) / 58.09))  !!365/2pi = 58.09
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>Calculate Daylength</em>
+                            <span class="text-muted small">(line 68)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>calculate solar declination: equation 2.1.2 in SWAT manual</em>
+                            <span class="text-muted small">(line 69)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>calculate the relative distance of the earth from the sun the eccentricity of the orbit</em>
+                            <span class="text-muted small">(line 72)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>daylength = 2 * Acos(-Tan(sd) * Tan(lat)) / omega</em>
+                            <span class="text-muted small">(line 75)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>where the angular velocity of the earth"s rotation, omega, is equal</em>
+                            <span class="text-muted small">(line 76)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>to 15 deg/hr or 0.2618 rad/hr and 2/0.2618 = 7.6374</em>
+                            <span class="text-muted small">(line 77)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>Calculate Potential (maximum) Radiation !!</em>
+                            <span class="text-muted small">(line 90)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>equation 2.2.7 in SWAT manual</em>
+                            <span class="text-muted small">(line 91)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>Calculate fraction of radiation received during each hour in day</em>
+                            <span class="text-muted small">(line 96)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>this calculation assumes solar noon (when the angle between the</em>
+                            <span class="text-muted small">(line 97)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>observer on the earth to the sun and a line normal to the earth"s</em>
+                            <span class="text-muted small">(line 98)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>at that position is at a minimum) falls at 12 noon in day.</em>
+                            <span class="text-muted small">(line 99)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>equation 2.2.10 in SWAT manual</em>
+                            <span class="text-muted small">(line 100)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  70</span> sd = Asin(.4 * Sin((Real(time%day) - 82.) / 58.09))  !!365/2pi = 58.09
 <span class="text-muted">  73</span> dd = 1.0 + 0.033 * Cos(Real(time%day) / 58.09)
 <span class="text-muted">  79</span> sdlat = -wgn_pms(iwgn)%latsin * Tan(sd) / wgn_pms(iwgn)%latcos
 <span class="text-muted">  81</span> if (sdlat > 1.) then    !! sdlat will be >= 1. if latitude exceeds +/- 66.5 deg in winter
@@ -714,6 +766,22 @@
                 </a>
                 <div id="block-4" class="collapse">
                   <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>angular velocity times hour away from solar noon. To calculate</em>
+                                                <span class="text-muted small">(line 105)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>radiation for an hour, the hour angle for the midpoint of the</em>
+                                                <span class="text-muted small">(line 106)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>time period is used. time = 0. at solar noon with positive values</em>
+                                                <span class="text-muted small">(line 107)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>in the morning and negative in the evening</em>
+                                                <span class="text-muted small">(line 108)</span>
+                                            </div>
                       <pre class="mb-0"><code><span class="text-muted"> 109</span> hr_angle = (12.5 - Real(ii)) * 0.2618 * time%dtm / 60.   !!0.2618 rad/hr
 <span class="text-muted"> 110</span> cosrho(ii) = ys + yc * Cos(hr_angle)
 <span class="text-muted"> 111</span> if (cosrho(ii) <= 0.) cosrho(ii) = 0.
@@ -768,7 +836,7 @@
                         
                 <div class="card mb-2 ms-0">
                   <div class="card-body">
-                    <pre class="mb-0"><code><span class="text-muted"> 120</span> return
+                      <pre class="mb-0"><code><span class="text-muted"> 120</span> return
 </code></pre>
                   </div>
                 </div>
@@ -827,7 +895,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwgn~20"></span>
+              <span class="anchor" id="variable-iwgn~19"></span>
               integer,
             </td>
               <td>public</td>
