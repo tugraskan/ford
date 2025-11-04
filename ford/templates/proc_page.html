@@ -20,21 +20,42 @@
     
     <div class="col-md-9" id='text'>
     <h2>{{ macros.proc_line(procedure,False) }}</h2>
-    {{ macros.use_list(procedure) }}
 
+    {# Section 1: Called From - with graph and subsections for Arguments and Outside Variables #}
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#arguments-section" 
+      <a data-bs-toggle="collapse" href="#called-from-section" 
          aria-expanded="true" 
-         aria-controls="arguments-section" 
+         aria-controls="called-from-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Arguments
+          <i class="fa fa-caret-down me-2"></i>Called From
         </h3>
       </a>
-      <div id="arguments-section" class="collapse show">
+      <div id="called-from-section" class="collapse show">
         <div class="card-body">
+          {% if procedure.calledbygraph %}
+            <p class="text-muted mb-3">
+              Procedures that call this {{ procedure.proctype }}. This shows the call stack back to the main program.
+            </p>
+            <div class="depgraph">
+              {{ procedure.calledbygraph }}
+            </div>
+          {% else %}
+            <em>n/a</em>
+          {% endif %}
+
+          {# 1a. Arguments as subsection #}
+          <h4 class="mt-4 mb-3">Arguments</h4>
           {% if procedure.args %}
             {{ macros.variable_list(procedure.args, intent=True) }}
+          {% else %}
+            <em>n/a</em>
+          {% endif %}
+
+          {# 1b. Outside Variables and Types as subsection #}
+          <h4 class="mt-4 mb-3">Outside Variables and Types</h4>
+          {% if procedure.outside_variables_used %}
+            {{ macros.outside_variables_list(procedure.outside_variables_used) }}
           {% else %}
             <em>n/a</em>
           {% endif %}
@@ -42,6 +63,10 @@
       </div>
     </div>
 
+    {# Section 2: Uses - keep as is with graph #}
+    {{ macros.use_list(procedure) }}
+
+    {# Section 3: I/O - keep as is #}
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
          aria-expanded="false" 
@@ -111,45 +136,26 @@
       </div>
     </div>
 
+    {# Section 4: Local Variables #}
+    {% if procedure.local_variables %}
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#outside-variables-section" 
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
          aria-expanded="false" 
-         aria-controls="outside-variables-section" 
+         aria-controls="local-variables-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Outside Variables and Types
+          <i class="fa fa-caret-down me-2"></i>Local Variables
         </h3>
       </a>
-      <div id="outside-variables-section" class="collapse">
+      <div id="local-variables-section" class="collapse">
         <div class="card-body">
-          {% if procedure.outside_variables_used %}
-            {{ macros.outside_variables_list(procedure.outside_variables_used) }}
-          {% else %}
-            <em>n/a</em>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-
-
-    {% if procedure.doc %}
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#bang-comments-section" 
-         aria-expanded="false" 
-         aria-controls="bang-comments-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>!! Bang Comments
-        </h3>
-      </a>
-      <div id="bang-comments-section" class="collapse">
-        <div class="card-body">
-          {{ procedure.doc }}
+          {{ macros.variable_list(procedure.local_variables, permission=True) }}
         </div>
       </div>
     </div>
     {% endif %}
 
+    {# Section 5: Control Flow - with graphs and bang comments integrated into logic blocks #}
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#control-flow-section" 
          aria-expanded="false" 
@@ -164,14 +170,74 @@
           {% if procedure.controlflowtgraph_svg %}
           <h4>Control Flow Graph</h4>
           <p class="text-muted mb-3">
-            Visual representation of the execution flow within this procedure.
+            Visual representation of the execution flow within this procedure. Use mouse wheel to zoom, drag to pan.
           </p>
-          <div class="depgraph">
+          <div class="depgraph" id="control-flow-graph-container" style="border: 1px solid #ddd; overflow: auto; max-height: 600px;">
             {{ procedure.controlflowtgraph_svg }}
           </div>
           <div class="mt-3 mb-4">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="resetControlFlowZoom()">Reset Zoom</button>
             <a type="button" class="graph-help" data-bs-toggle="modal" href="#ControlFlowGraph-help-text">Help</a>
           </div>
+          <script>
+            (function() {
+              const container = document.getElementById('control-flow-graph-container');
+              const svg = container.querySelector('svg');
+              if (svg) {
+                svg.style.cursor = 'grab';
+                let scale = 1;
+                let panning = false;
+                let pointX = 0;
+                let pointY = 0;
+                let start = { x: 0, y: 0 };
+                
+                // Enable zoom on mouse wheel
+                container.addEventListener('wheel', function(e) {
+                  e.preventDefault();
+                  const xs = (e.clientX - pointX) / scale;
+                  const ys = (e.clientY - pointY) / scale;
+                  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                  scale *= delta;
+                  scale = Math.min(Math.max(0.1, scale), 10);
+                  pointX = e.clientX - xs * scale;
+                  pointY = e.clientY - ys * scale;
+                  svg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+                }, { passive: false });
+                
+                // Enable panning
+                svg.addEventListener('mousedown', function(e) {
+                  svg.style.cursor = 'grabbing';
+                  panning = true;
+                  start = { x: e.clientX - pointX, y: e.clientY - pointY };
+                });
+                
+                svg.addEventListener('mouseup', function() {
+                  svg.style.cursor = 'grab';
+                  panning = false;
+                });
+                
+                svg.addEventListener('mousemove', function(e) {
+                  if (!panning) return;
+                  e.preventDefault();
+                  pointX = e.clientX - start.x;
+                  pointY = e.clientY - start.y;
+                  svg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+                });
+                
+                svg.addEventListener('mouseleave', function() {
+                  panning = false;
+                  svg.style.cursor = 'grab';
+                });
+                
+                window.resetControlFlowZoom = function() {
+                  scale = 1;
+                  pointX = 0;
+                  pointY = 0;
+                  svg.style.transform = '';
+                };
+              }
+            })();
+          </script>
           <div class="modal fade" id="ControlFlowGraph-help-text" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
               <div class="modal-content">
@@ -456,6 +522,7 @@
       </div>
     </div>
 
+    {# Section 6: Calls - show both graph and list #}
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#calls-section" 
          aria-expanded="false" 
@@ -467,22 +534,31 @@
       </a>
       <div id="calls-section" class="collapse">
         <div class="card-body">
-          {% if procedure.callsgraph or procedure.calledbygraph %}
-            {% if procedure.calledbygraph %}
-            <h4>Called By</h4>
+          {% if procedure.callsgraph or procedure.calls %}
+            {% if procedure.calls %}
+            <h4>Procedures Called</h4>
             <p class="text-muted mb-3">
-              Procedures that call this subroutine.
+              List of procedures called by this {{ procedure.proctype }}.
             </p>
-            <div class="depgraph">
-              {{ procedure.calledbygraph }}
-            </div>
+            <ul class="list-group list-group-flush mb-4">
+              {% for call in procedure.calls %}
+                <li class="list-group-item">
+                  {% if call is string %}
+                    <code>{{ call }}</code>
+                  {% elif call.get_url %}
+                    {{ call | relurl(page_url) }}
+                  {% else %}
+                    <code>{{ call.name if call.name else call }}</code>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
             {% endif %}
             
             {% if procedure.callsgraph %}
-            {% if procedure.calledbygraph %}<hr class="my-4">{% endif %}
-            <h4>Calls</h4>
+            <h4>Call Graph</h4>
             <p class="text-muted mb-3">
-              Procedures called by this subroutine.
+              Visual representation of procedures called by this {{ procedure.proctype }}.
             </p>
             <div class="depgraph">
               {{ procedure.callsgraph }}
@@ -508,25 +584,6 @@
         </small>
       </h3>
       {{ procedure.retvar.doc }}
-    {% endif %}
-
-    {% if procedure.local_variables %}
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#local-variables-section" 
-         aria-expanded="false" 
-         aria-controls="local-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Local Variables
-        </h3>
-      </a>
-      <div id="local-variables-section" class="collapse">
-        <div class="card-body">
-          {{ macros.variable_list(procedure.local_variables, permission=True) }}
-        </div>
-      </div>
-    </div>
-    <br>
     {% endif %}
 
     {% if procedure.common %}
