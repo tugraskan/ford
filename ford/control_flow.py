@@ -515,6 +515,10 @@ class LogicBlock:
         Ending line number of this block (1-indexed)
     statement_lines : List[int]
         Line numbers corresponding to each statement
+    comments : List[str]
+        Documentation comments (!! comments) associated with this block
+    comment_lines : List[int]
+        Line numbers corresponding to each comment
     """
 
     block_type: str
@@ -526,6 +530,8 @@ class LogicBlock:
     start_line: Optional[int] = None
     end_line: Optional[int] = None
     statement_lines: List[int] = field(default_factory=list)
+    comments: List[str] = field(default_factory=list)
+    comment_lines: List[int] = field(default_factory=list)
 
 
 class LogicBlockExtractor:
@@ -683,10 +689,12 @@ class LogicBlockExtractor:
         if not lines:
             return blocks
 
-        # Stack to track nested blocks: (block, current_statements, current_statement_lines)
-        stack: List[Tuple[LogicBlock, List[str], List[int]]] = []
+        # Stack to track nested blocks: (block, current_statements, current_statement_lines, current_comments, current_comment_lines)
+        stack: List[Tuple[LogicBlock, List[str], List[int], List[str], List[int]]] = []
         current_statements: List[str] = []
         current_statement_lines: List[int] = []
+        current_comments: List[str] = []
+        current_comment_lines: List[int] = []
 
         i = 0
         while i < len(lines):
@@ -694,8 +702,17 @@ class LogicBlockExtractor:
             line_num = line_numbers[i]
             line_stripped = line.strip()
 
-            # Skip empty lines and comments
-            if not line_stripped or line_stripped.startswith("!"):
+            # Collect documentation comments (!! comments)
+            if line_stripped.startswith("!!"):
+                # Strip the !! prefix and add to current comments
+                comment_text = line_stripped[2:].strip()
+                current_comments.append(comment_text)
+                current_comment_lines.append(line_num)
+                i += 1
+                continue
+
+            # Skip empty lines and other comments (single !)
+            if not line_stripped or (line_stripped.startswith("!") and not line_stripped.startswith("!!")):
                 i += 1
                 continue
 
@@ -710,12 +727,18 @@ class LogicBlockExtractor:
                     level=len(stack),
                     label=label,
                     start_line=line_num,
+                    comments=current_comments.copy(),
+                    comment_lines=current_comment_lines.copy(),
                 )
 
                 # Save current statements to parent or top-level
                 if stack:
                     stack[-1][1].extend(current_statements)
                     stack[-1][2].extend(current_statement_lines)
+                    stack[-1][3].extend(current_comments)
+                    stack[-1][4].extend(current_comment_lines)
+                    stack[-1][3].extend(current_comments)
+                    stack[-1][4].extend(current_comment_lines)
                 else:
                     if current_statements:
                         blocks.append(
@@ -724,13 +747,19 @@ class LogicBlockExtractor:
                                 statements=current_statements,
                                 level=0,
                                 statement_lines=current_statement_lines,
+                                comments=current_comments,
+                                comment_lines=current_comment_lines,
                             )
                         )
                 current_statements = []
                 current_statement_lines = []
+                current_comments = []
+                current_comment_lines = []
+                current_comments = []
+                current_comment_lines = []
 
                 # Push to stack
-                stack.append((if_block, [], []))
+                stack.append((if_block, [], [], [], []))
 
             elif self.ELSE_IF_RE.match(line_stripped):
                 match = self.ELSE_IF_RE.match(line_stripped)
@@ -740,6 +769,8 @@ class LogicBlockExtractor:
                     # Save statements to current IF/ELSEIF block
                     stack[-1][0].statements = stack[-1][1]
                     stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].comments = stack[-1][3]
+                    stack[-1][0].comment_lines = stack[-1][4]
                     stack[-1][0].end_line = line_num - 1
 
                     # Create ELSE IF block
@@ -754,17 +785,19 @@ class LogicBlockExtractor:
                     if len(stack) > 1:
                         stack[-2][0].children.append(stack[-1][0])
                         stack.pop()
-                        stack.append((elseif_block, [], []))
+                        stack.append((elseif_block, [], [], [], []))
                     else:
                         blocks.append(stack[-1][0])
                         stack.pop()
-                        stack.append((elseif_block, [], []))
+                        stack.append((elseif_block, [], [], [], []))
 
             elif self.ELSE_RE.match(line_stripped):
                 if stack and stack[-1][0].block_type in ["if", "elseif"]:
                     # Save statements to current IF/ELSEIF block
                     stack[-1][0].statements = stack[-1][1]
                     stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].comments = stack[-1][3]
+                    stack[-1][0].comment_lines = stack[-1][4]
                     stack[-1][0].end_line = line_num - 1
 
                     # Create ELSE block at same level
@@ -776,21 +809,23 @@ class LogicBlockExtractor:
                     if len(stack) > 1:
                         stack[-2][0].children.append(stack[-1][0])
                         stack.pop()
-                        stack.append((else_block, [], []))
+                        stack.append((else_block, [], [], [], []))
                     else:
                         blocks.append(stack[-1][0])
                         stack.pop()
-                        stack.append((else_block, [], []))
+                        stack.append((else_block, [], [], [], []))
 
             elif self.END_IF_RE.match(line_stripped):
                 if stack and stack[-1][0].block_type in ["if", "elseif", "else"]:
                     # Save statements to current block
                     stack[-1][0].statements = stack[-1][1]
                     stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].comments = stack[-1][3]
+                    stack[-1][0].comment_lines = stack[-1][4]
                     stack[-1][0].end_line = line_num
 
                     # Pop and add to parent
-                    block, _, _ = stack.pop()
+                    block, _, _, _, _ = stack.pop()
                     if stack:
                         stack[-1][0].children.append(block)
                     else:
@@ -807,12 +842,16 @@ class LogicBlockExtractor:
                     level=len(stack),
                     label=label,
                     start_line=line_num,
+                    comments=current_comments.copy(),
+                    comment_lines=current_comment_lines.copy(),
                 )
 
                 # Save current statements
                 if stack:
                     stack[-1][1].extend(current_statements)
                     stack[-1][2].extend(current_statement_lines)
+                    stack[-1][3].extend(current_comments)
+                    stack[-1][4].extend(current_comment_lines)
                 else:
                     if current_statements:
                         blocks.append(
@@ -821,23 +860,29 @@ class LogicBlockExtractor:
                                 statements=current_statements,
                                 level=0,
                                 statement_lines=current_statement_lines,
+                                comments=current_comments,
+                                comment_lines=current_comment_lines,
                             )
                         )
                 current_statements = []
                 current_statement_lines = []
+                current_comments = []
+                current_comment_lines = []
 
                 # Push to stack
-                stack.append((do_block, [], []))
+                stack.append((do_block, [], [], [], []))
 
             elif self.END_DO_RE.match(line_stripped):
                 if stack and stack[-1][0].block_type == "do":
                     # Save statements to DO block
                     stack[-1][0].statements = stack[-1][1]
                     stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].comments = stack[-1][3]
+                    stack[-1][0].comment_lines = stack[-1][4]
                     stack[-1][0].end_line = line_num
 
                     # Pop and add to parent
-                    do_block, _, _ = stack.pop()
+                    do_block, _, _, _, _ = stack.pop()
                     if stack:
                         stack[-1][0].children.append(do_block)
                     else:
@@ -854,12 +899,16 @@ class LogicBlockExtractor:
                     level=len(stack),
                     label=label,
                     start_line=line_num,
+                    comments=current_comments.copy(),
+                    comment_lines=current_comment_lines.copy(),
                 )
 
                 # Save current statements
                 if stack:
                     stack[-1][1].extend(current_statements)
                     stack[-1][2].extend(current_statement_lines)
+                    stack[-1][3].extend(current_comments)
+                    stack[-1][4].extend(current_comment_lines)
                 else:
                     if current_statements:
                         blocks.append(
@@ -868,13 +917,17 @@ class LogicBlockExtractor:
                                 statements=current_statements,
                                 level=0,
                                 statement_lines=current_statement_lines,
+                                comments=current_comments,
+                                comment_lines=current_comment_lines,
                             )
                         )
                 current_statements = []
                 current_statement_lines = []
+                current_comments = []
+                current_comment_lines = []
 
                 # Push to stack
-                stack.append((select_block, [], []))
+                stack.append((select_block, [], [], [], []))
 
             elif self.CASE_RE.match(line_stripped) or self.CASE_DEFAULT_RE.match(
                 line_stripped
@@ -884,8 +937,10 @@ class LogicBlockExtractor:
                     if stack[-1][0].block_type == "case":
                         stack[-1][0].statements = stack[-1][1]
                         stack[-1][0].statement_lines = stack[-1][2]
+                        stack[-1][0].comments = stack[-1][3]
+                        stack[-1][0].comment_lines = stack[-1][4]
                         stack[-1][0].end_line = line_num - 1
-                        case_block, _, _ = stack.pop()
+                        case_block, _, _, _, _ = stack.pop()
                         stack[-1][0].children.append(case_block)
 
                     # Parse case value
@@ -901,8 +956,12 @@ class LogicBlockExtractor:
                         condition=case_value,
                         level=len(stack),
                         start_line=line_num,
+                        comments=current_comments.copy(),
+                        comment_lines=current_comment_lines.copy(),
                     )
-                    stack.append((case_block, [], []))
+                    current_comments = []
+                    current_comment_lines = []
+                    stack.append((case_block, [], [], [], []))
 
             elif self.END_SELECT_RE.match(line_stripped):
                 if stack:
@@ -910,15 +969,17 @@ class LogicBlockExtractor:
                     if stack[-1][0].block_type == "case":
                         stack[-1][0].statements = stack[-1][1]
                         stack[-1][0].statement_lines = stack[-1][2]
+                        stack[-1][0].comments = stack[-1][3]
+                        stack[-1][0].comment_lines = stack[-1][4]
                         stack[-1][0].end_line = line_num - 1
-                        case_block, _, _ = stack.pop()
+                        case_block, _, _, _, _ = stack.pop()
                         stack[-1][0].children.append(case_block)
 
                     # Close SELECT - Add END SELECT to the block
                     if stack and stack[-1][0].block_type == "select":
                         stack[-1][0].end_line = line_num
                         # Note: END SELECT is not added as a statement to match Fortran structure
-                        select_block, _, _ = stack.pop()
+                        select_block, _, _, _, _ = stack.pop()
                         if stack:
                             stack[-1][0].children.append(select_block)
                         else:
@@ -932,6 +993,12 @@ class LogicBlockExtractor:
 
                     if stack:
                         # We're inside a block, add to that block's statements
+                        # First add any accumulated comments
+                        if current_comments:
+                            stack[-1][3].extend(current_comments)
+                            stack[-1][4].extend(current_comment_lines)
+                            current_comments = []
+                            current_comment_lines = []
                         stack[-1][1].append(line_stripped)
                         stack[-1][2].append(line_num)
                     else:
@@ -946,6 +1013,8 @@ class LogicBlockExtractor:
             if stack:
                 stack[-1][1].extend(current_statements)
                 stack[-1][2].extend(current_statement_lines)
+                stack[-1][3].extend(current_comments)
+                stack[-1][4].extend(current_comment_lines)
             else:
                 blocks.append(
                     LogicBlock(
@@ -953,14 +1022,18 @@ class LogicBlockExtractor:
                         statements=current_statements,
                         level=0,
                         statement_lines=current_statement_lines,
+                        comments=current_comments,
+                        comment_lines=current_comment_lines,
                     )
                 )
 
         # Close any unclosed blocks (shouldn't happen in valid code)
         while stack:
-            block, stmts, stmt_lines = stack.pop()
+            block, stmts, stmt_lines, cmts, cmt_lines = stack.pop()
             block.statements = stmts
             block.statement_lines = stmt_lines
+            block.comments = cmts
+            block.comment_lines = cmt_lines
             if stack:
                 stack[-1][0].children.append(block)
             else:
