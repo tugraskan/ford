@@ -1365,9 +1365,66 @@ class GraphManager:
         if obj.meta.graph:
             self.data.register(obj)
             self.graph_objs.append(obj)
+    
+    def _populate_called_by_relationships(self):
+        """
+        Populate called_by relationships for all procedure nodes based on procedure names.
+        
+        This fixes the issue where multiple FortranProcedure objects can exist for the same
+        logical procedure (e.g., one from project.procedures and another from correlation lookups).
+        Since graph nodes are keyed by object identity, different objects create different nodes,
+        breaking the called_by relationships.
+        
+        This method builds a name-based mapping and explicitly populates called_by sets
+        after all nodes are registered.
+        """
+        # Build a mapping from procedure name to all nodes with that name
+        # We use a list because there might be procedures with the same name in different scopes
+        name_to_nodes = {}
+        
+        for proc_obj, proc_node in self.data.procedures.items():
+            name_key = proc_obj.name.lower() if hasattr(proc_obj, 'name') else str(proc_obj).lower()
+            if name_key not in name_to_nodes:
+                name_to_nodes[name_key] = []
+            name_to_nodes[name_key].append((proc_obj, proc_node))
+        
+        # Also include program nodes as potential callers
+        name_to_prog_nodes = {}
+        for prog_obj, prog_node in self.data.programs.items():
+            name_key = prog_obj.name.lower() if hasattr(prog_obj, 'name') else str(prog_obj).lower()
+            if name_key not in name_to_prog_nodes:
+                name_to_prog_nodes[name_key] = []
+            name_to_prog_nodes[name_key].append((prog_obj, prog_node))
+        
+        # Now iterate through all procedure and program nodes and populate called_by
+        all_caller_items = list(self.data.procedures.items()) + list(self.data.programs.items())
+        
+        for caller_obj, caller_node in all_caller_items:
+            # Get the calls from the original Fortran object
+            calls = getattr(caller_obj, 'calls', [])
+            
+            for called in calls:
+                # Get the name of the called procedure
+                if isinstance(called, str):
+                    called_name = called.lower()
+                elif hasattr(called, 'name'):
+                    called_name = called.name.lower()
+                else:
+                    continue
+                
+                # Find all nodes with this name
+                matching_nodes = name_to_nodes.get(called_name, [])
+                
+                # Add the caller to the called_by set of all matching nodes
+                for _, called_node in matching_nodes:
+                    called_node.called_by.add(caller_node)
 
     def graph_all(self):
         """Create all graphs"""
+        
+        # First, populate called_by relationships based on procedure names
+        # This fixes the issue where multiple FortranProcedure objects exist for the same procedure
+        self._populate_called_by_relationships()
 
         for obj in (bar := ProgressBar("Generating graphs", sorted(self.graph_objs))):
             bar.set_current(obj.name)
