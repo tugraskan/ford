@@ -289,6 +289,16 @@
                 </a>
                 <div id="{{ block_id }}" class="collapse">
                   <div class="card-body">
+                    {% if block.comments %}
+                      {% for comment in block.comments %}
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                          {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                            <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                          {% endif %}
+                        </div>
+                      {% endfor %}
+                    {% endif %}
                     {% if block.statements %}
                       <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
 {% endfor %}</code></pre>
@@ -318,6 +328,16 @@
                 </a>
                 <div id="{{ block_id }}" class="collapse">
                   <div class="card-body">
+                    {% if block.comments %}
+                                          {% for comment in block.comments %}
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                                              {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                                                <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                                              {% endif %}
+                                            </div>
+                                          {% endfor %}
+                                        {% endif %}
                     {% if block.statements %}
                       <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
                       {% endfor %}</code></pre>
@@ -347,6 +367,16 @@
                 </a>
                 <div id="{{ block_id }}" class="collapse">
                   <div class="card-body">
+                    {% if block.comments %}
+                                          {% for comment in block.comments %}
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                                              {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                                                <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                                              {% endif %}
+                                            </div>
+                                          {% endfor %}
+                                        {% endif %}
                     {% if block.statements %}
                       <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
                       {% endfor %}</code></pre>
@@ -377,6 +407,16 @@
                 </a>
                 <div id="{{ block_id }}" class="collapse">
                   <div class="card-body">
+                    {% if block.comments %}
+                                          {% for comment in block.comments %}
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                                              {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                                                <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                                              {% endif %}
+                                            </div>
+                                          {% endfor %}
+                                        {% endif %}
                     {% if block.statements %}
                       <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
                       {% endfor %}</code></pre>
@@ -432,6 +472,16 @@
                 </a>
                 <div id="{{ block_id }}" class="collapse">
                   <div class="card-body">
+                    {% if block.comments %}
+                                          {% for comment in block.comments %}
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                                              {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                                                <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                                              {% endif %}
+                                            </div>
+                                          {% endfor %}
+                                        {% endif %}
                     {% if block.statements %}
                       <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
                       {% endfor %}</code></pre>
@@ -443,11 +493,23 @@
                 </div>
               </div>
             {% elif block.block_type == 'statements' %}
-              {% if block.statements %}
+              {% if block.statements or block.comments %}
                 <div class="card mb-2 {{ indent_class }}">
                   <div class="card-body">
-                    <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
-                    {% endfor %}</code></pre>
+                    {% if block.comments %}
+                      {% for comment in block.comments %}
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                          {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                            <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                          {% endif %}
+                        </div>
+                      {% endfor %}
+                    {% endif %}
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ stmt }}
+                      {% endfor %}</code></pre>
+                    {% endif %}
                   </div>
                 </div>
               {% endif %}
