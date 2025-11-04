@@ -1366,6 +1366,35 @@ class GraphManager:
             self.data.register(obj)
             self.graph_objs.append(obj)
     
+    def _build_name_to_nodes_mapping(self, collection):
+        """
+        Build a mapping from entity names to their graph nodes.
+        
+        Parameters
+        ----------
+        collection:
+            Dictionary mapping Fortran entities to their graph nodes
+            
+        Returns
+        -------
+        dict
+            Mapping from lowercase entity names to list of (entity, node) tuples
+        """
+        name_to_nodes = {}
+        for entity, node in collection.items():
+            if hasattr(entity, 'name'):
+                name_key = entity.name.lower()
+            else:
+                # This should not happen for procedures/programs, but handle gracefully
+                warn(f"Entity {entity} in graph does not have a 'name' attribute")
+                continue
+                
+            if name_key not in name_to_nodes:
+                name_to_nodes[name_key] = []
+            name_to_nodes[name_key].append((entity, node))
+        
+        return name_to_nodes
+    
     def _populate_called_by_relationships(self):
         """
         Populate called_by relationships for all procedure nodes based on procedure names.
@@ -1378,23 +1407,16 @@ class GraphManager:
         This method builds a name-based mapping and explicitly populates called_by sets
         after all nodes are registered.
         """
-        # Build a mapping from procedure name to all nodes with that name
-        # We use a list because there might be procedures with the same name in different scopes
-        name_to_nodes = {}
+        # Build mappings from names to nodes for both procedures and programs
+        name_to_proc_nodes = self._build_name_to_nodes_mapping(self.data.procedures)
+        name_to_prog_nodes = self._build_name_to_nodes_mapping(self.data.programs)
         
-        for proc_obj, proc_node in self.data.procedures.items():
-            name_key = proc_obj.name.lower() if hasattr(proc_obj, 'name') else str(proc_obj).lower()
-            if name_key not in name_to_nodes:
-                name_to_nodes[name_key] = []
-            name_to_nodes[name_key].append((proc_obj, proc_node))
-        
-        # Also include program nodes as potential callers
-        name_to_prog_nodes = {}
-        for prog_obj, prog_node in self.data.programs.items():
-            name_key = prog_obj.name.lower() if hasattr(prog_obj, 'name') else str(prog_obj).lower()
-            if name_key not in name_to_prog_nodes:
-                name_to_prog_nodes[name_key] = []
-            name_to_prog_nodes[name_key].append((prog_obj, prog_node))
+        # Combine both mappings - a call could target either a procedure or a program
+        all_name_to_nodes = {}
+        for name, nodes in name_to_proc_nodes.items():
+            all_name_to_nodes[name] = nodes
+        for name, nodes in name_to_prog_nodes.items():
+            all_name_to_nodes.setdefault(name, []).extend(nodes)
         
         # Now iterate through all procedure and program nodes and populate called_by
         all_caller_items = list(self.data.procedures.items()) + list(self.data.programs.items())
@@ -1404,7 +1426,7 @@ class GraphManager:
             calls = getattr(caller_obj, 'calls', [])
             
             for called in calls:
-                # Get the name of the called procedure
+                # Get the name of the called entity
                 if isinstance(called, str):
                     called_name = called.lower()
                 elif hasattr(called, 'name'):
@@ -1412,8 +1434,8 @@ class GraphManager:
                 else:
                     continue
                 
-                # Find all nodes with this name
-                matching_nodes = name_to_nodes.get(called_name, [])
+                # Find all nodes with this name (could be procedures or programs)
+                matching_nodes = all_name_to_nodes.get(called_name, [])
                 
                 # Add the caller to the called_by set of all matching nodes
                 for _, called_node in matching_nodes:
