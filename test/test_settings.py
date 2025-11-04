@@ -167,7 +167,7 @@ def test_duplicated_fixed_extension():
 def test_graph_aliases():
     """Test that graph setting aliases work correctly"""
     from pathlib import Path
-    
+
     # Test 'graphs' alias
     settings, _ = load_markdown_settings(
         ".",
@@ -181,7 +181,7 @@ def test_graph_aliases():
         ),
     )
     assert settings.graph is True
-    
+
     # Test 'show_graphs' alias
     settings, _ = load_markdown_settings(
         ".",
@@ -195,7 +195,7 @@ def test_graph_aliases():
         ),
     )
     assert settings.graph is True
-    
+
     # Test 'graphviz' alias
     settings, _ = load_markdown_settings(
         ".",
@@ -209,7 +209,7 @@ def test_graph_aliases():
         ),
     )
     assert settings.graph is True
-    
+
     # Test that canonical 'graph' setting still works
     settings, _ = load_markdown_settings(
         ".",
@@ -223,7 +223,7 @@ def test_graph_aliases():
         ),
     )
     assert settings.graph is True
-    
+
     # Test that when both alias and canonical exist, canonical wins
     settings, _ = load_markdown_settings(
         ".",

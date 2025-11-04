@@ -397,11 +397,11 @@ def convert_types_from_metapreprocessor(
     # Define common aliases for settings
     # These map alternative names to their canonical ProjectSettings field names
     SETTING_ALIASES = {
-        'graphs': 'graph',
-        'show_graphs': 'graph',
-        'graphviz': 'graph',
+        "graphs": "graph",
+        "show_graphs": "graph",
+        "graphviz": "graph",
     }
-    
+
     # Apply aliases - replace aliased keys with canonical names
     for alias, canonical in SETTING_ALIASES.items():
         if alias in settings and canonical not in settings:
