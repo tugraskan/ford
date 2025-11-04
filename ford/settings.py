@@ -394,6 +394,22 @@ def convert_types_from_metapreprocessor(
 ):
     """Convert a dict's value's types to be consistent with a given dataclass"""
 
+    # Define common aliases for settings
+    # These map alternative names to their canonical ProjectSettings field names
+    SETTING_ALIASES = {
+        'graphs': 'graph',
+        'show_graphs': 'graph',
+        'graphviz': 'graph',
+    }
+    
+    # Apply aliases - replace aliased keys with canonical names
+    for alias, canonical in SETTING_ALIASES.items():
+        if alias in settings and canonical not in settings:
+            settings[canonical] = settings.pop(alias)
+        elif alias in settings:
+            # If both alias and canonical exist, use canonical and drop alias
+            settings.pop(alias)
+
     field_types = get_type_hints(cls)
 
     keys_to_drop = []
