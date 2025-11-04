@@ -1365,16 +1365,16 @@ class GraphManager:
         if obj.meta.graph:
             self.data.register(obj)
             self.graph_objs.append(obj)
-    
+
     def _build_name_to_nodes_mapping(self, collection):
         """
         Build a mapping from entity names to their graph nodes.
-        
+
         Parameters
         ----------
         collection:
             Dictionary mapping Fortran entities to their graph nodes
-            
+
         Returns
         -------
         dict
@@ -1382,68 +1382,70 @@ class GraphManager:
         """
         name_to_nodes = {}
         for entity, node in collection.items():
-            if hasattr(entity, 'name'):
+            if hasattr(entity, "name"):
                 name_key = entity.name.lower()
             else:
                 # This should not happen for procedures/programs, but handle gracefully
                 warn(f"Entity {entity} in graph does not have a 'name' attribute")
                 continue
-                
+
             if name_key not in name_to_nodes:
                 name_to_nodes[name_key] = []
             name_to_nodes[name_key].append((entity, node))
-        
+
         return name_to_nodes
-    
+
     def _populate_called_by_relationships(self):
         """
         Populate called_by relationships for all procedure nodes based on procedure names.
-        
+
         This fixes the issue where multiple FortranProcedure objects can exist for the same
         logical procedure (e.g., one from project.procedures and another from correlation lookups).
         Since graph nodes are keyed by object identity, different objects create different nodes,
         breaking the called_by relationships.
-        
+
         This method builds a name-based mapping and explicitly populates called_by sets
         after all nodes are registered.
         """
         # Build mappings from names to nodes for both procedures and programs
         name_to_proc_nodes = self._build_name_to_nodes_mapping(self.data.procedures)
         name_to_prog_nodes = self._build_name_to_nodes_mapping(self.data.programs)
-        
+
         # Combine both mappings - a call could target either a procedure or a program
         all_name_to_nodes = {}
         for name, nodes in name_to_proc_nodes.items():
             all_name_to_nodes[name] = nodes
         for name, nodes in name_to_prog_nodes.items():
             all_name_to_nodes.setdefault(name, []).extend(nodes)
-        
+
         # Now iterate through all procedure and program nodes and populate called_by
-        all_caller_items = list(self.data.procedures.items()) + list(self.data.programs.items())
-        
+        all_caller_items = list(self.data.procedures.items()) + list(
+            self.data.programs.items()
+        )
+
         for caller_obj, caller_node in all_caller_items:
             # Get the calls from the original Fortran object
-            calls = getattr(caller_obj, 'calls', [])
-            
+            calls = getattr(caller_obj, "calls", [])
+
             for called in calls:
                 # Get the name of the called entity
                 if isinstance(called, str):
                     called_name = called.lower()
-                elif hasattr(called, 'name'):
+                elif hasattr(called, "name"):
                     called_name = called.name.lower()
                 else:
                     continue
-                
+
                 # Find all nodes with this name (could be procedures or programs)
                 matching_nodes = all_name_to_nodes.get(called_name, [])
-                
+
                 # Add the caller to the called_by set of all matching nodes
                 for _, called_node in matching_nodes:
                     called_node.called_by.add(caller_node)
 
     def graph_all(self):
         """Create all graphs"""
-        
+
         # First, populate called_by relationships based on procedure names
         # This fixes the issue where multiple FortranProcedure objects exist for the same procedure
         self._populate_called_by_relationships()
