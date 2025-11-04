@@ -712,7 +712,9 @@ class LogicBlockExtractor:
                 continue
 
             # Skip empty lines and other comments (single !)
-            if not line_stripped or (line_stripped.startswith("!") and not line_stripped.startswith("!!")):
+            if not line_stripped or (
+                line_stripped.startswith("!") and not line_stripped.startswith("!!")
+            ):
                 i += 1
                 continue
 
