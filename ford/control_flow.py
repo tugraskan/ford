@@ -183,7 +183,7 @@ class FortranControlFlowParser:
         entry = self.cfg.create_block(BlockType.ENTRY, "Entry")
         self.cfg.entry_block_id = entry.id
 
-        exit_block = self.cfg.create_block(BlockType.EXIT, "Exit")
+        exit_block = self.cfg.create_block(BlockType.EXIT, "Return")
         self.cfg.exit_block_id = exit_block.id
 
         # Parse the procedure body

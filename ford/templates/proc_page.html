@@ -21,7 +21,25 @@
     <div class="col-md-9" id='text'>
     <h2>{{ macros.proc_line(procedure,False) }}</h2>
 
-    {# Section 1: Called From - with graph and subsections for Arguments and Outside Variables #}
+    {# Section 0: Purpose - placeholder for future @!purpose directive #}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#purpose-section" 
+         aria-expanded="false" 
+         aria-controls="purpose-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Purpose
+        </h3>
+      </a>
+      <div id="purpose-section" class="collapse">
+        <div class="card-body">
+          {# TODO: This will be populated by @!purpose directive in the future #}
+          <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    {# Section 1: Called From - with graph and subsection for Arguments #}
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#called-from-section" 
          aria-expanded="true" 
@@ -51,8 +69,55 @@
           {% else %}
             <em>n/a</em>
           {% endif %}
+        </div>
+      </div>
+    </div>
 
-          {# 1b. Outside Variables and Types as subsection #}
+    {# Section 2: Uses - with graph and subsection for Outside Variables and Types #}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#uses-section" 
+         aria-expanded="false" 
+         aria-controls="uses-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Uses
+        </h3>
+      </a>
+      <div id="uses-section" class="collapse">
+        <div class="card-body">
+          {% if procedure.uses or procedure.ancestry %}
+            <ul class="list-group list-group-flush mb-3">
+              {% if procedure.uses %}
+                <li class="list-group-item">
+                  <ul class="list-inline">
+                    {% for use in procedure.uses %}
+                      <li class="list-inline-item">{{ use | relurl(page_url) }}</li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endif %}
+              {% if procedure.ancestry %}
+                <li class="list-group-item">
+                  <ul class="list-inline">
+                    <li><h5>Ancestors:</h5></li>
+                    {% for ancestor in procedure.ancestry %}
+                      <li class="list-inline-item">{{ ancestor | relurl(page_url) }}</li>
+                      {% if not loop.last -%}<li>:</li>{%- endif %}
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endif %}
+              {% if procedure.usesgraph %}
+                <li class="list-group-item">
+                  {{ procedure.usesgraph }}
+                </li>
+              {% endif %}
+            </ul>
+          {% else %}
+            <em>n/a</em>
+          {% endif %}
+
+          {# 2a. Outside Variables and Types as subsection #}
           <h4 class="mt-4 mb-3">Outside Variables and Types</h4>
           {% if procedure.outside_variables_used %}
             {{ macros.outside_variables_list(procedure.outside_variables_used) }}
@@ -62,9 +127,6 @@
         </div>
       </div>
     </div>
-
-    {# Section 2: Uses - keep as is with graph #}
-    {{ macros.use_list(procedure) }}
 
     {# Section 3: I/O - keep as is #}
     <div class="card mb-3">
@@ -249,7 +311,7 @@
                   <p>Control flow graph showing the execution flow within the procedure. Nodes of different colors represent:</p>
                   <ul>
                     <li><span style="background-color: #90EE90; padding: 2px 8px;">Entry point</span></li>
-                    <li><span style="background-color: #FFB6C1; padding: 2px 8px;">Exit point</span></li>
+                    <li><span style="background-color: #FFB6C1; padding: 2px 8px;">Return point</span></li>
                     <li><span style="background-color: #87CEEB; padding: 2px 8px;">IF condition (diamond)</span></li>
                     <li><span style="background-color: #DDA0DD; padding: 2px 8px;">DO loop (diamond)</span></li>
                     <li><span style="background-color: #F0E68C; padding: 2px 8px;">SELECT CASE (diamond)</span></li>
