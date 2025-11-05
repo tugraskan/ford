@@ -4018,6 +4018,60 @@ class FortranProcedure(FortranCodeUnit):
             self.allocation_summary = []
             return None
 
+    def get_procedure_badges(self):
+        """Extract badges and tags for this procedure
+        
+        Returns
+        -------
+        ProcedureBadges or None
+            Badge analysis results, or None if analysis fails
+        """
+        try:
+            from ford.control_flow import analyze_procedure_badges
+            
+            # Get the source code for this procedure (same logic as get_logic_blocks)
+            source_text = None
+            if hasattr(self, "source_file") and self.source_file:
+                try:
+                    with open(
+                        self.source_file.path, "r", encoding="utf-8", errors="ignore"
+                    ) as f:
+                        full_source = f.read()
+                    
+                    # Extract just the procedure's source code
+                    proc_start_pattern = (
+                        rf"^\s*{self.proctype.lower()}\s+{re.escape(self.name)}\b"
+                    )
+                    proc_end_pattern = rf"^\s*end\s+{self.proctype.lower()}\b"
+                    
+                    source_lines = full_source.split("\n")
+                    in_procedure = False
+                    procedure_lines = []
+                    
+                    for line in source_lines:
+                        if re.match(proc_start_pattern, line.strip(), re.IGNORECASE):
+                            in_procedure = True
+                            procedure_lines.append(line)
+                        elif in_procedure:
+                            procedure_lines.append(line)
+                            if re.match(proc_end_pattern, line.strip(), re.IGNORECASE):
+                                break
+                    
+                    if procedure_lines:
+                        source_text = "\n".join(procedure_lines)
+                
+                except Exception:
+                    return None
+            
+            if not source_text:
+                return None
+            
+            # Analyze procedure badges
+            return analyze_procedure_badges(source_text, self.name, self.proctype.lower())
+        except Exception:
+            return None
+
+
 
 class FortranSubroutine(FortranProcedure):
     """
