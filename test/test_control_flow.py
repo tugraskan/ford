@@ -579,9 +579,7 @@ end subroutine test_return
     assert cfg is not None
 
     # Find return blocks
-    return_blocks = [
-        b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN
-    ]
+    return_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN]
     assert len(return_blocks) == 1
 
     # Return block should connect to exit
@@ -611,9 +609,7 @@ end subroutine test_multiple_returns
     assert cfg is not None
 
     # Find return blocks
-    return_blocks = [
-        b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN
-    ]
+    return_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN]
     assert len(return_blocks) == 2
 
     # All return blocks should connect to exit
@@ -635,9 +631,7 @@ end subroutine test_no_return
     assert cfg is not None
 
     # Should have no return blocks
-    return_blocks = [
-        b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN
-    ]
+    return_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN]
     assert len(return_blocks) == 0
 
 
@@ -661,9 +655,7 @@ end subroutine test_nested_return
     assert cfg is not None
 
     # Should have one return block
-    return_blocks = [
-        b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN
-    ]
+    return_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN]
     assert len(return_blocks) == 1
 
     # Return block should connect to exit
@@ -722,9 +714,7 @@ end subroutine test_use
     assert cfg is not None
 
     # Find USE blocks
-    use_blocks = [
-        b for b in cfg.blocks.values() if b.block_type == BlockType.USE
-    ]
+    use_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.USE]
     assert len(use_blocks) == 1
 
     # USE block should contain both USE statements
@@ -750,13 +740,13 @@ end subroutine test_mixed
 
     # Should have separate blocks for USE and statements
     use_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.USE]
-    stmt_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.STATEMENT]
-    
+    stmt_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.STATEMENT
+    ]
+
     assert len(use_blocks) == 1
     assert len(stmt_blocks) >= 1
-    
+
     # USE block should only contain USE statements
     use_block = use_blocks[0]
     assert all("use" in stmt.lower() for stmt in use_block.statements)
-
-

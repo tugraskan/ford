@@ -361,7 +361,7 @@ class Documentation:
                     proc.logic_blocks = proc.get_logic_blocks()
                 except Exception:
                     proc.logic_blocks = None
-                
+
                 try:
                     proc.procedure_badges = proc.get_procedure_badges()
                 except Exception:

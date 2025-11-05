@@ -403,12 +403,14 @@ class FortranControlFlowParser:
                 # Create a return block
                 return_block = self.cfg.create_block(BlockType.RETURN, "RETURN")
                 self.cfg.add_edge(current_block.id, return_block.id)
-                
+
                 # Connect return block directly to exit
                 self.cfg.add_edge(return_block.id, exit_block.id)
-                
+
                 # Create a new statement block for any code after return (unreachable but parse it)
-                current_block = self.cfg.create_block(BlockType.STATEMENT, "After RETURN")
+                current_block = self.cfg.create_block(
+                    BlockType.STATEMENT, "After RETURN"
+                )
 
             # Check for USE statement
             elif USE_RE.match(line_stripped):
@@ -417,10 +419,7 @@ class FortranControlFlowParser:
                     current_block.statements.append(line_stripped)
                 else:
                     # Create a new USE block
-                    use_block = self.cfg.create_block(
-                        BlockType.USE,
-                        "USE statements"
-                    )
+                    use_block = self.cfg.create_block(BlockType.USE, "USE statements")
                     use_block.statements.append(line_stripped)
                     self.cfg.add_edge(current_block.id, use_block.id)
                     current_block = use_block
@@ -1148,7 +1147,7 @@ def extract_logic_blocks(
 @dataclass
 class ProcedureBadges:
     """Badges and tags for a procedure based on code analysis
-    
+
     Attributes
     ----------
     keywords : List[str]
@@ -1162,6 +1161,7 @@ class ProcedureBadges:
     early_exits : int
         Number of RETURN statements (early exits)
     """
+
     keywords: List[str] = field(default_factory=list)
     features: List[str] = field(default_factory=list)
     complexity_level: str = "Simple"
@@ -1171,71 +1171,71 @@ class ProcedureBadges:
 
 class ProcedureBadgeAnalyzer:
     """Analyzes Fortran procedure source code to extract badges and tags"""
-    
+
     # Fortran keywords to track
     KEYWORDS = {
-        'ALLOCATE': re.compile(r'\ballocate\s*\(', re.IGNORECASE),
-        'DEALLOCATE': re.compile(r'\bdeallocate\s*\(', re.IGNORECASE),
-        'READ': re.compile(r'\bread\s*\(', re.IGNORECASE),
-        'WRITE': re.compile(r'\bwrite\s*\(', re.IGNORECASE),
-        'PRINT': re.compile(r'\bprint\s+', re.IGNORECASE),
-        'OPEN': re.compile(r'\bopen\s*\(', re.IGNORECASE),
-        'CLOSE': re.compile(r'\bclose\s*\(', re.IGNORECASE),
-        'RETURN': RETURN_RE,
-        'STOP': re.compile(r'\bstop\b', re.IGNORECASE),
-        'ERROR STOP': re.compile(r'\berror\s+stop\b', re.IGNORECASE),
-        'CALL': re.compile(r'\bcall\s+', re.IGNORECASE),
+        "ALLOCATE": re.compile(r"\ballocate\s*\(", re.IGNORECASE),
+        "DEALLOCATE": re.compile(r"\bdeallocate\s*\(", re.IGNORECASE),
+        "READ": re.compile(r"\bread\s*\(", re.IGNORECASE),
+        "WRITE": re.compile(r"\bwrite\s*\(", re.IGNORECASE),
+        "PRINT": re.compile(r"\bprint\s+", re.IGNORECASE),
+        "OPEN": re.compile(r"\bopen\s*\(", re.IGNORECASE),
+        "CLOSE": re.compile(r"\bclose\s*\(", re.IGNORECASE),
+        "RETURN": RETURN_RE,
+        "STOP": re.compile(r"\bstop\b", re.IGNORECASE),
+        "ERROR STOP": re.compile(r"\berror\s+stop\b", re.IGNORECASE),
+        "CALL": re.compile(r"\bcall\s+", re.IGNORECASE),
     }
-    
+
     # Feature detection patterns
     FEATURES = {
-        'I/O': [
-            re.compile(r'\b(read|write|print)\s*[\(\*]', re.IGNORECASE),
-            re.compile(r'\b(open|close|rewind|backspace)\s*\(', re.IGNORECASE),
+        "I/O": [
+            re.compile(r"\b(read|write|print)\s*[\(\*]", re.IGNORECASE),
+            re.compile(r"\b(open|close|rewind|backspace)\s*\(", re.IGNORECASE),
         ],
-        'FILE': [
-            re.compile(r'\b(open|close)\s*\(', re.IGNORECASE),
-            re.compile(r'\bfile\s*=', re.IGNORECASE),
+        "FILE": [
+            re.compile(r"\b(open|close)\s*\(", re.IGNORECASE),
+            re.compile(r"\bfile\s*=", re.IGNORECASE),
         ],
-        'ALLOC': [
-            re.compile(r'\b(allocate|deallocate)\s*\(', re.IGNORECASE),
+        "ALLOC": [
+            re.compile(r"\b(allocate|deallocate)\s*\(", re.IGNORECASE),
         ],
-        'ERROR': [
-            re.compile(r'\berror\s+stop\b', re.IGNORECASE),
-            re.compile(r'\biost?at\s*=', re.IGNORECASE),
-            re.compile(r'\bstat\s*=', re.IGNORECASE),
+        "ERROR": [
+            re.compile(r"\berror\s+stop\b", re.IGNORECASE),
+            re.compile(r"\biost?at\s*=", re.IGNORECASE),
+            re.compile(r"\bstat\s*=", re.IGNORECASE),
         ],
-        'IF': [
-            re.compile(r'\bif\s*\(', re.IGNORECASE),
+        "IF": [
+            re.compile(r"\bif\s*\(", re.IGNORECASE),
         ],
-        'DO': [
-            re.compile(r'\bdo\s+', re.IGNORECASE),
+        "DO": [
+            re.compile(r"\bdo\s+", re.IGNORECASE),
         ],
-        'SELECT': [
-            re.compile(r'\bselect\s+case\s*\(', re.IGNORECASE),
+        "SELECT": [
+            re.compile(r"\bselect\s+case\s*\(", re.IGNORECASE),
         ],
     }
-    
+
     def __init__(self, source_code: str, procedure_name: str, procedure_type: str):
         self.source_code = source_code
         self.procedure_name = procedure_name
         self.procedure_type = procedure_type
-        
+
     def analyze(self) -> ProcedureBadges:
         """Analyze the procedure and generate badges"""
         badges = ProcedureBadges()
-        
+
         lines, _ = self._preprocess_source()
-        
+
         # Track keywords
         keywords_found = set()
         for keyword, pattern in self.KEYWORDS.items():
             for line in lines:
                 if pattern.search(line):
                     keywords_found.add(keyword)
-        
+
         badges.keywords = sorted(keywords_found)
-        
+
         # Track features
         features_found = set()
         for feature, patterns in self.FEATURES.items():
@@ -1246,74 +1246,83 @@ class ProcedureBadgeAnalyzer:
                         break
                 if feature in features_found:
                     break
-        
+
         badges.features = sorted(features_found)
-        
+
         # Count early exits (RETURN statements)
         badges.early_exits = sum(1 for line in lines if RETURN_RE.match(line.strip()))
-        
+
         # Calculate complexity
         badges.max_depth = self._calculate_max_depth(lines)
         badges.complexity_level = self._determine_complexity(
             len(lines), badges.max_depth, len(badges.keywords)
         )
-        
+
         return badges
-    
+
     def _calculate_max_depth(self, lines: List[str]) -> int:
         """Calculate maximum nesting depth of control structures"""
         depth = 0
         max_depth = 0
-        
+
         for line in lines:
             line_stripped = line.strip().lower()
-            
+
             # Count opening structures
-            if any(line_stripped.startswith(kw) for kw in ['if', 'do', 'select']):
-                if 'then' in line_stripped or line_stripped.startswith('do ') or 'select case' in line_stripped:
+            if any(line_stripped.startswith(kw) for kw in ["if", "do", "select"]):
+                if (
+                    "then" in line_stripped
+                    or line_stripped.startswith("do ")
+                    or "select case" in line_stripped
+                ):
                     depth += 1
                     max_depth = max(max_depth, depth)
-            
+
             # Count closing structures
-            if any(line_stripped.startswith(kw) for kw in ['end if', 'end do', 'end select', 'endif', 'enddo']):
+            if any(
+                line_stripped.startswith(kw)
+                for kw in ["end if", "end do", "end select", "endif", "enddo"]
+            ):
                 depth = max(0, depth - 1)
-        
+
         return max_depth
-    
-    def _determine_complexity(self, num_lines: int, max_depth: int, num_keywords: int) -> str:
+
+    def _determine_complexity(
+        self, num_lines: int, max_depth: int, num_keywords: int
+    ) -> str:
         """Determine complexity level based on metrics"""
         # Simple heuristic: combine multiple factors
         complexity_score = 0
-        
+
         if num_lines > 50:
             complexity_score += 1
         if num_lines > 100:
             complexity_score += 1
-            
+
         if max_depth > 2:
             complexity_score += 1
         if max_depth > 4:
             complexity_score += 1
-            
+
         if num_keywords > 5:
             complexity_score += 1
         if num_keywords > 10:
             complexity_score += 1
-        
+
         if complexity_score >= 4:
             return "Complex"
         elif complexity_score >= 2:
             return "Moderate"
         else:
             return "Simple"
-    
+
     def _preprocess_source(self) -> Tuple[List[str], List[int]]:
         """Preprocess source code to extract the procedure body"""
         lines_text = self.source_code.split("\n")
         result = []
         line_numbers = []
         in_procedure = False
-        
+
         # Patterns to match procedure start and end
         proc_start = re.compile(
             rf"^\s*{re.escape(self.procedure_type)}\s+{re.escape(self.procedure_name)}\b",
@@ -1323,19 +1332,19 @@ class ProcedureBadgeAnalyzer:
             rf"^\s*end\s+{re.escape(self.procedure_type)}\b", re.IGNORECASE
         )
         contains_re = re.compile(r"^\s*contains\s*$", re.IGNORECASE)
-        
+
         for line_num, line in enumerate(lines_text, start=1):
             if proc_start.match(line.strip()):
                 in_procedure = True
                 continue
-            
+
             if in_procedure:
                 if contains_re.match(line.strip()) or proc_end.match(line.strip()):
                     break
-                
+
                 result.append(line)
                 line_numbers.append(line_num)
-        
+
         return result, line_numbers
 
 
@@ -1343,7 +1352,7 @@ def analyze_procedure_badges(
     source_code: str, procedure_name: str, procedure_type: str
 ) -> Optional[ProcedureBadges]:
     """Analyze procedure source code and generate badges
-    
+
     Parameters
     ----------
     source_code : str
@@ -1352,7 +1361,7 @@ def analyze_procedure_badges(
         Name of the procedure
     procedure_type : str
         Type of procedure ('subroutine' or 'function')
-    
+
     Returns
     -------
     ProcedureBadges or None
