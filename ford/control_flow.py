@@ -43,6 +43,7 @@ class BlockType(Enum):
 
     ENTRY = "entry"
     EXIT = "exit"
+    RETURN = "return"
     STATEMENT = "statement"
     IF_CONDITION = "if_condition"
     DO_LOOP = "do_loop"
@@ -168,6 +169,9 @@ class FortranControlFlowParser:
 
     # Single-line IF statement
     SINGLE_IF_RE = re.compile(r"^\s*if\s*\((.*?)\)\s+(.+)$", re.IGNORECASE)
+
+    # RETURN statement
+    RETURN_RE = re.compile(r"^\s*return\s*$", re.IGNORECASE)
 
     def __init__(self, source_code: str, procedure_name: str, procedure_type: str):
         self.source_code = source_code
@@ -389,6 +393,18 @@ class FortranControlFlowParser:
 
                     current_block = merge_block
 
+            # Check for RETURN statement
+            elif self.RETURN_RE.match(line_stripped):
+                # Create a return block
+                return_block = self.cfg.create_block(BlockType.RETURN, "RETURN")
+                self.cfg.add_edge(current_block.id, return_block.id)
+                
+                # Connect return block directly to exit
+                self.cfg.add_edge(return_block.id, exit_block.id)
+                
+                # Create a new statement block for any code after return (unreachable but parse it)
+                current_block = self.cfg.create_block(BlockType.STATEMENT, "After RETURN")
+
             else:
                 # Regular statement
                 if current_block.block_type == BlockType.STATEMENT:
@@ -558,6 +574,9 @@ class LogicBlockExtractor:
     CASE_RE = re.compile(r"^\s*case\s*\((.*?)\)\s*$", re.IGNORECASE)
     CASE_DEFAULT_RE = re.compile(r"^\s*case\s+default\s*$", re.IGNORECASE)
     END_SELECT_RE = re.compile(r"^\s*end\s*select(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+    # RETURN statement
+    RETURN_RE = re.compile(r"^\s*return\s*$", re.IGNORECASE)
 
     # Regular expressions for statements to exclude from logic blocks
     USE_RE = re.compile(r"^\s*use\s+", re.IGNORECASE)

@@ -1639,6 +1639,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         colors = {
             BlockType.ENTRY: "#90EE90",  # Light green
             BlockType.EXIT: "#FFB6C1",  # Light pink
+            BlockType.RETURN: "#FFB6C1",  # Light pink (same as EXIT)
             BlockType.STATEMENT: "#E0E0E0",  # Light gray
             BlockType.IF_CONDITION: "#87CEEB",  # Sky blue
             BlockType.DO_LOOP: "#DDA0DD",  # Plum
