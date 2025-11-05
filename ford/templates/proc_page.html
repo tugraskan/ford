@@ -67,35 +67,34 @@
       </a>
       <div id="uses-section" class="collapse">
         <div class="card-body">
-          {% if procedure.uses or procedure.ancestry or procedure.usesgraph %}
-            {% if procedure.uses %}
-              <h5 class="mb-3">Modules Used</h5>
-              <ul class="list-inline mb-3">
-                {% for use in procedure.uses %}
-                  <li class="list-inline-item">{{ use | relurl(page_url) }}</li>
-                {% endfor %}
-              </ul>
-            {% endif %}
-            
-            {% if procedure.ancestry %}
-              <h5 class="mb-3">Ancestors</h5>
-              <ul class="list-inline mb-3">
-                {% for ancestor in procedure.ancestry %}
-                  <li class="list-inline-item">{{ ancestor | relurl(page_url) }}</li>
-                  {% if not loop.last %}<li class="list-inline-item">:</li>{% endif %}
-                {% endfor %}
-              </ul>
-            {% endif %}
-            
-            {% if procedure.usesgraph %}
-              <h5 class="mb-3">Uses Graph</h5>
-              <p class="text-muted mb-3">
-                Visual representation of module dependencies.
-              </p>
-              <div class="depgraph">
-                {{ procedure.usesgraph }}
-              </div>
-            {% endif %}
+          {% if procedure.uses or procedure.ancestry %}
+            <ul class="list-group list-group-flush mb-3">
+              {% if procedure.uses %}
+                <li class="list-group-item">
+                  <ul class="list-inline">
+                    {% for use in procedure.uses %}
+                      <li class="list-inline-item">{{ use | relurl(page_url) }}</li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endif %}
+              {% if procedure.ancestry %}
+                <li class="list-group-item">
+                  <ul class="list-inline">
+                    <li><h5>Ancestors:</h5></li>
+                    {% for ancestor in procedure.ancestry %}
+                      <li class="list-inline-item">{{ ancestor | relurl(page_url) }}</li>
+                      {% if not loop.last -%}<li>:</li>{%- endif %}
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endif %}
+              {% if procedure.usesgraph %}
+                <li class="list-group-item">
+                  {{ procedure.usesgraph }}
+                </li>
+              {% endif %}
+            </ul>
           {% else %}
             <em>n/a</em>
           {% endif %}
