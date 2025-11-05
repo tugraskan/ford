@@ -21,7 +21,7 @@
     <div class="col-md-9" id='text'>
     <h2>{{ macros.proc_line(procedure,False) }}</h2>
 
-    {# Section 1: Called From - with graph and subsections for Arguments and Outside Variables #}
+    {# Section 1: Called From - with graph and subsection for Arguments #}
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#called-from-section" 
          aria-expanded="true" 
@@ -51,8 +51,56 @@
           {% else %}
             <em>n/a</em>
           {% endif %}
+        </div>
+      </div>
+    </div>
 
-          {# 1b. Outside Variables and Types as subsection #}
+    {# Section 2: Uses - with graph and subsection for Outside Variables and Types #}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#uses-section" 
+         aria-expanded="false" 
+         aria-controls="uses-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Uses
+        </h3>
+      </a>
+      <div id="uses-section" class="collapse">
+        <div class="card-body">
+          {% if procedure.uses or procedure.ancestry or procedure.usesgraph %}
+            {% if procedure.uses %}
+              <h5 class="mb-3">Modules Used</h5>
+              <ul class="list-inline mb-3">
+                {% for use in procedure.uses %}
+                  <li class="list-inline-item">{{ use | relurl(page_url) }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            
+            {% if procedure.ancestry %}
+              <h5 class="mb-3">Ancestors</h5>
+              <ul class="list-inline mb-3">
+                {% for ancestor in procedure.ancestry %}
+                  <li class="list-inline-item">{{ ancestor | relurl(page_url) }}</li>
+                  {% if not loop.last %}<li class="list-inline-item">:</li>{% endif %}
+                {% endfor %}
+              </ul>
+            {% endif %}
+            
+            {% if procedure.usesgraph %}
+              <h5 class="mb-3">Uses Graph</h5>
+              <p class="text-muted mb-3">
+                Visual representation of module dependencies.
+              </p>
+              <div class="depgraph">
+                {{ procedure.usesgraph }}
+              </div>
+            {% endif %}
+          {% else %}
+            <em>n/a</em>
+          {% endif %}
+
+          {# 2a. Outside Variables and Types as subsection #}
           <h4 class="mt-4 mb-3">Outside Variables and Types</h4>
           {% if procedure.outside_variables_used %}
             {{ macros.outside_variables_list(procedure.outside_variables_used) }}
@@ -62,9 +110,6 @@
         </div>
       </div>
     </div>
-
-    {# Section 2: Uses - keep as is with graph #}
-    {{ macros.use_list(procedure) }}
 
     {# Section 3: I/O - keep as is #}
     <div class="card mb-3">
