@@ -703,3 +703,60 @@ end subroutine test_return_logic
     # The if block should contain the return statement
     assert "return" in if_block.statements
 
+
+def test_use_statement_detection():
+    """Test that USE statements are properly detected and create USE blocks"""
+    source = """
+subroutine test_use()
+    use some_module
+    use another_module, only: some_function
+    implicit none
+    integer :: x
+    
+    x = 1
+    print *, x
+end subroutine test_use
+"""
+    cfg = parse_control_flow(source, "test_use", "subroutine")
+
+    assert cfg is not None
+
+    # Find USE blocks
+    use_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.USE
+    ]
+    assert len(use_blocks) == 1
+
+    # USE block should contain both USE statements
+    use_block = use_blocks[0]
+    assert len(use_block.statements) == 2
+    assert any("some_module" in stmt for stmt in use_block.statements)
+    assert any("another_module" in stmt for stmt in use_block.statements)
+
+
+def test_use_and_regular_statements():
+    """Test that USE and regular statements are in separate blocks"""
+    source = """
+subroutine test_mixed()
+    use math_module
+    integer :: result
+    
+    result = 42
+end subroutine test_mixed
+"""
+    cfg = parse_control_flow(source, "test_mixed", "subroutine")
+
+    assert cfg is not None
+
+    # Should have separate blocks for USE and statements
+    use_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.USE]
+    stmt_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.STATEMENT]
+    
+    assert len(use_blocks) == 1
+    assert len(stmt_blocks) >= 1
+    
+    # USE block should only contain USE statements
+    use_block = use_blocks[0]
+    assert all("use" in stmt.lower() for stmt in use_block.statements)
+
+

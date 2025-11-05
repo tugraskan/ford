@@ -1640,6 +1640,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             BlockType.ENTRY: "#90EE90",  # Light green
             BlockType.EXIT: "#FFB6C1",  # Light pink
             BlockType.RETURN: "#FFB6C1",  # Light pink (same as EXIT)
+            BlockType.USE: "#B0E0E6",  # Powder blue
             BlockType.STATEMENT: "#E0E0E0",  # Light gray
             BlockType.IF_CONDITION: "#87CEEB",  # Sky blue
             BlockType.DO_LOOP: "#DDA0DD",  # Plum
@@ -1657,11 +1658,10 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             else:
                 label = block.label
 
-            # Add first few statements to label if present
+            # Add all statements to label if present (no truncation with ...)
             if block.statements:
-                stmts = "\\n".join(block.statements[:3])
-                if len(block.statements) > 3:
-                    stmts += "\\n..."
+                # Show all statements for better visibility
+                stmts = "\\n".join(block.statements)
                 label = f"{label}\\n---\\n{stmts}"
 
             # Use diamond shape for conditions
@@ -1703,6 +1703,7 @@ CONTROL_FLOW_GRAPH_KEY = """
 <ul>
 <li><span style="color: #90EE90;">■</span> Entry point</li>
 <li><span style="color: #FFB6C1;">■</span> Exit/Return point</li>
+<li><span style="color: #B0E0E6;">■</span> USE statements</li>
 <li><span style="color: #87CEEB;">◆</span> IF condition (diamond)</li>
 <li><span style="color: #DDA0DD;">◆</span> DO loop (diamond)</li>
 <li><span style="color: #F0E68C;">◆</span> SELECT CASE (diamond)</li>

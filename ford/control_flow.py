@@ -41,6 +41,9 @@ from enum import Enum
 # Regular expression for RETURN statement (shared by parser and extractor)
 RETURN_RE = re.compile(r"^\s*return\s*$", re.IGNORECASE)
 
+# Regular expression for USE statement (shared by parser and extractor)
+USE_RE = re.compile(r"^\s*use\s+", re.IGNORECASE)
+
 
 class BlockType(Enum):
     """Types of basic blocks in a control flow graph"""
@@ -48,6 +51,7 @@ class BlockType(Enum):
     ENTRY = "entry"
     EXIT = "exit"
     RETURN = "return"
+    USE = "use"
     STATEMENT = "statement"
     IF_CONDITION = "if_condition"
     DO_LOOP = "do_loop"
@@ -406,6 +410,21 @@ class FortranControlFlowParser:
                 # Create a new statement block for any code after return (unreachable but parse it)
                 current_block = self.cfg.create_block(BlockType.STATEMENT, "After RETURN")
 
+            # Check for USE statement
+            elif USE_RE.match(line_stripped):
+                # Create a USE block or add to existing USE block
+                if current_block.block_type == BlockType.USE:
+                    current_block.statements.append(line_stripped)
+                else:
+                    # Create a new USE block
+                    use_block = self.cfg.create_block(
+                        BlockType.USE,
+                        "USE statements"
+                    )
+                    use_block.statements.append(line_stripped)
+                    self.cfg.add_edge(current_block.id, use_block.id)
+                    current_block = use_block
+
             else:
                 # Regular statement
                 if current_block.block_type == BlockType.STATEMENT:
@@ -577,7 +596,6 @@ class LogicBlockExtractor:
     END_SELECT_RE = re.compile(r"^\s*end\s*select(?:\s+(\w+))?\s*$", re.IGNORECASE)
 
     # Regular expressions for statements to exclude from logic blocks
-    USE_RE = re.compile(r"^\s*use\s+", re.IGNORECASE)
     IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
     # Match variable declarations (type declarations)
     # Matches: integer, real, double precision, complex, logical, character, class, procedure, type(...)
@@ -610,7 +628,7 @@ class LogicBlockExtractor:
             True if the line is a declaration/use statement, False otherwise
         """
         return (
-            self.USE_RE.match(line_stripped)
+            USE_RE.match(line_stripped)
             or self.IMPLICIT_RE.match(line_stripped)
             or self.DECLARATION_RE.match(line_stripped)
         )
