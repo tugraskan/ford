@@ -21,6 +21,50 @@
     <div class="col-md-9" id='text'>
     <h2>{{ macros.proc_line(procedure,False) }}</h2>
 
+    {# Procedure Badges Section #}
+    {% if procedure.procedure_badges %}
+    <div class="mb-3">
+      {% if procedure.procedure_badges.complexity_level or procedure.procedure_badges.max_depth or procedure.procedure_badges.early_exits %}
+      <div class="mb-2">
+        <strong>Complexity Indicators:</strong>
+        {% if procedure.procedure_badges.complexity_level %}
+        <span class="badge {% if procedure.procedure_badges.complexity_level == 'Simple' %}bg-success{% elif procedure.procedure_badges.complexity_level == 'Moderate' %}bg-warning text-dark{% else %}bg-danger{% endif %} me-1">
+          {{ procedure.procedure_badges.complexity_level }}
+        </span>
+        {% endif %}
+        {% if procedure.procedure_badges.max_depth > 0 %}
+        <span class="badge bg-info text-dark me-1" title="Maximum nesting depth">
+          Depth: {{ procedure.procedure_badges.max_depth }}
+        </span>
+        {% endif %}
+        {% if procedure.procedure_badges.early_exits > 0 %}
+        <span class="badge bg-secondary me-1" title="Number of RETURN statements">
+          Early Exits: {{ procedure.procedure_badges.early_exits }}
+        </span>
+        {% endif %}
+      </div>
+      {% endif %}
+      
+      {% if procedure.procedure_badges.features %}
+      <div class="mb-2">
+        <strong>Features:</strong>
+        {% for feature in procedure.procedure_badges.features %}
+        <span class="badge bg-primary me-1">{{ feature }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      {% if procedure.procedure_badges.keywords %}
+      <div class="mb-2">
+        <strong>Fortran Keywords:</strong>
+        {% for keyword in procedure.procedure_badges.keywords %}
+        <span class="badge bg-light text-dark border me-1">{{ keyword }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
     {# Section 0: Purpose - placeholder for future @!purpose directive #}
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#purpose-section" 
@@ -311,7 +355,8 @@
                   <p>Control flow graph showing the execution flow within the procedure. Nodes of different colors represent:</p>
                   <ul>
                     <li><span style="background-color: #90EE90; padding: 2px 8px;">Entry point</span></li>
-                    <li><span style="background-color: #FFB6C1; padding: 2px 8px;">Return point</span></li>
+                    <li><span style="background-color: #FFB6C1; padding: 2px 8px;">Exit/Return point</span></li>
+                    <li><span style="background-color: #B0E0E6; padding: 2px 8px;">USE statements</span></li>
                     <li><span style="background-color: #87CEEB; padding: 2px 8px;">IF condition (diamond)</span></li>
                     <li><span style="background-color: #DDA0DD; padding: 2px 8px;">DO loop (diamond)</span></li>
                     <li><span style="background-color: #F0E68C; padding: 2px 8px;">SELECT CASE (diamond)</span></li>
@@ -319,6 +364,7 @@
                     <li><span style="background-color: #E0E0E0; padding: 2px 8px;">Statement block</span></li>
                   </ul>
                   <p>Arrows show the possible execution paths through the code. Edges from conditions are labeled with 'T' (true) and 'F' (false), or 'loop' and 'exit' for DO loops.</p>
+                  <p>RETURN statements in the code are shown as separate return nodes that connect to the exit block. If no explicit RETURN statements are present, the procedure flows to the exit block at the end.</p>
                 </div>
               </div>
             </div>

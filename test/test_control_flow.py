@@ -559,3 +559,204 @@ end subroutine test_alloc_control
     assert arr_alloc is not None
     assert len(arr_alloc.allocate_lines) == 2  # Allocated in both branches
     assert len(arr_alloc.deallocate_lines) == 1
+
+
+def test_return_statement_detection():
+    """Test that RETURN statements are properly detected and create return blocks"""
+    source = """
+subroutine test_return(x)
+    integer, intent(in) :: x
+    
+    if (x < 0) then
+        return
+    end if
+    
+    print *, "x is non-negative"
+end subroutine test_return
+"""
+    cfg = parse_control_flow(source, "test_return", "subroutine")
+
+    assert cfg is not None
+
+    # Find return blocks
+    return_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN
+    ]
+    assert len(return_blocks) == 1
+
+    # Return block should connect to exit
+    return_block = return_blocks[0]
+    assert cfg.exit_block_id in return_block.successors
+
+
+def test_multiple_return_statements():
+    """Test multiple RETURN statements in the same procedure"""
+    source = """
+subroutine test_multiple_returns(x, y)
+    integer, intent(in) :: x, y
+    
+    if (x < 0) then
+        return
+    end if
+    
+    if (y < 0) then
+        return
+    end if
+    
+    print *, "Both positive"
+end subroutine test_multiple_returns
+"""
+    cfg = parse_control_flow(source, "test_multiple_returns", "subroutine")
+
+    assert cfg is not None
+
+    # Find return blocks
+    return_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN
+    ]
+    assert len(return_blocks) == 2
+
+    # All return blocks should connect to exit
+    for return_block in return_blocks:
+        assert cfg.exit_block_id in return_block.successors
+
+
+def test_no_return_statement():
+    """Test procedure without RETURN statement - should have no return blocks"""
+    source = """
+subroutine test_no_return(x)
+    integer, intent(in) :: x
+    
+    print *, x
+end subroutine test_no_return
+"""
+    cfg = parse_control_flow(source, "test_no_return", "subroutine")
+
+    assert cfg is not None
+
+    # Should have no return blocks
+    return_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN
+    ]
+    assert len(return_blocks) == 0
+
+
+def test_return_in_nested_blocks():
+    """Test RETURN statement in nested control structures"""
+    source = """
+subroutine test_nested_return(x, y)
+    integer, intent(in) :: x, y
+    
+    if (x > 0) then
+        if (y > 0) then
+            return
+        end if
+    end if
+    
+    print *, "Completed"
+end subroutine test_nested_return
+"""
+    cfg = parse_control_flow(source, "test_nested_return", "subroutine")
+
+    assert cfg is not None
+
+    # Should have one return block
+    return_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN
+    ]
+    assert len(return_blocks) == 1
+
+    # Return block should connect to exit
+    return_block = return_blocks[0]
+    assert cfg.exit_block_id in return_block.successors
+
+
+def test_return_in_logic_blocks():
+    """Test that RETURN statements appear in logic blocks"""
+    source = """
+subroutine test_return_logic(x)
+    integer, intent(in) :: x
+    
+    if (x < 0) then
+        return
+    end if
+    
+    print *, "x is non-negative"
+end subroutine test_return_logic
+"""
+    result = extract_logic_blocks(source, "test_return_logic", "subroutine")
+
+    assert result is not None
+    blocks, _ = result
+
+    # Should have an if block and a statements block
+    assert len(blocks) >= 1
+
+    # Find the if block
+    if_block = None
+    for block in blocks:
+        if block.block_type == "if":
+            if_block = block
+            break
+
+    assert if_block is not None
+    # The if block should contain the return statement
+    assert "return" in if_block.statements
+
+
+def test_use_statement_detection():
+    """Test that USE statements are properly detected and create USE blocks"""
+    source = """
+subroutine test_use()
+    use some_module
+    use another_module, only: some_function
+    implicit none
+    integer :: x
+    
+    x = 1
+    print *, x
+end subroutine test_use
+"""
+    cfg = parse_control_flow(source, "test_use", "subroutine")
+
+    assert cfg is not None
+
+    # Find USE blocks
+    use_blocks = [
+        b for b in cfg.blocks.values() if b.block_type == BlockType.USE
+    ]
+    assert len(use_blocks) == 1
+
+    # USE block should contain both USE statements
+    use_block = use_blocks[0]
+    assert len(use_block.statements) == 2
+    assert any("some_module" in stmt for stmt in use_block.statements)
+    assert any("another_module" in stmt for stmt in use_block.statements)
+
+
+def test_use_and_regular_statements():
+    """Test that USE and regular statements are in separate blocks"""
+    source = """
+subroutine test_mixed()
+    use math_module
+    integer :: result
+    
+    result = 42
+end subroutine test_mixed
+"""
+    cfg = parse_control_flow(source, "test_mixed", "subroutine")
+
+    assert cfg is not None
+
+    # Should have separate blocks for USE and statements
+    use_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.USE]
+    stmt_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.STATEMENT]
+    
+    assert len(use_blocks) == 1
+    assert len(stmt_blocks) >= 1
+    
+    # USE block should only contain USE statements
+    use_block = use_blocks[0]
+    assert all("use" in stmt.lower() for stmt in use_block.statements)
+
+
