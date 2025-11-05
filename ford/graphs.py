@@ -1701,7 +1701,7 @@ CONTROL_FLOW_GRAPH_KEY = """
 <p>Control flow graph showing the execution flow within the procedure. Nodes of different colors represent:</p>
 <ul>
 <li><span style="color: #90EE90;">■</span> Entry point</li>
-<li><span style="color: #FFB6C1;">■</span> Exit point</li>
+<li><span style="color: #FFB6C1;">■</span> Return point</li>
 <li><span style="color: #87CEEB;">◆</span> IF condition (diamond)</li>
 <li><span style="color: #DDA0DD;">◆</span> DO loop (diamond)</li>
 <li><span style="color: #F0E68C;">◆</span> SELECT CASE (diamond)</li>
