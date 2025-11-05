@@ -191,8 +191,10 @@ class IoTracker:
 
         # Patterns for variable assignments
         assignment_patterns = [
-            # Fortran type declarations with defaults: character(len=25) :: prt = "print.prt"
-            r'^\s*(?:character|integer|real|logical|double\s*precision)(?:\([^)]*\))?\s*::\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']+)["\']',
+            # Fortran type declarations with string defaults: character(len=25) :: prt = "print.prt"
+            r'^\s*(?:character)(?:\([^)]*\))?\s*::\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']+)["\']',
+            # Fortran integer type declarations with numeric defaults: integer :: myunit = 101
+            r'^\s*(?:integer)(?:\([^)]*\))?\s*::\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(\d+)',
             # Module variable assignments like: in_link%aqu_cha = "aqu_cha.lin"
             r'^\s*([a-zA-Z_][a-zA-Z0-9_%]*)\s*=\s*["\']([^"\']+)["\']',
             # Simple variable assignments like: filename = "data.txt"
@@ -321,6 +323,7 @@ class IoTracker:
                     fname,
                     {
                         "unit": sess.unit,
+                        "original_filename": sess.file,  # Store original filename
                         "headers": [],
                         "index_reads": [],
                         "data_reads": [],
@@ -458,7 +461,37 @@ class IoTracker:
                 "Available ops for key %s: %s", fname, all_timelines.get(fname, [])
             )
 
-            final_result[fname] = {"summary": rec, "timeline": enhanced_timeline}
+            # Resolve unit and filename from variable defaults
+            unit = rec.get("unit", "")
+            original_filename = rec.get("original_filename", fname)
+            unit_resolved = None
+            filename_resolved = None
+
+            # Try to resolve unit if it's a variable
+            if unit and variable_defaults:
+                unit_resolved = variable_defaults.get(unit)
+
+            # Try to resolve filename if it's a variable
+            if original_filename and variable_defaults:
+                # Check if the entire filename is a variable
+                if original_filename in variable_defaults:
+                    filename_resolved = variable_defaults[original_filename]
+                else:
+                    # Check if it's a compound variable (e.g., module%var or in_rec%recall_rec)
+                    parts = original_filename.split("%")
+                    if len(parts) >= 2:
+                        simple_name = parts[-1]
+                        if simple_name in variable_defaults:
+                            filename_resolved = variable_defaults[simple_name]
+
+            final_result[fname] = {
+                "summary": rec,
+                "timeline": enhanced_timeline,
+                "unit": unit,
+                "unit_resolved": unit_resolved,
+                "filename": original_filename,
+                "filename_resolved": filename_resolved,
+            }
 
         return final_result
 
@@ -3866,10 +3899,17 @@ class FortranProcedure(FortranCodeUnit):
 
             # Extract variable defaults from source code
             variable_defaults = {}
-            if hasattr(self, "source") and self.source:
-                variable_defaults = self.io_tracker.extract_variable_defaults(
-                    self.source.source
-                )
+            
+            # Try to get source lines from source_file
+            source_lines = []
+            if hasattr(self, "source_file") and self.source_file:
+                if hasattr(self.source_file, "raw_src"):
+                    source_lines = self.source_file.raw_src.split('\n')
+                elif hasattr(self.source_file, "source"):
+                    source_lines = self.source_file.source
+            
+            if source_lines:
+                variable_defaults = self.io_tracker.extract_variable_defaults(source_lines)
 
             # Also extract variable defaults from imported modules
             if hasattr(self, "uses"):
@@ -3880,11 +3920,17 @@ class FortranProcedure(FortranCodeUnit):
                     elif hasattr(use, "source"):
                         module = use
 
-                    if module and hasattr(module, "source") and module.source:
-                        module_defaults = self.io_tracker.extract_variable_defaults(
-                            module.source.source
-                        )
-                        variable_defaults.update(module_defaults)
+                    if module and hasattr(module, "source_file") and module.source_file:
+                        if hasattr(module.source_file, "raw_src"):
+                            module_lines = module.source_file.raw_src.split('\n')
+                        elif hasattr(module.source_file, "source"):
+                            module_lines = module.source_file.source
+                        else:
+                            module_lines = []
+                        
+                        if module_lines:
+                            module_defaults = self.io_tracker.extract_variable_defaults(module_lines)
+                            variable_defaults.update(module_defaults)
 
             return self.io_tracker.summarize_file_io(variable_defaults, procedure=self)
         return {}

@@ -153,9 +153,18 @@
               </tr>
             </thead>
             <tbody>
-              {% for unit, operations in procedure.io_operations.items() %}
+              {% for file_key, operations in procedure.io_operations.items() %}
               <tr>
-                <td><code>{{ unit }}</code></td>
+                <td>
+                  {% if operations.unit %}
+                    <code>{{ operations.unit }}</code>
+                    {% if operations.unit_resolved %}
+                      <br><small class="text-muted">→ {{ operations.unit_resolved }}</small>
+                    {% endif %}
+                  {% else %}
+                    <em>not specified</em>
+                  {% endif %}
+                </td>
                 <td>
                   {% if operations.timeline %}
                     {% set has_read = namespace(value=false) %}
@@ -183,6 +192,9 @@
                 <td>
                   {% if operations.filename %}
                     <code>{{ operations.filename }}</code>
+                    {% if operations.filename_resolved %}
+                      <br><small class="text-muted">→ {{ operations.filename_resolved }}</small>
+                    {% endif %}
                   {% else %}
                     <em>not specified</em>
                   {% endif %}
