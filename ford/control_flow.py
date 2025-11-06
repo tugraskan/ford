@@ -180,8 +180,9 @@ class FortranControlFlowParser:
     
     # Regular expressions for statements to skip in CFG (same as LogicBlockExtractor)
     IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
+    # Matches type declarations including: type(...) and type ::
     DECLARATION_RE = re.compile(
-        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*\()",
+        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*(?:\(|::))",
         re.IGNORECASE,
     )
 
@@ -618,9 +619,10 @@ class LogicBlockExtractor:
     # Regular expressions for statements to exclude from logic blocks
     IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
     # Match variable declarations (type declarations)
-    # Matches: integer, real, double precision, complex, logical, character, class, procedure, type(...)
+    # Matches: integer, real, double precision, complex, logical, character, class, procedure
+    # Also matches: type(...) and type ::
     DECLARATION_RE = re.compile(
-        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*\()",
+        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*(?:\(|::))",
         re.IGNORECASE,
     )
 
