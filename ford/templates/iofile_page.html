@@ -1,0 +1,134 @@
+<!-- -*- mode: jinja2 -*- -->
+
+{% extends "base.html" %}
+{% block title %}{{ iofile.filename }} &ndash; {{ project }} {% endblock title %}
+{% block body %}
+  {% import 'macros.html' as macros %}
+  <div class="row">
+    <h1>{{ iofile.io_filename }}
+      <small>I/O File</small>
+    </h1>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <dl class="dl-horizontal">
+            <dt>Unit Number</dt>
+            <dd><code>{{ iofile.unit }}</code></dd>
+            <dt>I/O Type</dt>
+            <dd>
+              {% if iofile.io_type == 'Input/Output' %}
+                <span class="badge bg-info">Input/Output</span>
+              {% elif iofile.io_type == 'Input' %}
+                <span class="badge bg-success">Input</span>
+              {% elif iofile.io_type == 'Output' %}
+                <span class="badge bg-primary">Output</span>
+              {% else %}
+                <span class="badge bg-secondary">Unknown</span>
+              {% endif %}
+            </dd>
+            <dt>Total Operations</dt>
+            <dd>{{ iofile.operations|length }}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      {{ macros.sidebar(project, iofile) }}
+    </div>
+    
+    <div class="col-md-9" id='text'>
+      <h2>Procedures Using This File</h2>
+      {% if iofile.procedures %}
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Procedure</th>
+              <th>Location</th>
+              <th>Unit</th>
+              <th>Operations</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for proc_info in iofile.procedures %}
+              {% set proc = proc_info.procedure %}
+              {% set ops = proc_info.operations %}
+              <tr>
+                <td>{{ proc | relurl(page_url) }}</td>
+                <td>{{ proc.parent | relurl(page_url) }}</td>
+                <td>
+                  <code>{{ ops.unit }}</code>
+                  {% if ops.unit_resolved %}
+                    <br><small class="text-muted">→ {{ ops.unit_resolved }}</small>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if ops.timeline %}
+                    {% set has_read = namespace(value=false) %}
+                    {% set has_write = namespace(value=false) %}
+                    {% for op in ops.timeline %}
+                      {% if op.kind == 'read' %}
+                        {% set has_read.value = true %}
+                      {% elif op.kind == 'write' %}
+                        {% set has_write.value = true %}
+                      {% endif %}
+                    {% endfor %}
+                    {{ ops.timeline|length }} operation(s):
+                    {% if has_read.value %}
+                      <span class="badge bg-success">Read</span>
+                    {% endif %}
+                    {% if has_write.value %}
+                      <span class="badge bg-primary">Write</span>
+                    {% endif %}
+                  {% else %}
+                    <em>n/a</em>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p><em>No procedures use this file.</em></p>
+      {% endif %}
+      
+      <h2>All I/O Operations</h2>
+      {% if iofile.operations %}
+        <table class="table table-sm table-striped">
+          <thead>
+            <tr>
+              <th>Line</th>
+              <th>Operation</th>
+              <th>Raw Statement</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for op in iofile.operations %}
+              <tr>
+                <td>{% if op.line %}{{ op.line }}{% else %}-{% endif %}</td>
+                <td>
+                  {% if op.kind == 'read' %}
+                    <span class="badge bg-success">Read</span>
+                  {% elif op.kind == 'write' %}
+                    <span class="badge bg-primary">Write</span>
+                  {% elif op.kind == 'open' %}
+                    <span class="badge bg-info">Open</span>
+                  {% elif op.kind == 'close' %}
+                    <span class="badge bg-secondary">Close</span>
+                  {% else %}
+                    <span class="badge bg-secondary">{{ op.kind }}</span>
+                  {% endif %}
+                </td>
+                <td><code>{{ op.raw }}</code></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p><em>No operations recorded.</em></p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

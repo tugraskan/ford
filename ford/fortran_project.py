@@ -49,6 +49,7 @@ from ford.sourceform import (
     ExternalFunction,
     ExternalSubroutine,
     FortranNamelist,
+    FortranIOFile,
     ExternalType,
     ExternalInterface,
     ExternalVariable,
@@ -168,6 +169,7 @@ class Project:
         self.extTypes: List[ExternalType] = []
         self.extVariables: List[ExternalVariable] = []
         self.namelists: List[FortranNamelist] = []
+        self.iofiles: List[FortranIOFile] = []
 
         # Get all files within topdir, recursively
 
@@ -1341,6 +1343,42 @@ class Project:
         # Store module metadata
         # self.module_metadata = [get_module_metadata(module) for module in self.modules] # do this in xwalk  instead or is a json still ultimately needed?
         # self.xwalk_type_dicts = [self.cross_walk_type_dicts(procedures) for procedures in self.procedures] #all_vars exists, still need a xwalk but do it after correlating
+        
+        # Collect I/O files from all procedures
+        self.collect_io_files()
+
+    def collect_io_files(self):
+        """
+        Collect all I/O files accessed by procedures in the project.
+        Creates FortranIOFile objects for each unique file.
+        """
+        io_files_dict: Dict[str, FortranIOFile] = {}
+        
+        # Iterate through all procedures that have I/O operations
+        for proc in self.procedures:
+            if hasattr(proc, 'io_operations'):
+                io_ops = proc.io_operations
+                if io_ops:
+                    for file_key, operations in io_ops.items():
+                        # Get the filename (prefer resolved, fall back to original)
+                        filename = operations.get('filename_resolved') or operations.get('filename', file_key)
+                        unit = operations.get('unit', 'unknown')
+                        
+                        # Create a unique key for this file
+                        io_key = f"{filename}_{unit}"
+                        
+                        # Create or retrieve the FortranIOFile object
+                        if io_key not in io_files_dict:
+                            io_file = FortranIOFile(filename, unit)
+                            # Set base_url for link generation
+                            io_file.base_url = Path(self.settings.project_url)
+                            io_files_dict[io_key] = io_file
+                        
+                        # Add this procedure to the file's list of users
+                        io_files_dict[io_key].add_procedure(proc, operations)
+        
+        # Convert dict to list and sort by filename
+        self.iofiles = sorted(io_files_dict.values(), key=lambda x: x.io_filename)
 
     def markdown(self, md):
         """

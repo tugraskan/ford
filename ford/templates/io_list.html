@@ -1,0 +1,36 @@
+<!-- -*- mode: jinja2 -*- -->
+
+{% extends "base.html" %}
+{% block title %}
+All I/O Files &ndash; {{ project }}
+{% endblock %}
+{% block body %}
+      <div class="row">
+        <div class="col-lg-12" id='text'>
+			 <h1>I/O Files</h1>
+			 <p class="lead">List of all files accessed through I/O operations in the project.</p>
+			 <table class="table table-striped">
+			 <thead><tr><th>Filename</th><th>Unit</th><th>Type</th><th>Used By</th></tr></thead>
+			 <tbody>
+			 {% for iofile in project.iofiles|sort(attribute='io_filename') %}
+			   <tr>
+                 <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
+                 <td><code>{{ iofile.unit }}</code></td>
+                 <td>
+                   {% if iofile.io_type == 'Input/Output' %}
+                     <span class="badge bg-info">Input/Output</span>
+                   {% elif iofile.io_type == 'Input' %}
+                     <span class="badge bg-success">Input</span>
+                   {% elif iofile.io_type == 'Output' %}
+                     <span class="badge bg-primary">Output</span>
+                   {% else %}
+                     <span class="badge bg-secondary">Unknown</span>
+                   {% endif %}
+                 </td>
+                 <td>{{ iofile.procedures|length }} procedure(s)</td>
+               </tr>
+			 {% endfor %}
+			 </tbody></table>
+        </div>
+      </div>
+{% endblock %}

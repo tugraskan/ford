@@ -4163,6 +4163,95 @@ class FortranNamelist(FortranBase):
         ]
 
 
+class FortranIOFile(FortranBase):
+    """
+    An object representing an I/O file that is accessed by procedures in the project.
+    Contains information about which procedures use this file and what operations they perform.
+    """
+
+    def __init__(self, io_filename: str, unit: str):
+        """
+        Initialize a Fortran I/O file object.
+        
+        Args:
+            io_filename: The name of the I/O file (may be a variable or literal string)
+            unit: The unit number associated with this file
+        """
+        self.io_filename = io_filename
+        self.unit = unit
+        self.name = io_filename  # For compatibility with other FortranBase objects
+        self.procedures = []  # List of procedures that use this file
+        self.operations = []  # List of all operations on this file
+        self.visible = True
+        self.obj = "iofile"
+        
+    @property
+    def ident(self) -> str:
+        """Return a unique identifier for this I/O file"""
+        # Create a safe identifier for URLs - remove all special characters
+        import re
+        # Keep only alphanumeric, underscore, and hyphen
+        safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', self.io_filename)
+        # Remove consecutive underscores
+        safe_name = re.sub(r'_+', '_', safe_name)
+        # Trim underscores from start and end
+        safe_name = safe_name.strip('_')
+        # Ensure it's not empty
+        if not safe_name:
+            safe_name = 'iofile'
+        return safe_name
+    
+    @property
+    def filename(self) -> str:
+        """Return the I/O filename (override FortranBase.filename which requires source_file)"""
+        return self.io_filename
+        
+    def add_procedure(self, procedure, operations):
+        """
+        Add a procedure that uses this I/O file.
+        
+        Args:
+            procedure: The FortranProcedure object
+            operations: Dict containing operation details (timeline, unit_resolved, filename_resolved, etc.)
+        """
+        self.procedures.append({
+            'procedure': procedure,
+            'operations': operations
+        })
+        if 'timeline' in operations:
+            self.operations.extend(operations['timeline'])
+    
+    def get_url(self):
+        """Generate URL for this I/O file's documentation page."""
+        return f"iofile/{self.ident}.html"
+    
+    def get_dir(self):
+        """Get directory for this I/O file's documentation page."""
+        return "iofile"
+    
+    @property
+    def has_read(self):
+        """Check if any procedure reads from this file."""
+        return any(op.get('kind') == 'read' for op in self.operations)
+    
+    @property
+    def has_write(self):
+        """Check if any procedure writes to this file."""
+        return any(op.get('kind') == 'write' for op in self.operations)
+    
+    @property
+    def io_type(self):
+        """Determine if this is an input, output, or input/output file."""
+        if self.has_read and self.has_write:
+            return "Input/Output"
+        elif self.has_read:
+            return "Input"
+        elif self.has_write:
+            return "Output"
+        else:
+            return "Unknown"
+
+
 class FortranType(FortranContainer):
     """
     An object representing a Fortran derived type and holding all of said type's
