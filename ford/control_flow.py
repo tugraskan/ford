@@ -755,19 +755,6 @@ class LogicBlockExtractor:
         current_statement_lines: List[int] = []
         current_comments: List[str] = []
         current_comment_lines: List[int] = []
-        
-    def _populate_statement_keywords(self, block: LogicBlock) -> None:
-        """Populate statement_keywords field for a logic block
-        
-        Parameters
-        ----------
-        block : LogicBlock
-            The block to populate keywords for
-        """
-        block.statement_keywords = []
-        for stmt in block.statements:
-            keywords = detect_statement_keywords(stmt)
-            block.statement_keywords.append(keywords)
 
         i = 0
         while i < len(lines):
@@ -1118,6 +1105,19 @@ class LogicBlockExtractor:
 
         return blocks
     
+    def _populate_statement_keywords(self, block: LogicBlock) -> None:
+        """Populate statement_keywords field for a logic block
+        
+        Parameters
+        ----------
+        block : LogicBlock
+            The block to populate keywords for
+        """
+        block.statement_keywords = []
+        for stmt in block.statements:
+            keywords = detect_statement_keywords(stmt)
+            block.statement_keywords.append(keywords)
+
     def _populate_all_keywords(self, blocks: List[LogicBlock]) -> None:
         """Recursively populate statement keywords for all blocks
         
