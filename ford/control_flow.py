@@ -443,11 +443,6 @@ class FortranControlFlowParser:
                 continue
 
             else:
-                # Skip declarations and USE statements
-                if self._is_declaration_or_use(line_stripped):
-                    i += 1
-                    continue
-                    
                 # Regular statement
                 if current_block.block_type == BlockType.STATEMENT:
                     current_block.statements.append(line_stripped)

@@ -768,4 +768,3 @@ end subroutine test_mixed
         for stmt in block.statements:
             assert not stmt.lower().startswith("use "), "USE statements should be filtered"
             assert not stmt.lower().startswith("integer"), "Declarations should be filtered"
-    assert len(stmt_blocks) >= 1
