@@ -1612,7 +1612,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         return ""
 
     try:
-        from ford.control_flow import BlockType
+        from ford.control_flow import BlockType, detect_statement_keywords
 
         dot = Digraph(
             f"cfg_{procedure_name}",
@@ -1658,10 +1658,20 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             else:
                 label = block.label
 
-            # Add all statements to label if present (no truncation with ...)
+            # Add all statements to label if present with keyword badges
             if block.statements:
-                # Show all statements for better visibility
-                stmts = "\\n".join(block.statements)
+                stmt_lines = []
+                for stmt in block.statements:
+                    # Detect keywords in this statement
+                    keywords = detect_statement_keywords(stmt)
+                    if keywords:
+                        # Add badges before the statement
+                        badges = " ".join([f"<{kw}>" for kw in keywords])
+                        stmt_lines.append(f"{badges} {stmt}")
+                    else:
+                        stmt_lines.append(stmt)
+                
+                stmts = "\\n".join(stmt_lines)
                 label = f"{label}\\n---\\n{stmts}"
 
             # Use diamond shape for conditions
