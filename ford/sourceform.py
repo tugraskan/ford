@@ -470,6 +470,12 @@ class IoTracker:
             # Try to resolve unit if it's a variable
             if unit and variable_defaults:
                 unit_resolved = variable_defaults.get(unit)
+                # Also try splitting compound names (e.g., config%unit_num -> unit_num)
+                if not unit_resolved and '%' in unit:
+                    parts = unit.split('%')
+                    if len(parts) >= 2:
+                        simple_name = parts[-1]
+                        unit_resolved = variable_defaults.get(simple_name)
 
             # Try to resolve filename if it's a variable
             if original_filename and variable_defaults:
@@ -3911,26 +3917,9 @@ class FortranProcedure(FortranCodeUnit):
             if source_lines:
                 variable_defaults = self.io_tracker.extract_variable_defaults(source_lines)
 
-            # Also extract variable defaults from imported modules
-            if hasattr(self, "uses"):
-                for use in self.uses:
-                    module = None
-                    if isinstance(use, (list, tuple)) and len(use) >= 1:
-                        module = use[0]
-                    elif hasattr(use, "source"):
-                        module = use
-
-                    if module and hasattr(module, "source_file") and module.source_file:
-                        if hasattr(module.source_file, "raw_src"):
-                            module_lines = module.source_file.raw_src.split('\n')
-                        elif hasattr(module.source_file, "source"):
-                            module_lines = module.source_file.source
-                        else:
-                            module_lines = []
-                        
-                        if module_lines:
-                            module_defaults = self.io_tracker.extract_variable_defaults(module_lines)
-                            variable_defaults.update(module_defaults)
+            # TODO: Module variable extraction is disabled for performance reasons
+            # It was causing significant slowdowns on large projects with many modules
+            # A future optimization could cache module defaults or use a smarter extraction strategy
 
             return self.io_tracker.summarize_file_io(variable_defaults, procedure=self)
         return {}
