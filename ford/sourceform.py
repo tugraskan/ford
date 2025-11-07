@@ -186,19 +186,20 @@ class IoTracker:
         """
         Extract variable assignments that might be relevant to file operations.
         Returns a dictionary mapping variable names to their assigned values.
+        Skips empty string defaults to preserve variable names in documentation.
         """
         defaults = {}
 
         # Patterns for variable assignments
         assignment_patterns = [
             # Fortran type declarations with string defaults: character(len=25) :: prt = "print.prt"
-            r'^\s*(?:character)(?:\([^)]*\))?\s*::\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']+)["\']',
+            r'^\s*(?:character)(?:\([^)]*\))?\s*::\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']*)["\']',
             # Fortran integer type declarations with numeric defaults: integer :: myunit = 101
             r'^\s*(?:integer)(?:\([^)]*\))?\s*::\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(\d+)',
             # Module variable assignments like: in_link%aqu_cha = "aqu_cha.lin"
-            r'^\s*([a-zA-Z_][a-zA-Z0-9_%]*)\s*=\s*["\']([^"\']+)["\']',
+            r'^\s*([a-zA-Z_][a-zA-Z0-9_%]*)\s*=\s*["\']([^"\']*)["\']',
             # Simple variable assignments like: filename = "data.txt"
-            r'^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']+)["\']',
+            r'^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']*)["\']',
         ]
 
         for line in source_lines:
@@ -216,8 +217,12 @@ class IoTracker:
                 if match:
                     var_name = match.group(1).strip()
                     var_value = match.group(2).strip()
-                    defaults[var_name] = var_value
-                    log.debug(f"Found variable default: {var_name} = {var_value}")
+                    # Skip empty string defaults - preserve variable name in output
+                    if var_value:  # Only add non-empty values
+                        defaults[var_name] = var_value
+                        log.debug(f"Found variable default: {var_name} = {var_value}")
+                    else:
+                        log.debug(f"Skipping empty default for variable: {var_name}")
 
         return defaults
 
