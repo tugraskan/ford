@@ -1679,9 +1679,9 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                     stmt_escaped = stmt.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
                     
                     if keywords:
-                        # Create badge cells - join with space, no trailing space
+                        # Create badge cells - join with space between badges
                         badge_parts = [f'<FONT COLOR="{keyword_color}" POINT-SIZE="8"><B>[{kw}]</B></FONT>' for kw in keywords]
-                        badge_html = ' '.join(badge_parts) + ' '
+                        badge_html = ' '.join(badge_parts)
                         
                         rows.append(f'<TR><TD ALIGN="LEFT" BALIGN="LEFT">{badge_html}</TD><TD ALIGN="LEFT">{stmt_escaped}</TD></TR>')
                     else:
