@@ -1675,16 +1675,16 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                     # Detect keywords in this statement
                     keywords = detect_statement_keywords(stmt)
                     
+                    # Escape HTML special characters
+                    stmt_escaped = stmt.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+                    
                     if keywords:
-                        # Create badge cells
-                        badge_html = ''
-                        for kw in keywords:
-                            badge_html += f'<FONT COLOR="{keyword_color}" POINT-SIZE="8"><B>[{kw}]</B></FONT> '
+                        # Create badge cells - join with space, no trailing space
+                        badge_parts = [f'<FONT COLOR="{keyword_color}" POINT-SIZE="8"><B>[{kw}]</B></FONT>' for kw in keywords]
+                        badge_html = ' '.join(badge_parts) + ' '
                         
-                        stmt_escaped = stmt.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
                         rows.append(f'<TR><TD ALIGN="LEFT" BALIGN="LEFT">{badge_html}</TD><TD ALIGN="LEFT">{stmt_escaped}</TD></TR>')
                     else:
-                        stmt_escaped = stmt.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
                         rows.append(f'<TR><TD COLSPAN="2" ALIGN="LEFT">{stmt_escaped}</TD></TR>')
                 
                 label = '<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">' + ''.join(rows) + '</TABLE>>'
