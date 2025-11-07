@@ -1650,9 +1650,6 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         
         # Color scheme for keyword badges (matching Bootstrap info badge color)
         keyword_color = "#0dcaf0"  # info/cyan color
-        
-        # Counter for unique keyword node IDs
-        keyword_node_counter = 0
 
         # Add nodes
         for block in cfg.blocks.values():
@@ -1688,10 +1685,9 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 for stmt_idx, stmt in enumerate(block.statements):
                     keywords = detect_statement_keywords(stmt)
                     if keywords:
-                        for kw in keywords:
-                            # Create a unique node ID for this keyword
-                            kw_node_id = f"kw_{block.id}_{stmt_idx}_{keyword_node_counter}"
-                            keyword_node_counter += 1
+                        for kw_idx, kw in enumerate(keywords):
+                            # Create a unique node ID using block.id, statement index, and keyword index
+                            kw_node_id = f"kw_{block.id}_{stmt_idx}_{kw_idx}"
                             
                             # Create small badge node
                             dot.node(

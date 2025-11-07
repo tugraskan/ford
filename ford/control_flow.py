@@ -433,8 +433,8 @@ class FortranControlFlowParser:
                 # Connect current block directly to exit (no intermediate RETURN block)
                 self.cfg.add_edge(current_block.id, exit_block.id)
                 
-                # Don't create "After RETURN" block - code after return is unreachable
-                # Just skip any remaining statements in this branch
+                # Note: We don't update current_block, so any subsequent statements
+                # in this branch will be ignored (they're unreachable after RETURN)
 
             # Skip USE, IMPLICIT, and variable declarations - they're not part of control flow
             elif self._is_declaration_or_use(line_stripped):
