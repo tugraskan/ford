@@ -1650,50 +1650,28 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         
         # Color scheme for keyword badges (matching Bootstrap info badge color)
         keyword_color = "#0dcaf0"  # info/cyan color
+        
+        # Counter for unique keyword node IDs
+        keyword_node_counter = 0
 
         # Add nodes
         for block in cfg.blocks.values():
             color = colors.get(block.block_type, "#FFFFFF")
 
-            # Build label using HTML-like table format for better styling
-            if block.statements:
-                # Use HTML table for complex labels with badges
-                rows = []
-                
-                # Header row with block label
-                if block.condition:
-                    header_text = f"{block.label}<BR/>{block.condition}"
-                else:
-                    header_text = block.label
-                rows.append(f'<TR><TD COLSPAN="2" BGCOLOR="{color}"><B>{header_text}</B></TD></TR>')
-                
-                # Separator row
-                rows.append('<TR><TD COLSPAN="2" HEIGHT="1"></TD></TR>')
-                
-                # Statement rows with badges
-                for stmt in block.statements:
-                    # Detect keywords in this statement
-                    keywords = detect_statement_keywords(stmt)
-                    
-                    # Escape HTML special characters
-                    stmt_escaped = stmt.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-                    
-                    if keywords:
-                        # Create badge cells - join with space between badges
-                        badge_parts = [f'<FONT COLOR="{keyword_color}" POINT-SIZE="8"><B>[{kw}]</B></FONT>' for kw in keywords]
-                        badge_html = ' '.join(badge_parts)
-                        
-                        rows.append(f'<TR><TD ALIGN="LEFT" BALIGN="LEFT">{badge_html}</TD><TD ALIGN="LEFT">{stmt_escaped}</TD></TR>')
-                    else:
-                        rows.append(f'<TR><TD COLSPAN="2" ALIGN="LEFT">{stmt_escaped}</TD></TR>')
-                
-                label = '<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">' + ''.join(rows) + '</TABLE>>'
+            # Build label
+            if block.condition:
+                label = f"{block.label}\\n{block.condition}"
             else:
-                # Simple text label for blocks without statements
-                if block.condition:
-                    label = f"{block.label}\\n{block.condition}"
-                else:
-                    label = block.label
+                label = block.label
+
+            # Add all statements to label if present
+            if block.statements:
+                stmt_lines = []
+                for stmt in block.statements:
+                    stmt_lines.append(stmt)
+                
+                stmts = "\\n".join(stmt_lines)
+                label = f"{label}\\n---\\n{stmts}"
 
             # Use diamond shape for conditions
             shape = (
@@ -1704,6 +1682,34 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             )
 
             dot.node(str(block.id), label=label, fillcolor=color, shape=shape)
+            
+            # Create separate keyword badge nodes for this block
+            if block.statements:
+                for stmt_idx, stmt in enumerate(block.statements):
+                    keywords = detect_statement_keywords(stmt)
+                    if keywords:
+                        for kw in keywords:
+                            # Create a unique node ID for this keyword
+                            kw_node_id = f"kw_{block.id}_{stmt_idx}_{keyword_node_counter}"
+                            keyword_node_counter += 1
+                            
+                            # Create small badge node
+                            dot.node(
+                                kw_node_id,
+                                label=kw,
+                                shape="box",
+                                style="filled,rounded",
+                                fillcolor=keyword_color,
+                                fontcolor="white",
+                                fontsize="8",
+                                fontname="Helvetica",
+                                width="0",
+                                height="0",
+                                margin="0.05,0.02"
+                            )
+                            
+                            # Connect keyword node to the statement block
+                            dot.edge(kw_node_id, str(block.id), style="dotted", arrowhead="none", constraint="false")
 
         # Add edges
         for block in cfg.blocks.values():

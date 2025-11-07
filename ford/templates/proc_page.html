@@ -377,11 +377,13 @@
             Control flow structures organized as they appear in the source code. 
             Each block is collapsible to help navigate complex procedures.
           </p>
-          {% macro render_statement_with_badges(stmt, keywords) %}
-            {# Render a statement with keyword badges #}
+          {% macro render_statement_with_badges(stmt, keywords, line_num) %}
+            {# Render a statement with keyword badges in first column, line number and statement in second #}
             {% if keywords %}
               {% for keyword in keywords %}<span class="badge bg-info text-dark me-1">{{ keyword }}</span>{% endfor %}
-            {% endif %}{{ stmt }}
+            {% endif %}
+            {% if keywords and line_num %}    {% endif %}
+            {% if line_num %}<span class="text-muted">{{ "%4d" | format(line_num) }}</span> {% endif %}{{ stmt }}
           {% endmacro %}
           
           {% macro render_logic_block(block, index, parent_index='') %}
@@ -415,7 +417,7 @@
                       {% endfor %}
                     {% endif %}
                     {% if block.statements %}
-                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else []) }}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
 {% endfor %}</code></pre>
                     {% endif %}
                     {% for child in block.children %}
@@ -454,7 +456,7 @@
                                           {% endfor %}
                                         {% endif %}
                     {% if block.statements %}
-                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else []) }}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
                       {% endfor %}</code></pre>
                     {% endif %}
                     {% for child in block.children %}
@@ -493,7 +495,7 @@
                                           {% endfor %}
                                         {% endif %}
                     {% if block.statements %}
-                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else []) }}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
                       {% endfor %}</code></pre>
                     {% endif %}
                     {% for child in block.children %}
@@ -533,7 +535,7 @@
                                           {% endfor %}
                                         {% endif %}
                     {% if block.statements %}
-                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else []) }}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
                       {% endfor %}</code></pre>
                     {% endif %}
                     {% for child in block.children %}
@@ -598,7 +600,7 @@
                                           {% endfor %}
                                         {% endif %}
                     {% if block.statements %}
-                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else []) }}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
                       {% endfor %}</code></pre>
                     {% endif %}
                     {% for child in block.children %}
@@ -622,7 +624,7 @@
                       {% endfor %}
                     {% endif %}
                     {% if block.statements %}
-                      <pre class="mb-0"><code>{% for stmt in block.statements %}<span class="text-muted">{% if block.statement_lines and loop.index0 < block.statement_lines|length %}{{ "%4d" | format(block.statement_lines[loop.index0]) }}{% else %}    {% endif %}</span> {{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else []) }}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
                       {% endfor %}</code></pre>
                     {% endif %}
                   </div>
