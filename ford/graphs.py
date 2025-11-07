@@ -1647,32 +1647,53 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             BlockType.SELECT_CASE: "#F0E68C",  # Khaki
             BlockType.CASE: "#FFE4B5",  # Moccasin
         }
+        
+        # Color scheme for keyword badges (matching Bootstrap info badge color)
+        keyword_color = "#0dcaf0"  # info/cyan color
 
         # Add nodes
         for block in cfg.blocks.values():
             color = colors.get(block.block_type, "#FFFFFF")
 
-            # Build label
-            if block.condition:
-                label = f"{block.label}\\n{block.condition}"
-            else:
-                label = block.label
-
-            # Add all statements to label if present with keyword badges
+            # Build label using HTML-like table format for better styling
             if block.statements:
-                stmt_lines = []
+                # Use HTML table for complex labels with badges
+                rows = []
+                
+                # Header row with block label
+                if block.condition:
+                    header_text = f"{block.label}<BR/>{block.condition}"
+                else:
+                    header_text = block.label
+                rows.append(f'<TR><TD COLSPAN="2" BGCOLOR="{color}"><B>{header_text}</B></TD></TR>')
+                
+                # Separator row
+                rows.append('<TR><TD COLSPAN="2" HEIGHT="1"></TD></TR>')
+                
+                # Statement rows with badges
                 for stmt in block.statements:
                     # Detect keywords in this statement
                     keywords = detect_statement_keywords(stmt)
+                    
                     if keywords:
-                        # Add badges before the statement
-                        badges = " ".join([f"<{kw}>" for kw in keywords])
-                        stmt_lines.append(f"{badges} {stmt}")
+                        # Create badge cells
+                        badge_html = ''
+                        for kw in keywords:
+                            badge_html += f'<FONT COLOR="{keyword_color}" POINT-SIZE="8"><B>[{kw}]</B></FONT> '
+                        
+                        stmt_escaped = stmt.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+                        rows.append(f'<TR><TD ALIGN="LEFT" BALIGN="LEFT">{badge_html}</TD><TD ALIGN="LEFT">{stmt_escaped}</TD></TR>')
                     else:
-                        stmt_lines.append(stmt)
+                        stmt_escaped = stmt.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+                        rows.append(f'<TR><TD COLSPAN="2" ALIGN="LEFT">{stmt_escaped}</TD></TR>')
                 
-                stmts = "\\n".join(stmt_lines)
-                label = f"{label}\\n---\\n{stmts}"
+                label = '<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">' + ''.join(rows) + '</TABLE>>'
+            else:
+                # Simple text label for blocks without statements
+                if block.condition:
+                    label = f"{block.label}\\n{block.condition}"
+                else:
+                    label = block.label
 
             # Use diamond shape for conditions
             shape = (
