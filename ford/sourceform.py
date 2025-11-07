@@ -103,6 +103,11 @@ class IoSession:
 
 
 class IoTracker:
+    # Class-level attributes for project-wide mappings
+    # These are set by the Project.collect_io_files() method before template rendering
+    _unit_filename_map = {}  # unit number -> filename from OPEN statements
+    _type_defaults_map = {}   # variable name -> default value from type definitions
+    
     def __init__(self):
         self._open_sessions = {}  # unit → IoSession
         self.completed = defaultdict(list)  # unit → [IoSession,...]
@@ -472,7 +477,7 @@ class IoTracker:
             unit_resolved = None
             filename_resolved = None
 
-            # Try to resolve unit if it's a variable
+            # Try to resolve unit if it's a variable (local resolution)
             if unit and variable_defaults:
                 unit_resolved = variable_defaults.get(unit)
                 # Also try splitting compound names (e.g., config%unit_num -> unit_num)
@@ -482,7 +487,7 @@ class IoTracker:
                         simple_name = parts[-1]
                         unit_resolved = variable_defaults.get(simple_name)
 
-            # Try to resolve filename if it's a variable
+            # Try to resolve filename if it's a variable (local resolution)
             if original_filename and variable_defaults:
                 # Check if the entire filename is a variable
                 if original_filename in variable_defaults:
@@ -494,6 +499,38 @@ class IoTracker:
                         simple_name = parts[-1]
                         if simple_name in variable_defaults:
                             filename_resolved = variable_defaults[simple_name]
+            
+            # Enhanced cross-file and cross-module resolution using class-level mappings
+            # IMPORTANT: Try type defaults FIRST if filename looks like a variable (contains '%')
+            # This ensures that explicit variable references like 'in_sim%time' resolve correctly
+            # even if the unit number has been used with different files elsewhere
+            
+            # 1. Try to resolve filename from type defaults (cross-module resolution) if it looks like a variable
+            if not filename_resolved and original_filename and '%' in original_filename:
+                filename_lower = original_filename.lower()
+                if filename_lower in IoTracker._type_defaults_map:
+                    filename_resolved = IoTracker._type_defaults_map[filename_lower]
+                else:
+                    # Try just the last component
+                    parts = original_filename.split('%')
+                    if len(parts) >= 2:
+                        simple_name = parts[-1].lower()
+                        if simple_name in IoTracker._type_defaults_map:
+                            filename_resolved = IoTracker._type_defaults_map[simple_name]
+            
+            # 2. Try to resolve filename from unit number (cross-file resolution) as fallback
+            # This is especially useful when a procedure uses a unit without opening it (e.g., WRITE without OPEN)
+            if not filename_resolved:
+                unit_number = unit_resolved if unit_resolved else unit
+                # Also try if filename looks like "unit_XXXX" - extract the number and try to resolve
+                if not unit_number and original_filename and original_filename.startswith("unit_"):
+                    try:
+                        unit_number = original_filename[5:]  # Skip "unit_" prefix
+                    except:
+                        pass
+                        
+                if unit_number and str(unit_number) in IoTracker._unit_filename_map:
+                    filename_resolved = IoTracker._unit_filename_map[str(unit_number)]
 
             final_result[fname] = {
                 "summary": rec,

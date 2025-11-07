@@ -1363,8 +1363,10 @@ class Project:
                 for unit, sessions in proc.io_tracker.completed.items():
                     for session in sessions:
                         if session.file and session.file != "<unknown>":
-                            # Prefer sessions with explicit filenames over synthetic ones
-                            unit_to_filename[str(unit)] = session.file
+                            # Skip synthetic "unit_XXXX" filenames - we only want real filenames
+                            if not session.file.startswith("unit_"):
+                                # Prefer sessions with explicit filenames over synthetic ones
+                                unit_to_filename[str(unit)] = session.file
         
         return unit_to_filename
     
@@ -1387,15 +1389,22 @@ class Project:
                         # Extract defaults from type components
                         for var in dtype.variables:
                             if hasattr(var, 'initial') and var.initial:
-                                # Store both simple name and compound name
+                                # Store compound name (typename%varname)
                                 simple_name = var.name
                                 compound_name = f"{dtype.name}%{var.name}".lower()
                                 
-                                # Only store non-empty defaults
-                                initial_value = str(var.initial).strip().strip('"').strip("'")
-                                if initial_value and initial_value != '""' and initial_value != "''":
-                                    type_defaults[simple_name.lower()] = initial_value
+                                # Convert initial value to string
+                                initial_value = str(var.initial).strip()
+                                
+                                # Skip empty strings but keep actual quoted strings
+                                if initial_value and initial_value not in ('""', "''", ''):
+                                    # Always store compound name
                                     type_defaults[compound_name] = initial_value
+                                    
+                                    # Only store simple name if it's a character type
+                                    # to avoid conflicts with numeric variables that have the same name
+                                    if hasattr(var, 'vartype') and 'character' in var.vartype.lower():
+                                        type_defaults[simple_name.lower()] = initial_value
         
         return type_defaults
     
@@ -1408,6 +1417,12 @@ class Project:
         # Build project-wide mappings for better resolution
         unit_to_filename_map = self.build_unit_filename_mapping()
         type_defaults_map = self.build_type_defaults_mapping()
+        
+        # Set the class-level mappings on IoTracker so they're available
+        # when procedure pages access the io_operations property
+        from ford.sourceform import IoTracker
+        IoTracker._unit_filename_map = unit_to_filename_map
+        IoTracker._type_defaults_map = type_defaults_map
         
         io_files_dict: Dict[str, FortranIOFile] = {}
         
@@ -1424,9 +1439,10 @@ class Project:
                         unit_resolved = operations.get('unit_resolved')
                         
                         # Try to resolve using project-wide mappings
-                        # 1. If unit is resolved to a number, try to find its filename from OPEN statements
-                        if unit_resolved and str(unit_resolved) in unit_to_filename_map:
-                            cross_file_filename = unit_to_filename_map[str(unit_resolved)]
+                        # 1. If unit is a number (either directly or resolved), try to find its filename from OPEN statements
+                        unit_number = unit_resolved if unit_resolved else unit
+                        if unit_number and str(unit_number) in unit_to_filename_map:
+                            cross_file_filename = unit_to_filename_map[str(unit_number)]
                             # Only use if we don't already have a better resolution
                             if not filename_resolved:
                                 filename_resolved = cross_file_filename
