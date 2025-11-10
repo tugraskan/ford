@@ -232,7 +232,7 @@ class FortranControlFlowParser:
         entry = self.cfg.create_block(BlockType.ENTRY, "Entry")
         self.cfg.entry_block_id = entry.id
 
-        exit_block = self.cfg.create_block(BlockType.EXIT, "Return")
+        exit_block = self.cfg.create_block(BlockType.EXIT, "Exit")
         self.cfg.exit_block_id = exit_block.id
 
         # Parse the procedure body
@@ -445,21 +445,22 @@ class FortranControlFlowParser:
 
             # Check for RETURN statement - create a keyword node for it
             elif RETURN_RE.match(line_stripped):
-                # Create RETURN keyword node
+                # Create RETURN keyword node with statement content
+                label = f"RETURN (L{line_num})\n{line_stripped}" if line_num else f"RETURN\n{line_stripped}"
                 return_node = self.cfg.create_block(
                     BlockType.KEYWORD_EXIT,
-                    f"RETURN (L{line_num})" if line_num else "RETURN",
+                    label,
                 )
                 return_node.line_number = line_num
+                return_node.statements.append(line_stripped)
                 self.cfg.add_edge(current_block.id, return_node.id)
                 
-                # Connect RETURN node to exit
+                # Connect RETURN node directly to exit
                 self.cfg.add_edge(return_node.id, exit_block.id)
 
-                # Create an unreachable block that won't connect anywhere
-                # This prevents END IF from connecting to merge after a RETURN
-                unreachable = self.cfg.create_block(BlockType.STATEMENT, "Unreachable")
-                current_block = unreachable
+                # Update current_block to return_node to prevent spurious edges
+                # Any subsequent statements in this branch are unreachable
+                current_block = return_node
 
             # Skip USE, IMPLICIT, and variable declarations - they're not part of control flow
             elif self._is_declaration_or_use(line_stripped):
@@ -474,12 +475,14 @@ class FortranControlFlowParser:
                 for keyword in keywords:
                     block_type = get_keyword_block_type(keyword)
                     if block_type:
-                        # Create keyword node
+                        # Create keyword node with line number and statement content
+                        label = f"{keyword} (L{line_num})\n{line_stripped}" if line_num else f"{keyword}\n{line_stripped}"
                         kw_node = self.cfg.create_block(
                             block_type,
-                            f"{keyword} (L{line_num})" if line_num else keyword,
+                            label,
                         )
                         kw_node.line_number = line_num
+                        kw_node.statements.append(line_stripped)
                         self.cfg.add_edge(current_block.id, kw_node.id)
                         current_block = kw_node
                 
