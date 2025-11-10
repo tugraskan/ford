@@ -109,6 +109,20 @@ graph_maxnodes: 50
 graph_maxdepth: 3
 ```
 
+### Graph generation hangs or times out
+
+FORD includes timeout protection for control flow graph generation (30 seconds per procedure). If CFG generation takes too long, FORD will skip that procedure and continue with a warning message.
+
+**What happens:**
+- Control flow graphs have a 30-second timeout per procedure
+- If timeout occurs, a warning is printed and the procedure's CFG is skipped
+- Documentation generation continues for other procedures
+
+**If you see timeout warnings:**
+1. The procedure may have extremely complex control flow
+2. Consider simplifying the procedure structure if possible
+3. The rest of the documentation will still be generated correctly
+
 ## Example Configuration
 
 Complete example of a FORD project file with graphs enabled:
