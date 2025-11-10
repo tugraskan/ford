@@ -1347,6 +1347,127 @@ class Project:
         # Collect I/O files from all procedures
         self.collect_io_files()
 
+    def build_call_site_mappings(self) -> Dict[str, List[Dict]]:
+        """
+        Build a mapping of procedure names to their call sites with argument values.
+        This is used to resolve parameter filenames in IO operations.
+
+        Returns:
+            Dict mapping procedure name (lowercase) to list of call site info dicts
+            Each call site dict contains: {
+                'caller': calling procedure,
+                'arguments': list of argument expressions,
+                'line_no': line number of call
+            }
+        """
+        import re
+        
+        call_site_map = {}
+        
+        # Pattern to match procedure calls: call procname(arg1, arg2, ...)
+        # Also handle function-style calls: result = procname(arg1, arg2)
+        call_pattern = re.compile(
+            r'\b(?:call\s+)?([a-zA-Z_][a-zA-Z0-9_]*)\s*\(',
+            re.IGNORECASE
+        )
+        
+        for proc in self.procedures:
+            # Get the source file and lines for this procedure
+            if not hasattr(proc, 'source_file') or not proc.source_file:
+                continue
+                
+            # Read source lines
+            source_lines = []
+            if hasattr(proc.source_file, 'raw_src'):
+                source_lines = proc.source_file.raw_src.split('\n')
+            elif hasattr(proc.source_file, 'source'):
+                source_lines = proc.source_file.source
+            
+            # Look for call statements
+            for line_no, line in enumerate(source_lines, 1):
+                # Skip comments
+                comment_pos = line.find('!')
+                if comment_pos >= 0:
+                    line = line[:comment_pos]
+                
+                line = line.strip()
+                if not line:
+                    continue
+                
+                # Find calls in this line
+                for match in call_pattern.finditer(line):
+                    called_proc_name = match.group(1).lower()
+                    
+                    # Try to extract arguments
+                    # Find the opening parenthesis position
+                    paren_start = match.end() - 1
+                    
+                    # Extract the argument list by matching parentheses
+                    try:
+                        args_str = self._extract_parenthesized_content(line[paren_start:])
+                        if args_str:
+                            # Split arguments by commas (respecting nested parentheses)
+                            arguments = self._split_arguments(args_str)
+                            
+                            # Store call site info
+                            if called_proc_name not in call_site_map:
+                                call_site_map[called_proc_name] = []
+                            
+                            call_site_map[called_proc_name].append({
+                                'caller': proc,
+                                'arguments': arguments,
+                                'line_no': line_no,
+                                'raw_line': line
+                            })
+                    except:
+                        # If parsing fails, skip this call
+                        continue
+        
+        return call_site_map
+    
+    def _extract_parenthesized_content(self, text: str) -> str:
+        """
+        Extract content within the first set of parentheses.
+        Returns the content without the outer parentheses.
+        """
+        if not text or text[0] != '(':
+            return ""
+        
+        depth = 0
+        for i, char in enumerate(text):
+            if char == '(':
+                depth += 1
+            elif char == ')':
+                depth -= 1
+                if depth == 0:
+                    return text[1:i]
+        return ""
+    
+    def _split_arguments(self, args_str: str) -> List[str]:
+        """
+        Split a comma-separated argument list while respecting nested parentheses.
+        """
+        arguments = []
+        current_arg = ""
+        depth = 0
+        
+        for char in args_str:
+            if char == ',' and depth == 0:
+                arguments.append(current_arg.strip())
+                current_arg = ""
+            else:
+                if char == '(':
+                    depth += 1
+                elif char == ')':
+                    depth -= 1
+                current_arg += char
+        
+        # Don't forget the last argument
+        if current_arg.strip():
+            arguments.append(current_arg.strip())
+        
+        return arguments
+
     def build_unit_filename_mapping(self) -> Dict[str, str]:
         """
         Build a project-wide mapping of unit numbers to filenames by scanning
@@ -1421,11 +1542,12 @@ class Project:
         """
         Collect all I/O files accessed by procedures in the project.
         Creates FortranIOFile objects for each unique file.
-        Now with enhanced cross-file and cross-module resolution.
+        Now with enhanced cross-file and cross-module resolution including call-site analysis.
         """
         # Build project-wide mappings for better resolution
         unit_to_filename_map = self.build_unit_filename_mapping()
         type_defaults_map = self.build_type_defaults_mapping()
+        call_site_map = self.build_call_site_mappings()
 
         # Set the class-level mappings on IoTracker so they're available
         # when procedure pages access the io_operations property
@@ -1447,58 +1569,136 @@ class Project:
                         filename_resolved = operations.get("filename_resolved")
                         unit = operations.get("unit", "unknown")
                         unit_resolved = operations.get("unit_resolved")
+                        
+                        # FIRST: Try call-site resolution if filename appears to be a parameter
+                        # This takes precedence over other resolution methods to avoid incorrect
+                        # unit-based fallback matches
+                        filenames_from_calls = []
+                        if filename:
+                            # Check if filename is a simple identifier (could be a parameter)
+                            # Skip if it's a literal string (starts/ends with quotes) or synthetic unit name
+                            if (not filename.startswith('"') and not filename.startswith("'") and
+                                not filename.startswith('unit_') and '%' not in filename):
+                                # Check if this procedure has the filename as a parameter
+                                if hasattr(proc, 'args') and proc.args:
+                                    param_index = -1
+                                    for i, arg in enumerate(proc.args):
+                                        # Args can be FortranVariable objects or strings
+                                        arg_name = arg.name if hasattr(arg, 'name') else str(arg)
+                                        if arg_name.lower() == filename.lower():
+                                            param_index = i
+                                            break
+                                    
+                                    # If filename matches a parameter, look at call sites
+                                    if param_index >= 0:
+                                        proc_name_lower = proc.name.lower()
+                                        if proc_name_lower in call_site_map:
+                                            for call_site in call_site_map[proc_name_lower]:
+                                                args = call_site['arguments']
+                                                if param_index < len(args):
+                                                    arg_value = args[param_index].strip()
+                                                    
+                                                    # Try to resolve the argument value
+                                                    resolved_arg = None
+                                                    
+                                                    # Check if it's a literal string
+                                                    if (arg_value.startswith('"') or arg_value.startswith("'")):
+                                                        resolved_arg = arg_value.strip('"').strip("'")
+                                                    # Check if it's a compound variable in type defaults
+                                                    elif '%' in arg_value:
+                                                        arg_lower = arg_value.lower()
+                                                        if arg_lower in type_defaults_map:
+                                                            resolved_arg = type_defaults_map[arg_lower]
+                                                        else:
+                                                            # Try just the last component
+                                                            parts = arg_value.split('%')
+                                                            if len(parts) >= 2:
+                                                                simple_name = parts[-1].lower()
+                                                                if simple_name in type_defaults_map:
+                                                                    resolved_arg = type_defaults_map[simple_name]
+                                                    
+                                                    if resolved_arg:
+                                                        # Clean up the resolved value (remove quotes if present)
+                                                        resolved_arg = resolved_arg.strip('"').strip("'")
+                                                        if resolved_arg not in filenames_from_calls:
+                                                            filenames_from_calls.append(resolved_arg)
+                        
+                        # If we found filenames from call sites, use those and skip other resolution
+                        # Otherwise, continue with normal resolution
+                        if not filenames_from_calls:
+                            # Try to resolve using project-wide mappings
+                            # 1. If unit is a number (either directly or resolved), try to find its filename from OPEN statements
+                            unit_number = unit_resolved if unit_resolved else unit
+                            if unit_number and str(unit_number) in unit_to_filename_map:
+                                cross_file_filename = unit_to_filename_map[str(unit_number)]
+                                # Only use if we don't already have a better resolution
+                                if not filename_resolved:
+                                    filename_resolved = cross_file_filename
 
-                        # Try to resolve using project-wide mappings
-                        # 1. If unit is a number (either directly or resolved), try to find its filename from OPEN statements
-                        unit_number = unit_resolved if unit_resolved else unit
-                        if unit_number and str(unit_number) in unit_to_filename_map:
-                            cross_file_filename = unit_to_filename_map[str(unit_number)]
-                            # Only use if we don't already have a better resolution
-                            if not filename_resolved:
-                                filename_resolved = cross_file_filename
+                            # 2. If filename looks like a variable, try type defaults mapping
+                            if filename and not filename_resolved:
+                                # Check for compound names (e.g., in_sim%time)
+                                if "%" in filename:
+                                    filename_lower = filename.lower()
+                                    if filename_lower in type_defaults_map:
+                                        filename_resolved = type_defaults_map[
+                                            filename_lower
+                                        ]
+                                    else:
+                                        # Try just the last component
+                                        parts = filename.split("%")
+                                        if len(parts) >= 2:
+                                            simple_name = parts[-1].lower()
+                                            if simple_name in type_defaults_map:
+                                                filename_resolved = type_defaults_map[
+                                                    simple_name
+                                                ]
 
-                        # 2. If filename looks like a variable, try type defaults mapping
-                        if filename and not filename_resolved:
-                            # Check for compound names (e.g., in_sim%time)
-                            if "%" in filename:
-                                filename_lower = filename.lower()
-                                if filename_lower in type_defaults_map:
-                                    filename_resolved = type_defaults_map[
-                                        filename_lower
-                                    ]
-                                else:
-                                    # Try just the last component
-                                    parts = filename.split("%")
-                                    if len(parts) >= 2:
-                                        simple_name = parts[-1].lower()
-                                        if simple_name in type_defaults_map:
-                                            filename_resolved = type_defaults_map[
-                                                simple_name
-                                            ]
+                        # Determine the final display filename(s)
+                        # If we found multiple filenames from call sites, create separate entries
+                        filenames_to_process = []
+                        if filenames_from_calls:
+                            # We have call-site resolved filenames, use them
+                            for resolved_filename in filenames_from_calls:
+                                filenames_to_process.append({
+                                    'display_filename': resolved_filename,
+                                    'filename_resolved': resolved_filename,
+                                    'source': 'call_site'
+                                })
+                        else:
+                            # Use the single resolved or unresolved filename
+                            display_filename = (
+                                filename_resolved if filename_resolved else filename
+                            )
+                            filenames_to_process.append({
+                                'display_filename': display_filename,
+                                'filename_resolved': filename_resolved,
+                                'source': 'direct'
+                            })
+                        
+                        # Process each filename (usually just one, but could be multiple from call sites)
+                        for filename_info in filenames_to_process:
+                            display_filename = filename_info['display_filename']
+                            filename_resolved_for_entry = filename_info['filename_resolved']
+                            
+                            # Create a unique key for this file
+                            # Use resolved filename for grouping if available
+                            io_key = f"{display_filename}_{unit}"
 
-                        # Determine the final display filename
-                        display_filename = (
-                            filename_resolved if filename_resolved else filename
-                        )
+                            # Create or retrieve the FortranIOFile object
+                            if io_key not in io_files_dict:
+                                io_file = FortranIOFile(display_filename, unit)
+                                # Set base_url for link generation (as string, not Path)
+                                io_file.base_url = str(self.settings.project_url)
+                                io_files_dict[io_key] = io_file
 
-                        # Create a unique key for this file
-                        # Use resolved filename for grouping if available
-                        io_key = f"{display_filename}_{unit}"
+                            # Update operations with enhanced resolution
+                            enhanced_operations = operations.copy()
+                            if filename_resolved_for_entry:
+                                enhanced_operations["filename_resolved"] = filename_resolved_for_entry
 
-                        # Create or retrieve the FortranIOFile object
-                        if io_key not in io_files_dict:
-                            io_file = FortranIOFile(display_filename, unit)
-                            # Set base_url for link generation (as string, not Path)
-                            io_file.base_url = str(self.settings.project_url)
-                            io_files_dict[io_key] = io_file
-
-                        # Update operations with enhanced resolution
-                        enhanced_operations = operations.copy()
-                        if filename_resolved:
-                            enhanced_operations["filename_resolved"] = filename_resolved
-
-                        # Add this procedure to the file's list of users
-                        io_files_dict[io_key].add_procedure(proc, enhanced_operations)
+                            # Add this procedure to the file's list of users
+                            io_files_dict[io_key].add_procedure(proc, enhanced_operations)
 
         # Convert dict to list and sort by filename
         self.iofiles = sorted(io_files_dict.values(), key=lambda x: x.io_filename)
