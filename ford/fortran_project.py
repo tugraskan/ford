@@ -1670,6 +1670,9 @@ class Project:
                             display_filename = (
                                 filename_resolved if filename_resolved else filename
                             )
+                            # Strip quotes from display filename if present
+                            if display_filename:
+                                display_filename = display_filename.strip('"').strip("'")
                             filenames_to_process.append({
                                 'display_filename': display_filename,
                                 'filename_resolved': filename_resolved,
@@ -1681,12 +1684,14 @@ class Project:
                             display_filename = filename_info['display_filename']
                             filename_resolved_for_entry = filename_info['filename_resolved']
                             
-                            # Create a unique key for this file
-                            # Use resolved filename for grouping if available
-                            io_key = f"{display_filename}_{unit}"
+                            # Create a unique key for this file based on filename only
+                            # Multiple procedures can access the same file with different unit numbers
+                            io_key = display_filename
 
                             # Create or retrieve the FortranIOFile object
                             if io_key not in io_files_dict:
+                                # Use the first encountered unit as the default
+                                # (The template will show individual units for each procedure)
                                 io_file = FortranIOFile(display_filename, unit)
                                 # Set base_url for link generation (as string, not Path)
                                 io_file.base_url = str(self.settings.project_url)
