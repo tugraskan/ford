@@ -591,6 +591,9 @@ class FileNode(BaseNode):
             obj.programs,
             obj.blockdata,
         ):
+            # Only modules and submodules have deplist
+            if not hasattr(mod, "deplist"):
+                continue
             for dep in mod.deplist:
                 if dep.source_file == obj:
                     continue
@@ -1443,6 +1446,34 @@ class GraphManager:
                 for _, called_node in matching_nodes:
                     called_node.called_by.add(caller_node)
 
+    def _populate_calledby_lists(self):
+        """
+        Populate calledby lists on procedure objects from graph node data.
+
+        This extracts the called_by information from graph nodes and stores it
+        as a list on the procedure object for easy access in templates.
+        """
+        for proc_obj, proc_node in self.data.procedures.items():
+            # Get the calling procedures from the graph node
+            calledby_procs = []
+            for caller_node in sorted(
+                proc_node.called_by, key=lambda n: n.name.lower()
+            ):
+                # Find the procedure object corresponding to this caller node
+                # by looking it up in the procedures dictionary
+                for caller_obj, node in self.data.procedures.items():
+                    if node == caller_node:
+                        calledby_procs.append(caller_obj)
+                        break
+                # Also check programs
+                for caller_obj, node in self.data.programs.items():
+                    if node == caller_node:
+                        calledby_procs.append(caller_obj)
+                        break
+
+            # Store as a list on the procedure object
+            proc_obj.calledby = calledby_procs
+
     def graph_all(self):
         """Create all graphs"""
 
@@ -1476,9 +1507,14 @@ class GraphManager:
                 try:
                     cfg = obj.get_control_flow_graph()
                     if cfg:
-                        obj.controlflowtgraph_svg = create_control_flow_graph_svg(
-                            cfg, obj.name
-                        )
+                        # Skip CFG visualization for very large procedures (>500 blocks)
+                        # as graphviz rendering becomes too slow
+                        if len(cfg.blocks) > 500:
+                            obj.controlflowtgraph_svg = ""
+                        else:
+                            obj.controlflowtgraph_svg = create_control_flow_graph_svg(
+                                cfg, obj.name
+                            )
                     else:
                         obj.controlflowtgraph_svg = ""
                 except Exception:
@@ -1523,6 +1559,9 @@ class GraphManager:
         self.typegraph = TypeGraph(self.types, self.data, "type~~graph")
         self.callgraph = CallGraph(callnodes, self.data, "call~~graph")
         self.filegraph = FileGraph(self.sourcefiles, self.data, "file~~graph")
+
+        # Populate calledby lists on procedure objects from graph node data
+        self._populate_calledby_lists()
 
     def output_graphs(self, njobs=0):
         """Save graphs to file"""
@@ -1612,7 +1651,11 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         return ""
 
     try:
+        import signal
         from ford.control_flow import BlockType, detect_statement_keywords
+
+        def timeout_handler(signum, frame):
+            raise TimeoutError("SVG generation timed out")
 
         dot = Digraph(
             f"cfg_{procedure_name}",
@@ -1671,6 +1714,15 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         # Color scheme for keyword badges (matching Bootstrap info badge color)
         keyword_color = "#0dcaf0"  # info/cyan color
 
+        # Count total nodes that will be created (including keyword badges)
+        # to determine if we should skip keyword badges for performance
+        total_blocks = len(cfg.blocks)
+        total_statements = sum(len(block.statements) for block in cfg.blocks.values())
+
+        # For large CFGs (>200 blocks or >400 statements), skip keyword badges
+        # to avoid graphviz rendering timeouts
+        add_keyword_badges = total_blocks <= 200 and total_statements <= 400
+
         # Add nodes
         for block in cfg.blocks.values():
             # Skip unreachable blocks (blocks with no predecessors except entry/exit)
@@ -1702,27 +1754,48 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 stmts = "\\n".join(stmt_lines)
                 label = f"{label}\\n---\\n{stmts}"
 
-            # Determine shape and style
-            shape = shapes.get(block.block_type, "box")
-            style = "filled"
-            
-            # Add special styles for keyword nodes
-            if block.block_type == BlockType.KEYWORD_IO:
-                style = "filled,rounded"
-            elif block.block_type == BlockType.KEYWORD_CALL:
-                # Purple outline, white background with purple text
-                dot.node(
-                    str(block.id),
-                    label=label,
-                    shape=shape,
-                    style="bold",
-                    color=colors[BlockType.KEYWORD_CALL],
-                    penwidth="2.0",
-                    fontcolor=colors[BlockType.KEYWORD_CALL],
-                )
-                continue  # Skip the default node creation
-            
-            dot.node(str(block.id), label=label, fillcolor=color, shape=shape, style=style)
+            # Use diamond shape for conditions
+            shape = (
+                "diamond"
+                if block.block_type
+                in [BlockType.IF_CONDITION, BlockType.DO_LOOP, BlockType.SELECT_CASE]
+                else "box"
+            )
+
+            dot.node(str(block.id), label=label, fillcolor=color, shape=shape)
+
+            # Create separate keyword badge nodes for this block (only for smaller CFGs)
+            if add_keyword_badges and block.statements:
+                for stmt_idx, stmt in enumerate(block.statements):
+                    keywords = detect_statement_keywords(stmt)
+                    if keywords:
+                        for kw_idx, kw in enumerate(keywords):
+                            # Create a unique node ID using block.id, statement index, and keyword index
+                            kw_node_id = f"kw_{block.id}_{stmt_idx}_{kw_idx}"
+
+                            # Create small badge node
+                            dot.node(
+                                kw_node_id,
+                                label=kw,
+                                shape="box",
+                                style="filled,rounded",
+                                fillcolor=keyword_color,
+                                fontcolor="white",
+                                fontsize="8",
+                                fontname="Helvetica",
+                                width="0",
+                                height="0",
+                                margin="0.05,0.02",
+                            )
+
+                            # Connect keyword node to the statement block
+                            dot.edge(
+                                kw_node_id,
+                                str(block.id),
+                                style="dotted",
+                                arrowhead="none",
+                                constraint="false",
+                            )
 
         # Add edges
         for block in cfg.blocks.values():
@@ -1740,10 +1813,26 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
 
                 dot.edge(str(block.id), str(succ_id), label=edge_label)
 
-        svg_src = dot.pipe().decode("utf-8")
-        svg_src = svg_src.replace("<svg ", f'<svg id="cfg_{procedure_name}" ')
-
-        return svg_src
+        # Render with timeout protection (30 seconds for graphviz rendering)
+        if hasattr(signal, "SIGALRM"):
+            old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(30)
+            try:
+                svg_src = dot.pipe().decode("utf-8")
+                signal.alarm(0)
+                svg_src = svg_src.replace("<svg ", f'<svg id="cfg_{procedure_name}" ')
+                return svg_src
+            except TimeoutError:
+                signal.alarm(0)
+                log.debug(f"SVG generation timed out for procedure {procedure_name}")
+                return ""
+            finally:
+                signal.signal(signal.SIGALRM, old_handler)
+        else:
+            # On Windows or systems without SIGALRM, render without timeout
+            svg_src = dot.pipe().decode("utf-8")
+            svg_src = svg_src.replace("<svg ", f'<svg id="cfg_{procedure_name}" ')
+            return svg_src
     except Exception:
         return ""
 

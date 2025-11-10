@@ -3991,6 +3991,7 @@ class FortranProcedure(FortranCodeUnit):
             The control flow graph representation, or None if it cannot be generated
         """
         try:
+            import signal
             from ford.control_flow import parse_control_flow
 
             # Get the source code for this procedure
@@ -4032,8 +4033,32 @@ class FortranProcedure(FortranCodeUnit):
             if not source_text:
                 return None
 
-            # Parse the control flow
-            return parse_control_flow(source_text, self.name, self.proctype.lower())
+            # Parse the control flow with timeout protection
+            # Set a timeout of 5 seconds to prevent hanging on complex procedures
+            def timeout_handler(signum, frame):
+                raise TimeoutError("Control flow graph generation timed out")
+
+            # Only use signal-based timeout on Unix-like systems
+            if hasattr(signal, "SIGALRM"):
+                old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+                signal.alarm(5)  # 5 second timeout
+                try:
+                    result = parse_control_flow(
+                        source_text, self.name, self.proctype.lower()
+                    )
+                    signal.alarm(0)  # Cancel the alarm
+                    return result
+                except TimeoutError:
+                    signal.alarm(0)  # Cancel the alarm
+                    log.debug(
+                        f"Control flow graph generation timed out for procedure {self.name}"
+                    )
+                    return None
+                finally:
+                    signal.signal(signal.SIGALRM, old_handler)
+            else:
+                # On Windows or other systems without SIGALRM, just try without timeout
+                return parse_control_flow(source_text, self.name, self.proctype.lower())
         except Exception:
             return None
 

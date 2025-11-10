@@ -349,6 +349,27 @@ class Documentation:
             project.usegraph = self.graphs.usegraph
             project.filegraph = self.graphs.filegraph
         else:
+            # Even when graphs are disabled, we still need to populate calledby lists
+            # Register all entities first (bypass meta.graph check)
+            for entity_list in [
+                project.types,
+                project.procedures,
+                project.submodprocedures,
+                project.modules,
+                project.submodules,
+                project.programs,
+                project.files,
+                project.blockdata,
+            ]:
+                for item in entity_list:
+                    # Register directly in GraphData, bypassing the meta.graph check
+                    self.graphs.data.register(item)
+
+            # Populate called_by relationships
+            self.graphs._populate_called_by_relationships()
+            # Populate calledby lists on procedure objects
+            self.graphs._populate_calledby_lists()
+
             project.callgraph = ""
             project.typegraph = ""
             project.usegraph = ""
