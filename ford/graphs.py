@@ -1647,7 +1647,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             BlockType.SELECT_CASE: "#F0E68C",  # Khaki
             BlockType.CASE: "#FFE4B5",  # Moccasin
         }
-        
+
         # Color scheme for keyword badges (matching Bootstrap info badge color)
         keyword_color = "#0dcaf0"  # info/cyan color
 
@@ -1666,7 +1666,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 stmt_lines = []
                 for stmt in block.statements:
                     stmt_lines.append(stmt)
-                
+
                 stmts = "\\n".join(stmt_lines)
                 label = f"{label}\\n---\\n{stmts}"
 
@@ -1679,7 +1679,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             )
 
             dot.node(str(block.id), label=label, fillcolor=color, shape=shape)
-            
+
             # Create separate keyword badge nodes for this block
             if block.statements:
                 for stmt_idx, stmt in enumerate(block.statements):
@@ -1688,7 +1688,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                         for kw_idx, kw in enumerate(keywords):
                             # Create a unique node ID using block.id, statement index, and keyword index
                             kw_node_id = f"kw_{block.id}_{stmt_idx}_{kw_idx}"
-                            
+
                             # Create small badge node
                             dot.node(
                                 kw_node_id,
@@ -1701,11 +1701,17 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                                 fontname="Helvetica",
                                 width="0",
                                 height="0",
-                                margin="0.05,0.02"
+                                margin="0.05,0.02",
                             )
-                            
+
                             # Connect keyword node to the statement block
-                            dot.edge(kw_node_id, str(block.id), style="dotted", arrowhead="none", constraint="false")
+                            dot.edge(
+                                kw_node_id,
+                                str(block.id),
+                                style="dotted",
+                                arrowhead="none",
+                                constraint="false",
+                            )
 
         # Add edges
         for block in cfg.blocks.values():

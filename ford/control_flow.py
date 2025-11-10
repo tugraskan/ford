@@ -177,7 +177,7 @@ class FortranControlFlowParser:
 
     # Single-line IF statement
     SINGLE_IF_RE = re.compile(r"^\s*if\s*\((.*?)\)\s+(.+)$", re.IGNORECASE)
-    
+
     # Regular expressions for statements to skip in CFG (same as LogicBlockExtractor)
     IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
     # Matches type declarations including: type(...) and type ::
@@ -191,18 +191,18 @@ class FortranControlFlowParser:
         self.procedure_name = procedure_name
         self.procedure_type = procedure_type
         self.cfg = ControlFlowGraph(procedure_name, procedure_type)
-    
+
     def _is_declaration_or_use(self, line_stripped: str) -> bool:
         """Check if a line is a USE, IMPLICIT, or type declaration statement
-        
+
         These statements should not appear in the control flow graph as they
         are not part of the execution flow.
-        
+
         Parameters
         ----------
         line_stripped : str
             The stripped line to check
-            
+
         Returns
         -------
         bool
@@ -432,7 +432,7 @@ class FortranControlFlowParser:
             elif RETURN_RE.match(line_stripped):
                 # Connect current block directly to exit (no intermediate RETURN block)
                 self.cfg.add_edge(current_block.id, exit_block.id)
-                
+
                 # Note: We don't update current_block, so any subsequent statements
                 # in this branch will be ignored (they're unreachable after RETURN)
 
@@ -1094,15 +1094,15 @@ class LogicBlockExtractor:
                 stack[-1][0].children.append(block)
             else:
                 blocks.append(block)
-        
+
         # Populate statement keywords for all blocks recursively
         self._populate_all_keywords(blocks)
 
         return blocks
-    
+
     def _populate_statement_keywords(self, block: LogicBlock) -> None:
         """Populate statement_keywords field for a logic block
-        
+
         Parameters
         ----------
         block : LogicBlock
@@ -1115,7 +1115,7 @@ class LogicBlockExtractor:
 
     def _populate_all_keywords(self, blocks: List[LogicBlock]) -> None:
         """Recursively populate statement keywords for all blocks
-        
+
         Parameters
         ----------
         blocks : List[LogicBlock]
@@ -1425,12 +1425,12 @@ def analyze_procedure_badges(
 
 def detect_statement_keywords(statement: str) -> List[str]:
     """Detect Fortran keywords in a single statement
-    
+
     Parameters
     ----------
     statement : str
         A Fortran statement
-        
+
     Returns
     -------
     List[str]
@@ -1438,7 +1438,7 @@ def detect_statement_keywords(statement: str) -> List[str]:
     """
     keywords = []
     stmt_lower = statement.lower()
-    
+
     # Check for each keyword pattern
     keyword_patterns = {
         "INQUIRE": re.compile(r"\binquire\s*\(", re.IGNORECASE),
@@ -1454,9 +1454,9 @@ def detect_statement_keywords(statement: str) -> List[str]:
         "ERROR STOP": re.compile(r"\berror\s+stop\b", re.IGNORECASE),
         "CALL": re.compile(r"\bcall\s+", re.IGNORECASE),
     }
-    
+
     for keyword, pattern in keyword_patterns.items():
         if pattern.search(statement):
             keywords.append(keyword)
-    
+
     return keywords
