@@ -30,6 +30,7 @@ import itertools
 import os
 import pathlib
 import re
+import signal
 from typing import Dict, Iterable, List, Optional, Set, Tuple, Type, Union, cast
 
 from graphviz import Digraph, ExecutableNotFound
@@ -833,21 +834,77 @@ class FortranGraph:
         self.add_nodes(self.root)
 
         if graphviz_installed:
-            self.svg_src = self.dot.pipe().decode("utf-8")
-            self.svg_src = self.svg_src.replace(
-                "<svg ", '<svg id="' + re.sub(r"[^\w]", "", self.ident) + '" '
-            )
-            if match := WIDTH_RE.search(self.svg_src):
-                width = int(match.group(1))
+            # Render graph with timeout protection to prevent hanging on complex graphs
+            svg_src = self._render_graph_with_timeout(timeout_seconds=30)
+            if svg_src:
+                self.svg_src = svg_src
+                self.svg_src = self.svg_src.replace(
+                    "<svg ", '<svg id="' + re.sub(r"[^\w]", "", self.ident) + '" '
+                )
+                if match := WIDTH_RE.search(self.svg_src):
+                    width = int(match.group(1))
+                else:
+                    width = 0
+                if isinstance(self, (ModuleGraph, CallGraph, TypeGraph)):
+                    self.scaled = width >= 855
+                else:
+                    self.scaled = width >= 641
             else:
-                width = 0
-            if isinstance(self, (ModuleGraph, CallGraph, TypeGraph)):
-                self.scaled = width >= 855
-            else:
-                self.scaled = width >= 641
+                # Timeout or error occurred
+                self.svg_src = ""
+                self.scaled = False
         else:
             self.svg_src = ""
             self.scaled = False
+
+    def _render_graph_with_timeout(self, timeout_seconds=30):
+        """
+        Render the graph with timeout protection to prevent hanging on complex graphs.
+
+        Parameters
+        ----------
+        timeout_seconds : int
+            Maximum time in seconds to wait for graphviz rendering
+
+        Returns
+        -------
+        str or None
+            SVG source string, or None if timeout/error occurs
+        """
+
+        def timeout_handler(signum, frame):
+            raise TimeoutError(f"Graphviz rendering timed out for graph {self.ident}")
+
+        # Try to render the graph with timeout protection
+        if hasattr(signal, "SIGALRM"):
+            # Unix-like systems with SIGALRM support
+            old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(timeout_seconds)
+            try:
+                svg_src = self.dot.pipe().decode("utf-8")
+                signal.alarm(0)
+                return svg_src
+            except TimeoutError:
+                signal.alarm(0)
+                warn(
+                    f"Graph rendering timed out for '{self.ident}' after {timeout_seconds} seconds. "
+                    f"Graph will be skipped. Consider reducing graph complexity or using graph_maxnodes/graph_maxdepth settings."
+                )
+                return None
+            except Exception as e:
+                signal.alarm(0)
+                warn(f"Error rendering graph '{self.ident}': {e}")
+                return None
+            finally:
+                signal.signal(signal.SIGALRM, old_handler)
+        else:
+            # Windows or systems without SIGALRM - no timeout protection
+            # Just try to render and catch exceptions
+            try:
+                return self.dot.pipe().decode("utf-8")
+            except Exception as e:
+                warn(f"Error rendering graph '{self.ident}': {e}")
+                return None
 
     def add_to_graph(self, nodes, edges, nesting):
         """
