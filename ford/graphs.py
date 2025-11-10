@@ -30,6 +30,7 @@ import itertools
 import os
 import pathlib
 import re
+import signal
 from typing import Dict, Iterable, List, Optional, Set, Tuple, Type, Union, cast
 
 from graphviz import Digraph, ExecutableNotFound
@@ -1398,6 +1399,60 @@ class GraphManager:
 
         return name_to_nodes
 
+    def _get_control_flow_graph_safe(self, obj, timeout_seconds=30):
+        """
+        Safely get control flow graph with timeout protection.
+
+        Parameters
+        ----------
+        obj:
+            Fortran procedure object
+        timeout_seconds:
+            Maximum time in seconds to wait for CFG generation
+
+        Returns
+        -------
+        ControlFlowGraph or None
+            The generated CFG, or None if timeout/error occurs
+        """
+
+        def timeout_handler(signum, frame):
+            raise TimeoutError(f"CFG generation timed out for procedure {obj.name}")
+
+        # Try to get the control flow graph with timeout protection
+        if hasattr(signal, "SIGALRM"):
+            # Unix-like systems with SIGALRM support
+            old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(timeout_seconds)
+            try:
+                cfg = obj.get_control_flow_graph()
+                signal.alarm(0)
+                return cfg
+            except TimeoutError:
+                signal.alarm(0)
+                warn(
+                    f"Control flow graph generation timed out for procedure '{obj.name}' after {timeout_seconds} seconds"
+                )
+                return None
+            except Exception as e:
+                signal.alarm(0)
+                warn(
+                    f"Error generating control flow graph for procedure '{obj.name}': {e}"
+                )
+                return None
+            finally:
+                signal.signal(signal.SIGALRM, old_handler)
+        else:
+            # Windows or systems without SIGALRM - no timeout protection
+            # Just try to generate and catch exceptions
+            try:
+                return obj.get_control_flow_graph()
+            except Exception as e:
+                warn(
+                    f"Error generating control flow graph for procedure '{obj.name}': {e}"
+                )
+                return None
+
     def _populate_called_by_relationships(self):
         """
         Populate called_by relationships for all procedure nodes based on procedure names.
@@ -1503,21 +1558,18 @@ class GraphManager:
                 obj.calledbygraph = CalledByGraph(obj, self.data)
                 obj.usesgraph = UsesGraph(obj, self.data)
 
-                # Generate control flow graph
-                try:
-                    cfg = obj.get_control_flow_graph()
-                    if cfg:
-                        # Skip CFG visualization for very large procedures (>500 blocks)
-                        # as graphviz rendering becomes too slow
-                        if len(cfg.blocks) > 500:
-                            obj.controlflowtgraph_svg = ""
-                        else:
-                            obj.controlflowtgraph_svg = create_control_flow_graph_svg(
-                                cfg, obj.name
-                            )
-                    else:
+                # Generate control flow graph with timeout protection
+                cfg = self._get_control_flow_graph_safe(obj, timeout_seconds=30)
+                if cfg:
+                    # Skip CFG visualization for very large procedures (>500 blocks)
+                    # as graphviz rendering becomes too slow
+                    if len(cfg.blocks) > 500:
                         obj.controlflowtgraph_svg = ""
-                except Exception:
+                    else:
+                        obj.controlflowtgraph_svg = create_control_flow_graph_svg(
+                            cfg, obj.name
+                        )
+                else:
                     obj.controlflowtgraph_svg = ""
 
                 self.procedures.add(obj)
