@@ -109,6 +109,26 @@ graph_maxnodes: 50
 graph_maxdepth: 3
 ```
 
+### Graph generation hangs or times out
+
+FORD includes timeout protection for graph rendering (30 seconds per graph). If graphviz rendering takes too long, FORD will skip that specific graph and continue with a warning message.
+
+**What happens:**
+- Each graph (call graphs, use graphs, type graphs) has a 30-second timeout
+- If timeout occurs, a warning is printed and that graph is skipped
+- Documentation generation continues for other procedures and graphs
+
+**Common causes:**
+1. Procedures with many calls or dependencies (e.g., hundreds of function calls)
+2. Complex module dependency chains
+3. Large type hierarchies with many inheritance relationships
+
+**If you see timeout warnings:**
+1. The procedure/module likely has very complex relationships
+2. Consider using `graph_maxnodes` to limit graph size (e.g., `graph_maxnodes: 100`)
+3. Consider using `graph_maxdepth` to limit graph depth (e.g., `graph_maxdepth: 3`)
+4. The rest of the documentation will still be generated correctly
+
 ## Example Configuration
 
 Complete example of a FORD project file with graphs enabled:
