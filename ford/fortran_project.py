@@ -1343,7 +1343,7 @@ class Project:
         # Store module metadata
         # self.module_metadata = [get_module_metadata(module) for module in self.modules] # do this in xwalk  instead or is a json still ultimately needed?
         # self.xwalk_type_dicts = [self.cross_walk_type_dicts(procedures) for procedures in self.procedures] #all_vars exists, still need a xwalk but do it after correlating
-        
+
         # Collect I/O files from all procedures
         self.collect_io_files()
 
@@ -1351,14 +1351,14 @@ class Project:
         """
         Build a project-wide mapping of unit numbers to filenames by scanning
         all OPEN statements across all procedures.
-        
+
         Returns:
             Dict mapping unit number (as string) to filename
         """
         unit_to_filename = {}
-        
+
         for proc in self.procedures:
-            if hasattr(proc, 'io_tracker') and proc.io_tracker:
+            if hasattr(proc, "io_tracker") and proc.io_tracker:
                 # Get all completed I/O sessions
                 for unit, sessions in proc.io_tracker.completed.items():
                     for session in sessions:
@@ -1367,47 +1367,56 @@ class Project:
                             if not session.file.startswith("unit_"):
                                 # Prefer sessions with explicit filenames over synthetic ones
                                 unit_to_filename[str(unit)] = session.file
-        
+
         return unit_to_filename
-    
+
     def build_type_defaults_mapping(self) -> Dict[str, str]:
         """
         Build a project-wide mapping of type component names to their default values
         by scanning all type definitions in all modules.
-        
+
         Returns:
-            Dict mapping component name (including compound names like 'typename%component') 
+            Dict mapping component name (including compound names like 'typename%component')
             to default value
         """
         type_defaults = {}
-        
+
         # Scan all types in all modules
         for module in self.modules:
-            if hasattr(module, 'types'):
+            if hasattr(module, "types"):
                 for dtype in module.types:
-                    if hasattr(dtype, 'variables'):
+                    if hasattr(dtype, "variables"):
                         # Extract defaults from type components
                         for var in dtype.variables:
-                            if hasattr(var, 'initial') and var.initial:
+                            if hasattr(var, "initial") and var.initial:
                                 # Store compound name (typename%varname)
                                 simple_name = var.name
                                 compound_name = f"{dtype.name}%{var.name}".lower()
-                                
+
                                 # Convert initial value to string
                                 initial_value = str(var.initial).strip()
-                                
+
                                 # Skip empty strings but keep actual quoted strings
-                                if initial_value and initial_value not in ('""', "''", ''):
+                                if initial_value and initial_value not in (
+                                    '""',
+                                    "''",
+                                    "",
+                                ):
                                     # Always store compound name
                                     type_defaults[compound_name] = initial_value
-                                    
+
                                     # Only store simple name if it's a character type
                                     # to avoid conflicts with numeric variables that have the same name
-                                    if hasattr(var, 'vartype') and 'character' in var.vartype.lower():
-                                        type_defaults[simple_name.lower()] = initial_value
-        
+                                    if (
+                                        hasattr(var, "vartype")
+                                        and "character" in var.vartype.lower()
+                                    ):
+                                        type_defaults[simple_name.lower()] = (
+                                            initial_value
+                                        )
+
         return type_defaults
-    
+
     def collect_io_files(self):
         """
         Collect all I/O files accessed by procedures in the project.
@@ -1417,27 +1426,28 @@ class Project:
         # Build project-wide mappings for better resolution
         unit_to_filename_map = self.build_unit_filename_mapping()
         type_defaults_map = self.build_type_defaults_mapping()
-        
+
         # Set the class-level mappings on IoTracker so they're available
         # when procedure pages access the io_operations property
         from ford.sourceform import IoTracker
+
         IoTracker._unit_filename_map = unit_to_filename_map
         IoTracker._type_defaults_map = type_defaults_map
-        
+
         io_files_dict: Dict[str, FortranIOFile] = {}
-        
+
         # Iterate through all procedures that have I/O operations
         for proc in self.procedures:
-            if hasattr(proc, 'io_operations'):
+            if hasattr(proc, "io_operations"):
                 io_ops = proc.io_operations
                 if io_ops:
                     for file_key, operations in io_ops.items():
                         # Enhanced filename resolution
-                        filename = operations.get('filename', file_key)
-                        filename_resolved = operations.get('filename_resolved')
-                        unit = operations.get('unit', 'unknown')
-                        unit_resolved = operations.get('unit_resolved')
-                        
+                        filename = operations.get("filename", file_key)
+                        filename_resolved = operations.get("filename_resolved")
+                        unit = operations.get("unit", "unknown")
+                        unit_resolved = operations.get("unit_resolved")
+
                         # Try to resolve using project-wide mappings
                         # 1. If unit is a number (either directly or resolved), try to find its filename from OPEN statements
                         unit_number = unit_resolved if unit_resolved else unit
@@ -1446,44 +1456,50 @@ class Project:
                             # Only use if we don't already have a better resolution
                             if not filename_resolved:
                                 filename_resolved = cross_file_filename
-                        
+
                         # 2. If filename looks like a variable, try type defaults mapping
                         if filename and not filename_resolved:
                             # Check for compound names (e.g., in_sim%time)
-                            if '%' in filename:
+                            if "%" in filename:
                                 filename_lower = filename.lower()
                                 if filename_lower in type_defaults_map:
-                                    filename_resolved = type_defaults_map[filename_lower]
+                                    filename_resolved = type_defaults_map[
+                                        filename_lower
+                                    ]
                                 else:
                                     # Try just the last component
-                                    parts = filename.split('%')
+                                    parts = filename.split("%")
                                     if len(parts) >= 2:
                                         simple_name = parts[-1].lower()
                                         if simple_name in type_defaults_map:
-                                            filename_resolved = type_defaults_map[simple_name]
-                        
+                                            filename_resolved = type_defaults_map[
+                                                simple_name
+                                            ]
+
                         # Determine the final display filename
-                        display_filename = filename_resolved if filename_resolved else filename
-                        
+                        display_filename = (
+                            filename_resolved if filename_resolved else filename
+                        )
+
                         # Create a unique key for this file
                         # Use resolved filename for grouping if available
                         io_key = f"{display_filename}_{unit}"
-                        
+
                         # Create or retrieve the FortranIOFile object
                         if io_key not in io_files_dict:
                             io_file = FortranIOFile(display_filename, unit)
                             # Set base_url for link generation (as string, not Path)
                             io_file.base_url = str(self.settings.project_url)
                             io_files_dict[io_key] = io_file
-                        
+
                         # Update operations with enhanced resolution
                         enhanced_operations = operations.copy()
                         if filename_resolved:
-                            enhanced_operations['filename_resolved'] = filename_resolved
-                        
+                            enhanced_operations["filename_resolved"] = filename_resolved
+
                         # Add this procedure to the file's list of users
                         io_files_dict[io_key].add_procedure(proc, enhanced_operations)
-        
+
         # Convert dict to list and sort by filename
         self.iofiles = sorted(io_files_dict.values(), key=lambda x: x.io_filename)
 

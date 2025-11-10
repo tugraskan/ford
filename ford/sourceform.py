@@ -106,8 +106,8 @@ class IoTracker:
     # Class-level attributes for project-wide mappings
     # These are set by the Project.collect_io_files() method before template rendering
     _unit_filename_map = {}  # unit number -> filename from OPEN statements
-    _type_defaults_map = {}   # variable name -> default value from type definitions
-    
+    _type_defaults_map = {}  # variable name -> default value from type definitions
+
     def __init__(self):
         self._open_sessions = {}  # unit → IoSession
         self.completed = defaultdict(list)  # unit → [IoSession,...]
@@ -200,7 +200,7 @@ class IoTracker:
             # Fortran type declarations with string defaults: character(len=25) :: prt = "print.prt"
             r'^\s*(?:character)(?:\([^)]*\))?\s*::\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']*)["\']',
             # Fortran integer type declarations with numeric defaults: integer :: myunit = 101
-            r'^\s*(?:integer)(?:\([^)]*\))?\s*::\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(\d+)',
+            r"^\s*(?:integer)(?:\([^)]*\))?\s*::\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(\d+)",
             # Module variable assignments like: in_link%aqu_cha = "aqu_cha.lin"
             r'^\s*([a-zA-Z_][a-zA-Z0-9_%]*)\s*=\s*["\']([^"\']*)["\']',
             # Simple variable assignments like: filename = "data.txt"
@@ -481,8 +481,8 @@ class IoTracker:
             if unit and variable_defaults:
                 unit_resolved = variable_defaults.get(unit)
                 # Also try splitting compound names (e.g., config%unit_num -> unit_num)
-                if not unit_resolved and '%' in unit:
-                    parts = unit.split('%')
+                if not unit_resolved and "%" in unit:
+                    parts = unit.split("%")
                     if len(parts) >= 2:
                         simple_name = parts[-1]
                         unit_resolved = variable_defaults.get(simple_name)
@@ -499,36 +499,42 @@ class IoTracker:
                         simple_name = parts[-1]
                         if simple_name in variable_defaults:
                             filename_resolved = variable_defaults[simple_name]
-            
+
             # Enhanced cross-file and cross-module resolution using class-level mappings
             # IMPORTANT: Try type defaults FIRST if filename looks like a variable (contains '%')
             # This ensures that explicit variable references like 'in_sim%time' resolve correctly
             # even if the unit number has been used with different files elsewhere
-            
+
             # 1. Try to resolve filename from type defaults (cross-module resolution) if it looks like a variable
-            if not filename_resolved and original_filename and '%' in original_filename:
+            if not filename_resolved and original_filename and "%" in original_filename:
                 filename_lower = original_filename.lower()
                 if filename_lower in IoTracker._type_defaults_map:
                     filename_resolved = IoTracker._type_defaults_map[filename_lower]
                 else:
                     # Try just the last component
-                    parts = original_filename.split('%')
+                    parts = original_filename.split("%")
                     if len(parts) >= 2:
                         simple_name = parts[-1].lower()
                         if simple_name in IoTracker._type_defaults_map:
-                            filename_resolved = IoTracker._type_defaults_map[simple_name]
-            
+                            filename_resolved = IoTracker._type_defaults_map[
+                                simple_name
+                            ]
+
             # 2. Try to resolve filename from unit number (cross-file resolution) as fallback
             # This is especially useful when a procedure uses a unit without opening it (e.g., WRITE without OPEN)
             if not filename_resolved:
                 unit_number = unit_resolved if unit_resolved else unit
                 # Also try if filename looks like "unit_XXXX" - extract the number and try to resolve
-                if not unit_number and original_filename and original_filename.startswith("unit_"):
+                if (
+                    not unit_number
+                    and original_filename
+                    and original_filename.startswith("unit_")
+                ):
                     try:
                         unit_number = original_filename[5:]  # Skip "unit_" prefix
                     except:
                         pass
-                        
+
                 if unit_number and str(unit_number) in IoTracker._unit_filename_map:
                     filename_resolved = IoTracker._unit_filename_map[str(unit_number)]
 
@@ -3947,17 +3953,19 @@ class FortranProcedure(FortranCodeUnit):
 
             # Extract variable defaults from source code
             variable_defaults = {}
-            
+
             # Try to get source lines from source_file
             source_lines = []
             if hasattr(self, "source_file") and self.source_file:
                 if hasattr(self.source_file, "raw_src"):
-                    source_lines = self.source_file.raw_src.split('\n')
+                    source_lines = self.source_file.raw_src.split("\n")
                 elif hasattr(self.source_file, "source"):
                     source_lines = self.source_file.source
-            
+
             if source_lines:
-                variable_defaults = self.io_tracker.extract_variable_defaults(source_lines)
+                variable_defaults = self.io_tracker.extract_variable_defaults(
+                    source_lines
+                )
 
             # TODO: Module variable extraction is disabled for performance reasons
             # It was causing significant slowdowns on large projects with many modules
@@ -4269,7 +4277,7 @@ class FortranIOFile(FortranBase):
     def __init__(self, io_filename: str, unit: str):
         """
         Initialize a Fortran I/O file object.
-        
+
         Args:
             io_filename: The name of the I/O file (may be a variable or literal string)
             unit: The unit number associated with this file
@@ -4281,61 +4289,59 @@ class FortranIOFile(FortranBase):
         self.operations = []  # List of all operations on this file
         self.visible = True
         self.obj = "iofile"
-        
+
     @property
     def ident(self) -> str:
         """Return a unique identifier for this I/O file"""
         # Create a safe identifier for URLs - remove all special characters
         import re
+
         # Keep only alphanumeric, underscore, and hyphen
-        safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', self.io_filename)
+        safe_name = re.sub(r"[^a-zA-Z0-9_-]", "_", self.io_filename)
         # Remove consecutive underscores
-        safe_name = re.sub(r'_+', '_', safe_name)
+        safe_name = re.sub(r"_+", "_", safe_name)
         # Trim underscores from start and end
-        safe_name = safe_name.strip('_')
+        safe_name = safe_name.strip("_")
         # Ensure it's not empty
         if not safe_name:
-            safe_name = 'iofile'
+            safe_name = "iofile"
         return safe_name
-    
+
     @property
     def filename(self) -> str:
         """Return the I/O filename (override FortranBase.filename which requires source_file)"""
         return self.io_filename
-        
+
     def add_procedure(self, procedure, operations):
         """
         Add a procedure that uses this I/O file.
-        
+
         Args:
             procedure: The FortranProcedure object
             operations: Dict containing operation details (timeline, unit_resolved, filename_resolved, etc.)
         """
-        self.procedures.append({
-            'procedure': procedure,
-            'operations': operations
-        })
-        if 'timeline' in operations:
-            self.operations.extend(operations['timeline'])
-    
+        self.procedures.append({"procedure": procedure, "operations": operations})
+        if "timeline" in operations:
+            self.operations.extend(operations["timeline"])
+
     def get_url(self):
         """Generate URL for this I/O file's documentation page."""
         return f"iofile/{self.ident}.html"
-    
+
     def get_dir(self):
         """Get directory for this I/O file's documentation page."""
         return "iofile"
-    
+
     @property
     def has_read(self):
         """Check if any procedure reads from this file."""
-        return any(op.get('kind') == 'read' for op in self.operations)
-    
+        return any(op.get("kind") == "read" for op in self.operations)
+
     @property
     def has_write(self):
         """Check if any procedure writes to this file."""
-        return any(op.get('kind') == 'write' for op in self.operations)
-    
+        return any(op.get("kind") == "write" for op in self.operations)
+
     @property
     def io_type(self):
         """Determine if this is an input, output, or input/output file."""
