@@ -1737,17 +1737,28 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
 
 
 CONTROL_FLOW_GRAPH_KEY = """
-<p>Control flow graph showing the execution flow within the procedure. Nodes of different colors represent:</p>
+<p>Control flow graph showing the execution flow within the procedure. Nodes of different shapes and colors represent:</p>
+
+<h5>Control Flow Structures</h5>
 <ul>
 <li><span style="color: #90EE90;">■</span> Entry point</li>
-<li><span style="color: #FFB6C1;">■</span> Exit/Return point</li>
-<li><span style="color: #B0E0E6;">■</span> USE statements</li>
+<li><span style="color: #FFB6C1;">■</span> Exit point</li>
 <li><span style="color: #87CEEB;">◆</span> IF condition (diamond)</li>
 <li><span style="color: #DDA0DD;">◆</span> DO loop (diamond)</li>
 <li><span style="color: #F0E68C;">◆</span> SELECT CASE (diamond)</li>
 <li><span style="color: #FFE4B5;">■</span> CASE block</li>
 <li><span style="color: #E0E0E0;">■</span> Statement block</li>
 </ul>
-<p>Arrows show the possible execution paths through the code.</p>
-<p>RETURN statements in the code are shown as separate return nodes that connect to the exit block.</p>
+
+<h5>Keyword Nodes</h5>
+<p>Each keyword appears as its own node at the point where it occurs in the code:</p>
+<ul>
+<li><span style="color: #5DADE2;">●</span> I/O operations (OPEN, READ, WRITE, CLOSE, REWIND, INQUIRE) - Rounded rectangle, blue</li>
+<li><span style="color: #52BE80;">⬡</span> Memory operations (ALLOCATE, DEALLOCATE) - Hexagon, green</li>
+<li><span style="color: #EC7063;">⬢</span> Early exit (RETURN, EXIT, CYCLE) - Octagon, red</li>
+<li><span style="color: #BB8FCE;">◻</span> Procedure call (CALL) - Rectangle with purple outline</li>
+</ul>
+
+<p>Each keyword node includes its line number in the format: KEYWORD (Lxxx)</p>
+<p>Arrows show the possible execution paths through the code. Edges from conditions are labeled with 'T' (true) and 'F' (false), or 'loop' and 'exit' for DO loops.</p>
 """
