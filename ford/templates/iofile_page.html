@@ -94,40 +94,53 @@
         <p><em>No procedures use this file.</em></p>
       {% endif %}
       
-      <h2>All I/O Operations</h2>
-      {% if iofile.operations %}
-        <table class="table table-sm table-striped">
-          <thead>
-            <tr>
-              <th>Line</th>
-              <th>Operation</th>
-              <th>Raw Statement</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for op in iofile.operations %}
-              <tr>
-                <td>{% if op.line %}{{ op.line }}{% else %}-{% endif %}</td>
-                <td>
-                  {% if op.kind == 'read' %}
-                    <span class="badge bg-success">Read</span>
-                  {% elif op.kind == 'write' %}
-                    <span class="badge bg-primary">Write</span>
-                  {% elif op.kind == 'open' %}
-                    <span class="badge bg-info">Open</span>
-                  {% elif op.kind == 'close' %}
-                    <span class="badge bg-secondary">Close</span>
-                  {% else %}
-                    <span class="badge bg-secondary">{{ op.kind }}</span>
-                  {% endif %}
-                </td>
-                <td><code>{{ op.raw }}</code></td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <h2>I/O Operations by Procedure</h2>
+      {% if iofile.procedures %}
+        {% for proc_info in iofile.procedures %}
+          {% set proc = proc_info.procedure %}
+          {% set ops = proc_info.operations %}
+          <h3>{{ proc.name }}
+            <small class="text-muted">
+              (from {{ proc.parent.name if proc.parent else 'unknown' }})
+            </small>
+          </h3>
+          {% if ops.timeline %}
+            <table class="table table-sm table-striped">
+              <thead>
+                <tr>
+                  <th>Line</th>
+                  <th>Operation</th>
+                  <th>Raw Statement</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for op in ops.timeline %}
+                  <tr>
+                    <td>{% if op.line %}{{ op.line }}{% else %}-{% endif %}</td>
+                    <td>
+                      {% if op.kind == 'read' %}
+                        <span class="badge bg-success">Read</span>
+                      {% elif op.kind == 'write' %}
+                        <span class="badge bg-primary">Write</span>
+                      {% elif op.kind == 'open' %}
+                        <span class="badge bg-info">Open</span>
+                      {% elif op.kind == 'close' %}
+                        <span class="badge bg-secondary">Close</span>
+                      {% else %}
+                        <span class="badge bg-secondary">{{ op.kind }}</span>
+                      {% endif %}
+                    </td>
+                    <td><code>{{ op.raw }}</code></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p><em>No operations recorded for this procedure.</em></p>
+          {% endif %}
+        {% endfor %}
       {% else %}
-        <p><em>No operations recorded.</em></p>
+        <p><em>No procedures use this file.</em></p>
       {% endif %}
     </div>
   </div>
