@@ -1689,6 +1689,26 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             BlockType.DO_LOOP: "#DDA0DD",  # Plum
             BlockType.SELECT_CASE: "#F0E68C",  # Khaki
             BlockType.CASE: "#FFE4B5",  # Moccasin
+            # Keyword node colors
+            BlockType.KEYWORD_IO: "#5DADE2",  # Blue (rounded rectangle)
+            BlockType.KEYWORD_MEMORY: "#52BE80",  # Green (hexagon)
+            BlockType.KEYWORD_BRANCH: "#E59866",  # Orange (diamond) - not used, IF/SELECT handle this
+            BlockType.KEYWORD_LOOP: "#48C9B0",  # Teal (ellipse) - not used, DO handles this
+            BlockType.KEYWORD_EXIT: "#EC7063",  # Red (octagon)
+            BlockType.KEYWORD_CALL: "#BB8FCE",  # Purple (rectangle with bold outline)
+        }
+
+        # Shape scheme for different block types
+        shapes = {
+            # Control flow structures
+            BlockType.IF_CONDITION: "diamond",
+            BlockType.DO_LOOP: "diamond",
+            BlockType.SELECT_CASE: "diamond",
+            # Keyword node shapes
+            BlockType.KEYWORD_IO: "box",  # Will use rounded style
+            BlockType.KEYWORD_MEMORY: "hexagon",
+            BlockType.KEYWORD_EXIT: "octagon",
+            BlockType.KEYWORD_CALL: "box",  # Will use bold outline
         }
 
         # Color scheme for keyword badges (matching Bootstrap info badge color)
@@ -1705,16 +1725,28 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
 
         # Add nodes
         for block in cfg.blocks.values():
+            # Skip unreachable blocks (blocks with no predecessors except entry/exit)
+            if (not block.predecessors and 
+                block.id != cfg.entry_block_id and 
+                block.id != cfg.exit_block_id):
+                continue
+                
             color = colors.get(block.block_type, "#FFFFFF")
-
-            # Build label
+            
+            # Build label - keyword nodes already have statement in label
             if block.condition:
                 label = f"{block.label}\\n{block.condition}"
             else:
                 label = block.label
 
-            # Add all statements to label if present
-            if block.statements:
+            # Add statements to label only for non-keyword blocks
+            # Keyword blocks already have the statement in their label
+            if block.statements and block.block_type not in [
+                BlockType.KEYWORD_IO, 
+                BlockType.KEYWORD_MEMORY, 
+                BlockType.KEYWORD_EXIT, 
+                BlockType.KEYWORD_CALL
+            ]:
                 stmt_lines = []
                 for stmt in block.statements:
                     stmt_lines.append(stmt)
@@ -1806,17 +1838,28 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
 
 
 CONTROL_FLOW_GRAPH_KEY = """
-<p>Control flow graph showing the execution flow within the procedure. Nodes of different colors represent:</p>
+<p>Control flow graph showing the execution flow within the procedure. Nodes of different shapes and colors represent:</p>
+
+<h5>Control Flow Structures</h5>
 <ul>
 <li><span style="color: #90EE90;">■</span> Entry point</li>
-<li><span style="color: #FFB6C1;">■</span> Exit/Return point</li>
-<li><span style="color: #B0E0E6;">■</span> USE statements</li>
+<li><span style="color: #FFB6C1;">■</span> Exit point</li>
 <li><span style="color: #87CEEB;">◆</span> IF condition (diamond)</li>
 <li><span style="color: #DDA0DD;">◆</span> DO loop (diamond)</li>
 <li><span style="color: #F0E68C;">◆</span> SELECT CASE (diamond)</li>
 <li><span style="color: #FFE4B5;">■</span> CASE block</li>
 <li><span style="color: #E0E0E0;">■</span> Statement block</li>
 </ul>
-<p>Arrows show the possible execution paths through the code.</p>
-<p>RETURN statements in the code are shown as separate return nodes that connect to the exit block.</p>
+
+<h5>Keyword Nodes</h5>
+<p>Each keyword appears as its own node at the point where it occurs in the code:</p>
+<ul>
+<li><span style="color: #5DADE2;">●</span> I/O operations (OPEN, READ, WRITE, CLOSE, REWIND, INQUIRE) - Rounded rectangle, blue</li>
+<li><span style="color: #52BE80;">⬡</span> Memory operations (ALLOCATE, DEALLOCATE) - Hexagon, green</li>
+<li><span style="color: #EC7063;">⬢</span> Early exit (RETURN, EXIT, CYCLE) - Octagon, red</li>
+<li><span style="color: #BB8FCE;">◻</span> Procedure call (CALL) - Rectangle with purple outline</li>
+</ul>
+
+<p>Each keyword node includes its line number in the format: KEYWORD (Lxxx)</p>
+<p>Arrows show the possible execution paths through the code. Edges from conditions are labeled with 'T' (true) and 'F' (false), or 'loop' and 'exit' for DO loops.</p>
 """

@@ -562,7 +562,7 @@ end subroutine test_alloc_control
 
 
 def test_return_statement_detection():
-    """Test that RETURN statements connect directly to exit block (no intermediate RETURN blocks)"""
+    """Test that RETURN statements create KEYWORD_EXIT nodes that connect to exit block"""
     source = """
 subroutine test_return(x)
     integer, intent(in) :: x
@@ -578,22 +578,25 @@ end subroutine test_return
 
     assert cfg is not None
 
-    # RETURN statements should not create separate RETURN blocks anymore
-    # They connect directly to the EXIT block
-    return_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN]
-    assert len(return_blocks) == 0, "RETURN blocks should not be created"
+    # RETURN statements should create KEYWORD_EXIT blocks
+    return_keyword_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.KEYWORD_EXIT]
+    assert len(return_keyword_blocks) == 1, "Should have one KEYWORD_EXIT block for RETURN"
 
+    # The RETURN keyword node should connect directly to the exit block
+    return_node = return_keyword_blocks[0]
+    assert cfg.exit_block_id in return_node.successors, "RETURN node should connect to exit"
+    
     # Find the THEN block (which contains the return statement)
     then_blocks = [b for b in cfg.blocks.values() if b.label == "THEN"]
     assert len(then_blocks) == 1
-
-    # The THEN block should connect directly to the exit block
+    
+    # The THEN block should connect to the RETURN keyword node
     then_block = then_blocks[0]
-    assert cfg.exit_block_id in then_block.successors
+    assert return_node.id in then_block.successors, "THEN block should connect to RETURN node"
 
 
 def test_multiple_return_statements():
-    """Test multiple RETURN statements connect directly to exit block"""
+    """Test multiple RETURN statements create KEYWORD_EXIT nodes that connect to exit block"""
     source = """
 subroutine test_multiple_returns(x, y)
     integer, intent(in) :: x, y
@@ -613,17 +616,13 @@ end subroutine test_multiple_returns
 
     assert cfg is not None
 
-    # No intermediate RETURN blocks should be created
-    return_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN]
-    assert len(return_blocks) == 0, "RETURN blocks should not be created"
+    # Should have KEYWORD_EXIT blocks for each RETURN
+    return_keyword_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.KEYWORD_EXIT]
+    assert len(return_keyword_blocks) == 2, "Should have two KEYWORD_EXIT blocks for two RETURNs"
 
-    # Both THEN blocks should connect directly to exit
-    then_blocks = [b for b in cfg.blocks.values() if b.label == "THEN"]
-    assert len(then_blocks) == 2
-
-    # All THEN blocks (with return) should connect to exit
-    for then_block in then_blocks:
-        assert cfg.exit_block_id in then_block.successors
+    # All RETURN keyword nodes should connect to exit
+    for return_node in return_keyword_blocks:
+        assert cfg.exit_block_id in return_node.successors, "RETURN node should connect to exit"
 
 
 def test_no_return_statement():
@@ -645,7 +644,7 @@ end subroutine test_no_return
 
 
 def test_return_in_nested_blocks():
-    """Test RETURN statement in nested control structures connects directly to exit"""
+    """Test RETURN statement in nested control structures creates KEYWORD_EXIT node"""
     source = """
 subroutine test_nested_return(x, y)
     integer, intent(in) :: x, y
@@ -663,20 +662,13 @@ end subroutine test_nested_return
 
     assert cfg is not None
 
-    # Should have no intermediate RETURN blocks
-    return_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN]
-    assert len(return_blocks) == 0, "RETURN blocks should not be created"
-
-    # The inner THEN block should connect directly to exit
-    then_blocks = [b for b in cfg.blocks.values() if "THEN" in b.label]
-    # Find the innermost THEN block (the one with the return)
-    innermost_then = None
-    for block in then_blocks:
-        if cfg.exit_block_id in block.successors:
-            innermost_then = block
-            break
-
-    assert innermost_then is not None, "Should have a THEN block connecting to exit"
+    # Should have a KEYWORD_EXIT block for RETURN
+    return_keyword_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.KEYWORD_EXIT]
+    assert len(return_keyword_blocks) == 1, "Should have one KEYWORD_EXIT block for RETURN"
+    
+    # The RETURN keyword node should connect to exit
+    return_node = return_keyword_blocks[0]
+    assert cfg.exit_block_id in return_node.successors, "RETURN node should connect to exit"
 
 
 def test_return_in_logic_blocks():
@@ -774,3 +766,135 @@ end subroutine test_mixed
             assert not stmt.lower().startswith(
                 "integer"
             ), "Declarations should be filtered"
+
+
+def test_keyword_io_nodes():
+    """Test that I/O keywords create KEYWORD_IO nodes"""
+    source = """
+subroutine test_io(filename)
+    character(len=*), intent(in) :: filename
+    integer :: i
+
+    open(unit=10, file=filename)
+    read(10, *) i
+    write(10, *) "Hello"
+    close(10)
+end subroutine test_io
+"""
+    cfg = parse_control_flow(source, "test_io", "subroutine")
+
+    assert cfg is not None
+
+    # Should have KEYWORD_IO blocks for OPEN, READ, WRITE, CLOSE
+    io_keyword_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.KEYWORD_IO]
+    assert len(io_keyword_blocks) == 4, "Should have 4 KEYWORD_IO blocks"
+
+    # Check that they have line numbers
+    for block in io_keyword_blocks:
+        assert block.line_number is not None, f"Block {block.label} should have a line number"
+
+
+def test_keyword_memory_nodes():
+    """Test that memory keywords create KEYWORD_MEMORY nodes"""
+    source = """
+subroutine test_memory(n)
+    integer, intent(in) :: n
+    integer, allocatable :: arr(:)
+
+    allocate(arr(n))
+    deallocate(arr)
+end subroutine test_memory
+"""
+    cfg = parse_control_flow(source, "test_memory", "subroutine")
+
+    assert cfg is not None
+
+    # Should have KEYWORD_MEMORY blocks for ALLOCATE and DEALLOCATE
+    memory_keyword_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.KEYWORD_MEMORY]
+    assert len(memory_keyword_blocks) == 2, "Should have 2 KEYWORD_MEMORY blocks"
+
+    # Check labels
+    labels = [b.label for b in memory_keyword_blocks]
+    assert any("ALLOCATE" in label for label in labels), "Should have ALLOCATE node"
+    assert any("DEALLOCATE" in label for label in labels), "Should have DEALLOCATE node"
+
+
+def test_keyword_call_nodes():
+    """Test that CALL keywords create KEYWORD_CALL nodes"""
+    source = """
+subroutine test_call()
+    call some_procedure()
+    call another_procedure()
+end subroutine test_call
+"""
+    cfg = parse_control_flow(source, "test_call", "subroutine")
+
+    assert cfg is not None
+
+    # Should have KEYWORD_CALL blocks for both CALLs
+    call_keyword_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.KEYWORD_CALL]
+    assert len(call_keyword_blocks) == 2, "Should have 2 KEYWORD_CALL blocks"
+
+
+def test_keyword_nodes_in_sequence():
+    """Test that multiple keyword nodes are created in sequence"""
+    source = """
+subroutine test_sequence(n)
+    integer, intent(in) :: n
+    integer, allocatable :: arr(:)
+
+    allocate(arr(n))
+    call initialize(arr)
+    read(10, *) arr
+    write(20, *) arr
+    deallocate(arr)
+end subroutine test_sequence
+"""
+    cfg = parse_control_flow(source, "test_sequence", "subroutine")
+
+    assert cfg is not None
+
+    # Should have 5 keyword blocks total
+    keyword_blocks = [
+        b for b in cfg.blocks.values()
+        if b.block_type in [BlockType.KEYWORD_IO, BlockType.KEYWORD_MEMORY, BlockType.KEYWORD_CALL]
+    ]
+    assert len(keyword_blocks) == 5, "Should have 5 keyword blocks"
+
+    # Verify they are connected in sequence
+    entry_block = cfg.blocks[cfg.entry_block_id]
+    
+    # Find the first keyword block (should be ALLOCATE)
+    first_keyword = None
+    for succ_id in entry_block.successors:
+        block = cfg.blocks[succ_id]
+        if block.block_type == BlockType.KEYWORD_MEMORY and "ALLOCATE" in block.label:
+            first_keyword = block
+            break
+    
+    assert first_keyword is not None, "Should have ALLOCATE as first keyword"
+
+
+def test_keyword_nodes_with_line_numbers():
+    """Test that keyword nodes include line numbers in their labels"""
+    source = """
+subroutine test_line_numbers()
+    integer :: x
+    
+    read(10, *) x
+    write(20, *) x
+end subroutine test_line_numbers
+"""
+    cfg = parse_control_flow(source, "test_line_numbers", "subroutine")
+
+    assert cfg is not None
+
+    # All keyword blocks should have line numbers in their labels
+    keyword_blocks = [
+        b for b in cfg.blocks.values()
+        if b.block_type in [BlockType.KEYWORD_IO, BlockType.KEYWORD_MEMORY, BlockType.KEYWORD_CALL, BlockType.KEYWORD_EXIT]
+    ]
+    
+    for block in keyword_blocks:
+        assert " (L" in block.label, f"Block {block.label} should have line number"
+        assert block.line_number is not None, f"Block {block.label} should have line_number field set"
