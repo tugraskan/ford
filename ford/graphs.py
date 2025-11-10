@@ -592,7 +592,7 @@ class FileNode(BaseNode):
             obj.blockdata,
         ):
             # Only modules and submodules have deplist
-            if not hasattr(mod, 'deplist'):
+            if not hasattr(mod, "deplist"):
                 continue
             for dep in mod.deplist:
                 if dep.source_file == obj:
@@ -1449,14 +1449,16 @@ class GraphManager:
     def _populate_calledby_lists(self):
         """
         Populate calledby lists on procedure objects from graph node data.
-        
+
         This extracts the called_by information from graph nodes and stores it
         as a list on the procedure object for easy access in templates.
         """
         for proc_obj, proc_node in self.data.procedures.items():
             # Get the calling procedures from the graph node
             calledby_procs = []
-            for caller_node in sorted(proc_node.called_by, key=lambda n: n.name.lower()):
+            for caller_node in sorted(
+                proc_node.called_by, key=lambda n: n.name.lower()
+            ):
                 # Find the procedure object corresponding to this caller node
                 # by looking it up in the procedures dictionary
                 for caller_obj, node in self.data.procedures.items():
@@ -1468,7 +1470,7 @@ class GraphManager:
                     if node == caller_node:
                         calledby_procs.append(caller_obj)
                         break
-            
+
             # Store as a list on the procedure object
             proc_obj.calledby = calledby_procs
 

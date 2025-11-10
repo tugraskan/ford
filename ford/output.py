@@ -364,12 +364,12 @@ class Documentation:
                 for item in entity_list:
                     # Register directly in GraphData, bypassing the meta.graph check
                     self.graphs.data.register(item)
-            
+
             # Populate called_by relationships
             self.graphs._populate_called_by_relationships()
             # Populate calledby lists on procedure objects
             self.graphs._populate_calledby_lists()
-            
+
             project.callgraph = ""
             project.typegraph = ""
             project.usegraph = ""
