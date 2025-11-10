@@ -1664,7 +1664,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         # to determine if we should skip keyword badges for performance
         total_blocks = len(cfg.blocks)
         total_statements = sum(len(block.statements) for block in cfg.blocks.values())
-        
+
         # For large CFGs (>200 blocks or >400 statements), skip keyword badges
         # to avoid graphviz rendering timeouts
         add_keyword_badges = total_blocks <= 200 and total_statements <= 400
@@ -1748,7 +1748,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 dot.edge(str(block.id), str(succ_id), label=edge_label)
 
         # Render with timeout protection (30 seconds for graphviz rendering)
-        if hasattr(signal, 'SIGALRM'):
+        if hasattr(signal, "SIGALRM"):
             old_handler = signal.signal(signal.SIGALRM, timeout_handler)
             signal.alarm(30)
             try:

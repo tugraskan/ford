@@ -4039,16 +4039,20 @@ class FortranProcedure(FortranCodeUnit):
                 raise TimeoutError("Control flow graph generation timed out")
 
             # Only use signal-based timeout on Unix-like systems
-            if hasattr(signal, 'SIGALRM'):
+            if hasattr(signal, "SIGALRM"):
                 old_handler = signal.signal(signal.SIGALRM, timeout_handler)
                 signal.alarm(5)  # 5 second timeout
                 try:
-                    result = parse_control_flow(source_text, self.name, self.proctype.lower())
+                    result = parse_control_flow(
+                        source_text, self.name, self.proctype.lower()
+                    )
                     signal.alarm(0)  # Cancel the alarm
                     return result
                 except TimeoutError:
                     signal.alarm(0)  # Cancel the alarm
-                    log.debug(f"Control flow graph generation timed out for procedure {self.name}")
+                    log.debug(
+                        f"Control flow graph generation timed out for procedure {self.name}"
+                    )
                     return None
                 finally:
                     signal.signal(signal.SIGALRM, old_handler)
