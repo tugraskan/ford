@@ -58,7 +58,9 @@ class BlockType(Enum):
     SELECT_CASE = "select_case"
     CASE = "case"
     # Keyword node types
-    KEYWORD_IO = "keyword_io"  # I/O operations: OPEN, READ, WRITE, CLOSE, REWIND, INQUIRE
+    KEYWORD_IO = (
+        "keyword_io"  # I/O operations: OPEN, READ, WRITE, CLOSE, REWIND, INQUIRE
+    )
     KEYWORD_MEMORY = "keyword_memory"  # Memory operations: ALLOCATE, DEALLOCATE
     KEYWORD_BRANCH = "keyword_branch"  # Branch: IF, SELECT CASE (already handled by IF_CONDITION/SELECT_CASE)
     KEYWORD_LOOP = "keyword_loop"  # Loop: DO, DO WHILE (already handled by DO_LOOP)
@@ -446,7 +448,11 @@ class FortranControlFlowParser:
             # Check for RETURN statement - create a keyword node for it
             elif RETURN_RE.match(line_stripped):
                 # Create RETURN keyword node with statement content
-                label = f"RETURN (L{line_num})\n{line_stripped}" if line_num else f"RETURN\n{line_stripped}"
+                label = (
+                    f"RETURN (L{line_num})\n{line_stripped}"
+                    if line_num
+                    else f"RETURN\n{line_stripped}"
+                )
                 return_node = self.cfg.create_block(
                     BlockType.KEYWORD_EXIT,
                     label,
@@ -454,7 +460,7 @@ class FortranControlFlowParser:
                 return_node.line_number = line_num
                 return_node.statements.append(line_stripped)
                 self.cfg.add_edge(current_block.id, return_node.id)
-                
+
                 # Connect RETURN node directly to exit
                 self.cfg.add_edge(return_node.id, exit_block.id)
 
@@ -470,13 +476,17 @@ class FortranControlFlowParser:
             else:
                 # Regular statement - detect keywords and create nodes
                 keywords = detect_statement_keywords(line_stripped)
-                
+
                 # Create keyword nodes for each detected keyword
                 for keyword in keywords:
                     block_type = get_keyword_block_type(keyword)
                     if block_type:
                         # Create keyword node with line number and statement content
-                        label = f"{keyword} (L{line_num})\n{line_stripped}" if line_num else f"{keyword}\n{line_stripped}"
+                        label = (
+                            f"{keyword} (L{line_num})\n{line_stripped}"
+                            if line_num
+                            else f"{keyword}\n{line_stripped}"
+                        )
                         kw_node = self.cfg.create_block(
                             block_type,
                             label,
@@ -485,7 +495,7 @@ class FortranControlFlowParser:
                         kw_node.statements.append(line_stripped)
                         self.cfg.add_edge(current_block.id, kw_node.id)
                         current_block = kw_node
-                
+
                 # If no keywords, or after keyword nodes, create/append to statement block
                 # Only create statement block if there are no keywords or we need to store the full statement
                 if not keywords:
@@ -1517,12 +1527,12 @@ def detect_statement_keywords(statement: str) -> List[str]:
 
 def get_keyword_block_type(keyword: str) -> Optional[BlockType]:
     """Get the block type for a keyword
-    
+
     Parameters
     ----------
     keyword : str
         The keyword (e.g., 'READ', 'ALLOCATE', 'CALL')
-    
+
     Returns
     -------
     BlockType or None

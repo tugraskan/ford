@@ -1726,13 +1726,15 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         # Add nodes
         for block in cfg.blocks.values():
             # Skip unreachable blocks (blocks with no predecessors except entry/exit)
-            if (not block.predecessors and 
-                block.id != cfg.entry_block_id and 
-                block.id != cfg.exit_block_id):
+            if (
+                not block.predecessors
+                and block.id != cfg.entry_block_id
+                and block.id != cfg.exit_block_id
+            ):
                 continue
-                
+
             color = colors.get(block.block_type, "#FFFFFF")
-            
+
             # Build label - keyword nodes already have statement in label
             if block.condition:
                 label = f"{block.label}\\n{block.condition}"
@@ -1742,10 +1744,10 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             # Add statements to label only for non-keyword blocks
             # Keyword blocks already have the statement in their label
             if block.statements and block.block_type not in [
-                BlockType.KEYWORD_IO, 
-                BlockType.KEYWORD_MEMORY, 
-                BlockType.KEYWORD_EXIT, 
-                BlockType.KEYWORD_CALL
+                BlockType.KEYWORD_IO,
+                BlockType.KEYWORD_MEMORY,
+                BlockType.KEYWORD_EXIT,
+                BlockType.KEYWORD_CALL,
             ]:
                 stmt_lines = []
                 for stmt in block.statements:
