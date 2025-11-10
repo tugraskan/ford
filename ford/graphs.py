@@ -1476,9 +1476,14 @@ class GraphManager:
                 try:
                     cfg = obj.get_control_flow_graph()
                     if cfg:
-                        obj.controlflowtgraph_svg = create_control_flow_graph_svg(
-                            cfg, obj.name
-                        )
+                        # Skip CFG visualization for very large procedures (>500 blocks)
+                        # as graphviz rendering becomes too slow
+                        if len(cfg.blocks) > 500:
+                            obj.controlflowtgraph_svg = ""
+                        else:
+                            obj.controlflowtgraph_svg = create_control_flow_graph_svg(
+                                cfg, obj.name
+                            )
                     else:
                         obj.controlflowtgraph_svg = ""
                 except Exception:
@@ -1612,7 +1617,11 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         return ""
 
     try:
+        import signal
         from ford.control_flow import BlockType, detect_statement_keywords
+
+        def timeout_handler(signum, frame):
+            raise TimeoutError("SVG generation timed out")
 
         dot = Digraph(
             f"cfg_{procedure_name}",
@@ -1651,6 +1660,15 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         # Color scheme for keyword badges (matching Bootstrap info badge color)
         keyword_color = "#0dcaf0"  # info/cyan color
 
+        # Count total nodes that will be created (including keyword badges)
+        # to determine if we should skip keyword badges for performance
+        total_blocks = len(cfg.blocks)
+        total_statements = sum(len(block.statements) for block in cfg.blocks.values())
+        
+        # For large CFGs (>200 blocks or >400 statements), skip keyword badges
+        # to avoid graphviz rendering timeouts
+        add_keyword_badges = total_blocks <= 200 and total_statements <= 400
+
         # Add nodes
         for block in cfg.blocks.values():
             color = colors.get(block.block_type, "#FFFFFF")
@@ -1680,8 +1698,8 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
 
             dot.node(str(block.id), label=label, fillcolor=color, shape=shape)
 
-            # Create separate keyword badge nodes for this block
-            if block.statements:
+            # Create separate keyword badge nodes for this block (only for smaller CFGs)
+            if add_keyword_badges and block.statements:
                 for stmt_idx, stmt in enumerate(block.statements):
                     keywords = detect_statement_keywords(stmt)
                     if keywords:
@@ -1729,10 +1747,26 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
 
                 dot.edge(str(block.id), str(succ_id), label=edge_label)
 
-        svg_src = dot.pipe().decode("utf-8")
-        svg_src = svg_src.replace("<svg ", f'<svg id="cfg_{procedure_name}" ')
-
-        return svg_src
+        # Render with timeout protection (30 seconds for graphviz rendering)
+        if hasattr(signal, 'SIGALRM'):
+            old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(30)
+            try:
+                svg_src = dot.pipe().decode("utf-8")
+                signal.alarm(0)
+                svg_src = svg_src.replace("<svg ", f'<svg id="cfg_{procedure_name}" ')
+                return svg_src
+            except TimeoutError:
+                signal.alarm(0)
+                log.debug(f"SVG generation timed out for procedure {procedure_name}")
+                return ""
+            finally:
+                signal.signal(signal.SIGALRM, old_handler)
+        else:
+            # On Windows or systems without SIGALRM, render without timeout
+            svg_src = dot.pipe().decode("utf-8")
+            svg_src = svg_src.replace("<svg ", f'<svg id="cfg_{procedure_name}" ')
+            return svg_src
     except Exception:
         return ""
 
