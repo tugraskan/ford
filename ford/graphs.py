@@ -1768,18 +1768,6 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             BlockType.KEYWORD_CALL: "box",  # Will use bold outline
         }
 
-        # Color scheme for keyword badges (matching Bootstrap info badge color)
-        keyword_color = "#0dcaf0"  # info/cyan color
-
-        # Count total nodes that will be created (including keyword badges)
-        # to determine if we should skip keyword badges for performance
-        total_blocks = len(cfg.blocks)
-        total_statements = sum(len(block.statements) for block in cfg.blocks.values())
-
-        # For large CFGs (>200 blocks or >400 statements), skip keyword badges
-        # to avoid graphviz rendering timeouts
-        add_keyword_badges = total_blocks <= 200 and total_statements <= 400
-
         # Add nodes
         for block in cfg.blocks.values():
             # Skip unreachable blocks (blocks with no predecessors except entry/exit)
@@ -1813,48 +1801,19 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 stmts = "\\n".join(stmt_lines)
                 label = f"{label}\\n---\\n{stmts}"
 
-            # Use diamond shape for conditions
-            shape = (
-                "diamond"
-                if block.block_type
-                in [BlockType.IF_CONDITION, BlockType.DO_LOOP, BlockType.SELECT_CASE]
-                else "box"
-            )
+            # Determine shape based on block type
+            shape = shapes.get(block.block_type, "box")
 
-            dot.node(str(block.id), label=label, fillcolor=color, shape=shape)
+            # Determine style based on block type
+            style = "filled"
+            if block.block_type == BlockType.KEYWORD_IO:
+                # I/O operations: rounded rectangle
+                style = "filled,rounded"
+            elif block.block_type == BlockType.KEYWORD_CALL:
+                # Procedure calls: bold outline
+                style = "filled,bold"
 
-            # Create separate keyword badge nodes for this block (only for smaller CFGs)
-            if add_keyword_badges and block.statements:
-                for stmt_idx, stmt in enumerate(block.statements):
-                    keywords = detect_statement_keywords(stmt)
-                    if keywords:
-                        for kw_idx, kw in enumerate(keywords):
-                            # Create a unique node ID using block.id, statement index, and keyword index
-                            kw_node_id = f"kw_{block.id}_{stmt_idx}_{kw_idx}"
-
-                            # Create small badge node
-                            dot.node(
-                                kw_node_id,
-                                label=kw,
-                                shape="box",
-                                style="filled,rounded",
-                                fillcolor=keyword_color,
-                                fontcolor="white",
-                                fontsize="8",
-                                fontname="Helvetica",
-                                width="0",
-                                height="0",
-                                margin="0.05,0.02",
-                            )
-
-                            # Connect keyword node to the statement block
-                            dot.edge(
-                                kw_node_id,
-                                str(block.id),
-                                style="dotted",
-                                arrowhead="none",
-                                constraint="false",
-                            )
+            dot.node(str(block.id), label=label, fillcolor=color, shape=shape, style=style)
 
         # Add edges
         for block in cfg.blocks.values():
