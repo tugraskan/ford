@@ -1646,6 +1646,26 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             BlockType.DO_LOOP: "#DDA0DD",  # Plum
             BlockType.SELECT_CASE: "#F0E68C",  # Khaki
             BlockType.CASE: "#FFE4B5",  # Moccasin
+            # Keyword node colors
+            BlockType.KEYWORD_IO: "#5DADE2",  # Blue (rounded rectangle)
+            BlockType.KEYWORD_MEMORY: "#52BE80",  # Green (hexagon)
+            BlockType.KEYWORD_BRANCH: "#E59866",  # Orange (diamond) - not used, IF/SELECT handle this
+            BlockType.KEYWORD_LOOP: "#48C9B0",  # Teal (ellipse) - not used, DO handles this
+            BlockType.KEYWORD_EXIT: "#EC7063",  # Red (octagon)
+            BlockType.KEYWORD_CALL: "#BB8FCE",  # Purple (rectangle with bold outline)
+        }
+
+        # Shape scheme for different block types
+        shapes = {
+            # Control flow structures
+            BlockType.IF_CONDITION: "diamond",
+            BlockType.DO_LOOP: "diamond",
+            BlockType.SELECT_CASE: "diamond",
+            # Keyword node shapes
+            BlockType.KEYWORD_IO: "box",  # Will use rounded style
+            BlockType.KEYWORD_MEMORY: "hexagon",
+            BlockType.KEYWORD_EXIT: "octagon",
+            BlockType.KEYWORD_CALL: "box",  # Will use bold outline
         }
 
         # Color scheme for keyword badges (matching Bootstrap info badge color)
@@ -1654,7 +1674,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         # Add nodes
         for block in cfg.blocks.values():
             color = colors.get(block.block_type, "#FFFFFF")
-
+            
             # Build label
             if block.condition:
                 label = f"{block.label}\\n{block.condition}"
@@ -1670,48 +1690,27 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 stmts = "\\n".join(stmt_lines)
                 label = f"{label}\\n---\\n{stmts}"
 
-            # Use diamond shape for conditions
-            shape = (
-                "diamond"
-                if block.block_type
-                in [BlockType.IF_CONDITION, BlockType.DO_LOOP, BlockType.SELECT_CASE]
-                else "box"
-            )
-
-            dot.node(str(block.id), label=label, fillcolor=color, shape=shape)
-
-            # Create separate keyword badge nodes for this block
-            if block.statements:
-                for stmt_idx, stmt in enumerate(block.statements):
-                    keywords = detect_statement_keywords(stmt)
-                    if keywords:
-                        for kw_idx, kw in enumerate(keywords):
-                            # Create a unique node ID using block.id, statement index, and keyword index
-                            kw_node_id = f"kw_{block.id}_{stmt_idx}_{kw_idx}"
-
-                            # Create small badge node
-                            dot.node(
-                                kw_node_id,
-                                label=kw,
-                                shape="box",
-                                style="filled,rounded",
-                                fillcolor=keyword_color,
-                                fontcolor="white",
-                                fontsize="8",
-                                fontname="Helvetica",
-                                width="0",
-                                height="0",
-                                margin="0.05,0.02",
-                            )
-
-                            # Connect keyword node to the statement block
-                            dot.edge(
-                                kw_node_id,
-                                str(block.id),
-                                style="dotted",
-                                arrowhead="none",
-                                constraint="false",
-                            )
+            # Determine shape and style
+            shape = shapes.get(block.block_type, "box")
+            style = "filled"
+            
+            # Add special styles for keyword nodes
+            if block.block_type == BlockType.KEYWORD_IO:
+                style = "filled,rounded"
+            elif block.block_type == BlockType.KEYWORD_CALL:
+                # Purple outline, white background with purple text
+                dot.node(
+                    str(block.id),
+                    label=label,
+                    shape=shape,
+                    style="bold",
+                    color=colors[BlockType.KEYWORD_CALL],
+                    penwidth="2.0",
+                    fontcolor=colors[BlockType.KEYWORD_CALL],
+                )
+                continue  # Skip the default node creation
+            
+            dot.node(str(block.id), label=label, fillcolor=color, shape=shape, style=style)
 
         # Add edges
         for block in cfg.blocks.values():

@@ -57,6 +57,13 @@ class BlockType(Enum):
     DO_LOOP = "do_loop"
     SELECT_CASE = "select_case"
     CASE = "case"
+    # Keyword node types
+    KEYWORD_IO = "keyword_io"  # I/O operations: OPEN, READ, WRITE, CLOSE, REWIND, INQUIRE
+    KEYWORD_MEMORY = "keyword_memory"  # Memory operations: ALLOCATE, DEALLOCATE
+    KEYWORD_BRANCH = "keyword_branch"  # Branch: IF, SELECT CASE (already handled by IF_CONDITION/SELECT_CASE)
+    KEYWORD_LOOP = "keyword_loop"  # Loop: DO, DO WHILE (already handled by DO_LOOP)
+    KEYWORD_EXIT = "keyword_exit"  # Early exit: RETURN, EXIT, CYCLE
+    KEYWORD_CALL = "keyword_call"  # Procedure call: CALL
 
 
 @dataclass
@@ -82,6 +89,8 @@ class BasicBlock:
         IDs of blocks that can follow this one
     predecessors : List[int]
         IDs of blocks that can precede this one
+    line_number : Optional[int]
+        Line number in source file (1-indexed), for keyword nodes
     """
 
     id: int
@@ -91,6 +100,7 @@ class BasicBlock:
     condition: Optional[str] = None
     successors: List[int] = field(default_factory=list)
     predecessors: List[int] = field(default_factory=list)
+    line_number: Optional[int] = None
 
 
 class ControlFlowGraph:
@@ -216,7 +226,7 @@ class FortranControlFlowParser:
 
     def parse(self) -> ControlFlowGraph:
         """Parse the source code and build the control flow graph"""
-        lines = self._preprocess_source()
+        lines, line_numbers = self._preprocess_source()
 
         # Create entry and exit blocks
         entry = self.cfg.create_block(BlockType.ENTRY, "Entry")
@@ -234,6 +244,7 @@ class FortranControlFlowParser:
 
         while i < len(lines):
             line = lines[i]
+            line_num = line_numbers[i] if i < len(line_numbers) else None
             line_stripped = line.strip()
 
             # Skip empty lines and comments
@@ -249,6 +260,7 @@ class FortranControlFlowParser:
                 cond_block = self.cfg.create_block(
                     BlockType.IF_CONDITION, f"IF ({condition})", condition=condition
                 )
+                cond_block.line_number = line_num
                 self.cfg.add_edge(current_block.id, cond_block.id)
 
                 # Create then block
@@ -325,6 +337,7 @@ class FortranControlFlowParser:
                 loop_header = self.cfg.create_block(
                     BlockType.DO_LOOP, f"DO {loop_control}", condition=loop_control
                 )
+                loop_header.line_number = line_num
                 self.cfg.add_edge(current_block.id, loop_header.id)
 
                 # Create loop body block
@@ -357,6 +370,7 @@ class FortranControlFlowParser:
                     f"SELECT CASE ({select_expr})",
                     condition=select_expr,
                 )
+                select_block.line_number = line_num
                 self.cfg.add_edge(current_block.id, select_block.id)
 
                 # Create after-select block
@@ -391,6 +405,7 @@ class FortranControlFlowParser:
                     case_block = self.cfg.create_block(
                         BlockType.CASE, case_label, condition=case_value
                     )
+                    case_block.line_number = line_num
                     self.cfg.add_edge(select_block.id, case_block.id)
                     current_block = case_block
 
@@ -428,13 +443,23 @@ class FortranControlFlowParser:
 
                     current_block = merge_block
 
-            # Check for RETURN statement
+            # Check for RETURN statement - create a keyword node for it
             elif RETURN_RE.match(line_stripped):
-                # Connect current block directly to exit (no intermediate RETURN block)
-                self.cfg.add_edge(current_block.id, exit_block.id)
+                # Create RETURN keyword node
+                return_node = self.cfg.create_block(
+                    BlockType.KEYWORD_EXIT,
+                    f"RETURN (L{line_num})" if line_num else "RETURN",
+                )
+                return_node.line_number = line_num
+                self.cfg.add_edge(current_block.id, return_node.id)
+                
+                # Connect RETURN node to exit
+                self.cfg.add_edge(return_node.id, exit_block.id)
 
-                # Note: We don't update current_block, so any subsequent statements
-                # in this branch will be ignored (they're unreachable after RETURN)
+                # Create an unreachable block that won't connect anywhere
+                # This prevents END IF from connecting to merge after a RETURN
+                unreachable = self.cfg.create_block(BlockType.STATEMENT, "Unreachable")
+                current_block = unreachable
 
             # Skip USE, IMPLICIT, and variable declarations - they're not part of control flow
             elif self._is_declaration_or_use(line_stripped):
@@ -442,18 +467,36 @@ class FortranControlFlowParser:
                 continue
 
             else:
-                # Regular statement
-                if current_block.block_type == BlockType.STATEMENT:
-                    current_block.statements.append(line_stripped)
-                else:
-                    # Create a new statement block
-                    stmt_block = self.cfg.create_block(
-                        BlockType.STATEMENT,
-                        line_stripped[:50],  # Truncate long statements
-                    )
-                    stmt_block.statements.append(line_stripped)
-                    self.cfg.add_edge(current_block.id, stmt_block.id)
-                    current_block = stmt_block
+                # Regular statement - detect keywords and create nodes
+                keywords = detect_statement_keywords(line_stripped)
+                
+                # Create keyword nodes for each detected keyword
+                for keyword in keywords:
+                    block_type = get_keyword_block_type(keyword)
+                    if block_type:
+                        # Create keyword node
+                        kw_node = self.cfg.create_block(
+                            block_type,
+                            f"{keyword} (L{line_num})" if line_num else keyword,
+                        )
+                        kw_node.line_number = line_num
+                        self.cfg.add_edge(current_block.id, kw_node.id)
+                        current_block = kw_node
+                
+                # If no keywords, or after keyword nodes, create/append to statement block
+                # Only create statement block if there are no keywords or we need to store the full statement
+                if not keywords:
+                    if current_block.block_type == BlockType.STATEMENT:
+                        current_block.statements.append(line_stripped)
+                    else:
+                        # Create a new statement block
+                        stmt_block = self.cfg.create_block(
+                            BlockType.STATEMENT,
+                            line_stripped[:50],  # Truncate long statements
+                        )
+                        stmt_block.statements.append(line_stripped)
+                        self.cfg.add_edge(current_block.id, stmt_block.id)
+                        current_block = stmt_block
 
             i += 1
 
@@ -463,14 +506,17 @@ class FortranControlFlowParser:
 
         return self.cfg
 
-    def _preprocess_source(self) -> List[str]:
+    def _preprocess_source(self) -> Tuple[List[str], List[int]]:
         """Preprocess source code to extract the procedure body
 
-        Returns a list of lines containing only the procedure body,
-        excluding the procedure declaration and end statement.
+        Returns
+        -------
+        Tuple[List[str], List[int]]
+            List of lines and their corresponding line numbers (1-indexed)
         """
         lines = self.source_code.split("\n")
         result = []
+        line_numbers = []
         in_procedure = False
 
         # Patterns to match procedure start and end
@@ -483,7 +529,7 @@ class FortranControlFlowParser:
         )
         contains_re = re.compile(r"^\s*contains\s*$", re.IGNORECASE)
 
-        for line in lines:
+        for line_num, line in enumerate(lines, start=1):
             if proc_start.match(line.strip()):
                 in_procedure = True
                 continue
@@ -494,8 +540,9 @@ class FortranControlFlowParser:
                     break
 
                 result.append(line)
+                line_numbers.append(line_num)
 
-        return result
+        return result, line_numbers
 
 
 def parse_control_flow(
@@ -1447,9 +1494,12 @@ def detect_statement_keywords(statement: str) -> List[str]:
         "READ": re.compile(r"\bread\s*\(", re.IGNORECASE),
         "WRITE": re.compile(r"\bwrite\s*\(", re.IGNORECASE),
         "PRINT": re.compile(r"\bprint\s+", re.IGNORECASE),
+        "REWIND": re.compile(r"\brewind\s*\(", re.IGNORECASE),
         "ALLOCATE": re.compile(r"\ballocate\s*\(", re.IGNORECASE),
         "DEALLOCATE": re.compile(r"\bdeallocate\s*\(", re.IGNORECASE),
         "RETURN": re.compile(r"^\s*return\s*$", re.IGNORECASE),
+        "EXIT": re.compile(r"^\s*exit\b", re.IGNORECASE),
+        "CYCLE": re.compile(r"^\s*cycle\b", re.IGNORECASE),
         "STOP": re.compile(r"\bstop\b", re.IGNORECASE),
         "ERROR STOP": re.compile(r"\berror\s+stop\b", re.IGNORECASE),
         "CALL": re.compile(r"\bcall\s+", re.IGNORECASE),
@@ -1460,3 +1510,32 @@ def detect_statement_keywords(statement: str) -> List[str]:
             keywords.append(keyword)
 
     return keywords
+
+
+def get_keyword_block_type(keyword: str) -> Optional[BlockType]:
+    """Get the block type for a keyword
+    
+    Parameters
+    ----------
+    keyword : str
+        The keyword (e.g., 'READ', 'ALLOCATE', 'CALL')
+    
+    Returns
+    -------
+    BlockType or None
+        The block type for this keyword, or None if not a keyword node type
+    """
+    # I/O keywords
+    if keyword in ["OPEN", "READ", "WRITE", "CLOSE", "REWIND", "INQUIRE", "PRINT"]:
+        return BlockType.KEYWORD_IO
+    # Memory keywords
+    elif keyword in ["ALLOCATE", "DEALLOCATE"]:
+        return BlockType.KEYWORD_MEMORY
+    # Early exit keywords
+    elif keyword in ["RETURN", "EXIT", "CYCLE", "STOP", "ERROR STOP"]:
+        return BlockType.KEYWORD_EXIT
+    # Call keyword
+    elif keyword == "CALL":
+        return BlockType.KEYWORD_CALL
+    else:
+        return None
