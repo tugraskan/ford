@@ -834,51 +834,65 @@
 
 {% macro outside_variables_list(variables) %}
   {% if variables %}
-    {% set types_dict = {} %}
+    {% set modules_dict = {} %}
     {% for var in variables %}
-      {% set type_key = var.full_type | string %}
       {% set module_name = var.parent.name if var.parent else 'Unknown' %}
-      {% set combined_key = type_key ~ '::' ~ module_name %}
-      {% if combined_key not in types_dict %}
-        {% set _ = types_dict.update({combined_key: {'type_name': type_key, 'vars': [], 'module': module_name}}) %}
+      {% if module_name not in modules_dict %}
+        {% set _ = modules_dict.update({module_name: {}}) %}
       {% endif %}
-      {% set _ = types_dict[combined_key]['vars'].append(var) %}
+      {% set type_key = var.full_type | string %}
+      {% if type_key not in modules_dict[module_name] %}
+        {% set _ = modules_dict[module_name].update({type_key: {'type_name': type_key, 'vars': []}}) %}
+      {% endif %}
+      {% set _ = modules_dict[module_name][type_key]['vars'].append(var) %}
     {% endfor %}
     
     <div class="accordion" id="outsideVarsAccordion">
-      {% for combined_key, type_data in types_dict.items() %}
-        {% set type_id = combined_key | replace(' ', '_') | replace('(', '_') | replace(')', '_') | replace('<', '_') | replace('>', '_') | replace(',', '_') | replace('[', '_') | replace(']', '_') | replace('%', '_pct_') | replace('.', '_') | replace('/', '_') | replace('\\', '_') | replace(':', '_') | replace(';', '_') | replace('"', '_') | replace("'", '_') | replace('|', '_') | replace('*', '_') | replace('+', '_') | replace('=', '_') | replace('@', '_') | replace('#', '_') | replace('$', '_') | replace('!', '_') | replace('&', '_') | replace('^', '_') | replace('~', '_') | replace('`', '_') %}
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="heading{{ type_id }}">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapse{{ type_id }}" aria-expanded="false" 
-                    aria-controls="collapse{{ type_id }}">
-              {{ type_data.type_name | relurl(page_url) }}
-              <small class="text-muted ms-2">({{ type_data.vars | length }} attribute{{ 's' if type_data.vars | length != 1 }} from {{ type_data.module }})</small>
-            </button>
-          </h3>
-          <div id="collapse{{ type_id }}" class="accordion-collapse collapse" 
-               aria-labelledby="heading{{ type_id }}" data-bs-parent="#outsideVarsAccordion">
-            <div class="accordion-body">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Attribute Name</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for var in type_data.vars %}
+      {% for module_name, types_dict in modules_dict.items() %}
+        {# Add a thick border between modules #}
+        {% if not loop.first %}
+          <div style="border-top: 3px solid #000; margin: 1rem 0;"></div>
+        {% endif %}
+        
+        {# Module header #}
+        <div class="mb-2">
+          <h5 class="text-muted">Module: {{ module_name }}</h5>
+        </div>
+        
+        {% for type_key, type_data in types_dict.items() %}
+          {% set type_id = (module_name ~ '_' ~ type_key) | replace(' ', '_') | replace('(', '_') | replace(')', '_') | replace('<', '_') | replace('>', '_') | replace(',', '_') | replace('[', '_') | replace(']', '_') | replace('%', '_pct_') | replace('.', '_') | replace('/', '_') | replace('\\', '_') | replace(':', '_') | replace(';', '_') | replace('"', '_') | replace("'", '_') | replace('|', '_') | replace('*', '_') | replace('+', '_') | replace('=', '_') | replace('@', '_') | replace('#', '_') | replace('$', '_') | replace('!', '_') | replace('&', '_') | replace('^', '_') | replace('~', '_') | replace('`', '_') %}
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="heading{{ type_id }}">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                      data-bs-target="#collapse{{ type_id }}" aria-expanded="false" 
+                      aria-controls="collapse{{ type_id }}">
+                {{ type_data.type_name | relurl(page_url) }}
+                <small class="text-muted ms-2">({{ type_data.vars | length }} attribute{{ 's' if type_data.vars | length != 1 }})</small>
+              </button>
+            </h3>
+            <div id="collapse{{ type_id }}" class="accordion-collapse collapse" 
+                 aria-labelledby="heading{{ type_id }}" data-bs-parent="#outsideVarsAccordion">
+              <div class="accordion-body">
+                <table class="table table-sm">
+                  <thead>
                     <tr>
-                      <td><strong>{{ var.name }}</strong>{{ var.dimension }}</td>
-                      <td>{{ var | meta('summary') }}</td>
+                      <th scope="col">Attribute Name</th>
+                      <th scope="col">Description</th>
                     </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {% for var in type_data.vars %}
+                      <tr>
+                        <td><strong>{{ var.name }}</strong>{{ var.dimension }}</td>
+                        <td>{{ var | meta('summary') }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
+        {% endfor %}
       {% endfor %}
     </div>
   {% else %}

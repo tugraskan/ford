@@ -51,13 +51,27 @@
       </a>
       <div id="called-from-section" class="collapse show">
         <div class="card-body">
-          {% if procedure.calledbygraph %}
+          {% if procedure.calledby or procedure.calledbygraph %}
+            {% if procedure.calledby %}
+            <ul class="list-group list-group-flush mb-3">
+              <li class="list-group-item">
+                <ul class="list-inline">
+                  {% for caller in procedure.calledby %}
+                    <li class="list-inline-item">{{ caller | relurl(page_url) }}</li>
+                  {% endfor %}
+                </ul>
+              </li>
+            </ul>
+            {% endif %}
+            
+            {% if procedure.calledbygraph %}
             <p class="text-muted mb-3">
               Procedures that call this {{ procedure.proctype }}. This shows the call stack back to the main program.
             </p>
             <div class="depgraph">
               {{ procedure.calledbygraph }}
             </div>
+            {% endif %}
           {% else %}
             <em>n/a</em>
           {% endif %}
@@ -713,7 +727,7 @@
       </div>
     </div>
 
-    {# Section 6: Calls - show both graph and list #}
+    {# Section 6: Calls - show both list and graph #}
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#calls-section" 
          aria-expanded="false" 
@@ -728,21 +742,22 @@
           {% if procedure.callsgraph or procedure.calls %}
             {% if procedure.calls %}
             <h4>Procedures Called</h4>
-            <p class="text-muted mb-3">
-              List of procedures called by this {{ procedure.proctype }}.
-            </p>
-            <ul class="list-group list-group-flush mb-4">
-              {% for call in procedure.calls %}
-                <li class="list-group-item">
-                  {% if call is string %}
-                    <code>{{ call }}</code>
-                  {% elif call.get_url %}
-                    {{ call | relurl(page_url) }}
-                  {% else %}
-                    <code>{{ call.name if call.name else call }}</code>
-                  {% endif %}
-                </li>
-              {% endfor %}
+            <ul class="list-group list-group-flush mb-3">
+              <li class="list-group-item">
+                <ul class="list-inline">
+                  {% for call in procedure.calls %}
+                    <li class="list-inline-item">
+                      {% if call is string %}
+                        <code>{{ call }}</code>
+                      {% elif call.get_url %}
+                        {{ call | relurl(page_url) }}
+                      {% else %}
+                        <code>{{ call.name if call.name else call }}</code>
+                      {% endif %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              </li>
             </ul>
             {% endif %}
             
