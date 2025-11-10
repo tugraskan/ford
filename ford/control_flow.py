@@ -177,12 +177,42 @@ class FortranControlFlowParser:
 
     # Single-line IF statement
     SINGLE_IF_RE = re.compile(r"^\s*if\s*\((.*?)\)\s+(.+)$", re.IGNORECASE)
+    
+    # Regular expressions for statements to skip in CFG (same as LogicBlockExtractor)
+    IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
+    # Matches type declarations including: type(...) and type ::
+    DECLARATION_RE = re.compile(
+        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*(?:\(|::))",
+        re.IGNORECASE,
+    )
 
     def __init__(self, source_code: str, procedure_name: str, procedure_type: str):
         self.source_code = source_code
         self.procedure_name = procedure_name
         self.procedure_type = procedure_type
         self.cfg = ControlFlowGraph(procedure_name, procedure_type)
+    
+    def _is_declaration_or_use(self, line_stripped: str) -> bool:
+        """Check if a line is a USE, IMPLICIT, or type declaration statement
+        
+        These statements should not appear in the control flow graph as they
+        are not part of the execution flow.
+        
+        Parameters
+        ----------
+        line_stripped : str
+            The stripped line to check
+            
+        Returns
+        -------
+        bool
+            True if the line should be skipped, False otherwise
+        """
+        return (
+            USE_RE.match(line_stripped)
+            or self.IMPLICIT_RE.match(line_stripped)
+            or self.DECLARATION_RE.match(line_stripped)
+        )
 
     def parse(self) -> ControlFlowGraph:
         """Parse the source code and build the control flow graph"""
@@ -400,29 +430,16 @@ class FortranControlFlowParser:
 
             # Check for RETURN statement
             elif RETURN_RE.match(line_stripped):
-                # Create a return block
-                return_block = self.cfg.create_block(BlockType.RETURN, "RETURN")
-                self.cfg.add_edge(current_block.id, return_block.id)
+                # Connect current block directly to exit (no intermediate RETURN block)
+                self.cfg.add_edge(current_block.id, exit_block.id)
+                
+                # Note: We don't update current_block, so any subsequent statements
+                # in this branch will be ignored (they're unreachable after RETURN)
 
-                # Connect return block directly to exit
-                self.cfg.add_edge(return_block.id, exit_block.id)
-
-                # Create a new statement block for any code after return (unreachable but parse it)
-                current_block = self.cfg.create_block(
-                    BlockType.STATEMENT, "After RETURN"
-                )
-
-            # Check for USE statement
-            elif USE_RE.match(line_stripped):
-                # Create a USE block or add to existing USE block
-                if current_block.block_type == BlockType.USE:
-                    current_block.statements.append(line_stripped)
-                else:
-                    # Create a new USE block
-                    use_block = self.cfg.create_block(BlockType.USE, "USE statements")
-                    use_block.statements.append(line_stripped)
-                    self.cfg.add_edge(current_block.id, use_block.id)
-                    current_block = use_block
+            # Skip USE, IMPLICIT, and variable declarations - they're not part of control flow
+            elif self._is_declaration_or_use(line_stripped):
+                i += 1
+                continue
 
             else:
                 # Regular statement
@@ -554,6 +571,8 @@ class LogicBlock:
         Documentation comments (!! comments) associated with this block
     comment_lines : List[int]
         Line numbers corresponding to each comment
+    statement_keywords : List[List[str]]
+        Keywords detected in each statement (e.g., [['INQUIRE'], ['OPEN'], ['READ']])
     """
 
     block_type: str
@@ -567,6 +586,7 @@ class LogicBlock:
     statement_lines: List[int] = field(default_factory=list)
     comments: List[str] = field(default_factory=list)
     comment_lines: List[int] = field(default_factory=list)
+    statement_keywords: List[List[str]] = field(default_factory=list)
 
 
 class LogicBlockExtractor:
@@ -597,9 +617,10 @@ class LogicBlockExtractor:
     # Regular expressions for statements to exclude from logic blocks
     IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
     # Match variable declarations (type declarations)
-    # Matches: integer, real, double precision, complex, logical, character, class, procedure, type(...)
+    # Matches: integer, real, double precision, complex, logical, character, class, procedure
+    # Also matches: type(...) and type ::
     DECLARATION_RE = re.compile(
-        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*\()",
+        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*(?:\(|::))",
         re.IGNORECASE,
     )
 
@@ -1052,16 +1073,15 @@ class LogicBlockExtractor:
                 stack[-1][3].extend(current_comments)
                 stack[-1][4].extend(current_comment_lines)
             else:
-                blocks.append(
-                    LogicBlock(
-                        block_type="statements",
-                        statements=current_statements,
-                        level=0,
-                        statement_lines=current_statement_lines,
-                        comments=current_comments,
-                        comment_lines=current_comment_lines,
-                    )
+                final_block = LogicBlock(
+                    block_type="statements",
+                    statements=current_statements,
+                    level=0,
+                    statement_lines=current_statement_lines,
+                    comments=current_comments,
+                    comment_lines=current_comment_lines,
                 )
+                blocks.append(final_block)
 
         # Close any unclosed blocks (shouldn't happen in valid code)
         while stack:
@@ -1074,8 +1094,37 @@ class LogicBlockExtractor:
                 stack[-1][0].children.append(block)
             else:
                 blocks.append(block)
+        
+        # Populate statement keywords for all blocks recursively
+        self._populate_all_keywords(blocks)
 
         return blocks
+    
+    def _populate_statement_keywords(self, block: LogicBlock) -> None:
+        """Populate statement_keywords field for a logic block
+        
+        Parameters
+        ----------
+        block : LogicBlock
+            The block to populate keywords for
+        """
+        block.statement_keywords = []
+        for stmt in block.statements:
+            keywords = detect_statement_keywords(stmt)
+            block.statement_keywords.append(keywords)
+
+    def _populate_all_keywords(self, blocks: List[LogicBlock]) -> None:
+        """Recursively populate statement keywords for all blocks
+        
+        Parameters
+        ----------
+        blocks : List[LogicBlock]
+            List of blocks to process
+        """
+        for block in blocks:
+            self._populate_statement_keywords(block)
+            if block.children:
+                self._populate_all_keywords(block.children)
 
     def _preprocess_source(self) -> Tuple[List[str], List[int]]:
         """Preprocess source code to extract the procedure body
@@ -1372,3 +1421,42 @@ def analyze_procedure_badges(
         return analyzer.analyze()
     except Exception:
         return None
+
+
+def detect_statement_keywords(statement: str) -> List[str]:
+    """Detect Fortran keywords in a single statement
+    
+    Parameters
+    ----------
+    statement : str
+        A Fortran statement
+        
+    Returns
+    -------
+    List[str]
+        List of keywords found in the statement (e.g., ['INQUIRE'], ['READ'], etc.)
+    """
+    keywords = []
+    stmt_lower = statement.lower()
+    
+    # Check for each keyword pattern
+    keyword_patterns = {
+        "INQUIRE": re.compile(r"\binquire\s*\(", re.IGNORECASE),
+        "OPEN": re.compile(r"\bopen\s*\(", re.IGNORECASE),
+        "CLOSE": re.compile(r"\bclose\s*\(", re.IGNORECASE),
+        "READ": re.compile(r"\bread\s*\(", re.IGNORECASE),
+        "WRITE": re.compile(r"\bwrite\s*\(", re.IGNORECASE),
+        "PRINT": re.compile(r"\bprint\s+", re.IGNORECASE),
+        "ALLOCATE": re.compile(r"\ballocate\s*\(", re.IGNORECASE),
+        "DEALLOCATE": re.compile(r"\bdeallocate\s*\(", re.IGNORECASE),
+        "RETURN": re.compile(r"^\s*return\s*$", re.IGNORECASE),
+        "STOP": re.compile(r"\bstop\b", re.IGNORECASE),
+        "ERROR STOP": re.compile(r"\berror\s+stop\b", re.IGNORECASE),
+        "CALL": re.compile(r"\bcall\s+", re.IGNORECASE),
+    }
+    
+    for keyword, pattern in keyword_patterns.items():
+        if pattern.search(statement):
+            keywords.append(keyword)
+    
+    return keywords

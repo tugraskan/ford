@@ -1612,7 +1612,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         return ""
 
     try:
-        from ford.control_flow import BlockType
+        from ford.control_flow import BlockType, detect_statement_keywords
 
         dot = Digraph(
             f"cfg_{procedure_name}",
@@ -1647,6 +1647,9 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             BlockType.SELECT_CASE: "#F0E68C",  # Khaki
             BlockType.CASE: "#FFE4B5",  # Moccasin
         }
+        
+        # Color scheme for keyword badges (matching Bootstrap info badge color)
+        keyword_color = "#0dcaf0"  # info/cyan color
 
         # Add nodes
         for block in cfg.blocks.values():
@@ -1658,10 +1661,13 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             else:
                 label = block.label
 
-            # Add all statements to label if present (no truncation with ...)
+            # Add all statements to label if present
             if block.statements:
-                # Show all statements for better visibility
-                stmts = "\\n".join(block.statements)
+                stmt_lines = []
+                for stmt in block.statements:
+                    stmt_lines.append(stmt)
+                
+                stmts = "\\n".join(stmt_lines)
                 label = f"{label}\\n---\\n{stmts}"
 
             # Use diamond shape for conditions
@@ -1673,6 +1679,33 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             )
 
             dot.node(str(block.id), label=label, fillcolor=color, shape=shape)
+            
+            # Create separate keyword badge nodes for this block
+            if block.statements:
+                for stmt_idx, stmt in enumerate(block.statements):
+                    keywords = detect_statement_keywords(stmt)
+                    if keywords:
+                        for kw_idx, kw in enumerate(keywords):
+                            # Create a unique node ID using block.id, statement index, and keyword index
+                            kw_node_id = f"kw_{block.id}_{stmt_idx}_{kw_idx}"
+                            
+                            # Create small badge node
+                            dot.node(
+                                kw_node_id,
+                                label=kw,
+                                shape="box",
+                                style="filled,rounded",
+                                fillcolor=keyword_color,
+                                fontcolor="white",
+                                fontsize="8",
+                                fontname="Helvetica",
+                                width="0",
+                                height="0",
+                                margin="0.05,0.02"
+                            )
+                            
+                            # Connect keyword node to the statement block
+                            dot.edge(kw_node_id, str(block.id), style="dotted", arrowhead="none", constraint="false")
 
         # Add edges
         for block in cfg.blocks.values():

@@ -562,15 +562,15 @@ end subroutine test_alloc_control
 
 
 def test_return_statement_detection():
-    """Test that RETURN statements are properly detected and create return blocks"""
+    """Test that RETURN statements connect directly to exit block (no intermediate RETURN blocks)"""
     source = """
 subroutine test_return(x)
     integer, intent(in) :: x
-    
+
     if (x < 0) then
         return
     end if
-    
+
     print *, "x is non-negative"
 end subroutine test_return
 """
@@ -578,17 +578,22 @@ end subroutine test_return
 
     assert cfg is not None
 
-    # Find return blocks
+    # RETURN statements should not create separate RETURN blocks anymore
+    # They connect directly to the EXIT block
     return_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN]
-    assert len(return_blocks) == 1
-
-    # Return block should connect to exit
-    return_block = return_blocks[0]
-    assert cfg.exit_block_id in return_block.successors
+    assert len(return_blocks) == 0, "RETURN blocks should not be created"
+    
+    # Find the THEN block (which contains the return statement)
+    then_blocks = [b for b in cfg.blocks.values() if b.label == "THEN"]
+    assert len(then_blocks) == 1
+    
+    # The THEN block should connect directly to the exit block
+    then_block = then_blocks[0]
+    assert cfg.exit_block_id in then_block.successors
 
 
 def test_multiple_return_statements():
-    """Test multiple RETURN statements in the same procedure"""
+    """Test multiple RETURN statements connect directly to exit block"""
     source = """
 subroutine test_multiple_returns(x, y)
     integer, intent(in) :: x, y
@@ -608,13 +613,17 @@ end subroutine test_multiple_returns
 
     assert cfg is not None
 
-    # Find return blocks
+    # No intermediate RETURN blocks should be created
     return_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN]
-    assert len(return_blocks) == 2
-
-    # All return blocks should connect to exit
-    for return_block in return_blocks:
-        assert cfg.exit_block_id in return_block.successors
+    assert len(return_blocks) == 0, "RETURN blocks should not be created"
+    
+    # Both THEN blocks should connect directly to exit
+    then_blocks = [b for b in cfg.blocks.values() if b.label == "THEN"]
+    assert len(then_blocks) == 2
+    
+    # All THEN blocks (with return) should connect to exit
+    for then_block in then_blocks:
+        assert cfg.exit_block_id in then_block.successors
 
 
 def test_no_return_statement():
@@ -636,17 +645,17 @@ end subroutine test_no_return
 
 
 def test_return_in_nested_blocks():
-    """Test RETURN statement in nested control structures"""
+    """Test RETURN statement in nested control structures connects directly to exit"""
     source = """
 subroutine test_nested_return(x, y)
     integer, intent(in) :: x, y
-    
+
     if (x > 0) then
         if (y > 0) then
             return
         end if
     end if
-    
+
     print *, "Completed"
 end subroutine test_nested_return
 """
@@ -654,13 +663,20 @@ end subroutine test_nested_return
 
     assert cfg is not None
 
-    # Should have one return block
+    # Should have no intermediate RETURN blocks
     return_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.RETURN]
-    assert len(return_blocks) == 1
-
-    # Return block should connect to exit
-    return_block = return_blocks[0]
-    assert cfg.exit_block_id in return_block.successors
+    assert len(return_blocks) == 0, "RETURN blocks should not be created"
+    
+    # The inner THEN block should connect directly to exit
+    then_blocks = [b for b in cfg.blocks.values() if "THEN" in b.label]
+    # Find the innermost THEN block (the one with the return)
+    innermost_then = None
+    for block in then_blocks:
+        if cfg.exit_block_id in block.successors:
+            innermost_then = block
+            break
+    
+    assert innermost_then is not None, "Should have a THEN block connecting to exit"
 
 
 def test_return_in_logic_blocks():
@@ -697,14 +713,14 @@ end subroutine test_return_logic
 
 
 def test_use_statement_detection():
-    """Test that USE statements are properly detected and create USE blocks"""
+    """Test that USE statements are skipped in CFG (per requirement #2)"""
     source = """
 subroutine test_use()
     use some_module
     use another_module, only: some_function
     implicit none
     integer :: x
-    
+
     x = 1
     print *, x
 end subroutine test_use
@@ -713,24 +729,22 @@ end subroutine test_use
 
     assert cfg is not None
 
-    # Find USE blocks
+    # USE statements should not create blocks (they're filtered out)
     use_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.USE]
-    assert len(use_blocks) == 1
-
-    # USE block should contain both USE statements
-    use_block = use_blocks[0]
-    assert len(use_block.statements) == 2
-    assert any("some_module" in stmt for stmt in use_block.statements)
-    assert any("another_module" in stmt for stmt in use_block.statements)
+    assert len(use_blocks) == 0, "USE blocks should not be created"
+    
+    # Should only have entry, exit, and statement blocks
+    stmt_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.STATEMENT]
+    assert len(stmt_blocks) > 0, "Should have statement blocks for executable code"
 
 
 def test_use_and_regular_statements():
-    """Test that USE and regular statements are in separate blocks"""
+    """Test that USE statements are filtered out, only regular statements remain"""
     source = """
 subroutine test_mixed()
     use math_module
     integer :: result
-    
+
     result = 42
 end subroutine test_mixed
 """
@@ -738,15 +752,19 @@ end subroutine test_mixed
 
     assert cfg is not None
 
-    # Should have separate blocks for USE and statements
+    # USE statements should be filtered out (per requirement #2)
     use_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.USE]
+    assert len(use_blocks) == 0, "USE blocks should not be created"
+    
+    # Should have statement blocks for executable code only
     stmt_blocks = [
         b for b in cfg.blocks.values() if b.block_type == BlockType.STATEMENT
     ]
 
-    assert len(use_blocks) == 1
-    assert len(stmt_blocks) >= 1
-
-    # USE block should only contain USE statements
-    use_block = use_blocks[0]
-    assert all("use" in stmt.lower() for stmt in use_block.statements)
+    assert len(stmt_blocks) > 0, "Should have statement blocks"
+    
+    # Verify that declarations are also filtered out
+    for block in stmt_blocks:
+        for stmt in block.statements:
+            assert not stmt.lower().startswith("use "), "USE statements should be filtered"
+            assert not stmt.lower().startswith("integer"), "Declarations should be filtered"
