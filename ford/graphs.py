@@ -1813,7 +1813,9 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 # Procedure calls: bold outline
                 style = "filled,bold"
 
-            dot.node(str(block.id), label=label, fillcolor=color, shape=shape, style=style)
+            dot.node(
+                str(block.id), label=label, fillcolor=color, shape=shape, style=style
+            )
 
         # Add edges
         for block in cfg.blocks.values():
