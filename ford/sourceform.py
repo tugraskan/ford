@@ -180,7 +180,8 @@ class IoTracker:
 
         for unit, sessions in self.completed.items():  # 🔄 FIXED
             for sess in sessions:
-                key = sess.file
+                # Normalize the file key to match what's used in summarize_file_io
+                key = self.normalize_file_key(sess.file)
                 if key == "<unknown>" and sess.unit:
                     key = f"unit_{sess.unit}"
                 result.setdefault(key, []).extend(sess.operations)
@@ -2124,6 +2125,7 @@ class FortranContainer(FortranBase):
         """
         Given a line like "open (108,file = hmd(i)%filename)",
         returns "hmd(i)%filename" (including any nested parentheses or // operations).
+        Stops at the first comma at depth 0 or at the closing paren.
         """
         # find the file= token
         m = re.search(r"file\s*=", raw_line, re.IGNORECASE)
@@ -2136,7 +2138,7 @@ class FortranContainer(FortranBase):
         while idx < len(raw_line) and raw_line[idx].isspace():
             idx += 1
 
-        # collect chars until we hit the closing ')' of the OPEN(...)
+        # collect chars until we hit a comma or closing ')' at depth 0
         depth = 0
         chars = []
         while idx < len(raw_line):
@@ -2149,6 +2151,9 @@ class FortranContainer(FortranBase):
                     break  # this is the closing paren of open(...)
                 depth -= 1
                 chars.append(ch)
+            elif ch == "," and depth == 0:
+                # Stop at comma at depth 0 (separator between parameters)
+                break
             else:
                 chars.append(ch)
             idx += 1
