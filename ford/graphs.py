@@ -27,6 +27,7 @@ from __future__ import annotations
 import colorsys
 import copy
 import itertools
+import logging as log
 import os
 import pathlib
 import re
@@ -1567,6 +1568,10 @@ class GraphManager:
                         # Skip CFG visualization for very large procedures (>500 blocks)
                         # as graphviz rendering becomes too slow
                         if len(cfg.blocks) > 500:
+                            log.debug(
+                                f"Skipping control flow graph for {obj.name} "
+                                f"({len(cfg.blocks)} blocks > 500 block limit)"
+                            )
                             obj.controlflowtgraph_svg = ""
                         else:
                             obj.controlflowtgraph_svg = create_control_flow_graph_svg(
@@ -1574,7 +1579,10 @@ class GraphManager:
                             )
                     else:
                         obj.controlflowtgraph_svg = ""
-                except Exception:
+                except Exception as e:
+                    log.debug(
+                        f"Failed to generate control flow graph for {obj.name}: {e}"
+                    )
                     obj.controlflowtgraph_svg = ""
 
                 self.procedures.add(obj)
@@ -1853,7 +1861,8 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             svg_src = dot.pipe().decode("utf-8")
             svg_src = svg_src.replace("<svg ", f'<svg id="cfg_{procedure_name}" ')
             return svg_src
-    except Exception:
+    except Exception as e:
+        log.debug(f"Error rendering control flow graph for {procedure_name}: {e}")
         return ""
 
 
