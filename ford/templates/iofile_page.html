@@ -163,16 +163,40 @@
                 <td><code>{{ var_info.full_name }}</code></td>
                 <td>
                   {% set found_var = namespace(value=none) %}
-                  {# Try to find variable in procedure #}
+                  {# Extract the base variable name and component if accessing a derived type #}
+                  {% set is_component = namespace(value=false) %}
+                  {% set base_name = var_name %}
+                  {% set component_name = none %}
+                  {% if '%' in var_info.full_name %}
+                    {% set parts = var_info.full_name.split('%') %}
+                    {% set base_name = parts[0].split('(')[0] %}
+                    {% set component_name = parts[-1] %}
+                    {% set is_component.value = true %}
+                  {% endif %}
+                  
+                  {# First try to find base variable in procedure's local variables #}
                   {% if var_info.procedure.variables is defined %}
                     {% for v in var_info.procedure.variables %}
-                      {% if v.name.lower() == var_name.lower() %}
+                      {% if v.name.lower() == base_name.lower() %}
                         {% set found_var.value = v %}
                       {% endif %}
                     {% endfor %}
                   {% endif %}
+                  {# If not found locally, try module variables via all_vars #}
+                  {% if not found_var.value and var_info.procedure.all_vars is defined %}
+                    {% if base_name.lower() in var_info.procedure.all_vars %}
+                      {% set found_var.value = var_info.procedure.all_vars[base_name.lower()] %}
+                    {% endif %}
+                  {% endif %}
+                  
+                  {# Display the type #}
                   {% if found_var.value %}
-                    <code>{{ found_var.value.vartype }}</code>
+                    {% if is_component.value %}
+                      {# For component access, show base type + component #}
+                      <code>{{ found_var.value.full_type }}%{{ component_name }}</code>
+                    {% else %}
+                      <code>{{ found_var.value.full_type }}</code>
+                    {% endif %}
                   {% else %}
                     <em>unknown</em>
                   {% endif %}
