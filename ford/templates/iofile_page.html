@@ -94,6 +94,76 @@
         <p><em>No procedures use this file.</em></p>
       {% endif %}
       
+      {# Variables Section - show variables for Output and Input/Output files #}
+      {% if iofile.io_type in ['Output', 'Input/Output'] %}
+      <h2>Variables Written to This File</h2>
+      {% set all_vars = {} %}
+      {% for proc_info in iofile.procedures %}
+        {% set proc = proc_info.procedure %}
+        {% set ops = proc_info.operations %}
+        {% if ops.timeline %}
+          {% for op in ops.timeline %}
+            {% if op.kind == 'write' and op.parameters %}
+              {% for param in op.parameters %}
+                {# Extract base variable name (remove array indices, type components) #}
+                {% set base_var = param.split('(')[0].split('%')[-1] %}
+                {% if base_var not in all_vars %}
+                  {% set _ = all_vars.update({base_var: {'full_name': param, 'procedure': proc}}) %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+      
+      {% if all_vars %}
+        <p class="text-muted">The following variables are written to this file across all procedures:</p>
+        <table class="table table-sm table-striped">
+          <thead>
+            <tr>
+              <th>Variable</th>
+              <th>Type</th>
+              <th>Default Value</th>
+              <th>Procedure</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for var_name, var_info in all_vars.items()|sort %}
+              <tr>
+                <td><code>{{ var_info.full_name }}</code></td>
+                <td>
+                  {% set found_var = namespace(value=none) %}
+                  {# Try to find variable in procedure #}
+                  {% if var_info.procedure.variables is defined %}
+                    {% for v in var_info.procedure.variables %}
+                      {% if v.name.lower() == var_name.lower() %}
+                        {% set found_var.value = v %}
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                  {% if found_var.value %}
+                    <code>{{ found_var.value.vartype }}</code>
+                  {% else %}
+                    <em>unknown</em>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if found_var.value and found_var.value.initial %}
+                    <code>{{ found_var.value.initial }}</code>
+                  {% else %}
+                    <em>-</em>
+                  {% endif %}
+                </td>
+                <td>{{ var_info.procedure | relurl(page_url) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p><em>No variables information available.</em></p>
+      {% endif %}
+      {% endif %}
+      
       <h2>I/O Operations by Procedure</h2>
       {% if iofile.procedures %}
         {% for proc_info in iofile.procedures %}
