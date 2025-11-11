@@ -98,7 +98,35 @@
       {% if iofile.io_type in ['Output', 'Input/Output'] %}
       <h2>Variables Written to This File</h2>
       {% set all_vars = {} %}
+      {% set var_order = [] %}
+      
+      {# Separate procedures into header-writing and data-writing #}
+      {% set header_procs = [] %}
+      {% set data_procs = [] %}
+      
       {% for proc_info in iofile.procedures %}
+        {% set is_header_proc = namespace(value=false) %}
+        {% set ops = proc_info.operations %}
+        {% if ops.timeline %}
+          {% for op in ops.timeline %}
+            {% if op.kind == 'write' and op.parameters %}
+              {% for param in op.parameters %}
+                {% if '_hdr' in param.lower() or '_units' in param.lower() %}
+                  {% set is_header_proc.value = true %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if is_header_proc.value %}
+          {% set _ = header_procs.append(proc_info) %}
+        {% else %}
+          {% set _ = data_procs.append(proc_info) %}
+        {% endif %}
+      {% endfor %}
+      
+      {# Process header procedures first, then data procedures #}
+      {% for proc_info in header_procs + data_procs %}
         {% set proc = proc_info.procedure %}
         {% set ops = proc_info.operations %}
         {% if ops.timeline %}
@@ -108,7 +136,8 @@
                 {# Extract base variable name (remove array indices, type components) #}
                 {% set base_var = param.split('(')[0].split('%')[-1] %}
                 {% if base_var not in all_vars %}
-                  {% set _ = all_vars.update({base_var: {'full_name': param, 'procedure': proc}}) %}
+                  {% set _ = all_vars.update({base_var: {'full_name': param, 'procedure': proc, 'line': op.line}}) %}
+                  {% set _ = var_order.append(base_var) %}
                 {% endif %}
               {% endfor %}
             {% endif %}
@@ -117,7 +146,7 @@
       {% endfor %}
       
       {% if all_vars %}
-        <p class="text-muted">The following variables are written to this file across all procedures:</p>
+        <p class="text-muted">The following variables are written to this file across all procedures (ordered by occurrence in code):</p>
         <table class="table table-sm table-striped">
           <thead>
             <tr>
@@ -128,7 +157,8 @@
             </tr>
           </thead>
           <tbody>
-            {% for var_name, var_info in all_vars.items()|sort %}
+            {% for var_name in var_order %}
+              {% set var_info = all_vars[var_name] %}
               <tr>
                 <td><code>{{ var_info.full_name }}</code></td>
                 <td>
@@ -159,6 +189,38 @@
             {% endfor %}
           </tbody>
         </table>
+        
+        {# Sample File Format Section #}
+        <h3>Sample File Format</h3>
+        <p class="text-muted">The following shows an example of how this file would be formatted:</p>
+        <div class="card">
+          <div class="card-body">
+            <pre><code>{# First, show which variables write headers vs data #}
+{# Look for header variables (typically aqu_hdr, ch_hdr, etc.) #}
+{% set header_vars = [] %}
+{% set units_vars = [] %}
+{% set data_vars = [] %}
+{% for var_name in var_order %}
+  {% set var_info = all_vars[var_name] %}
+  {% if '_hdr_units' in var_name.lower() %}
+    {% set _ = units_vars.append(var_name) %}
+  {% elif '_hdr' in var_name.lower() %}
+    {% set _ = header_vars.append(var_name) %}
+  {% else %}
+    {% set _ = data_vars.append(var_name) %}
+  {% endif %}
+{% endfor %}
+{# Show the structure #}
+{% if header_vars %}Row 1 (headers): {% for var in header_vars %}{{ var }}{% if not loop.last %}, {% endif %}{% endfor %}
+
+{% endif %}{% if units_vars %}Row 2 (units): {% for var in units_vars %}{{ var }}{% if not loop.last %}, {% endif %}{% endfor %}
+
+{% endif %}{% if data_vars %}Row 3+ (data): {% for var in data_vars %}{{ all_vars[var].full_name }}{% if not loop.last %}, {% endif %}{% endfor %}
+
+{% endif %}...</code></pre>
+            <p class="text-muted"><small>Note: Header and units variables (like <code>aqu_hdr</code>) are typically structured types that expand to multiple columns when written.</small></p>
+          </div>
+        </div>
       {% else %}
         <p><em>No variables information available.</em></p>
       {% endif %}
