@@ -752,20 +752,11 @@
         <div class="card-body">
           {% if procedure.callsgraph or procedure.calls %}
             {% if procedure.calls %}
-            <h4>Procedures Called</h4>
             <ul class="list-group list-group-flush mb-3">
               <li class="list-group-item">
                 <ul class="list-inline">
                   {% for call in procedure.calls %}
-                    <li class="list-inline-item">
-                      {% if call is string %}
-                        <code>{{ call }}</code>
-                      {% elif call.get_url %}
-                        {{ call | relurl(page_url) }}
-                      {% else %}
-                        <code>{{ call.name if call.name else call }}</code>
-                      {% endif %}
-                    </li>
+                    <li class="list-inline-item">{{ call | relurl(page_url) }}</li>
                   {% endfor %}
                 </ul>
               </li>
@@ -773,9 +764,8 @@
             {% endif %}
             
             {% if procedure.callsgraph %}
-            <h4>Call Graph</h4>
             <p class="text-muted mb-3">
-              Visual representation of procedures called by this {{ procedure.proctype }}.
+              Procedures called by this {{ procedure.proctype }}.
             </p>
             <div class="depgraph">
               {{ procedure.callsgraph }}
