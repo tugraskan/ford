@@ -156,7 +156,7 @@
         <div class="card-body">
           {% if procedure.io_operations %}
           <p class="text-muted mb-3">
-            I/O units used in this subroutine.
+            I/O files used in this {{ procedure.proctype|lower }}.
           </p>
           <table class="table table-sm table-striped">
             <thead>
@@ -164,6 +164,7 @@
                 <th>Unit</th>
                 <th>Type</th>
                 <th>Filename</th>
+                <th>Operations</th>
               </tr>
             </thead>
             <tbody>
@@ -204,13 +205,29 @@
                   {% endif %}
                 </td>
                 <td>
-                  {% if operations.filename %}
+                  {% set resolved_fname = operations.filename_resolved if operations.filename_resolved else operations.filename %}
+                  {% if resolved_fname and resolved_fname in project.iofile_map %}
+                    {# Link to the I/O file page if we have a mapping #}
+                    <a href="{{ project_url }}/{{ project.iofile_map[resolved_fname].get_url() }}">
+                      <code>{{ operations.filename }}</code>
+                    </a>
+                    {% if operations.filename_resolved %}
+                      <br><small class="text-muted">→ {{ operations.filename_resolved }}</small>
+                    {% endif %}
+                  {% elif operations.filename %}
                     <code>{{ operations.filename }}</code>
                     {% if operations.filename_resolved %}
                       <br><small class="text-muted">→ {{ operations.filename_resolved }}</small>
                     {% endif %}
                   {% else %}
                     <em>not specified</em>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if operations.timeline %}
+                    {{ operations.timeline|length }} operation(s)
+                  {% else %}
+                    <em>n/a</em>
                   {% endif %}
                 </td>
               </tr>
