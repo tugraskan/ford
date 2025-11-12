@@ -1796,12 +1796,21 @@ class Project:
                             
                             # Store reference to the FortranIOFile object in the procedure's io_operations
                             # This allows the template to link to the I/O file page
+                            # Use the original file_key from the procedure's io_operations dict
                             if hasattr(proc, "io_operations") and proc.io_operations:
                                 if file_key in proc.io_operations:
                                     proc.io_operations[file_key]["iofile_object"] = io_files_dict[io_key]
 
         # Convert dict to list and sort by filename
         self.iofiles = sorted(io_files_dict.values(), key=lambda x: x.io_filename)
+        
+        # Create a mapping from filenames to IOFile objects that templates can use
+        # This allows procedure pages to link to I/O file pages
+        self.iofile_map = {}
+        for io_key, io_file in io_files_dict.items():
+            self.iofile_map[io_key] = io_file
+            # Also store by the actual io_filename in case they differ
+            self.iofile_map[io_file.io_filename] = io_file
 
     def markdown(self, md):
         """

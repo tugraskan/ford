@@ -205,9 +205,10 @@
                   {% endif %}
                 </td>
                 <td>
-                  {% if operations.iofile_object %}
-                    {# Link to the I/O file page if we have the object #}
-                    <a href="{{ project_url }}/{{ operations.iofile_object.get_url() }}">
+                  {% set resolved_fname = operations.filename_resolved if operations.filename_resolved else operations.filename %}
+                  {% if resolved_fname and resolved_fname in project.iofile_map %}
+                    {# Link to the I/O file page if we have a mapping #}
+                    <a href="{{ project_url }}/{{ project.iofile_map[resolved_fname].get_url() }}">
                       <code>{{ operations.filename }}</code>
                     </a>
                     {% if operations.filename_resolved %}
