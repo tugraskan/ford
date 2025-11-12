@@ -216,25 +216,95 @@
         
         {# Sample File Format Section #}
         <h3>Sample File Format</h3>
+        
+        {# First, categorize variables #}
+        {% set header_vars = [] %}
+        {% set units_vars = [] %}
+        {% set data_vars = [] %}
+        {% for var_name in var_order %}
+          {% set var_info = all_vars[var_name] %}
+          {% if '_hdr_units' in var_name.lower() or '_units' in var_name.lower() %}
+            {% set _ = units_vars.append(var_name) %}
+          {% elif '_hdr' in var_name.lower() %}
+            {% set _ = header_vars.append(var_name) %}
+          {% else %}
+            {% set _ = data_vars.append(var_name) %}
+          {% endif %}
+        {% endfor %}
+        
+        {# Show transposed header tables for header and units variables #}
+        {% if header_vars or units_vars %}
+          {% for var_name in header_vars + units_vars %}
+            {% set var_info = all_vars[var_name] %}
+            {# Try to find the variable in the procedure #}
+            {% set found_var = namespace(value=none) %}
+            {% if var_info.procedure.variables is defined %}
+              {% for v in var_info.procedure.variables %}
+                {% if v.name.lower() == var_name.lower() %}
+                  {% set found_var.value = v %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            {# If not found locally, try module variables via all_vars #}
+            {% if not found_var.value and var_info.procedure.all_vars is defined %}
+              {% if var_name.lower() in var_info.procedure.all_vars %}
+                {% set found_var.value = var_info.procedure.all_vars[var_name.lower()] %}
+              {% endif %}
+            {% endif %}
+            
+            {# Create the header table if we found the variable #}
+            {% if found_var.value %}
+              {% set header_table = found_var.value | create_header_table %}
+              {% if header_table %}
+                <h4>{{ var_name }} ({{ found_var.value.full_type }})</h4>
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        {% for field in header_table.fields %}
+                        <th>{{ field }}</th>
+                        {% endfor %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>Attributes</strong></td>
+                        {% for attr in header_table.attributes %}
+                        <td><code>{{ attr }}</code></td>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <td><strong>Name</strong></td>
+                        {% for name in header_table.names %}
+                        <td>{{ name }}</td>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <td><strong>Initial</strong></td>
+                        {% for initial in header_table.initials %}
+                        <td><code>{{ initial }}</code></td>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <td><strong>Type</strong></td>
+                        {% for type in header_table.types %}
+                        <td><code>{{ type }}</code></td>
+                        {% endfor %}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        
+        {# Show traditional format info #}
         <p class="text-muted">The following shows an example of how this file would be formatted:</p>
         <div class="card">
           <div class="card-body">
-            <pre><code>{# First, show which variables write headers vs data #}
-{# Look for header variables (typically aqu_hdr, ch_hdr, etc.) #}
-{% set header_vars = [] %}
-{% set units_vars = [] %}
-{% set data_vars = [] %}
-{% for var_name in var_order %}
-  {% set var_info = all_vars[var_name] %}
-  {% if '_hdr_units' in var_name.lower() %}
-    {% set _ = units_vars.append(var_name) %}
-  {% elif '_hdr' in var_name.lower() %}
-    {% set _ = header_vars.append(var_name) %}
-  {% else %}
-    {% set _ = data_vars.append(var_name) %}
-  {% endif %}
-{% endfor %}
-{# Show the structure #}
+            <pre><code>{# Show the structure #}
 {% if header_vars %}Row 1 (headers): {% for var in header_vars %}{{ var }}{% if not loop.last %}, {% endif %}{% endfor %}
 
 {% endif %}{% if units_vars %}Row 2 (units): {% for var in units_vars %}{{ var }}{% if not loop.last %}, {% endif %}{% endfor %}
