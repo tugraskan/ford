@@ -30,70 +30,102 @@ All I/O Files &ndash; {{ project }}
           
           {# Display Input Files #}
           {% if input_files %}
-          <h2>Input Files</h2>
-          <table class="table table-striped">
-            <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
-            <tbody>
-              {% for iofile in input_files %}
-                <tr>
-                  <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
-                  <td><code>{{ iofile.unit }}</code></td>
-                  <td>{{ iofile.procedures|length }} procedure(s)</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+          <h2>
+            <a data-bs-toggle="collapse" href="#input-files-section" 
+               aria-expanded="true" aria-controls="input-files-section"
+               class="text-decoration-none">
+              Input Files <small class="text-muted">({{ input_files|length }})</small>
+            </a>
+          </h2>
+          <div id="input-files-section" class="collapse show">
+            <table class="table table-striped">
+              <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
+              <tbody>
+                {% for iofile in input_files %}
+                  <tr>
+                    <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
+                    <td><code>{{ iofile.unit }}</code></td>
+                    <td>{{ iofile.procedures|length }} procedure(s)</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
           {% endif %}
           
           {# Display Output Files #}
           {% if output_files %}
-          <h2>Output Files</h2>
-          <table class="table table-striped">
-            <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
-            <tbody>
-              {% for iofile in output_files %}
-                <tr>
-                  <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
-                  <td><code>{{ iofile.unit }}</code></td>
-                  <td>{{ iofile.procedures|length }} procedure(s)</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+          <h2>
+            <a data-bs-toggle="collapse" href="#output-files-section" 
+               aria-expanded="true" aria-controls="output-files-section"
+               class="text-decoration-none">
+              Output Files <small class="text-muted">({{ output_files|length }})</small>
+            </a>
+          </h2>
+          <div id="output-files-section" class="collapse show">
+            <table class="table table-striped">
+              <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
+              <tbody>
+                {% for iofile in output_files %}
+                  <tr>
+                    <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
+                    <td><code>{{ iofile.unit }}</code></td>
+                    <td>{{ iofile.procedures|length }} procedure(s)</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
           {% endif %}
           
           {# Display Input/Output Files #}
           {% if input_output_files %}
-          <h2>Input/Output Files</h2>
-          <table class="table table-striped">
-            <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
-            <tbody>
-              {% for iofile in input_output_files %}
-                <tr>
-                  <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
-                  <td><code>{{ iofile.unit }}</code></td>
-                  <td>{{ iofile.procedures|length }} procedure(s)</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+          <h2>
+            <a data-bs-toggle="collapse" href="#input-output-files-section" 
+               aria-expanded="true" aria-controls="input-output-files-section"
+               class="text-decoration-none">
+              Input/Output Files <small class="text-muted">({{ input_output_files|length }})</small>
+            </a>
+          </h2>
+          <div id="input-output-files-section" class="collapse show">
+            <table class="table table-striped">
+              <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
+              <tbody>
+                {% for iofile in input_output_files %}
+                  <tr>
+                    <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
+                    <td><code>{{ iofile.unit }}</code></td>
+                    <td>{{ iofile.procedures|length }} procedure(s)</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
           {% endif %}
           
           {# Display Unknown Files if any #}
           {% if unknown_files %}
-          <h2>Unknown Type</h2>
-          <table class="table table-striped">
-            <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
-            <tbody>
-              {% for iofile in unknown_files %}
-                <tr>
-                  <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
-                  <td><code>{{ iofile.unit }}</code></td>
-                  <td>{{ iofile.procedures|length }} procedure(s)</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+          <h2>
+            <a data-bs-toggle="collapse" href="#unknown-files-section" 
+               aria-expanded="true" aria-controls="unknown-files-section"
+               class="text-decoration-none">
+              Other Files <small class="text-muted">({{ unknown_files|length }})</small>
+            </a>
+          </h2>
+          <div id="unknown-files-section" class="collapse show">
+            <table class="table table-striped">
+              <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
+              <tbody>
+                {% for iofile in unknown_files %}
+                  <tr>
+                    <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
+                    <td><code>{{ iofile.unit }}</code></td>
+                    <td>{{ iofile.procedures|length }} procedure(s)</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
           {% endif %}
           
         </div>

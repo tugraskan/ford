@@ -1793,6 +1793,12 @@ class Project:
                             io_files_dict[io_key].add_procedure(
                                 proc, enhanced_operations
                             )
+                            
+                            # Store reference to the FortranIOFile object in the procedure's io_operations
+                            # This allows the template to link to the I/O file page
+                            if hasattr(proc, "io_operations") and proc.io_operations:
+                                if file_key in proc.io_operations:
+                                    proc.io_operations[file_key]["iofile_object"] = io_files_dict[io_key]
 
         # Convert dict to list and sort by filename
         self.iofiles = sorted(io_files_dict.values(), key=lambda x: x.io_filename)
