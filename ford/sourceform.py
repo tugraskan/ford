@@ -524,14 +524,18 @@ class IoTracker:
                             type_name = IoTracker._var_to_type_map[var_name]
                             type_component_key = f"{type_name}%{component_name}"
                             if type_component_key in IoTracker._type_defaults_map:
-                                filename_resolved = IoTracker._type_defaults_map[type_component_key]
+                                filename_resolved = IoTracker._type_defaults_map[
+                                    type_component_key
+                                ]
 
             # 2. Try to resolve filename from unit number (cross-file resolution) as fallback
             # This is especially useful when a procedure uses a unit without opening it (e.g., WRITE without OPEN)
             # BUT: Only use unit-based resolution for synthetic filenames (unit_XXX)
             # Don't use it for literal strings or variable references, as unit numbers are reused
             should_use_unit_resolution = (
-                original_filename and original_filename.startswith("unit_") and not filename_resolved
+                original_filename
+                and original_filename.startswith("unit_")
+                and not filename_resolved
             )
             if should_use_unit_resolution:
                 unit_number = unit_resolved if unit_resolved else unit

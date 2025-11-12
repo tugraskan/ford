@@ -1498,12 +1498,12 @@ class Project:
         """
         Build a project-wide mapping of variable names to their type names
         by scanning all variable declarations in all modules.
-        
+
         Returns:
             Dict mapping variable name (lowercase) to type name (lowercase)
         """
         var_to_type = {}
-        
+
         # Scan all modules
         for module in self.modules:
             if hasattr(module, "variables"):
@@ -1513,12 +1513,15 @@ class Project:
                         vartype_str = var.vartype.strip()
                         # Extract type name from declarations like "type(input_exco)"
                         import re
-                        m = re.match(r"type\s*\(\s*(\w+)\s*\)", vartype_str, re.IGNORECASE)
+
+                        m = re.match(
+                            r"type\s*\(\s*(\w+)\s*\)", vartype_str, re.IGNORECASE
+                        )
                         if m:
                             type_name = m.group(1).lower()
                             var_name = var.name.lower()
                             var_to_type[var_name] = type_name
-        
+
         return var_to_type
 
     def build_type_defaults_mapping(self) -> Dict[str, str]:
@@ -1695,8 +1698,10 @@ class Project:
                             # - We don't have a concrete filename (it's a synthetic unit_XXX name)
                             # - The filename is not a literal string or variable reference
                             should_use_unit_resolution = (
-                                filename and filename.startswith("unit_") and
-                                unit_number and str(unit_number) in unit_to_filename_map
+                                filename
+                                and filename.startswith("unit_")
+                                and unit_number
+                                and str(unit_number) in unit_to_filename_map
                             )
                             if should_use_unit_resolution:
                                 cross_file_filename = unit_to_filename_map[
@@ -1725,11 +1730,18 @@ class Project:
                                             component_name = parts[1].strip().lower()
                                             if var_name in var_to_type_map:
                                                 type_name = var_to_type_map[var_name]
-                                                type_component_key = f"{type_name}%{component_name}"
-                                                if type_component_key in type_defaults_map:
-                                                    filename_resolved = type_defaults_map[
-                                                        type_component_key
-                                                    ]
+                                                type_component_key = (
+                                                    f"{type_name}%{component_name}"
+                                                )
+                                                if (
+                                                    type_component_key
+                                                    in type_defaults_map
+                                                ):
+                                                    filename_resolved = (
+                                                        type_defaults_map[
+                                                            type_component_key
+                                                        ]
+                                                    )
 
                         # Determine the final display filename(s)
                         # If we found multiple filenames from call sites, create separate entries
@@ -1793,17 +1805,19 @@ class Project:
                             io_files_dict[io_key].add_procedure(
                                 proc, enhanced_operations
                             )
-                            
+
                             # Store reference to the FortranIOFile object in the procedure's io_operations
                             # This allows the template to link to the I/O file page
                             # Use the original file_key from the procedure's io_operations dict
                             if hasattr(proc, "io_operations") and proc.io_operations:
                                 if file_key in proc.io_operations:
-                                    proc.io_operations[file_key]["iofile_object"] = io_files_dict[io_key]
+                                    proc.io_operations[file_key]["iofile_object"] = (
+                                        io_files_dict[io_key]
+                                    )
 
         # Convert dict to list and sort by filename
         self.iofiles = sorted(io_files_dict.values(), key=lambda x: x.io_filename)
-        
+
         # Create a mapping from filenames to IOFile objects that templates can use
         # This allows procedure pages to link to I/O file pages
         self.iofile_map = {}
