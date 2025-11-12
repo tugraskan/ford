@@ -213,10 +213,98 @@ def extract_io_variables(io_statement, procedure=None):
     return result
 
 
+def create_header_table(var, parent_type_name=None):
+    """
+    Create a transposed table for Fortran header type declarations.
+    
+    Args:
+        var: FortranVariable or FortranType object containing the header type
+        parent_type_name: Optional name of the parent type for the Attributes row
+        
+    Returns:
+        Dictionary with table data structure:
+        {
+            'fields': [field_names],
+            'attributes': [attribute_references],
+            'names': [field_names],
+            'initials': [initial_values],
+            'types': [type_declarations]
+        }
+    """
+    if not var:
+        return None
+    
+    # Get the type definition - could be from var.proto[0] if it's a variable
+    # or directly if it's a type
+    type_def = None
+    if hasattr(var, 'proto') and var.proto and len(var.proto) > 0:
+        type_def = var.proto[0]
+        # If proto[0] is a string, we couldn't resolve the type
+        if isinstance(type_def, str):
+            return None
+    elif hasattr(var, 'variables'):
+        # It's already a type definition
+        type_def = var
+    else:
+        return None
+    
+    # Check if it's actually a FortranType with variables
+    if not hasattr(type_def, 'variables') or not type_def.variables:
+        return None
+    
+    # Extract the type name for attributes
+    if parent_type_name is None:
+        parent_type_name = getattr(type_def, 'name', 'unknown')
+    
+    fields = []
+    attributes = []
+    names = []
+    initials = []
+    types = []
+    
+    # Process each variable in the type
+    for component in type_def.variables:
+        if not hasattr(component, 'name'):
+            continue
+            
+        field_name = component.name
+        fields.append(field_name)
+        
+        # Attributes: parent_type%field_name
+        attributes.append(f"{parent_type_name}%{field_name}")
+        
+        # Name: just the field name
+        names.append(field_name)
+        
+        # Initial: the initial value (preserve exact spacing)
+        initial_value = getattr(component, 'initial', None)
+        if initial_value is not None:
+            # Initial values should already be strings with quotes preserved
+            initials.append(str(initial_value))
+        else:
+            initials.append('')
+        
+        # Type: the full type specification (e.g., character(len=6))
+        type_str = getattr(component, 'full_type', component.vartype if hasattr(component, 'vartype') else '')
+        types.append(str(type_str))
+    
+    if not fields:
+        return None
+    
+    return {
+        'fields': fields,
+        'attributes': attributes,
+        'names': names,
+        'initials': initials,
+        'types': types
+    }
+
+
 env.tests["more_than_one"] = is_more_than_one
 env.filters["meta"] = meta
 env.filters["relurl"] = relative_url
 env.filters["extract_io_variables"] = extract_io_variables
+env.filters["create_header_table"] = create_header_table
 
 USER_WRITABLE_ONLY = 0o755
 
