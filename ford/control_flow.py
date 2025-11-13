@@ -254,6 +254,17 @@ class FortranControlFlowParser:
                 i += 1
                 continue
 
+            # Strip inline comments (! but not in strings)
+            # Simple approach: remove everything after the first ! (may need refinement for strings)
+            comment_start = line_stripped.find('!')
+            if comment_start >= 0:
+                line_stripped = line_stripped[:comment_start].rstrip()
+
+            # Skip if line becomes empty after comment removal
+            if not line_stripped:
+                i += 1
+                continue
+
             # Check for IF-THEN-ELSE blocks
             if match := self.IF_THEN_RE.match(line_stripped):
                 label, condition = match.groups()
@@ -830,6 +841,17 @@ class LogicBlockExtractor:
             if not line_stripped or (
                 line_stripped.startswith("!") and not line_stripped.startswith("!!")
             ):
+                i += 1
+                continue
+
+            # Strip inline comments (! but not in strings)
+            # Simple approach: remove everything after the first ! (may need refinement for strings)
+            comment_start = line_stripped.find('!')
+            if comment_start >= 0:
+                line_stripped = line_stripped[:comment_start].rstrip()
+
+            # Skip if line becomes empty after comment removal
+            if not line_stripped:
                 i += 1
                 continue
 

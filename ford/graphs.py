@@ -1776,14 +1776,56 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             BlockType.KEYWORD_CALL: "box",  # Will use bold outline
         }
 
-        # Add nodes
-        for block in cfg.blocks.values():
+        # Helper function to check if a block should be skipped from visualization
+        def should_skip_block(block):
+            """Check if a block should be skipped from the graph visualization"""
             # Skip unreachable blocks (blocks with no predecessors except entry/exit)
             if (
                 not block.predecessors
                 and block.id != cfg.entry_block_id
                 and block.id != cfg.exit_block_id
             ):
+                return True
+            
+            # Skip "After" merge blocks (they add clutter without useful information)
+            if block.block_type == BlockType.STATEMENT and any(
+                after_keyword in block.label
+                for after_keyword in ["After IF", "After THEN", "After loop", "After SELECT"]
+            ):
+                return True
+            
+            return False
+
+        # Helper function to find the next non-skipped successor
+        def find_next_visible_successor(block_id, visited=None):
+            """Find the next visible (non-skipped) successor of a block, following edges through skipped blocks"""
+            if visited is None:
+                visited = set()
+            
+            if block_id in visited:
+                return []  # Avoid infinite loops
+            
+            visited.add(block_id)
+            
+            if block_id not in cfg.blocks:
+                return []
+            
+            block = cfg.blocks[block_id]
+            
+            # If this block should not be skipped, return it
+            if not should_skip_block(block):
+                return [block_id]
+            
+            # Otherwise, recursively find visible successors
+            visible_successors = []
+            for succ_id in block.successors:
+                visible_successors.extend(find_next_visible_successor(succ_id, visited))
+            
+            return visible_successors
+
+        # Add nodes
+        for block in cfg.blocks.values():
+            if should_skip_block(block):
                 continue
 
             color = colors.get(block.block_type, "#FFFFFF")
@@ -1793,6 +1835,10 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 label = f"{block.label}\\n{block.condition}"
             else:
                 label = block.label
+
+            # Add line number to label if available (for all blocks with line_number)
+            if block.line_number is not None:
+                label = f"{label}\\n(L{block.line_number})"
 
             # Add statements to label only for non-keyword blocks
             # Keyword blocks already have the statement in their label
@@ -1827,19 +1873,26 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
 
         # Add edges
         for block in cfg.blocks.values():
+            if should_skip_block(block):
+                continue
+                
             for succ_id in block.successors:
-                # Label edges from conditions
-                edge_label = ""
-                if block.block_type == BlockType.IF_CONDITION:
-                    # First successor is "true", second is "false"
-                    idx = block.successors.index(succ_id)
-                    edge_label = "T" if idx == 0 else "F"
-                elif block.block_type == BlockType.DO_LOOP:
-                    # First successor is loop body, second is exit
-                    idx = block.successors.index(succ_id)
-                    edge_label = "loop" if idx == 0 else "exit"
+                # Find visible successors (skip through "After" blocks)
+                visible_successors = find_next_visible_successor(succ_id)
+                
+                for visible_succ_id in visible_successors:
+                    # Label edges from conditions
+                    edge_label = ""
+                    if block.block_type == BlockType.IF_CONDITION:
+                        # First successor is "true", second is "false"
+                        idx = block.successors.index(succ_id)
+                        edge_label = "T" if idx == 0 else "F"
+                    elif block.block_type == BlockType.DO_LOOP:
+                        # First successor is loop body, second is exit
+                        idx = block.successors.index(succ_id)
+                        edge_label = "loop" if idx == 0 else "exit"
 
-                dot.edge(str(block.id), str(succ_id), label=edge_label)
+                    dot.edge(str(block.id), str(visible_succ_id), label=edge_label)
 
         # Render with timeout protection (30 seconds for graphviz rendering)
         if hasattr(signal, "SIGALRM"):
