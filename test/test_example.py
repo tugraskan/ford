@@ -74,6 +74,7 @@ def test_nav_bar(example_index):
         "Programs",
         "Abstract Interfaces",
         "Namelists",
+        "I/O",  # Added to account for IO file tracking
     }
     assert expected_pages == link_names
 
