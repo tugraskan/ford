@@ -1508,19 +1508,39 @@ class Project:
         for module in self.modules:
             if hasattr(module, "variables"):
                 for var in module.variables:
-                    # Get the type name from the variable's vartype or meta information
-                    if hasattr(var, "vartype") and var.vartype:
-                        vartype_str = var.vartype.strip()
-                        # Extract type name from declarations like "type(input_exco)"
-                        import re
+                    # Get the type name from the variable's proto (raw type name)
+                    type_str = None
+                    if hasattr(var, "proto") and var.proto:
+                        # proto might be:
+                        # - A FortranType object (has .name attribute)
+                        # - A list containing [FortranType, '']
+                        # - A string
+                        proto = var.proto
+                        
+                        # If proto is a list, get the first element
+                        if isinstance(proto, list) and len(proto) > 0:
+                            proto = proto[0]
+                        
+                        # Now check if it's a FortranType object
+                        if hasattr(proto, "name"):
+                            # It's a FortranType object
+                            type_str = proto.name
+                        elif isinstance(proto, str):
+                            # It's a string like "type(input_exco)"
+                            proto_str = proto.strip()
+                            # Extract type name from declarations like "type(input_exco)"
+                            import re
 
-                        m = re.match(
-                            r"type\s*\(\s*(\w+)\s*\)", vartype_str, re.IGNORECASE
-                        )
-                        if m:
-                            type_name = m.group(1).lower()
-                            var_name = var.name.lower()
-                            var_to_type[var_name] = type_name
+                            m = re.match(
+                                r"type\s*\(\s*(\w+)\s*\)", proto_str, re.IGNORECASE
+                            )
+                            if m:
+                                type_str = m.group(1)
+                    
+                    if type_str:
+                        type_name = type_str.lower()
+                        var_name = var.name.lower()
+                        var_to_type[var_name] = type_name
 
         return var_to_type
 
