@@ -1516,11 +1516,11 @@ class Project:
                         # - A list containing [FortranType, '']
                         # - A string
                         proto = var.proto
-                        
+
                         # If proto is a list, get the first element
                         if isinstance(proto, list) and len(proto) > 0:
                             proto = proto[0]
-                        
+
                         # Now check if it's a FortranType object
                         if hasattr(proto, "name"):
                             # It's a FortranType object
@@ -1536,7 +1536,7 @@ class Project:
                             )
                             if m:
                                 type_str = m.group(1)
-                    
+
                     if type_str:
                         type_name = type_str.lower()
                         var_name = var.name.lower()
