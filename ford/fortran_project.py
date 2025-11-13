@@ -1682,13 +1682,26 @@ class Project:
                                                             # E.g., in_con%hru_con -> get type of in_con -> input_con -> look up input_con%hru_con
                                                             parts = arg_value.split("%")
                                                             if len(parts) == 2:
-                                                                var_name = parts[0].strip().lower()
-                                                                component_name = parts[1].strip().lower()
-                                                                if var_name in var_to_type_map:
-                                                                    type_name = var_to_type_map[var_name]
-                                                                    type_component_key = (
-                                                                        f"{type_name}%{component_name}"
+                                                                var_name = (
+                                                                    parts[0]
+                                                                    .strip()
+                                                                    .lower()
+                                                                )
+                                                                component_name = (
+                                                                    parts[1]
+                                                                    .strip()
+                                                                    .lower()
+                                                                )
+                                                                if (
+                                                                    var_name
+                                                                    in var_to_type_map
+                                                                ):
+                                                                    type_name = (
+                                                                        var_to_type_map[
+                                                                            var_name
+                                                                        ]
                                                                     )
+                                                                    type_component_key = f"{type_name}%{component_name}"
                                                                     if (
                                                                         type_component_key
                                                                         in type_defaults_map
@@ -1697,7 +1710,10 @@ class Project:
                                                                             type_component_key
                                                                         ]
                                                             # If still not resolved, try just the last component
-                                                            if not resolved_arg and len(parts) >= 2:
+                                                            if (
+                                                                not resolved_arg
+                                                                and len(parts) >= 2
+                                                            ):
                                                                 simple_name = parts[
                                                                     -1
                                                                 ].lower()
