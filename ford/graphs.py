@@ -1786,14 +1786,19 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 and block.id != cfg.exit_block_id
             ):
                 return True
-            
+
             # Skip "After" merge blocks (they add clutter without useful information)
             if block.block_type == BlockType.STATEMENT and any(
                 after_keyword in block.label
-                for after_keyword in ["After IF", "After THEN", "After loop", "After SELECT"]
+                for after_keyword in [
+                    "After IF",
+                    "After THEN",
+                    "After loop",
+                    "After SELECT",
+                ]
             ):
                 return True
-            
+
             return False
 
         # Helper function to find the next non-skipped successor
@@ -1801,26 +1806,26 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             """Find the next visible (non-skipped) successor of a block, following edges through skipped blocks"""
             if visited is None:
                 visited = set()
-            
+
             if block_id in visited:
                 return []  # Avoid infinite loops
-            
+
             visited.add(block_id)
-            
+
             if block_id not in cfg.blocks:
                 return []
-            
+
             block = cfg.blocks[block_id]
-            
+
             # If this block should not be skipped, return it
             if not should_skip_block(block):
                 return [block_id]
-            
+
             # Otherwise, recursively find visible successors
             visible_successors = []
             for succ_id in block.successors:
                 visible_successors.extend(find_next_visible_successor(succ_id, visited))
-            
+
             return visible_successors
 
         # Add nodes
@@ -1875,11 +1880,11 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         for block in cfg.blocks.values():
             if should_skip_block(block):
                 continue
-                
+
             for succ_id in block.successors:
                 # Find visible successors (skip through "After" blocks)
                 visible_successors = find_next_visible_successor(succ_id)
-                
+
                 for visible_succ_id in visible_successors:
                     # Label edges from conditions
                     edge_label = ""

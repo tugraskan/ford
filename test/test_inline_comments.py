@@ -17,14 +17,14 @@ subroutine test_inline_comment(n)
 end subroutine test_inline_comment
 """
     result = extract_logic_blocks(source, "test_inline_comment", "subroutine")
-    
+
     assert result is not None
     blocks, allocations = result
-    
+
     # Find DO block
     do_blocks = [b for b in blocks if b.block_type == "do"]
     assert len(do_blocks) == 1
-    
+
     do_block = do_blocks[0]
     # Verify end_line is set (this is the key fix - END DO with inline comment is now matched)
     assert do_block.end_line is not None
@@ -43,14 +43,14 @@ subroutine test_if_inline(x)
 end subroutine test_if_inline
 """
     result = extract_logic_blocks(source, "test_if_inline", "subroutine")
-    
+
     assert result is not None
     blocks, allocations = result
-    
+
     # Find IF block
     if_blocks = [b for b in blocks if b.block_type == "if"]
     assert len(if_blocks) == 1
-    
+
     if_block = if_blocks[0]
     # Verify end_line is set (this is the key fix - END IF with inline comment is now matched)
     assert if_block.end_line is not None
@@ -72,14 +72,14 @@ subroutine test_select_inline(mode)
 end subroutine test_select_inline
 """
     result = extract_logic_blocks(source, "test_select_inline", "subroutine")
-    
+
     assert result is not None
     blocks, allocations = result
-    
+
     # Find SELECT block
     select_blocks = [b for b in blocks if b.block_type == "select"]
     assert len(select_blocks) == 1
-    
+
     select_block = select_blocks[0]
     # Verify end_line is set (this is the key fix - END SELECT with inline comment is now matched)
     assert select_block.end_line is not None
@@ -104,31 +104,31 @@ subroutine test_nested_inline(n, mode)
 end subroutine test_nested_inline
 """
     result = extract_logic_blocks(source, "test_nested_inline", "subroutine")
-    
+
     assert result is not None
     blocks, allocations = result
-    
+
     # Find IF block
     if_blocks = [b for b in blocks if b.block_type == "if"]
     assert len(if_blocks) == 1
     if_block = if_blocks[0]
     assert if_block.end_line is not None
     assert if_block.end_line > if_block.start_line
-    
+
     # Find DO block (child of IF)
     do_blocks = [c for c in if_block.children if c.block_type == "do"]
     assert len(do_blocks) == 1
     do_block = do_blocks[0]
     assert do_block.end_line is not None
     assert do_block.end_line > do_block.start_line
-    
+
     # Find SELECT block (child of DO)
     select_blocks = [c for c in do_block.children if c.block_type == "select"]
     assert len(select_blocks) == 1
     select_block = select_blocks[0]
     assert select_block.end_line is not None
     assert select_block.end_line > select_block.start_line
-    
+
     # The important check: end_do comes after end_select which comes after case content
     assert select_block.end_line < do_block.end_line < if_block.end_line
 
@@ -146,17 +146,18 @@ subroutine test_cfg_inline(n)
 end subroutine test_cfg_inline
 """
     cfg = parse_control_flow(source, "test_cfg_inline", "subroutine")
-    
+
     assert cfg is not None
-    
+
     # Find DO loop blocks
     from ford.control_flow import BlockType
+
     do_blocks = [b for b in cfg.blocks.values() if b.block_type == BlockType.DO_LOOP]
     assert len(do_blocks) == 1
-    
+
     # Verify the DO block has a line number
     do_block = do_blocks[0]
     assert do_block.line_number is not None
-    
+
     # Find loop body and after-loop blocks to verify graph structure
     assert len(do_block.successors) == 2  # Loop body and exit

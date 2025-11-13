@@ -256,7 +256,7 @@ class FortranControlFlowParser:
 
             # Strip inline comments (! but not in strings)
             # Simple approach: remove everything after the first ! (may need refinement for strings)
-            comment_start = line_stripped.find('!')
+            comment_start = line_stripped.find("!")
             if comment_start >= 0:
                 line_stripped = line_stripped[:comment_start].rstrip()
 
@@ -846,7 +846,7 @@ class LogicBlockExtractor:
 
             # Strip inline comments (! but not in strings)
             # Simple approach: remove everything after the first ! (may need refinement for strings)
-            comment_start = line_stripped.find('!')
+            comment_start = line_stripped.find("!")
             if comment_start >= 0:
                 line_stripped = line_stripped[:comment_start].rstrip()
 
