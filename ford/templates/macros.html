@@ -886,14 +886,20 @@
                         <table class="table table-sm">
                           <thead>
                             <tr>
-                              <th scope="col">Attribute Name</th>
+                              <th scope="col">Variable Declaration</th>
                               <th scope="col">Description</th>
                             </tr>
                           </thead>
                           <tbody>
                             {% for var in type_data.vars %}
                               <tr>
-                                <td><strong>{{ var.name }}</strong>{{ var.dimension }}</td>
+                                <td>
+                                  {{ var.full_type | relurl(page_url) }}{{ add_comma(var.permission or var.parameter or var.attribs) }}
+                                  {% if var.permission %}{{ var.permission }}{{ add_comma(var.parameter or var.attribs) }}{% endif %}
+                                  {% if var.parameter %}parameter{{ add_comma(var.attribs) }}{% endif %}
+                                  {% if var.attribs %}{{ var.attribs | join(", ") }}{% endif %}
+                                  :: <strong>{{ var.name }}</strong>{{ var.dimension }}
+                                </td>
                                 <td>{{ var | meta('summary') }}</td>
                               </tr>
                             {% endfor %}
