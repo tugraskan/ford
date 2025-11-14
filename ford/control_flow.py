@@ -232,7 +232,7 @@ class FortranControlFlowParser:
 
         # Extract procedure arguments for the entry block label
         args = self._extract_procedure_arguments()
-        
+
         # Create entry block with procedure name and arguments
         entry_label = f"{self.procedure_name}{args}"
         entry = self.cfg.create_block(BlockType.ENTRY, entry_label)
@@ -544,14 +544,14 @@ class FortranControlFlowParser:
             The argument list (e.g., "(x, y, z)"), or empty string if no arguments
         """
         lines = self.source_code.split("\n")
-        
+
         # Pattern to match procedure declaration with arguments
         # Matches: subroutine name(...) or function name(...)
         proc_sig_pattern = re.compile(
             rf"^\s*{re.escape(self.procedure_type)}\s+{re.escape(self.procedure_name)}\s*(\([^)]*\))?",
             re.IGNORECASE,
         )
-        
+
         for line in lines:
             if match := proc_sig_pattern.match(line.strip()):
                 # Group 1 contains the argument list with parentheses
@@ -561,7 +561,7 @@ class FortranControlFlowParser:
                 else:
                     # Procedure with no arguments
                     return "()"
-        
+
         # If we couldn't find the signature, return empty parentheses
         return "()"
 

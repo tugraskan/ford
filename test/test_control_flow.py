@@ -950,10 +950,10 @@ subroutine test_args(x, y, z)
 end subroutine test_args
 """
     cfg = parse_control_flow(source, "test_args", "subroutine")
-    
+
     assert cfg is not None
     assert cfg.entry_block_id is not None
-    
+
     entry_block = cfg.blocks[cfg.entry_block_id]
     assert entry_block.block_type == BlockType.ENTRY
     assert entry_block.label == "test_args(x, y, z)"
@@ -969,10 +969,10 @@ function get_value()
 end function get_value
 """
     cfg = parse_control_flow(source, "get_value", "function")
-    
+
     assert cfg is not None
     assert cfg.entry_block_id is not None
-    
+
     entry_block = cfg.blocks[cfg.entry_block_id]
     assert entry_block.block_type == BlockType.ENTRY
     assert entry_block.label == "get_value()"
@@ -986,11 +986,10 @@ subroutine test_exit()
 end subroutine test_exit
 """
     cfg = parse_control_flow(source, "test_exit", "subroutine")
-    
+
     assert cfg is not None
     assert cfg.exit_block_id is not None
-    
+
     exit_block = cfg.blocks[cfg.exit_block_id]
     assert exit_block.block_type == BlockType.EXIT
     assert exit_block.label == "Return"
-
