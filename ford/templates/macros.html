@@ -898,12 +898,12 @@
                                   {% if var.permission %}{{ var.permission }}{{ add_comma(var.parameter or var.attribs) }}{% endif %}
                                   {% if var.parameter %}parameter{{ add_comma(var.attribs) }}{% endif %}
                                   {% if var.attribs %}{{ var.attribs | join(", ") }}{% endif %}
-                                  :: <strong>{{ var.name }}</strong>{{ var.dimension }}
+                                  :: <strong>{% if var.base_var_name %}{{ var.base_var_name }}{% else %}{{ var.name }}{% endif %}</strong>{{ var.dimension }}
                                   
                                   {# Show component details if available #}
                                   {% if var.component_details %}
                                     <div class="mt-2">
-                                      <small class="text-muted">Component Details:</small>
+                                      <small class="text-muted">Component used: <strong>{{ var.component_name }}</strong></small>
                                       <div class="ps-3">
                                         {{ var.component_details.full_type }}{{ add_comma(var.component_details.permission or var.component_details.parameter or var.component_details.attribs) }}
                                         {% if var.component_details.permission %}{{ var.component_details.permission }}{{ add_comma(var.component_details.parameter or var.component_details.attribs) }}{% endif %}
