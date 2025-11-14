@@ -1754,11 +1754,18 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             BlockType.DO_LOOP: "#DDA0DD",  # Plum
             BlockType.SELECT_CASE: "#F0E68C",  # Khaki
             BlockType.CASE: "#FFE4B5",  # Moccasin
-            # Keyword node colors
-            BlockType.KEYWORD_IO: "#5DADE2",  # Blue (rounded rectangle)
+            # I/O operation colors - distinct color for each operation type
+            BlockType.KEYWORD_IO_OPEN: "#4A90E2",  # Medium blue
+            BlockType.KEYWORD_IO_READ: "#50C878",  # Emerald green
+            BlockType.KEYWORD_IO_WRITE: "#FF6B6B",  # Coral red
+            BlockType.KEYWORD_IO_CLOSE: "#9370DB",  # Medium purple
+            BlockType.KEYWORD_IO_REWIND: "#FFD700",  # Gold
+            BlockType.KEYWORD_IO_INQUIRE: "#20B2AA",  # Light sea green
+            BlockType.KEYWORD_IO_PRINT: "#FF69B4",  # Hot pink
+            # Other keyword node colors
             BlockType.KEYWORD_MEMORY: "#52BE80",  # Green (hexagon)
-            BlockType.KEYWORD_BRANCH: "#E59866",  # Orange (diamond) - not used, IF/SELECT handle this
-            BlockType.KEYWORD_LOOP: "#48C9B0",  # Teal (ellipse) - not used, DO handles this
+            BlockType.KEYWORD_BRANCH: "#E59866",  # Orange (diamond) - not used
+            BlockType.KEYWORD_LOOP: "#48C9B0",  # Teal (ellipse) - not used
             BlockType.KEYWORD_EXIT: "#EC7063",  # Red (octagon)
             BlockType.KEYWORD_CALL: "#BB8FCE",  # Purple (rectangle with bold outline)
         }
@@ -1769,8 +1776,15 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             BlockType.IF_CONDITION: "diamond",
             BlockType.DO_LOOP: "diamond",
             BlockType.SELECT_CASE: "diamond",
-            # Keyword node shapes
-            BlockType.KEYWORD_IO: "box",  # Will use rounded style
+            # I/O keyword node shapes - all rounded boxes
+            BlockType.KEYWORD_IO_OPEN: "box",
+            BlockType.KEYWORD_IO_READ: "box",
+            BlockType.KEYWORD_IO_WRITE: "box",
+            BlockType.KEYWORD_IO_CLOSE: "box",
+            BlockType.KEYWORD_IO_REWIND: "box",
+            BlockType.KEYWORD_IO_INQUIRE: "box",
+            BlockType.KEYWORD_IO_PRINT: "box",
+            # Other keyword node shapes
             BlockType.KEYWORD_MEMORY: "hexagon",
             BlockType.KEYWORD_EXIT: "octagon",
             BlockType.KEYWORD_CALL: "box",  # Will use bold outline
@@ -1843,27 +1857,33 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             # Build label based on block type
             label = ""
             
-            # For keyword nodes, format as "Line X\nKEYWORD\nstatement"
+            # For keyword nodes, format as "Line X\nstatement" (without the keyword name)
             if block.block_type in [
-                BlockType.KEYWORD_IO,
+                BlockType.KEYWORD_IO_OPEN,
+                BlockType.KEYWORD_IO_READ,
+                BlockType.KEYWORD_IO_WRITE,
+                BlockType.KEYWORD_IO_CLOSE,
+                BlockType.KEYWORD_IO_REWIND,
+                BlockType.KEYWORD_IO_INQUIRE,
+                BlockType.KEYWORD_IO_PRINT,
                 BlockType.KEYWORD_MEMORY,
                 BlockType.KEYWORD_EXIT,
                 BlockType.KEYWORD_CALL,
             ]:
-                # Extract keyword from existing label (format is "KEYWORD (LX)\nstatement")
+                # Extract statement from existing label (format is "KEYWORD (LX)\nstatement")
                 parts = block.label.split("\n", 1)
-                keyword_part = parts[0] if parts else block.label
-                # Extract just the keyword name (before the " (L")
-                keyword = keyword_part.split(" (L")[0] if " (L" in keyword_part else keyword_part
                 
                 if block.line_number is not None:
-                    label = f"Line {block.line_number}\\n{keyword}"
+                    label = f"Line {block.line_number}"
                 else:
-                    label = keyword
+                    label = ""
                     
                 # Add the statement if it exists
                 if len(parts) > 1:
-                    label = f"{label}\\n---\\n{parts[1]}"
+                    if label:
+                        label = f"{label}\\n{parts[1]}"
+                    else:
+                        label = parts[1]
             
             # For IF/DO/SELECT conditions, include line number and condition
             elif block.condition:
@@ -1903,7 +1923,15 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
 
             # Determine style based on block type
             style = "filled"
-            if block.block_type == BlockType.KEYWORD_IO:
+            if block.block_type in [
+                BlockType.KEYWORD_IO_OPEN,
+                BlockType.KEYWORD_IO_READ,
+                BlockType.KEYWORD_IO_WRITE,
+                BlockType.KEYWORD_IO_CLOSE,
+                BlockType.KEYWORD_IO_REWIND,
+                BlockType.KEYWORD_IO_INQUIRE,
+                BlockType.KEYWORD_IO_PRINT,
+            ]:
                 # I/O operations: rounded rectangle
                 style = "filled,rounded"
             elif block.block_type == BlockType.KEYWORD_CALL:
