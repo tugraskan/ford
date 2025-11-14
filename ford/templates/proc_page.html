@@ -471,37 +471,10 @@
             Each block is collapsible to help navigate complex procedures.
           </p>
           {% macro render_statement_with_badges(stmt, keywords, line_num) %}
-            {# Render a statement with keyword badges in first column, line number and statement in second #}
+            {# Render a statement with keyword badges, line number, and statement all on the same line #}
             {# Map keywords to graph colors #}
-            {% if keywords %}
-              {% for keyword in keywords %}
-                {% if keyword == "OPEN" %}
-                  <span class="badge text-white me-1" style="background-color: #4A90E2;">{{ keyword }}</span>
-                {% elif keyword == "READ" %}
-                  <span class="badge text-white me-1" style="background-color: #50C878;">{{ keyword }}</span>
-                {% elif keyword == "WRITE" %}
-                  <span class="badge text-white me-1" style="background-color: #FF6B6B;">{{ keyword }}</span>
-                {% elif keyword == "CLOSE" %}
-                  <span class="badge text-white me-1" style="background-color: #9370DB;">{{ keyword }}</span>
-                {% elif keyword == "REWIND" %}
-                  <span class="badge me-1" style="background-color: #FFD700; color: #000;">{{ keyword }}</span>
-                {% elif keyword == "INQUIRE" %}
-                  <span class="badge text-white me-1" style="background-color: #20B2AA;">{{ keyword }}</span>
-                {% elif keyword == "PRINT" %}
-                  <span class="badge text-white me-1" style="background-color: #FF69B4;">{{ keyword }}</span>
-                {% elif keyword == "ALLOCATE" or keyword == "DEALLOCATE" %}
-                  <span class="badge text-white me-1" style="background-color: #52BE80;">{{ keyword }}</span>
-                {% elif keyword == "RETURN" or keyword == "EXIT" or keyword == "CYCLE" or keyword == "STOP" or keyword == "ERROR STOP" %}
-                  <span class="badge text-white me-1" style="background-color: #EC7063;">{{ keyword }}</span>
-                {% elif keyword == "CALL" %}
-                  <span class="badge text-white me-1" style="background-color: #BB8FCE;">{{ keyword }}</span>
-                {% else %}
-                  <span class="badge bg-secondary me-1">{{ keyword }}</span>
-                {% endif %}
-              {% endfor %}
-            {% endif %}
-            {% if keywords and line_num %}    {% endif %}
-            {% if line_num %}<span class="text-muted">{{ "%4d" | format(line_num) }}</span> {% endif %}{{ stmt }}
+            {# Put badges and line number first, then statement on same line #}
+            {% if keywords %}{% for keyword in keywords %}{% if keyword == "OPEN" %}<span class="badge text-white me-1" style="background-color: #4A90E2;">{{ keyword }}</span>{% elif keyword == "READ" %}<span class="badge text-white me-1" style="background-color: #50C878;">{{ keyword }}</span>{% elif keyword == "WRITE" %}<span class="badge text-white me-1" style="background-color: #FF6B6B;">{{ keyword }}</span>{% elif keyword == "CLOSE" %}<span class="badge text-white me-1" style="background-color: #9370DB;">{{ keyword }}</span>{% elif keyword == "REWIND" %}<span class="badge me-1" style="background-color: #FFD700; color: #000;">{{ keyword }}</span>{% elif keyword == "INQUIRE" %}<span class="badge text-white me-1" style="background-color: #20B2AA;">{{ keyword }}</span>{% elif keyword == "PRINT" %}<span class="badge text-white me-1" style="background-color: #FF69B4;">{{ keyword }}</span>{% elif keyword == "ALLOCATE" or keyword == "DEALLOCATE" %}<span class="badge text-white me-1" style="background-color: #52BE80;">{{ keyword }}</span>{% elif keyword == "RETURN" or keyword == "EXIT" or keyword == "CYCLE" or keyword == "STOP" or keyword == "ERROR STOP" %}<span class="badge text-white me-1" style="background-color: #EC7063;">{{ keyword }}</span>{% elif keyword == "CALL" %}<span class="badge text-white me-1" style="background-color: #BB8FCE;">{{ keyword }}</span>{% else %}<span class="badge bg-secondary me-1">{{ keyword }}</span>{% endif %}{% endfor %} {% endif %}{% if line_num %}<span class="text-muted">{{ "%4d" | format(line_num) }}</span> {% endif %}{{ stmt }}
           {% endmacro %}
           
           {% macro render_logic_block(block, index, parent_index='') %}
@@ -515,7 +488,7 @@
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>IF</strong> (<code>{{ block.condition }}</code>) <strong>THEN</strong>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>{{ block.condition }}</code>) <strong>THEN</strong>
                     {% if block.label %}<span class="badge bg-secondary ms-2">{{ block.label }}</span>{% endif %}
                     {% if block.start_line and block.end_line %}
                       <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
@@ -555,7 +528,7 @@
                    class="text-decoration-none">
                   <div class="card-header bg-info bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>ELSE IF</strong> (<code>{{ block.condition }}</code>) <strong>THEN</strong>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">ELSE IF</span> (<code>{{ block.condition }}</code>) <strong>THEN</strong>
                   {%if block.start_line and block.end_line %}
                     <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
                   {%  endif %}
@@ -633,7 +606,7 @@
                    class="text-decoration-none">
                   <div class="card-header bg-warning bg-opacity-10">
                     <i class="fa fa-caret-right me-2"></i>
-                    <strong>DO</strong> <code>{{ block.condition }}</code>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>{{ block.condition }}</code>
                     {% if block.label %}<span class="badge bg-secondary ms-2">{{ block.label }}</span>{% endif %}
                     {% if block.start_line and block.end_line %}
                       <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
