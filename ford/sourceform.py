@@ -3772,14 +3772,23 @@ class FortranProcedure(FortranCodeUnit):
                     i += 1
 
                 # Find variable references with attributes
+                # Updated pattern to handle array indices: var(idx)%component
                 var_pattern = (
-                    r"\b([a-zA-Z_][a-zA-Z0-9_]*(?:%[a-zA-Z_][a-zA-Z0-9_]*)*)\b"
+                    r"\b([a-zA-Z_][a-zA-Z0-9_]*(?:\([^)]*\))?(?:%[a-zA-Z_][a-zA-Z0-9_]*)*)\b"
                 )
                 matches = re.findall(var_pattern, cleaned_line, re.IGNORECASE)
 
                 for match in matches:
+                    # Extract the base variable name (without array index or components)
+                    # e.g., "my_array(i)%name" -> "my_array"
+                    base_match = re.match(r"^([a-zA-Z_][a-zA-Z0-9_]*)", match)
+                    if not base_match:
+                        continue
+                    
+                    base_var_name = base_match.group(1).lower()
+                    
                     # Skip Fortran keywords and intrinsics
-                    if match.lower() not in [
+                    if base_var_name in [
                         "if",
                         "then",
                         "else",
@@ -3851,21 +3860,26 @@ class FortranProcedure(FortranCodeUnit):
                         "sign",
                         "encoding",
                     ]:
+                        continue
 
-                        if "%" in match:
-                            # Parse complex variable reference
-                            parts = match.split("%")
-                            base_var = parts[0].lower()
-                            attribute = "%".join(parts[1:])
+                    if "%" in match:
+                        # Parse complex variable reference
+                        # Remove array index if present: "my_array(i)%name" -> "my_array%name"
+                        # Then split by %
+                        match_no_idx = re.sub(r'\([^)]*\)', '', match)
+                        parts = match_no_idx.split("%")
+                        base_var = parts[0].lower()
+                        attribute = "%".join(parts[1:])
 
-                            if base_var not in variable_references:
-                                variable_references[base_var] = set()
-                            variable_references[base_var].add(attribute)
-                        else:
-                            # Simple variable reference
-                            base_var = match.lower()
-                            if base_var not in variable_references:
-                                variable_references[base_var] = set()
+                        if base_var not in variable_references:
+                            variable_references[base_var] = set()
+                        variable_references[base_var].add(attribute)
+                    else:
+                        # Simple variable reference (may have array index)
+                        # Remove array index: "my_array(i)" -> "my_array"
+                        base_var = re.sub(r'\([^)]*\)', '', match).lower()
+                        if base_var not in variable_references:
+                            variable_references[base_var] = set()
 
             # Now find which modules these variables come from
             if hasattr(self, "uses"):
