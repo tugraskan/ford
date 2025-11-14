@@ -1746,8 +1746,8 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
         # Color scheme for different block types
         colors = {
             BlockType.ENTRY: "#90EE90",  # Light green
-            BlockType.EXIT: "#FFB6C1",  # Light pink
-            BlockType.RETURN: "#FFB6C1",  # Light pink (same as EXIT)
+            BlockType.EXIT: "#FFB3BA",  # Light red
+            BlockType.RETURN: "#FFB6C1",  # Light pink
             BlockType.USE: "#B0E0E6",  # Powder blue
             BlockType.STATEMENT: "#E0E0E0",  # Light gray
             BlockType.IF_CONDITION: "#87CEEB",  # Sky blue
@@ -1823,6 +1823,11 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 "ELSE",
                 "ELSE IF body",
             ]:
+                if not block.statements or len(block.statements) == 0:
+                    return True
+
+            # Skip empty "Loop body" blocks (they're just intermediate nodes)
+            if block.block_type == BlockType.STATEMENT and block.label == "Loop body":
                 if not block.statements or len(block.statements) == 0:
                     return True
 
@@ -1953,9 +1958,20 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 # Procedure calls: bold outline
                 style = "filled,bold"
 
-            dot.node(
-                str(block.id), label=label, fillcolor=color, shape=shape, style=style
-            )
+            # Create node with optional size attributes
+            node_attrs = {
+                "label": label,
+                "fillcolor": color,
+                "shape": shape,
+                "style": style,
+            }
+            
+            # Make hexagons (KEYWORD_MEMORY) smaller to reduce visual clutter
+            if block.block_type == BlockType.KEYWORD_MEMORY:
+                node_attrs["width"] = "0.75"
+                node_attrs["height"] = "0.5"
+
+            dot.node(str(block.id), **node_attrs)
 
         # Add edges
         for block in cfg.blocks.values():

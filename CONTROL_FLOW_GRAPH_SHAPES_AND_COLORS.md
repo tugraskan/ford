@@ -13,8 +13,8 @@ Control flow graphs in FORD use different shapes and colors to distinguish vario
 | Block Type | Color | Color Name | Hex Code | Shape | Description |
 |-----------|-------|------------|----------|-------|-------------|
 | **ENTRY** | Light green | Light green | `#90EE90` | box | Procedure entry point (shows procedure name and arguments) |
-| **EXIT** | Light pink | Light pink | `#FFB6C1` | box | Procedure exit point |
-| **RETURN** | Light pink | Light pink | `#FFB6C1` | box | Return statement (same as EXIT) |
+| **EXIT** | Light red | Light red | `#FFB3BA` | box | Procedure exit point |
+| **RETURN** | Light pink | Light pink | `#FFB6C1` | box | Return statement |
 | **USE** | Powder blue | Powder blue | `#B0E0E6` | box | USE statement |
 | **STATEMENT** | Light gray | Light gray | `#E0E0E0` | box | Regular statement block |
 
@@ -70,7 +70,7 @@ Edges (arrows) in the control flow graph may have labels to indicate the flow di
 The color scheme uses pastel/light colors for easy readability:
 
 - **Green tones** (`#90EE90`, `#52BE80`): Entry points and memory operations
-- **Pink tones** (`#FFB6C1`): Exit points
+- **Pink/Red tones** (`#FFB6C1`, `#FFB3BA`): Return statements and exit points
 - **Blue tones** (`#87CEEB`, `#B0E0E6`, `#5DADE2`): Conditions, USE statements, I/O operations
 - **Purple tones** (`#DDA0DD`, `#BB8FCE`): Loops and procedure calls
 - **Yellow tones** (`#F0E68C`, `#FFE4B5`): SELECT/CASE statements
