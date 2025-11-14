@@ -3772,8 +3772,8 @@ class FortranProcedure(FortranCodeUnit):
                     i += 1
 
                 # Find variable references with attributes
-                # Updated pattern to handle array indices: var(idx)%component
-                var_pattern = r"\b([a-zA-Z_][a-zA-Z0-9_]*(?:\([^)]*\))?(?:%[a-zA-Z_][a-zA-Z0-9_]*)*)\b"
+                # Updated pattern to handle array indices on both variables and components: var(idx)%component(idx)%subcomponent
+                var_pattern = r"\b([a-zA-Z_][a-zA-Z0-9_]*(?:\([^)]*\))?(?:%[a-zA-Z_][a-zA-Z0-9_]*(?:\([^)]*\))?)*)\b"
                 matches = re.findall(var_pattern, cleaned_line, re.IGNORECASE)
 
                 for match in matches:
@@ -3902,53 +3902,81 @@ class FortranProcedure(FortranCodeUnit):
                                     if attributes:
                                         # Create individual attribute variables
                                         for attr in attributes:
-                                            # Get the full type, including the derived type name
-                                            var_full_type = getattr(
-                                                var, "full_type", "unknown"
-                                            )
-
-                                            # Try to find the component definition in the type
-                                            component_var = None
+                                            # Split attribute by % to handle nested components (e.g., "salt%rchrg")
+                                            # Create entries for all levels of nesting
+                                            attr_parts = attr.split("%")
+                                            
+                                            # Track the type hierarchy as we traverse
+                                            current_type = None
                                             if (
                                                 hasattr(var, "proto")
                                                 and var.proto
                                                 and hasattr(var.proto[0], "variables")
                                             ):
-                                                # var.proto[0] is the derived type definition
-                                                type_def = var.proto[0]
-                                                for type_comp in type_def.variables:
+                                                current_type = var.proto[0]
+                                            
+                                            # Build up the path and create entries for each level
+                                            current_path = []
+                                            for i, part in enumerate(attr_parts):
+                                                current_path.append(part)
+                                                full_attr = "%".join(current_path)
+                                                
+                                                # Try to find the component definition
+                                                component_var = None
+                                                if current_type and hasattr(current_type, "variables"):
+                                                    for type_comp in current_type.variables:
+                                                        if type_comp.name.lower() == part.lower():
+                                                            component_var = type_comp
+                                                            break
+                                                
+                                                # Determine the full_type for this level
+                                                # For the first level, use the base variable's type
+                                                # For deeper levels, use the component's type
+                                                if i == 0:
+                                                    var_full_type = getattr(var, "full_type", "unknown")
+                                                elif component_var:
+                                                    var_full_type = getattr(component_var, "full_type", "unknown")
+                                                else:
+                                                    var_full_type = "unknown"
+                                                
+                                                # Create the attribute variable entry for this level
+                                                attr_var = type(
+                                                    "AttributeVar",
+                                                    (),
+                                                    {
+                                                        "name": f"{var.name}%{full_attr}",
+                                                        "base_var_name": var.name,
+                                                        "component_name": full_attr,
+                                                        "full_type": var_full_type,
+                                                        "parent": module,
+                                                        "dimension": "",
+                                                        "component_details": component_var,
+                                                        "meta": lambda self, key, attr=full_attr, comp=component_var: (
+                                                            getattr(
+                                                                comp, "meta", lambda k: ""
+                                                            )(key)
+                                                            if comp
+                                                            else (
+                                                                f"{var.name} component: {attr}"
+                                                                if key == "summary"
+                                                                else ""
+                                                            )
+                                                        ),
+                                                    },
+                                                )()
+                                                outside_vars.append(attr_var)
+                                                
+                                                # Move to the next type in the hierarchy if this is a derived type
+                                                if component_var and i < len(attr_parts) - 1:
                                                     if (
-                                                        type_comp.name.lower()
-                                                        == attr.lower()
+                                                        hasattr(component_var, "proto")
+                                                        and component_var.proto
+                                                        and len(component_var.proto) > 0
                                                     ):
-                                                        component_var = type_comp
-                                                        break
-
-                                            attr_var = type(
-                                                "AttributeVar",
-                                                (),
-                                                {
-                                                    "name": f"{var.name}%{attr}",
-                                                    "base_var_name": var.name,
-                                                    "component_name": attr,
-                                                    "full_type": var_full_type,
-                                                    "parent": module,
-                                                    "dimension": "",
-                                                    "component_details": component_var,
-                                                    "meta": lambda self, key, attr=attr, comp=component_var: (
-                                                        getattr(
-                                                            comp, "meta", lambda k: ""
-                                                        )(key)
-                                                        if comp
-                                                        else (
-                                                            f"{var.name} component: {attr}"
-                                                            if key == "summary"
-                                                            else ""
-                                                        )
-                                                    ),
-                                                },
-                                            )()
-                                            outside_vars.append(attr_var)
+                                                        current_type = component_var.proto[0]
+                                                    else:
+                                                        # Can't traverse further
+                                                        current_type = None
                                     else:
                                         # Add the base variable
                                         outside_vars.append(var)
