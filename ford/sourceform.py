@@ -3890,18 +3890,32 @@ class FortranProcedure(FortranCodeUnit):
                                     if attributes:
                                         # Create individual attribute variables
                                         for attr in attributes:
+                                            # Get the full type, including the derived type name
+                                            var_full_type = getattr(var, "full_type", "unknown")
+                                            
+                                            # Try to find the component definition in the type
+                                            component_var = None
+                                            if hasattr(var, "proto") and var.proto and hasattr(var.proto[0], "variables"):
+                                                # var.proto[0] is the derived type definition
+                                                type_def = var.proto[0]
+                                                for type_comp in type_def.variables:
+                                                    if type_comp.name.lower() == attr.lower():
+                                                        component_var = type_comp
+                                                        break
+                                            
                                             attr_var = type(
                                                 "AttributeVar",
                                                 (),
                                                 {
                                                     "name": f"{var.name}%{attr}",
-                                                    "full_type": getattr(
-                                                        var, "vartype", "unknown"
-                                                    ),
+                                                    "base_var_name": var.name,
+                                                    "component_name": attr,
+                                                    "full_type": var_full_type,
                                                     "parent": module,
                                                     "dimension": "",
-                                                    "meta": lambda self, key: (
-                                                        f"{var.name} component: {attr}"
+                                                    "component_details": component_var,
+                                                    "meta": lambda self, key, attr=attr, comp=component_var: (
+                                                        getattr(comp, "meta", lambda k: "")(key) if comp else f"{var.name} component: {attr}"
                                                         if key == "summary"
                                                         else ""
                                                     ),
