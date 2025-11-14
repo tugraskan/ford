@@ -3905,7 +3905,7 @@ class FortranProcedure(FortranCodeUnit):
                                             # Split attribute by % to handle nested components (e.g., "salt%rchrg")
                                             # Create entries for all levels of nesting
                                             attr_parts = attr.split("%")
-                                            
+
                                             # Track the type hierarchy as we traverse
                                             current_type = None
                                             if (
@@ -3914,31 +3914,44 @@ class FortranProcedure(FortranCodeUnit):
                                                 and hasattr(var.proto[0], "variables")
                                             ):
                                                 current_type = var.proto[0]
-                                            
+
                                             # Build up the path and create entries for each level
                                             current_path = []
                                             for i, part in enumerate(attr_parts):
                                                 current_path.append(part)
                                                 full_attr = "%".join(current_path)
-                                                
+
                                                 # Try to find the component definition
                                                 component_var = None
-                                                if current_type and hasattr(current_type, "variables"):
-                                                    for type_comp in current_type.variables:
-                                                        if type_comp.name.lower() == part.lower():
+                                                if current_type and hasattr(
+                                                    current_type, "variables"
+                                                ):
+                                                    for (
+                                                        type_comp
+                                                    ) in current_type.variables:
+                                                        if (
+                                                            type_comp.name.lower()
+                                                            == part.lower()
+                                                        ):
                                                             component_var = type_comp
                                                             break
-                                                
+
                                                 # Determine the full_type for this level
                                                 # For the first level, use the base variable's type
                                                 # For deeper levels, use the component's type
                                                 if i == 0:
-                                                    var_full_type = getattr(var, "full_type", "unknown")
+                                                    var_full_type = getattr(
+                                                        var, "full_type", "unknown"
+                                                    )
                                                 elif component_var:
-                                                    var_full_type = getattr(component_var, "full_type", "unknown")
+                                                    var_full_type = getattr(
+                                                        component_var,
+                                                        "full_type",
+                                                        "unknown",
+                                                    )
                                                 else:
                                                     var_full_type = "unknown"
-                                                
+
                                                 # Create the attribute variable entry for this level
                                                 attr_var = type(
                                                     "AttributeVar",
@@ -3953,7 +3966,9 @@ class FortranProcedure(FortranCodeUnit):
                                                         "component_details": component_var,
                                                         "meta": lambda self, key, attr=full_attr, comp=component_var: (
                                                             getattr(
-                                                                comp, "meta", lambda k: ""
+                                                                comp,
+                                                                "meta",
+                                                                lambda k: "",
                                                             )(key)
                                                             if comp
                                                             else (
@@ -3965,15 +3980,20 @@ class FortranProcedure(FortranCodeUnit):
                                                     },
                                                 )()
                                                 outside_vars.append(attr_var)
-                                                
+
                                                 # Move to the next type in the hierarchy if this is a derived type
-                                                if component_var and i < len(attr_parts) - 1:
+                                                if (
+                                                    component_var
+                                                    and i < len(attr_parts) - 1
+                                                ):
                                                     if (
                                                         hasattr(component_var, "proto")
                                                         and component_var.proto
                                                         and len(component_var.proto) > 0
                                                     ):
-                                                        current_type = component_var.proto[0]
+                                                        current_type = (
+                                                            component_var.proto[0]
+                                                        )
                                                     else:
                                                         # Can't traverse further
                                                         current_type = None
