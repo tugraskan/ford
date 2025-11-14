@@ -30,7 +30,15 @@ class BlockType(Enum):
     DO_LOOP = "do_loop"
     SELECT_CASE = "select_case"
     CASE = "case"
-    KEYWORD_IO = "keyword_io"
+    # I/O operations - each with distinct color
+    KEYWORD_IO_OPEN = "keyword_io_open"
+    KEYWORD_IO_READ = "keyword_io_read"
+    KEYWORD_IO_WRITE = "keyword_io_write"
+    KEYWORD_IO_CLOSE = "keyword_io_close"
+    KEYWORD_IO_REWIND = "keyword_io_rewind"
+    KEYWORD_IO_INQUIRE = "keyword_io_inquire"
+    KEYWORD_IO_PRINT = "keyword_io_print"
+    # Other keyword types
     KEYWORD_MEMORY = "keyword_memory"
     KEYWORD_BRANCH = "keyword_branch"
     KEYWORD_LOOP = "keyword_loop"
@@ -49,8 +57,15 @@ COLORS = {
     BlockType.DO_LOOP: "#DDA0DD",  # Plum
     BlockType.SELECT_CASE: "#F0E68C",  # Khaki
     BlockType.CASE: "#FFE4B5",  # Moccasin
-    # Keyword node colors
-    BlockType.KEYWORD_IO: "#5DADE2",  # Blue (rounded rectangle)
+    # I/O operation colors - distinct color for each operation type
+    BlockType.KEYWORD_IO_OPEN: "#4A90E2",  # Medium blue
+    BlockType.KEYWORD_IO_READ: "#50C878",  # Emerald green
+    BlockType.KEYWORD_IO_WRITE: "#FF6B6B",  # Coral red
+    BlockType.KEYWORD_IO_CLOSE: "#9370DB",  # Medium purple
+    BlockType.KEYWORD_IO_REWIND: "#FFD700",  # Gold
+    BlockType.KEYWORD_IO_INQUIRE: "#20B2AA",  # Light sea green
+    BlockType.KEYWORD_IO_PRINT: "#FF69B4",  # Hot pink
+    # Other keyword node colors
     BlockType.KEYWORD_MEMORY: "#52BE80",  # Green (hexagon)
     BlockType.KEYWORD_BRANCH: "#E59866",  # Orange (diamond) - not used
     BlockType.KEYWORD_LOOP: "#48C9B0",  # Teal (ellipse) - not used
@@ -63,7 +78,15 @@ SHAPES = {
     BlockType.IF_CONDITION: "diamond",
     BlockType.DO_LOOP: "diamond",
     BlockType.SELECT_CASE: "diamond",
-    BlockType.KEYWORD_IO: "box",  # Will use rounded style
+    # I/O keyword node shapes - all rounded boxes
+    BlockType.KEYWORD_IO_OPEN: "box",
+    BlockType.KEYWORD_IO_READ: "box",
+    BlockType.KEYWORD_IO_WRITE: "box",
+    BlockType.KEYWORD_IO_CLOSE: "box",
+    BlockType.KEYWORD_IO_REWIND: "box",
+    BlockType.KEYWORD_IO_INQUIRE: "box",
+    BlockType.KEYWORD_IO_PRINT: "box",
+    # Other keyword node shapes
     BlockType.KEYWORD_MEMORY: "hexagon",
     BlockType.KEYWORD_EXIT: "octagon",
     BlockType.KEYWORD_CALL: "box",  # Will use bold outline
@@ -74,7 +97,13 @@ DEFAULT_SHAPE = "box"
 
 # Style information
 STYLES = {
-    BlockType.KEYWORD_IO: "filled,rounded",
+    BlockType.KEYWORD_IO_OPEN: "filled,rounded",
+    BlockType.KEYWORD_IO_READ: "filled,rounded",
+    BlockType.KEYWORD_IO_WRITE: "filled,rounded",
+    BlockType.KEYWORD_IO_CLOSE: "filled,rounded",
+    BlockType.KEYWORD_IO_REWIND: "filled,rounded",
+    BlockType.KEYWORD_IO_INQUIRE: "filled,rounded",
+    BlockType.KEYWORD_IO_PRINT: "filled,rounded",
     BlockType.KEYWORD_CALL: "filled,bold",
 }
 
@@ -90,7 +119,13 @@ COLOR_NAMES = {
     "#DDA0DD": "Plum",
     "#F0E68C": "Khaki",
     "#FFE4B5": "Moccasin",
-    "#5DADE2": "Blue",
+    "#4A90E2": "Medium blue",
+    "#50C878": "Emerald green",
+    "#FF6B6B": "Coral red",
+    "#9370DB": "Medium purple",
+    "#FFD700": "Gold",
+    "#20B2AA": "Light sea green",
+    "#FF69B4": "Hot pink",
     "#52BE80": "Green",
     "#E59866": "Orange",
     "#48C9B0": "Teal",
@@ -109,7 +144,13 @@ DESCRIPTIONS = {
     BlockType.DO_LOOP: "DO loop control",
     BlockType.SELECT_CASE: "SELECT CASE statement",
     BlockType.CASE: "CASE block within SELECT",
-    BlockType.KEYWORD_IO: "I/O operations (OPEN, READ, WRITE, CLOSE, etc.)",
+    BlockType.KEYWORD_IO_OPEN: "I/O: OPEN file operation",
+    BlockType.KEYWORD_IO_READ: "I/O: READ operation",
+    BlockType.KEYWORD_IO_WRITE: "I/O: WRITE operation",
+    BlockType.KEYWORD_IO_CLOSE: "I/O: CLOSE file operation",
+    BlockType.KEYWORD_IO_REWIND: "I/O: REWIND file operation",
+    BlockType.KEYWORD_IO_INQUIRE: "I/O: INQUIRE file status",
+    BlockType.KEYWORD_IO_PRINT: "I/O: PRINT output",
     BlockType.KEYWORD_MEMORY: "Memory operations (ALLOCATE, DEALLOCATE)",
     BlockType.KEYWORD_BRANCH: "Branch keywords (not used)",
     BlockType.KEYWORD_LOOP: "Loop keywords (not used)",
@@ -153,9 +194,17 @@ def display_table():
         info = get_block_info(bt)
         print(f"{info['block_type']:<20} {info['color']:<12} {info['color_name']:<15} {info['shape']:<12} {info['style']:<18} {info['description']:<40}")
     
-    # Keyword nodes
-    print("\nKEYWORD NODES:")
-    for bt in [BlockType.KEYWORD_IO, BlockType.KEYWORD_MEMORY, BlockType.KEYWORD_EXIT, BlockType.KEYWORD_CALL]:
+    # I/O keyword nodes
+    print("\nI/O KEYWORD NODES:")
+    for bt in [BlockType.KEYWORD_IO_OPEN, BlockType.KEYWORD_IO_READ, BlockType.KEYWORD_IO_WRITE, 
+               BlockType.KEYWORD_IO_CLOSE, BlockType.KEYWORD_IO_REWIND, BlockType.KEYWORD_IO_INQUIRE, 
+               BlockType.KEYWORD_IO_PRINT]:
+        info = get_block_info(bt)
+        print(f"{info['block_type']:<20} {info['color']:<12} {info['color_name']:<15} {info['shape']:<12} {info['style']:<18} {info['description']:<40}")
+    
+    # Other keyword nodes
+    print("\nOTHER KEYWORD NODES:")
+    for bt in [BlockType.KEYWORD_MEMORY, BlockType.KEYWORD_EXIT, BlockType.KEYWORD_CALL]:
         info = get_block_info(bt)
         print(f"{info['block_type']:<20} {info['color']:<12} {info['color_name']:<15} {info['shape']:<12} {info['style']:<18} {info['description']:<40}")
     
