@@ -1801,6 +1801,10 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             ):
                 return True
 
+            # Skip EXIT block (pink "Return") - we show KEYWORD_EXIT (red octagon) for actual RETURN statements instead
+            if block.block_type == BlockType.EXIT:
+                return True
+
             # Skip "After" merge blocks (they add clutter without useful information)
             if block.block_type == BlockType.STATEMENT and any(
                 after_keyword in block.label
