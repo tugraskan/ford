@@ -93,6 +93,8 @@ class BasicBlock:
         IDs of blocks that can precede this one
     line_number : Optional[int]
         Line number in source file (1-indexed), for keyword nodes
+    statement_line_numbers : List[int]
+        Line numbers corresponding to each statement in the statements list
     """
 
     id: int
@@ -103,6 +105,7 @@ class BasicBlock:
     successors: List[int] = field(default_factory=list)
     predecessors: List[int] = field(default_factory=list)
     line_number: Optional[int] = None
+    statement_line_numbers: List[int] = field(default_factory=list)
 
 
 class ControlFlowGraph:
@@ -517,6 +520,7 @@ class FortranControlFlowParser:
                 if not keywords:
                     if current_block.block_type == BlockType.STATEMENT:
                         current_block.statements.append(line_stripped)
+                        current_block.statement_line_numbers.append(line_num)
                     else:
                         # Create a new statement block
                         stmt_block = self.cfg.create_block(
@@ -524,14 +528,18 @@ class FortranControlFlowParser:
                             line_stripped[:50],  # Truncate long statements
                         )
                         stmt_block.statements.append(line_stripped)
+                        stmt_block.statement_line_numbers.append(line_num)
                         self.cfg.add_edge(current_block.id, stmt_block.id)
                         current_block = stmt_block
 
             i += 1
 
-        # Connect final block to exit
-        if current_block.id != exit_block.id:
-            self.cfg.add_edge(current_block.id, exit_block.id)
+        # Connect final block to exit only if it's not already connected
+        # and it's not a RETURN node (which is already connected to exit)
+        if current_block.id != exit_block.id and current_block.block_type != BlockType.KEYWORD_EXIT:
+            # Check if this block doesn't already have exit as a successor
+            if exit_block.id not in current_block.successors:
+                self.cfg.add_edge(current_block.id, exit_block.id)
 
         return self.cfg
 
