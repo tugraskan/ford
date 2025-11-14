@@ -937,3 +937,60 @@ end subroutine test_line_numbers
         assert (
             block.line_number is not None
         ), f"Block {block.label} should have line_number field set"
+
+
+def test_entry_block_with_arguments():
+    """Test that entry block shows procedure name with arguments"""
+    source = """
+subroutine test_args(x, y, z)
+    integer, intent(in) :: x, y
+    integer, intent(out) :: z
+    
+    z = x + y
+end subroutine test_args
+"""
+    cfg = parse_control_flow(source, "test_args", "subroutine")
+    
+    assert cfg is not None
+    assert cfg.entry_block_id is not None
+    
+    entry_block = cfg.blocks[cfg.entry_block_id]
+    assert entry_block.block_type == BlockType.ENTRY
+    assert entry_block.label == "test_args(x, y, z)"
+
+
+def test_entry_block_no_arguments():
+    """Test that entry block shows procedure name with empty parentheses for no args"""
+    source = """
+function get_value()
+    integer :: get_value
+    
+    get_value = 42
+end function get_value
+"""
+    cfg = parse_control_flow(source, "get_value", "function")
+    
+    assert cfg is not None
+    assert cfg.entry_block_id is not None
+    
+    entry_block = cfg.blocks[cfg.entry_block_id]
+    assert entry_block.block_type == BlockType.ENTRY
+    assert entry_block.label == "get_value()"
+
+
+def test_exit_block_label():
+    """Test that exit block is labeled 'Return' instead of 'Exit'"""
+    source = """
+subroutine test_exit()
+    print *, "Hello"
+end subroutine test_exit
+"""
+    cfg = parse_control_flow(source, "test_exit", "subroutine")
+    
+    assert cfg is not None
+    assert cfg.exit_block_id is not None
+    
+    exit_block = cfg.blocks[cfg.exit_block_id]
+    assert exit_block.block_type == BlockType.EXIT
+    assert exit_block.label == "Return"
+

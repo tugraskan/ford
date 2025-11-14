@@ -230,11 +230,16 @@ class FortranControlFlowParser:
         """Parse the source code and build the control flow graph"""
         lines, line_numbers = self._preprocess_source()
 
-        # Create entry and exit blocks
-        entry = self.cfg.create_block(BlockType.ENTRY, "Entry")
+        # Extract procedure arguments for the entry block label
+        args = self._extract_procedure_arguments()
+        
+        # Create entry block with procedure name and arguments
+        entry_label = f"{self.procedure_name}{args}"
+        entry = self.cfg.create_block(BlockType.ENTRY, entry_label)
         self.cfg.entry_block_id = entry.id
 
-        exit_block = self.cfg.create_block(BlockType.EXIT, "Exit")
+        # Create exit block with "Return" label
+        exit_block = self.cfg.create_block(BlockType.EXIT, "Return")
         self.cfg.exit_block_id = exit_block.id
 
         # Parse the procedure body
@@ -529,6 +534,36 @@ class FortranControlFlowParser:
             self.cfg.add_edge(current_block.id, exit_block.id)
 
         return self.cfg
+
+    def _extract_procedure_arguments(self) -> str:
+        """Extract the argument list from the procedure signature
+
+        Returns
+        -------
+        str
+            The argument list (e.g., "(x, y, z)"), or empty string if no arguments
+        """
+        lines = self.source_code.split("\n")
+        
+        # Pattern to match procedure declaration with arguments
+        # Matches: subroutine name(...) or function name(...)
+        proc_sig_pattern = re.compile(
+            rf"^\s*{re.escape(self.procedure_type)}\s+{re.escape(self.procedure_name)}\s*(\([^)]*\))?",
+            re.IGNORECASE,
+        )
+        
+        for line in lines:
+            if match := proc_sig_pattern.match(line.strip()):
+                # Group 1 contains the argument list with parentheses
+                args = match.group(1)
+                if args:
+                    return args
+                else:
+                    # Procedure with no arguments
+                    return "()"
+        
+        # If we couldn't find the signature, return empty parentheses
+        return "()"
 
     def _preprocess_source(self) -> Tuple[List[str], List[int]]:
         """Preprocess source code to extract the procedure body

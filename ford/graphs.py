@@ -1929,8 +1929,8 @@ CONTROL_FLOW_GRAPH_KEY = """
 
 <h5>Control Flow Structures</h5>
 <ul>
-<li><span style="color: #90EE90;">■</span> Entry point</li>
-<li><span style="color: #FFB6C1;">■</span> Exit point</li>
+<li><span style="color: #90EE90;">■</span> Entry point (shows procedure name and arguments)</li>
+<li><span style="color: #FFB6C1;">■</span> Return (exit point)</li>
 <li><span style="color: #87CEEB;">◆</span> IF condition (diamond)</li>
 <li><span style="color: #DDA0DD;">◆</span> DO loop (diamond)</li>
 <li><span style="color: #F0E68C;">◆</span> SELECT CASE (diamond)</li>
