@@ -877,7 +877,7 @@
                               data-bs-target="#collapse{{ type_id }}" aria-expanded="false" 
                               aria-controls="collapse{{ type_id }}">
                         {{ type_data.type_name | relurl(page_url) }}
-                        <small class="text-muted ms-2">({{ type_data.vars | length }} attribute{{ 's' if type_data.vars | length != 1 }})</small>
+                        <small class="text-muted ms-2">({{ type_data.vars | length }} array{{ 's' if type_data.vars | length != 1 }})</small>
                       </button>
                     </h4>
                     <div id="collapse{{ type_id }}" class="accordion-collapse collapse" 
@@ -891,33 +891,72 @@
                             </tr>
                           </thead>
                           <tbody>
+                            {# Group variables by base_var_name #}
+                            {% set grouped_vars = {} %}
                             {% for var in type_data.vars %}
+                              {% set group_key = var.base_var_name if var.base_var_name else var.name %}
+                              {% if group_key not in grouped_vars %}
+                                {% set _ = grouped_vars.update({group_key: []}) %}
+                              {% endif %}
+                              {% set _ = grouped_vars[group_key].append(var) %}
+                            {% endfor %}
+                            
+                            {# Display grouped variables #}
+                            {% for group_key, group_vars in grouped_vars.items() %}
+                              {# Get the first variable to use for common attributes #}
+                              {% set first_var = group_vars[0] %}
+                              
+                              {# Count how many have component details (exclude the base var itself) #}
+                              {% set components = [] %}
+                              {% for v in group_vars %}
+                                {% if v.component_name %}
+                                  {% set _ = components.append(v) %}
+                                {% endif %}
+                              {% endfor %}
+                              
                               <tr>
                                 <td>
-                                  {{ var.full_type | relurl(page_url) }}{{ add_comma(var.permission or var.parameter or var.attribs) }}
-                                  {% if var.permission %}{{ var.permission }}{{ add_comma(var.parameter or var.attribs) }}{% endif %}
-                                  {% if var.parameter %}parameter{{ add_comma(var.attribs) }}{% endif %}
-                                  {% if var.attribs %}{{ var.attribs | join(", ") }}{% endif %}
-                                  :: <strong>{% if var.base_var_name %}{{ var.base_var_name }}{% else %}{{ var.name }}{% endif %}</strong>{{ var.dimension }}
+                                  {# Show variable declaration without type prefix for derived types #}
+                                  {% if first_var.permission %}{{ first_var.permission }}{{ add_comma(first_var.parameter or first_var.attribs) }}{% endif %}
+                                  {% if first_var.parameter %}parameter{{ add_comma(first_var.attribs) }}{% endif %}
+                                  {% if first_var.attribs %}{{ first_var.attribs | join(", ") }}{% endif %}
+                                  {% if first_var.permission or first_var.parameter or first_var.attribs %}{{ ", " if first_var.permission or first_var.parameter or first_var.attribs }}{% endif %}
+                                  :: <strong>{{ group_key }}</strong>{{ first_var.dimension }}
                                   
-                                  {# Show component details if available #}
-                                  {% if var.component_details %}
-                                    <div class="mt-2">
-                                      <small class="text-muted">Component used: <strong>{{ var.component_name }}</strong></small>
-                                      <div class="ps-3">
-                                        {{ var.component_details.full_type }}{{ add_comma(var.component_details.permission or var.component_details.parameter or var.component_details.attribs) }}
-                                        {% if var.component_details.permission %}{{ var.component_details.permission }}{{ add_comma(var.component_details.parameter or var.component_details.attribs) }}{% endif %}
-                                        {% if var.component_details.parameter %}parameter{{ add_comma(var.component_details.attribs) }}{% endif %}
-                                        {% if var.component_details.attribs %}{{ var.component_details.attribs | join(", ") }}{% endif %}
-                                        :: <strong>{{ var.component_name }}</strong>{{ var.component_details.dimension }}
-                                        {% if var.component_details.initial %}
-                                          = {{ var.component_details.initial }}
-                                        {% endif %}
-                                      </div>
+                                  {# Show component count if applicable #}
+                                  {% if components|length > 0 %}
+                                    <small class="text-muted"> ({{ components|length }} component{{ 's' if components|length != 1 }})</small>
+                                  {% endif %}
+                                  
+                                  {# Show component details as sub-rows #}
+                                  {% if components|length > 0 %}
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <tbody>
+                                          {% for comp_var in components %}
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                {% if comp_var.component_details %}
+                                                  {{ comp_var.component_details.full_type }}{{ add_comma(comp_var.component_details.permission or comp_var.component_details.parameter or comp_var.component_details.attribs) }}
+                                                  {% if comp_var.component_details.permission %}{{ comp_var.component_details.permission }}{{ add_comma(comp_var.component_details.parameter or comp_var.component_details.attribs) }}{% endif %}
+                                                  {% if comp_var.component_details.parameter %}parameter{{ add_comma(comp_var.component_details.attribs) }}{% endif %}
+                                                  {% if comp_var.component_details.attribs %}{{ comp_var.component_details.attribs | join(", ") }}{% endif %}
+                                                  :: <strong>{{ comp_var.component_name }}</strong>{{ comp_var.component_details.dimension }}
+                                                  {% if comp_var.component_details.initial %}
+                                                    = {{ comp_var.component_details.initial }}
+                                                  {% endif %}
+                                                {% else %}
+                                                  :: <strong>{{ comp_var.component_name }}</strong>
+                                                {% endif %}
+                                              </td>
+                                            </tr>
+                                          {% endfor %}
+                                        </tbody>
+                                      </table>
                                     </div>
                                   {% endif %}
                                 </td>
-                                <td>{{ var | meta('summary') }}</td>
+                                <td>{{ first_var | meta('summary') }}</td>
                               </tr>
                             {% endfor %}
                           </tbody>
