@@ -210,7 +210,26 @@
       </div>
     </div>
 
-    {# Section 3: I/O - keep as is #}
+    {# Section 3: Local Variables #}
+    {% if procedure.local_variables %}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
+         aria-expanded="false" 
+         aria-controls="local-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Local Variables
+        </h3>
+      </a>
+      <div id="local-variables-section" class="collapse">
+        <div class="card-body">
+          {{ macros.variable_list(procedure.local_variables, permission=True) }}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    {# Section 4: I/O - keep as is #}
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
          aria-expanded="false" 
@@ -309,25 +328,6 @@
       </div>
     </div>
 
-    {# Section 4: Local Variables #}
-    {% if procedure.local_variables %}
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#local-variables-section" 
-         aria-expanded="false" 
-         aria-controls="local-variables-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Local Variables
-        </h3>
-      </a>
-      <div id="local-variables-section" class="collapse">
-        <div class="card-body">
-          {{ macros.variable_list(procedure.local_variables, permission=True) }}
-        </div>
-      </div>
-    </div>
-    {% endif %}
-
     {# Section 5: Control Flow - with graphs and bang comments integrated into logic blocks #}
     <div class="card mb-3">
       <a data-bs-toggle="collapse" href="#control-flow-section" 
@@ -369,15 +369,6 @@
               <strong>Features:</strong>
               {% for feature in procedure.procedure_badges.features %}
               <span class="badge bg-primary me-1">{{ feature }}</span>
-              {% endfor %}
-            </div>
-            {% endif %}
-            
-            {% if procedure.procedure_badges.keywords %}
-            <div class="mb-2">
-              <strong>Fortran Keywords:</strong>
-              {% for keyword in procedure.procedure_badges.keywords %}
-              <span class="badge bg-light text-dark border me-1">{{ keyword }}</span>
               {% endfor %}
             </div>
             {% endif %}
