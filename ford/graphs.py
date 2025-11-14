@@ -1965,7 +1965,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 "shape": shape,
                 "style": style,
             }
-            
+
             # Make hexagons (KEYWORD_MEMORY) smaller to reduce visual clutter
             if block.block_type == BlockType.KEYWORD_MEMORY:
                 node_attrs["width"] = "0.75"
