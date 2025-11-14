@@ -536,7 +536,10 @@ class FortranControlFlowParser:
 
         # Connect final block to exit only if it's not already connected
         # and it's not a RETURN node (which is already connected to exit)
-        if current_block.id != exit_block.id and current_block.block_type != BlockType.KEYWORD_EXIT:
+        if (
+            current_block.id != exit_block.id
+            and current_block.block_type != BlockType.KEYWORD_EXIT
+        ):
             # Check if this block doesn't already have exit as a successor
             if exit_block.id not in current_block.successors:
                 self.cfg.add_edge(current_block.id, exit_block.id)

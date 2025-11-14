@@ -3773,9 +3773,7 @@ class FortranProcedure(FortranCodeUnit):
 
                 # Find variable references with attributes
                 # Updated pattern to handle array indices: var(idx)%component
-                var_pattern = (
-                    r"\b([a-zA-Z_][a-zA-Z0-9_]*(?:\([^)]*\))?(?:%[a-zA-Z_][a-zA-Z0-9_]*)*)\b"
-                )
+                var_pattern = r"\b([a-zA-Z_][a-zA-Z0-9_]*(?:\([^)]*\))?(?:%[a-zA-Z_][a-zA-Z0-9_]*)*)\b"
                 matches = re.findall(var_pattern, cleaned_line, re.IGNORECASE)
 
                 for match in matches:
@@ -3784,9 +3782,9 @@ class FortranProcedure(FortranCodeUnit):
                     base_match = re.match(r"^([a-zA-Z_][a-zA-Z0-9_]*)", match)
                     if not base_match:
                         continue
-                    
+
                     base_var_name = base_match.group(1).lower()
-                    
+
                     # Skip Fortran keywords and intrinsics
                     if base_var_name in [
                         "if",
@@ -3866,7 +3864,7 @@ class FortranProcedure(FortranCodeUnit):
                         # Parse complex variable reference
                         # Remove array index if present: "my_array(i)%name" -> "my_array%name"
                         # Then split by %
-                        match_no_idx = re.sub(r'\([^)]*\)', '', match)
+                        match_no_idx = re.sub(r"\([^)]*\)", "", match)
                         parts = match_no_idx.split("%")
                         base_var = parts[0].lower()
                         attribute = "%".join(parts[1:])
@@ -3877,7 +3875,7 @@ class FortranProcedure(FortranCodeUnit):
                     else:
                         # Simple variable reference (may have array index)
                         # Remove array index: "my_array(i)" -> "my_array"
-                        base_var = re.sub(r'\([^)]*\)', '', match).lower()
+                        base_var = re.sub(r"\([^)]*\)", "", match).lower()
                         if base_var not in variable_references:
                             variable_references[base_var] = set()
 
