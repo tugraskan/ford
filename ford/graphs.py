@@ -1814,7 +1814,11 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 return True
 
             # Skip THEN and ELSE blocks that have no statements (they're just intermediate nodes)
-            if block.block_type == BlockType.STATEMENT and block.label in ["THEN", "ELSE", "ELSE IF body"]:
+            if block.block_type == BlockType.STATEMENT and block.label in [
+                "THEN",
+                "ELSE",
+                "ELSE IF body",
+            ]:
                 if not block.statements or len(block.statements) == 0:
                     return True
 
@@ -1856,8 +1860,8 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
 
             # Build label based on block type
             label = ""
-            
-            # For keyword nodes, format as "Line X\nstatement" (without the keyword name)
+
+            # For keyword nodes, format as "Line X\nKEYWORD\nstatement"
             if block.block_type in [
                 BlockType.KEYWORD_IO_OPEN,
                 BlockType.KEYWORD_IO_READ,
@@ -1872,30 +1876,37 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             ]:
                 # Extract statement from existing label (format is "KEYWORD (LX)\nstatement")
                 parts = block.label.split("\n", 1)
-                
+                keyword_part = parts[0] if parts else block.label
+                # Extract just the keyword name (before the " (L")
+                keyword = (
+                    keyword_part.split(" (L")[0]
+                    if " (L" in keyword_part
+                    else keyword_part
+                )
+
                 if block.line_number is not None:
                     label = f"Line {block.line_number}"
                 else:
-                    label = ""
-                    
+                    label = keyword
+
                 # Add the statement if it exists
                 if len(parts) > 1:
-                    if label:
-                        label = f"{label}\\n{parts[1]}"
-                    else:
-                        label = parts[1]
-            
+                    label = f"{label}\\n---\\n{parts[1]}"
+
             # For IF/DO/SELECT conditions, include line number and condition
             elif block.condition:
                 if block.line_number is not None:
                     label = f"Line {block.line_number}\\n{block.label}"
                 else:
                     label = block.label
-            
+
             # For statement blocks with multiple statements, show line range
             elif block.block_type == BlockType.STATEMENT and block.statements:
                 # Get line range for the statements
-                if block.statement_line_numbers and len(block.statement_line_numbers) > 0:
+                if (
+                    block.statement_line_numbers
+                    and len(block.statement_line_numbers) > 0
+                ):
                     start_line = block.statement_line_numbers[0]
                     end_line = block.statement_line_numbers[-1]
                     if start_line == end_line:
@@ -1904,14 +1915,14 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                         label = f"Line {start_line} - {end_line}"
                 else:
                     label = block.label
-                    
+
                 # Add statements (without duplication)
                 stmt_lines = []
                 for stmt in block.statements:
                     stmt_lines.append(stmt)
                 stmts = "\\n".join(stmt_lines)
                 label = f"{label}\\n---\\n{stmts}"
-            
+
             # For other blocks (ENTRY, EXIT, etc.)
             else:
                 label = block.label

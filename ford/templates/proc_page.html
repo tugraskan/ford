@@ -39,18 +39,20 @@
       </div>
     </div>
 
-    {# Section 1: Called From - with graph and subsection for Arguments #}
+    {# Section 1: Stack Flow - combines Called From and Calls subsections #}
     <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#called-from-section" 
+      <a data-bs-toggle="collapse" href="#stack-flow-section" 
          aria-expanded="true" 
-         aria-controls="called-from-section" 
+         aria-controls="stack-flow-section" 
          class="text-decoration-none">
         <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Called From
+          <i class="fa fa-caret-down me-2"></i>Stack Flow
         </h3>
       </a>
-      <div id="called-from-section" class="collapse show">
+      <div id="stack-flow-section" class="collapse show">
         <div class="card-body">
+          {# 1a. Called From subsection #}
+          <h4 class="mb-3">Called From</h4>
           {% if procedure.calledby or procedure.calledbygraph %}
             {% if procedure.calledby %}
             <ul class="list-group list-group-flush mb-3">
@@ -76,7 +78,34 @@
             <em>n/a</em>
           {% endif %}
 
-          {# 1a. Arguments as subsection #}
+          {# 1b. Calls subsection #}
+          <h4 class="mt-4 mb-3">Calls</h4>
+          {% if procedure.callsgraph or procedure.calls %}
+            {% if procedure.calls %}
+            <ul class="list-group list-group-flush mb-3">
+              <li class="list-group-item">
+                <ul class="list-inline">
+                  {% for call in procedure.calls %}
+                    <li class="list-inline-item">{{ call | relurl(page_url) }}</li>
+                  {% endfor %}
+                </ul>
+              </li>
+            </ul>
+            {% endif %}
+            
+            {% if procedure.callsgraph %}
+            <p class="text-muted mb-3">
+              Procedures called by this {{ procedure.proctype }}.
+            </p>
+            <div class="depgraph">
+              {{ procedure.callsgraph }}
+            </div>
+            {% endif %}
+          {% else %}
+            <em>n/a</em>
+          {% endif %}
+
+          {# 1c. Arguments subsection #}
           <h4 class="mt-4 mb-3">Arguments</h4>
           {% if procedure.args %}
             {{ macros.variable_list(procedure.args, intent=True) }}
@@ -790,45 +819,7 @@
       </div>
     </div>
 
-    {# Section 6: Calls - show both list and graph #}
-    <div class="card mb-3">
-      <a data-bs-toggle="collapse" href="#calls-section" 
-         aria-expanded="false" 
-         aria-controls="calls-section" 
-         class="text-decoration-none">
-        <h3 class="card-header bg-light text-dark">
-          <i class="fa fa-caret-down me-2"></i>Calls
-        </h3>
-      </a>
-      <div id="calls-section" class="collapse">
-        <div class="card-body">
-          {% if procedure.callsgraph or procedure.calls %}
-            {% if procedure.calls %}
-            <ul class="list-group list-group-flush mb-3">
-              <li class="list-group-item">
-                <ul class="list-inline">
-                  {% for call in procedure.calls %}
-                    <li class="list-inline-item">{{ call | relurl(page_url) }}</li>
-                  {% endfor %}
-                </ul>
-              </li>
-            </ul>
-            {% endif %}
-            
-            {% if procedure.callsgraph %}
-            <p class="text-muted mb-3">
-              Procedures called by this {{ procedure.proctype }}.
-            </p>
-            <div class="depgraph">
-              {{ procedure.callsgraph }}
-            </div>
-            {% endif %}
-          {% else %}
-            <em>n/a</em>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+
 
     {% if procedure.binding %}
     <h3>Type Bound</h3>
