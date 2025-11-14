@@ -57,10 +57,15 @@ class BlockType(Enum):
     DO_LOOP = "do_loop"
     SELECT_CASE = "select_case"
     CASE = "case"
-    # Keyword node types
-    KEYWORD_IO = (
-        "keyword_io"  # I/O operations: OPEN, READ, WRITE, CLOSE, REWIND, INQUIRE
-    )
+    # Keyword node types - I/O operations (each with distinct color)
+    KEYWORD_IO_OPEN = "keyword_io_open"  # OPEN statement
+    KEYWORD_IO_READ = "keyword_io_read"  # READ statement
+    KEYWORD_IO_WRITE = "keyword_io_write"  # WRITE statement
+    KEYWORD_IO_CLOSE = "keyword_io_close"  # CLOSE statement
+    KEYWORD_IO_REWIND = "keyword_io_rewind"  # REWIND statement
+    KEYWORD_IO_INQUIRE = "keyword_io_inquire"  # INQUIRE statement
+    KEYWORD_IO_PRINT = "keyword_io_print"  # PRINT statement
+    # Other keyword types
     KEYWORD_MEMORY = "keyword_memory"  # Memory operations: ALLOCATE, DEALLOCATE
     KEYWORD_BRANCH = "keyword_branch"  # Branch: IF, SELECT CASE (already handled by IF_CONDITION/SELECT_CASE)
     KEYWORD_LOOP = "keyword_loop"  # Loop: DO, DO WHILE (already handled by DO_LOOP)
@@ -1606,9 +1611,21 @@ def get_keyword_block_type(keyword: str) -> Optional[BlockType]:
     BlockType or None
         The block type for this keyword, or None if not a keyword node type
     """
-    # I/O keywords
-    if keyword in ["OPEN", "READ", "WRITE", "CLOSE", "REWIND", "INQUIRE", "PRINT"]:
-        return BlockType.KEYWORD_IO
+    # I/O keywords - each gets its own block type for distinct coloring
+    if keyword == "OPEN":
+        return BlockType.KEYWORD_IO_OPEN
+    elif keyword == "READ":
+        return BlockType.KEYWORD_IO_READ
+    elif keyword == "WRITE":
+        return BlockType.KEYWORD_IO_WRITE
+    elif keyword == "CLOSE":
+        return BlockType.KEYWORD_IO_CLOSE
+    elif keyword == "REWIND":
+        return BlockType.KEYWORD_IO_REWIND
+    elif keyword == "INQUIRE":
+        return BlockType.KEYWORD_IO_INQUIRE
+    elif keyword == "PRINT":
+        return BlockType.KEYWORD_IO_PRINT
     # Memory keywords
     elif keyword in ["ALLOCATE", "DEALLOCATE"]:
         return BlockType.KEYWORD_MEMORY

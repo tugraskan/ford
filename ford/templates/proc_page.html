@@ -440,13 +440,23 @@
                   <h5>Keyword Nodes</h5>
                   <p>Each keyword appears as its own node at the point where it occurs in the code:</p>
                   <ul>
-                    <li><span style="background-color: #5DADE2; padding: 2px 8px; border-radius: 4px;">I/O operations (OPEN, READ, WRITE, CLOSE, REWIND, INQUIRE)</span> - Rounded rectangle, blue</li>
-                    <li><span style="background-color: #52BE80; padding: 2px 8px;">Memory operations (ALLOCATE, DEALLOCATE)</span> - Hexagon, green</li>
-                    <li><span style="background-color: #EC7063; padding: 2px 8px;">Early exit (RETURN, EXIT, CYCLE)</span> - Octagon, red</li>
+                    <li><strong>I/O operations</strong> (rounded rectangles, distinct colors):
+                      <ul>
+                        <li><span style="background-color: #4A90E2; padding: 2px 8px; border-radius: 4px; color: white;">OPEN</span> - Medium blue</li>
+                        <li><span style="background-color: #50C878; padding: 2px 8px; border-radius: 4px; color: white;">READ</span> - Emerald green</li>
+                        <li><span style="background-color: #FF6B6B; padding: 2px 8px; border-radius: 4px; color: white;">WRITE</span> - Coral red</li>
+                        <li><span style="background-color: #9370DB; padding: 2px 8px; border-radius: 4px; color: white;">CLOSE</span> - Medium purple</li>
+                        <li><span style="background-color: #FFD700; padding: 2px 8px; border-radius: 4px;">REWIND</span> - Gold</li>
+                        <li><span style="background-color: #20B2AA; padding: 2px 8px; border-radius: 4px; color: white;">INQUIRE</span> - Light sea green</li>
+                        <li><span style="background-color: #FF69B4; padding: 2px 8px; border-radius: 4px; color: white;">PRINT</span> - Hot pink</li>
+                      </ul>
+                    </li>
+                    <li><span style="background-color: #52BE80; padding: 2px 8px; color: white;">Memory operations (ALLOCATE, DEALLOCATE)</span> - Hexagon, green</li>
+                    <li><span style="background-color: #EC7063; padding: 2px 8px; color: white;">Early exit (RETURN, EXIT, CYCLE)</span> - Octagon, red</li>
                     <li><span style="border: 2px solid #BB8FCE; padding: 1px 7px; background-color: white; color: #BB8FCE;">Procedure call (CALL)</span> - Rectangle with purple outline</li>
                   </ul>
                   
-                  <p>Each keyword node includes its line number in the format: KEYWORD (Lxxx)</p>
+                  <p>Each keyword node shows its line number and the statement code.</p>
                   <p>Arrows show the possible execution paths through the code. Edges from conditions are labeled with 'T' (true) and 'F' (false), or 'loop' and 'exit' for DO loops.</p>
                 </div>
               </div>
@@ -462,8 +472,33 @@
           </p>
           {% macro render_statement_with_badges(stmt, keywords, line_num) %}
             {# Render a statement with keyword badges in first column, line number and statement in second #}
+            {# Map keywords to graph colors #}
             {% if keywords %}
-              {% for keyword in keywords %}<span class="badge bg-info text-dark me-1">{{ keyword }}</span>{% endfor %}
+              {% for keyword in keywords %}
+                {% if keyword == "OPEN" %}
+                  <span class="badge text-white me-1" style="background-color: #4A90E2;">{{ keyword }}</span>
+                {% elif keyword == "READ" %}
+                  <span class="badge text-white me-1" style="background-color: #50C878;">{{ keyword }}</span>
+                {% elif keyword == "WRITE" %}
+                  <span class="badge text-white me-1" style="background-color: #FF6B6B;">{{ keyword }}</span>
+                {% elif keyword == "CLOSE" %}
+                  <span class="badge text-white me-1" style="background-color: #9370DB;">{{ keyword }}</span>
+                {% elif keyword == "REWIND" %}
+                  <span class="badge me-1" style="background-color: #FFD700; color: #000;">{{ keyword }}</span>
+                {% elif keyword == "INQUIRE" %}
+                  <span class="badge text-white me-1" style="background-color: #20B2AA;">{{ keyword }}</span>
+                {% elif keyword == "PRINT" %}
+                  <span class="badge text-white me-1" style="background-color: #FF69B4;">{{ keyword }}</span>
+                {% elif keyword == "ALLOCATE" or keyword == "DEALLOCATE" %}
+                  <span class="badge text-white me-1" style="background-color: #52BE80;">{{ keyword }}</span>
+                {% elif keyword == "RETURN" or keyword == "EXIT" or keyword == "CYCLE" or keyword == "STOP" or keyword == "ERROR STOP" %}
+                  <span class="badge text-white me-1" style="background-color: #EC7063;">{{ keyword }}</span>
+                {% elif keyword == "CALL" %}
+                  <span class="badge text-white me-1" style="background-color: #BB8FCE;">{{ keyword }}</span>
+                {% else %}
+                  <span class="badge bg-secondary me-1">{{ keyword }}</span>
+                {% endif %}
+              {% endfor %}
             {% endif %}
             {% if keywords and line_num %}    {% endif %}
             {% if line_num %}<span class="text-muted">{{ "%4d" | format(line_num) }}</span> {% endif %}{{ stmt }}
