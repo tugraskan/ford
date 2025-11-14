@@ -97,8 +97,7 @@
       {# Variables Section - show variables for Output and Input/Output files #}
       {% if iofile.io_type in ['Output', 'Input/Output'] %}
       <h2>Variables Written to This File</h2>
-      {% set all_vars = {} %}
-      {% set var_order = [] %}
+      {% set all_vars = [] %}
       
       {# Separate procedures into header-writing and data-writing #}
       {% set header_procs = [] %}
@@ -133,12 +132,47 @@
           {% for op in ops.timeline %}
             {% if op.kind == 'write' and op.parameters %}
               {% for param in op.parameters %}
-                {# Extract base variable name (remove array indices, type components) #}
-                {% set base_var = param.split('(')[0].split('%')[-1] %}
-                {% if base_var not in all_vars %}
-                  {% set _ = all_vars.update({base_var: {'full_name': param, 'procedure': proc, 'line': op.line}}) %}
-                  {% set _ = var_order.append(base_var) %}
+                {# Parse the parameter to extract its components #}
+                {% set param_info = {} %}
+                {% set _ = param_info.update({'full_name': param, 'procedure': proc, 'line': op.line}) %}
+                
+                {# Extract array name and indices if present: e.g., aqu_a(iaq) or ob(iob)%name #}
+                {% set array_name = none %}
+                {% set array_index = none %}
+                {% if '(' in param %}
+                  {% set paren_parts = param.split('(', 1) %}
+                  {% set before_paren = paren_parts[0] %}
+                  {% set after_paren = paren_parts[1].rsplit(')', 1)[0] if ')' in paren_parts[1] else paren_parts[1] %}
+                  {% if '%' not in before_paren %}
+                    {# Simple array like aqu_a(iaq) #}
+                    {% set array_name = before_paren %}
+                    {% set array_index = after_paren %}
+                  {% else %}
+                    {# Component with array like ob(iob)%name - extract array from first part #}
+                    {% set parts = before_paren.split('%') %}
+                    {% set array_name = parts[0] %}
+                    {% set array_index = after_paren.split('%')[0] if '%' in after_paren else after_paren %}
+                  {% endif %}
                 {% endif %}
+                {% set _ = param_info.update({'array_name': array_name, 'array_index': array_index}) %}
+                
+                {# Extract base variable name and component #}
+                {% set base_name = none %}
+                {% set component_name = none %}
+                {% if '%' in param %}
+                  {# Has component access like time%day or ob(iob)%name #}
+                  {% set parts = param.split('%') %}
+                  {% set base_name = parts[0].split('(')[0] %}
+                  {% set component_name = parts[-1].split('(')[0] %}
+                {% else %}
+                  {# Simple variable or array like iaq or aqu_a(iaq) #}
+                  {% set base_name = param.split('(')[0] %}
+                  {% set component_name = none %}
+                {% endif %}
+                {% set _ = param_info.update({'base_name': base_name, 'component_name': component_name}) %}
+                
+                {# Add to list #}
+                {% set _ = all_vars.append(param_info) %}
               {% endfor %}
             {% endif %}
           {% endfor %}
@@ -146,68 +180,145 @@
       {% endfor %}
       
       {% if all_vars %}
-        <p class="text-muted">The following variables are written to this file across all procedures (ordered by occurrence in code):</p>
+        <p class="text-muted">The following variables are written to this file in order (one row per write operation parameter):</p>
         <table class="table table-sm table-striped">
           <thead>
             <tr>
-              <th>Variable</th>
-              <th>Type</th>
-              <th>Default Value</th>
+              <th>Module</th>
+              <th>Derived Type</th>
+              <th>Array Name</th>
+              <th>Data Type</th>
+              <th>Component Name</th>
+              <th>Default Value / Initial</th>
               <th>Procedure</th>
             </tr>
           </thead>
           <tbody>
-            {% for var_name in var_order %}
-              {% set var_info = all_vars[var_name] %}
+            {% for var_info in all_vars %}
               <tr>
-                <td><code>{{ var_info.full_name }}</code></td>
+                {# Column 1: Module - find which module the base variable belongs to #}
                 <td>
                   {% set found_var = namespace(value=none) %}
-                  {# Extract the base variable name and component if accessing a derived type #}
-                  {% set is_component = namespace(value=false) %}
-                  {% set base_name = var_name %}
-                  {% set component_name = none %}
-                  {% if '%' in var_info.full_name %}
-                    {% set parts = var_info.full_name.split('%') %}
-                    {% set base_name = parts[0].split('(')[0] %}
-                    {% set component_name = parts[-1] %}
-                    {% set is_component.value = true %}
-                  {% endif %}
+                  {% set is_local = namespace(value=false) %}
                   
                   {# First try to find base variable in procedure's local variables #}
                   {% if var_info.procedure.variables is defined %}
                     {% for v in var_info.procedure.variables %}
-                      {% if v.name.lower() == base_name.lower() %}
+                      {% if v.name.lower() == var_info.base_name.lower() %}
                         {% set found_var.value = v %}
+                        {% set is_local.value = true %}
                       {% endif %}
                     {% endfor %}
                   {% endif %}
+                  
                   {# If not found locally, try module variables via all_vars #}
                   {% if not found_var.value and var_info.procedure.all_vars is defined %}
-                    {% if base_name.lower() in var_info.procedure.all_vars %}
-                      {% set found_var.value = var_info.procedure.all_vars[base_name.lower()] %}
+                    {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
+                      {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
                     {% endif %}
                   {% endif %}
                   
-                  {# Display the type #}
-                  {% if found_var.value %}
-                    {% if is_component.value %}
-                      {# For component access, show base type + component #}
-                      <code>{{ found_var.value.full_type }}%{{ component_name }}</code>
+                  {% if is_local.value %}
+                    Local
+                  {% elif found_var.value and found_var.value.parent %}
+                    {# Check if parent is a module (not a procedure) #}
+                    {% if found_var.value.parent.obj == 'module' %}
+                      {{ found_var.value.parent | relurl(page_url) }}
                     {% else %}
-                      <code>{{ found_var.value.full_type }}</code>
+                      Local
                     {% endif %}
                   {% else %}
                     <em>unknown</em>
                   {% endif %}
                 </td>
+                
+                {# Column 2: Derived Type - link to the type if it's a derived type #}
                 <td>
-                  {% if found_var.value and found_var.value.initial %}
+                  {% if found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
+                    {% set type_obj = found_var.value.proto[0] %}
+                    {% if type_obj is string %}
+                      <code>{{ type_obj }}</code>
+                    {% else %}
+                      {{ type_obj | relurl(page_url) }}
+                    {% endif %}
+                  {% else %}
+                    NA
+                  {% endif %}
+                </td>
+                
+                {# Column 3: Array Name - if applicable #}
+                <td>
+                  {% if var_info.array_name %}
+                    <code>{{ var_info.array_name }}</code>
+                  {% else %}
+                    <em>-</em>
+                  {% endif %}
+                </td>
+                
+                {# Column 4: Data Type - get the type of the component or base variable #}
+                <td>
+                  {% if var_info.component_name and found_var.value %}
+                    {# Need to find the component type within the derived type #}
+                    {% set component_var = namespace(value=none) %}
+                    {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                      {% set type_obj = found_var.value.proto[0] %}
+                      {% if type_obj is not string and type_obj.variables is defined %}
+                        {% for comp in type_obj.variables %}
+                          {% if comp.name.lower() == var_info.component_name.lower() %}
+                            {% set component_var.value = comp %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    {% endif %}
+                    {% if component_var.value %}
+                      <code>{{ component_var.value.full_type }}</code>
+                    {% else %}
+                      <em>unknown</em>
+                    {% endif %}
+                  {% elif found_var.value %}
+                    <code>{{ found_var.value.full_type }}</code>
+                  {% else %}
+                    <em>unknown</em>
+                  {% endif %}
+                </td>
+                
+                {# Column 5: Component Name #}
+                <td>
+                  {% if var_info.component_name %}
+                    <code>{{ var_info.component_name }}</code>
+                  {% else %}
+                    <em>-</em>
+                  {% endif %}
+                </td>
+                
+                {# Column 6: Default Value / Initial #}
+                <td>
+                  {% if var_info.component_name and found_var.value %}
+                    {# Need to find the component initial value within the derived type #}
+                    {% set component_var = namespace(value=none) %}
+                    {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                      {% set type_obj = found_var.value.proto[0] %}
+                      {% if type_obj is not string and type_obj.variables is defined %}
+                        {% for comp in type_obj.variables %}
+                          {% if comp.name.lower() == var_info.component_name.lower() %}
+                            {% set component_var.value = comp %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    {% endif %}
+                    {% if component_var.value and component_var.value.initial %}
+                      <code>{{ component_var.value.initial }}</code>
+                    {% else %}
+                      <em>-</em>
+                    {% endif %}
+                  {% elif found_var.value and found_var.value.initial %}
                     <code>{{ found_var.value.initial }}</code>
                   {% else %}
                     <em>-</em>
                   {% endif %}
                 </td>
+                
+                {# Column 7: Procedure #}
                 <td>{{ var_info.procedure | relurl(page_url) }}</td>
               </tr>
             {% endfor %}
@@ -217,25 +328,30 @@
         {# Sample File Format Section #}
         <h3>Sample File Format</h3>
         
-        {# First, categorize variables #}
+        {# First, categorize variables - use base_name for categorization #}
         {% set header_vars = [] %}
         {% set units_vars = [] %}
         {% set data_vars = [] %}
-        {% for var_name in var_order %}
-          {% set var_info = all_vars[var_name] %}
-          {% if '_hdr_units' in var_name.lower() or '_units' in var_name.lower() %}
-            {% set _ = units_vars.append(var_name) %}
-          {% elif '_hdr' in var_name.lower() %}
-            {% set _ = header_vars.append(var_name) %}
-          {% else %}
-            {% set _ = data_vars.append(var_name) %}
+        {% set seen_vars = [] %}
+        
+        {% for var_info in all_vars %}
+          {% set var_name = var_info.base_name %}
+          {% if var_name not in seen_vars %}
+            {% set _ = seen_vars.append(var_name) %}
+            {% if '_hdr_units' in var_name.lower() or '_units' in var_name.lower() %}
+              {% set _ = units_vars.append(var_info) %}
+            {% elif '_hdr' in var_name.lower() %}
+              {% set _ = header_vars.append(var_info) %}
+            {% else %}
+              {% set _ = data_vars.append(var_info) %}
+            {% endif %}
           {% endif %}
         {% endfor %}
         
         {# Show transposed header tables for header and units variables #}
         {% if header_vars or units_vars %}
-          {% for var_name in header_vars + units_vars %}
-            {% set var_info = all_vars[var_name] %}
+          {% for var_info in header_vars + units_vars %}
+            {% set var_name = var_info.base_name %}
             {# Try to find the variable in the procedure #}
             {% set found_var = namespace(value=none) %}
             {% if var_info.procedure.variables is defined %}
@@ -305,11 +421,11 @@
         <div class="card">
           <div class="card-body">
             <pre><code>{# Show the structure #}
-{% if header_vars %}Row 1 (headers): {% for var in header_vars %}{{ var }}{% if not loop.last %}, {% endif %}{% endfor %}
+{% if header_vars %}Row 1 (headers): {% for var_info in header_vars %}{{ var_info.base_name }}{% if not loop.last %}, {% endif %}{% endfor %}
 
-{% endif %}{% if units_vars %}Row 2 (units): {% for var in units_vars %}{{ var }}{% if not loop.last %}, {% endif %}{% endfor %}
+{% endif %}{% if units_vars %}Row 2 (units): {% for var_info in units_vars %}{{ var_info.base_name }}{% if not loop.last %}, {% endif %}{% endfor %}
 
-{% endif %}{% if data_vars %}Row 3+ (data): {% for var in data_vars %}{{ all_vars[var].full_name }}{% if not loop.last %}, {% endif %}{% endfor %}
+{% endif %}{% if data_vars %}Row 3+ (data): {% for var_info in data_vars %}{{ var_info.full_name }}{% if not loop.last %}, {% endif %}{% endfor %}
 
 {% endif %}...</code></pre>
             <p class="text-muted"><small>Note: Header and units variables (like <code>aqu_hdr</code>) are typically structured types that expand to multiple columns when written.</small></p>
