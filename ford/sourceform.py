@@ -3957,6 +3957,15 @@ class FortranProcedure(FortranCodeUnit):
 
                                                 # Create the attribute variable entry for this level
                                                 # Include line numbers for this specific component usage
+                                                # Mark if this is a nested derived type (component that is itself a type)
+                                                is_nested_type = (
+                                                    component_var
+                                                    and hasattr(component_var, "proto")
+                                                    and component_var.proto
+                                                    and len(component_var.proto) > 0
+                                                    and i < len(attr_parts) - 1
+                                                )
+                                                
                                                 attr_var = type(
                                                     "AttributeVar",
                                                     (),
@@ -3969,6 +3978,8 @@ class FortranProcedure(FortranCodeUnit):
                                                         "dimension": "",
                                                         "component_details": component_var,
                                                         "line_numbers": sorted(set(line_numbers)) if i == len(attr_parts) - 1 else [],
+                                                        "is_nested_type": is_nested_type,
+                                                        "nesting_level": i,
                                                         "meta": lambda self, key, attr=full_attr, comp=component_var: (
                                                             getattr(
                                                                 comp,
