@@ -888,6 +888,7 @@
                             <tr>
                               <th scope="col">Variable Declaration</th>
                               <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -932,6 +933,12 @@
                                   {% if components|length > 0 %}
                                     <div class="mt-2 ps-4">
                                       <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
                                         <tbody>
                                           {% for comp_var in components %}
                                             <tr>
@@ -949,6 +956,13 @@
                                                   :: <strong>{{ comp_var.component_name }}</strong>
                                                 {% endif %}
                                               </td>
+                                              <td style="border-top: none;">
+                                                {% if comp_var.line_numbers %}
+                                                  <small class="text-muted">{{ comp_var.line_numbers | join(', ') }}</small>
+                                                {% else %}
+                                                  <small class="text-muted">-</small>
+                                                {% endif %}
+                                              </td>
                                             </tr>
                                           {% endfor %}
                                         </tbody>
@@ -957,6 +971,13 @@
                                   {% endif %}
                                 </td>
                                 <td>{{ first_var | meta('summary') }}</td>
+                                <td>
+                                  {% if first_var.line_numbers %}
+                                    <small class="text-muted">{{ first_var.line_numbers | join(', ') }}</small>
+                                  {% else %}
+                                    <small class="text-muted">-</small>
+                                  {% endif %}
+                                </td>
                               </tr>
                             {% endfor %}
                           </tbody>

@@ -3744,11 +3744,12 @@ class FortranProcedure(FortranCodeUnit):
                 return []
 
             # Extract variable references with detailed attribute information
-            variable_references = {}  # {base_var: set of attributes}
+            # {base_var: {attribute: [line_numbers]}}
+            variable_references = {}
 
             # Split source into lines and process each line
             lines = source_code.split("\n")
-            for line in lines:
+            for line_idx, line in enumerate(lines, start=1):
                 # Remove comments (anything after ! that's not in quotes)
                 in_quote = False
                 quote_char = None
@@ -3870,14 +3871,16 @@ class FortranProcedure(FortranCodeUnit):
                         attribute = "%".join(parts[1:])
 
                         if base_var not in variable_references:
-                            variable_references[base_var] = set()
-                        variable_references[base_var].add(attribute)
+                            variable_references[base_var] = {}
+                        if attribute not in variable_references[base_var]:
+                            variable_references[base_var][attribute] = []
+                        variable_references[base_var][attribute].append(line_idx)
                     else:
                         # Simple variable reference (may have array index)
                         # Remove array index: "my_array(i)" -> "my_array"
                         base_var = re.sub(r"\([^)]*\)", "", match).lower()
                         if base_var not in variable_references:
-                            variable_references[base_var] = set()
+                            variable_references[base_var] = {}
 
             # Now find which modules these variables come from
             if hasattr(self, "uses"):
@@ -3897,11 +3900,11 @@ class FortranProcedure(FortranCodeUnit):
                             for var in module.variables:
                                 var_name = var.name.lower()
                                 if var_name in variable_references:
-                                    attributes = list(variable_references[var_name])
+                                    attributes_dict = variable_references[var_name]
 
-                                    if attributes:
+                                    if attributes_dict:
                                         # Create individual attribute variables
-                                        for attr in attributes:
+                                        for attr, line_numbers in attributes_dict.items():
                                             # Split attribute by % to handle nested components (e.g., "salt%rchrg")
                                             # Create entries for all levels of nesting
                                             attr_parts = attr.split("%")
@@ -3953,6 +3956,7 @@ class FortranProcedure(FortranCodeUnit):
                                                     var_full_type = "unknown"
 
                                                 # Create the attribute variable entry for this level
+                                                # Include line numbers for this specific component usage
                                                 attr_var = type(
                                                     "AttributeVar",
                                                     (),
@@ -3964,6 +3968,7 @@ class FortranProcedure(FortranCodeUnit):
                                                         "parent": module,
                                                         "dimension": "",
                                                         "component_details": component_var,
+                                                        "line_numbers": sorted(set(line_numbers)) if i == len(attr_parts) - 1 else [],
                                                         "meta": lambda self, key, attr=full_attr, comp=component_var: (
                                                             getattr(
                                                                 comp,
@@ -4006,11 +4011,11 @@ class FortranProcedure(FortranCodeUnit):
                             for dtype in module.types:
                                 type_name = dtype.name.lower()
                                 if type_name in variable_references:
-                                    attributes = list(variable_references[type_name])
+                                    attributes_dict = variable_references[type_name]
 
-                                    if attributes:
+                                    if attributes_dict:
                                         # Create individual attribute variables for the type
-                                        for attr in attributes:
+                                        for attr, line_numbers in attributes_dict.items():
                                             attr_var = type(
                                                 "TypeAttributeVar",
                                                 (),
@@ -4019,6 +4024,7 @@ class FortranProcedure(FortranCodeUnit):
                                                     "full_type": f"type({dtype.name})",
                                                     "parent": module,
                                                     "dimension": "",
+                                                    "line_numbers": sorted(set(line_numbers)),
                                                     "meta": lambda self, key: (
                                                         f"Type {dtype.name} component: {attr}"
                                                         if key == "summary"
@@ -4037,6 +4043,7 @@ class FortranProcedure(FortranCodeUnit):
                                                 "full_type": f"type({dtype.name})",
                                                 "parent": module,
                                                 "dimension": "",
+                                                "line_numbers": [],
                                                 "meta": lambda self, key: (
                                                     getattr(
                                                         dtype, "meta", lambda k: ""
