@@ -1697,6 +1697,108 @@ class GraphManager:
                 graph.create_svg(self.graphdir)
 
 
+def add_collapse_functionality_to_svg(svg_str: str, cfg, procedure_name: str) -> str:
+    """Add collapse/expand functionality to control flow graph SVG
+    
+    This function post-processes the SVG to add:
+    - Data attributes to identify collapsible nodes (IF/DO/SELECT)
+    - CSS classes for styling
+    - Collapse/expand indicators
+    
+    Parameters
+    ----------
+    svg_str : str
+        The original SVG string from Graphviz
+    cfg : ControlFlowGraph
+        The control flow graph
+    procedure_name : str
+        Name of the procedure
+        
+    Returns
+    -------
+    str
+        Enhanced SVG with collapse functionality
+    """
+    try:
+        from bs4 import BeautifulSoup
+        from ford.control_flow import BlockType
+        
+        # Try to use XML parser, fall back to HTML parser if not available
+        try:
+            soup = BeautifulSoup(svg_str, 'xml')
+        except:
+            soup = BeautifulSoup(svg_str, 'html.parser')
+        
+        # Find all node groups in the SVG
+        # Graphviz creates nodes with a <title> element containing the block ID
+        for block_id, block in cfg.blocks.items():
+            # Check if this is a collapsible node type
+            if block.block_type in [BlockType.IF_CONDITION, BlockType.DO_LOOP, BlockType.SELECT_CASE]:
+                # Find the corresponding SVG node group by looking for <title>block_id</title>
+                # The title is a child of the node group
+                all_nodes = soup.find_all('g', class_='node')
+                target_node = None
+                
+                for node_group in all_nodes:
+                    title = node_group.find('title')
+                    if title and title.string and title.string.strip() == str(block_id):
+                        target_node = node_group
+                        break
+                
+                if target_node:
+                    # Add data attribute to mark as collapsible
+                    target_node['data-collapsible'] = 'true'
+                    target_node['data-block-id'] = str(block_id)
+                    target_node['data-block-type'] = block.block_type.value
+                    # Add CSS class for styling
+                    existing_class = target_node.get('class', [])
+                    if isinstance(existing_class, str):
+                        existing_class = existing_class.split()
+                    existing_class.append('cfg-collapsible')
+                    target_node['class'] = existing_class
+                    
+                    # Add a small circle indicator for collapse/expand
+                    # Find the text element to position the indicator
+                    text_elem = target_node.find('text')
+                    if text_elem and 'x' in text_elem.attrs and 'y' in text_elem.attrs:
+                        x = float(text_elem['x'])
+                        y = float(text_elem['y'])
+                        
+                        # Add a small circle at the top-right as a collapse indicator
+                        circle = soup.new_tag('circle')
+                        circle['cx'] = str(x + 20)
+                        circle['cy'] = str(y - 20)
+                        circle['r'] = '6'
+                        circle['fill'] = 'white'
+                        circle['stroke'] = 'black'
+                        circle['stroke-width'] = '1.5'
+                        circle['class'] = 'collapse-indicator'
+                        circle['style'] = 'cursor: pointer;'
+                        target_node.append(circle)
+                        
+                        # Add a minus sign (−) as initial state (expanded)
+                        minus_sign = soup.new_tag('text')
+                        minus_sign['x'] = str(x + 20)
+                        minus_sign['y'] = str(y - 15)
+                        minus_sign['text-anchor'] = 'middle'
+                        minus_sign['font-family'] = 'monospace'
+                        minus_sign['font-size'] = '12'
+                        minus_sign['font-weight'] = 'bold'
+                        minus_sign['class'] = 'collapse-icon'
+                        minus_sign['style'] = 'pointer-events: none;'
+                        minus_sign.string = '−'
+                        target_node.append(minus_sign)
+        
+        return str(soup)
+    except ImportError:
+        # If BeautifulSoup is not available, return original SVG
+        log.debug("BeautifulSoup not available, skipping collapse functionality")
+        return svg_str
+    except Exception as e:
+        log.debug(f"Error adding collapse functionality to SVG: {e}")
+        return svg_str
+
+
 def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
     """Create an SVG representation of a control flow graph
 
@@ -2004,6 +2106,8 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
                 svg_src = dot.pipe().decode("utf-8")
                 signal.alarm(0)
                 svg_src = svg_src.replace("<svg ", f'<svg id="cfg_{procedure_name}" ')
+                # Add collapse functionality
+                svg_src = add_collapse_functionality_to_svg(svg_src, cfg, procedure_name)
                 return svg_src
             except TimeoutError:
                 signal.alarm(0)
@@ -2015,6 +2119,8 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
             # On Windows or systems without SIGALRM, render without timeout
             svg_src = dot.pipe().decode("utf-8")
             svg_src = svg_src.replace("<svg ", f'<svg id="cfg_{procedure_name}" ')
+            # Add collapse functionality
+            svg_src = add_collapse_functionality_to_svg(svg_src, cfg, procedure_name)
             return svg_src
     except Exception as e:
         log.debug(f"Error rendering control flow graph for {procedure_name}: {e}")

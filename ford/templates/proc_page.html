@@ -443,6 +443,145 @@
                   pointY = 0;
                   svg.style.transform = '';
                 };
+                
+                // Add collapse/expand functionality for control flow nodes
+                // Track collapsed state for each control node
+                const collapsedNodes = new Map();
+                
+                // Function to find all descendant nodes of a control structure
+                function findDescendantNodes(controlBlockId) {
+                  const descendants = new Set();
+                  const edges = svg.querySelectorAll('g.edge');
+                  const nodes = svg.querySelectorAll('g.node');
+                  
+                  // Build adjacency list from edges
+                  const adjacency = new Map();
+                  edges.forEach(edge => {
+                    const title = edge.querySelector('title');
+                    if (title) {
+                      const match = title.textContent.match(/^(\d+)->(\d+)$/);
+                      if (match) {
+                        const from = match[1];
+                        const to = match[2];
+                        if (!adjacency.has(from)) adjacency.set(from, []);
+                        adjacency.get(from).push(to);
+                      }
+                    }
+                  });
+                  
+                  // BFS to find all reachable nodes from the control node
+                  const queue = [controlBlockId];
+                  const visited = new Set([controlBlockId]);
+                  
+                  // Find the exit nodes for this control structure (nodes with edge labels 'F' or 'exit')
+                  const exitNodes = new Set();
+                  edges.forEach(edge => {
+                    const title = edge.querySelector('title');
+                    const text = edge.querySelector('text');
+                    if (title && text) {
+                      const match = title.textContent.match(/^(\d+)->(\d+)$/);
+                      const label = text.textContent.trim();
+                      if (match && match[1] === controlBlockId && (label === 'F' || label === 'exit')) {
+                        exitNodes.add(match[2]);
+                      }
+                    }
+                  });
+                  
+                  while (queue.length > 0) {
+                    const current = queue.shift();
+                    const neighbors = adjacency.get(current) || [];
+                    
+                    for (const neighbor of neighbors) {
+                      // Stop if we've reached an exit node
+                      if (exitNodes.has(neighbor)) continue;
+                      
+                      if (!visited.has(neighbor)) {
+                        visited.add(neighbor);
+                        descendants.add(neighbor);
+                        queue.push(neighbor);
+                      }
+                    }
+                  }
+                  
+                  return descendants;
+                }
+                
+                // Add click handlers to collapsible nodes
+                const collapsibleNodes = svg.querySelectorAll('g.cfg-collapsible');
+                collapsibleNodes.forEach(node => {
+                  const blockId = node.getAttribute('data-block-id');
+                  const indicator = node.querySelector('.collapse-indicator');
+                  const icon = node.querySelector('.collapse-icon');
+                  
+                  if (indicator && icon && blockId) {
+                    // Make the whole node clickable
+                    node.style.cursor = 'pointer';
+                    
+                    node.addEventListener('click', function(e) {
+                      // Don't trigger pan when clicking on control nodes
+                      e.stopPropagation();
+                      
+                      const isCollapsed = collapsedNodes.get(blockId) || false;
+                      collapsedNodes.set(blockId, !isCollapsed);
+                      
+                      // Find descendant nodes and edges
+                      const descendants = findDescendantNodes(blockId);
+                      
+                      if (isCollapsed) {
+                        // Expand: show descendants
+                        descendants.forEach(descId => {
+                          const descNode = svg.querySelector(`g.node title`);
+                          if (descNode) {
+                            descNode.parentElement.style.display = '';
+                          }
+                          // Find node by checking all node groups
+                          svg.querySelectorAll('g.node').forEach(n => {
+                            const title = n.querySelector('title');
+                            if (title && title.textContent === descId) {
+                              n.style.display = '';
+                            }
+                          });
+                        });
+                        
+                        // Show edges connected to descendants
+                        svg.querySelectorAll('g.edge').forEach(edge => {
+                          const title = edge.querySelector('title');
+                          if (title) {
+                            const match = title.textContent.match(/^(\d+)->(\d+)$/);
+                            if (match && (descendants.has(match[1]) || descendants.has(match[2]))) {
+                              edge.style.display = '';
+                            }
+                          }
+                        });
+                        
+                        icon.textContent = '−';
+                      } else {
+                        // Collapse: hide descendants
+                        descendants.forEach(descId => {
+                          svg.querySelectorAll('g.node').forEach(n => {
+                            const title = n.querySelector('title');
+                            if (title && title.textContent === descId) {
+                              n.style.display = 'none';
+                            }
+                          });
+                        });
+                        
+                        // Hide edges connected to descendants
+                        svg.querySelectorAll('g.edge').forEach(edge => {
+                          const title = edge.querySelector('title');
+                          if (title) {
+                            const match = title.textContent.match(/^(\d+)->(\d+)$/);
+                            if (match && (descendants.has(match[1]) || descendants.has(match[2]))) {
+                              edge.style.display = 'none';
+                            }
+                          }
+                        });
+                        
+                        icon.textContent = '+';
+                      }
+                    });
+                  }
+                });
               }
             })();
           </script>
