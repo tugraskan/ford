@@ -3725,14 +3725,16 @@ class FortranProcedure(FortranCodeUnit):
             source_code = ""
 
             # Get the source code for this procedure - try multiple approaches
-            if hasattr(self, "source") and self.source:
-                source_code = self.source.source
-            elif hasattr(self, "obj") and hasattr(self.obj, "source"):
-                source_code = self.obj.source
+            # First try source_file which contains the raw source
+            if hasattr(self, "source_file") and self.source_file:
+                if hasattr(self.source_file, "raw_src"):
+                    source_code = self.source_file.raw_src
             elif hasattr(self, "parent") and hasattr(self.parent, "raw_src"):
                 source_code = self.parent.raw_src
             elif hasattr(self, "parent") and hasattr(self.parent, "src"):
-                source_code = self.parent.src
+                import re
+                # Extract plain text from HTML if needed
+                source_code = re.sub(r'<[^>]+>', '', self.parent.src)
             elif hasattr(self, "parent") and hasattr(self.parent, "path"):
                 try:
                     with open(self.parent.path, "r") as f:
