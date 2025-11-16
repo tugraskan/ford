@@ -840,9 +840,14 @@
       {% if module_name not in modules_dict %}
         {% set _ = modules_dict.update({module_name: {'module_obj': var.parent, 'types': {}}}) %}
       {% endif %}
-      {% set type_key = var.full_type | string %}
+      {# Get the full type as a string for display (may contain HTML) #}
+      {% set type_display = var.full_type | string %}
+      {# Create a plain text version for use as dictionary key and IDs by stripping HTML tags #}
+      {% set type_key_plain = type_display | striptags %}
+      {# Now sanitize the plain text for use as an HTML ID #}
+      {% set type_key = type_key_plain | replace(' ', '_') | replace('(', '_') | replace(')', '_') %}
       {% if type_key not in modules_dict[module_name]['types'] %}
-        {% set _ = modules_dict[module_name]['types'].update({type_key: {'type_name': type_key, 'vars': []}}) %}
+        {% set _ = modules_dict[module_name]['types'].update({type_key: {'type_name': type_display, 'vars': []}}) %}
       {% endif %}
       {% set _ = modules_dict[module_name]['types'][type_key]['vars'].append(var) %}
     {% endfor %}
