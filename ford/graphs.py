@@ -836,7 +836,7 @@ class FortranGraph:
 
         if graphviz_installed:
             # Render graph with timeout protection to prevent hanging on complex graphs
-            svg_src = self._render_graph_with_timeout(timeout_seconds=30)
+            svg_src = self._render_graph_with_timeout(timeout_seconds=60)
             if svg_src:
                 self.svg_src = svg_src
                 self.svg_src = self.svg_src.replace(
@@ -1565,12 +1565,12 @@ class GraphManager:
                 try:
                     cfg = obj.get_control_flow_graph()
                     if cfg:
-                        # Skip CFG visualization for very large procedures (>500 blocks)
+                        # Skip CFG visualization for very large procedures (>1000 blocks)
                         # as graphviz rendering becomes too slow
-                        if len(cfg.blocks) > 500:
+                        if len(cfg.blocks) > 1000:
                             log.debug(
                                 f"Skipping control flow graph for {obj.name} "
-                                f"({len(cfg.blocks)} blocks > 500 block limit)"
+                                f"({len(cfg.blocks)} blocks > 1000 block limit)"
                             )
                             obj.controlflowtgraph_svg = ""
                         else:
