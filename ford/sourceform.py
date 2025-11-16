@@ -3733,8 +3733,9 @@ class FortranProcedure(FortranCodeUnit):
                 source_code = self.parent.raw_src
             elif hasattr(self, "parent") and hasattr(self.parent, "src"):
                 import re
+
                 # Extract plain text from HTML if needed
-                source_code = re.sub(r'<[^>]+>', '', self.parent.src)
+                source_code = re.sub(r"<[^>]+>", "", self.parent.src)
             elif hasattr(self, "parent") and hasattr(self.parent, "path"):
                 try:
                     with open(self.parent.path, "r") as f:
@@ -3906,7 +3907,10 @@ class FortranProcedure(FortranCodeUnit):
 
                                     if attributes_dict:
                                         # Create individual attribute variables
-                                        for attr, line_numbers in attributes_dict.items():
+                                        for (
+                                            attr,
+                                            line_numbers,
+                                        ) in attributes_dict.items():
                                             # Split attribute by % to handle nested components (e.g., "salt%rchrg")
                                             # Create entries for all levels of nesting
                                             attr_parts = attr.split("%")
@@ -3967,7 +3971,7 @@ class FortranProcedure(FortranCodeUnit):
                                                     and len(component_var.proto) > 0
                                                     and i < len(attr_parts) - 1
                                                 )
-                                                
+
                                                 attr_var = type(
                                                     "AttributeVar",
                                                     (),
@@ -3979,7 +3983,11 @@ class FortranProcedure(FortranCodeUnit):
                                                         "parent": module,
                                                         "dimension": "",
                                                         "component_details": component_var,
-                                                        "line_numbers": sorted(set(line_numbers)) if i == len(attr_parts) - 1 else [],
+                                                        "line_numbers": (
+                                                            sorted(set(line_numbers))
+                                                            if i == len(attr_parts) - 1
+                                                            else []
+                                                        ),
                                                         "is_nested_type": is_nested_type,
                                                         "nesting_level": i,
                                                         "meta": lambda self, key, attr=full_attr, comp=component_var: (
@@ -4028,7 +4036,10 @@ class FortranProcedure(FortranCodeUnit):
 
                                     if attributes_dict:
                                         # Create individual attribute variables for the type
-                                        for attr, line_numbers in attributes_dict.items():
+                                        for (
+                                            attr,
+                                            line_numbers,
+                                        ) in attributes_dict.items():
                                             attr_var = type(
                                                 "TypeAttributeVar",
                                                 (),
@@ -4037,7 +4048,9 @@ class FortranProcedure(FortranCodeUnit):
                                                     "full_type": f"type({dtype.name})",
                                                     "parent": module,
                                                     "dimension": "",
-                                                    "line_numbers": sorted(set(line_numbers)),
+                                                    "line_numbers": sorted(
+                                                        set(line_numbers)
+                                                    ),
                                                     "meta": lambda self, key: (
                                                         f"Type {dtype.name} component: {attr}"
                                                         if key == "summary"
