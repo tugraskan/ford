@@ -224,6 +224,20 @@ class GraphData:
 
         collection, _ = self._get_collection_and_node_type(obj)
         if obj not in collection:
+            # Before creating a new node, check if a node with the same name
+            # already exists (for procedures and programs only, since they can
+            # have multiple Python objects representing the same entity)
+            if is_proc(obj) or is_program(obj):
+                if hasattr(obj, "name"):
+                    obj_name = obj.name.lower()
+                    # Search for existing node with this name
+                    for existing_obj, existing_node in collection.items():
+                        if hasattr(existing_obj, "name") and existing_obj.name.lower() == obj_name:
+                            # Found existing node with same name - add obj to collection
+                            # pointing to the same node
+                            collection[obj] = existing_node
+                            return existing_node
+            
             self.register(obj, hist)
 
         return collection[obj]
