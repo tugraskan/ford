@@ -307,19 +307,19 @@ def create_header_table(var, parent_type_name=None):
 def create_io_schema_table(operation, procedure):
     """
     Create a schema table for an I/O operation (read or write).
-    
+
     For each variable in the operation, this creates a row with:
     - Variable name
     - Data type
     - Initial/default value
     - Description
-    
+
     If a variable is a whole type (not just a component), it expands to show all components.
-    
+
     Args:
         operation: Dictionary containing the I/O operation details with 'parameters' key
         procedure: The FortranProcedure object that contains variable information
-        
+
     Returns:
         List of dictionaries, each representing a row in the schema table:
         {
@@ -331,87 +331,102 @@ def create_io_schema_table(operation, procedure):
     """
     if not operation or not procedure:
         return []
-    
+
     # Get the list of variables from the operation
-    variables = operation.get('parameters', [])
+    variables = operation.get("parameters", [])
     if not variables:
         return []
-    
+
     schema_rows = []
-    
+
     for var_expr in variables:
         # Parse the variable expression - it might be:
         # 1. Simple variable: "varname"
         # 2. Array element: "var(i)"
         # 3. Derived type component: "module%varname" or "type%component"
-        
+
         # Extract base variable name
-        base_var_name = var_expr.split('%')[0].split('(')[0].strip()
-        
+        base_var_name = var_expr.split("%")[0].split("(")[0].strip()
+
         # Try to find this variable in the procedure's variables
         var_obj = None
-        if hasattr(procedure, 'variables'):
+        if hasattr(procedure, "variables"):
             for v in procedure.variables:
-                if hasattr(v, 'name') and v.name.lower() == base_var_name.lower():
+                if hasattr(v, "name") and v.name.lower() == base_var_name.lower():
                     var_obj = v
                     break
-        
+
         # If not found locally, try module variables
-        if not var_obj and hasattr(procedure, 'all_vars'):
+        if not var_obj and hasattr(procedure, "all_vars"):
             var_obj = procedure.all_vars.get(base_var_name.lower())
-        
+
         # Check if this is a whole type or a component access
-        is_component_access = '%' in var_expr
-        
+        is_component_access = "%" in var_expr
+
         if var_obj and not is_component_access:
             # Check if this is a derived type that should be expanded
             type_def = None
-            if hasattr(var_obj, 'proto') and var_obj.proto and len(var_obj.proto) > 0:
+            if hasattr(var_obj, "proto") and var_obj.proto and len(var_obj.proto) > 0:
                 type_def = var_obj.proto[0]
-                if not isinstance(type_def, str) and hasattr(type_def, 'variables') and type_def.variables:
+                if (
+                    not isinstance(type_def, str)
+                    and hasattr(type_def, "variables")
+                    and type_def.variables
+                ):
                     # Expand the type to show all components
                     for component in type_def.variables:
-                        if not hasattr(component, 'name'):
+                        if not hasattr(component, "name"):
                             continue
-                        
+
                         comp_name = f"{var_expr}%{component.name}"
-                        comp_type = getattr(component, 'full_type', 
-                                          getattr(component, 'vartype', 'unknown'))
-                        comp_initial = getattr(component, 'initial', '')
-                        comp_desc = ''
-                        if hasattr(component, 'meta'):
-                            comp_desc = component.meta('summary', '')
-                        
-                        schema_rows.append({
-                            'name': comp_name,
-                            'type': str(comp_type),
-                            'initial': str(comp_initial) if comp_initial else '-',
-                            'description': comp_desc
-                        })
+                        comp_type = getattr(
+                            component,
+                            "full_type",
+                            getattr(component, "vartype", "unknown"),
+                        )
+                        comp_initial = getattr(component, "initial", "")
+                        comp_desc = (
+                            getattr(component.meta, "summary", "")
+                            if hasattr(component, "meta")
+                            else ""
+                        )
+
+                        schema_rows.append(
+                            {
+                                "name": comp_name,
+                                "type": str(comp_type),
+                                "initial": str(comp_initial) if comp_initial else "-",
+                                "description": comp_desc,
+                            }
+                        )
                     continue
-        
+
         # For component access or simple variables, add a single row
-        var_type = 'unknown'
-        var_initial = '-'
-        var_desc = ''
-        
+        var_type = "unknown"
+        var_initial = "-"
+        var_desc = ""
+
         if var_obj:
-            var_type = getattr(var_obj, 'full_type', 
-                             getattr(var_obj, 'vartype', 'unknown'))
-            var_initial = getattr(var_obj, 'initial', '-')
-            if hasattr(var_obj, 'meta'):
-                var_desc = var_obj.meta('summary', '')
-        
-        schema_rows.append({
-            'name': var_expr,
-            'type': str(var_type),
-            'initial': str(var_initial) if var_initial and var_initial != '-' else '-',
-            'description': var_desc
-        })
-    
+            var_type = getattr(
+                var_obj, "full_type", getattr(var_obj, "vartype", "unknown")
+            )
+            var_initial = getattr(var_obj, "initial", "-")
+            var_desc = (
+                getattr(var_obj.meta, "summary", "") if hasattr(var_obj, "meta") else ""
+            )
+
+        schema_rows.append(
+            {
+                "name": var_expr,
+                "type": str(var_type),
+                "initial": (
+                    str(var_initial) if var_initial and var_initial != "-" else "-"
+                ),
+                "description": var_desc,
+            }
+        )
+
     return schema_rows
-
-
 
 
 env.tests["more_than_one"] = is_more_than_one
