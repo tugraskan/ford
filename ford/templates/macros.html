@@ -888,6 +888,7 @@
                             <tr>
                               <th scope="col">Variable Declaration</th>
                               <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -906,11 +907,27 @@
                               {# Get the first variable to use for common attributes #}
                               {% set first_var = group_vars[0] %}
                               
-                              {# Count how many have component details (exclude the base var itself) #}
+                              {# Filter components: only include direct children (nesting_level == 0 or not nested types) #}
                               {% set components = [] %}
+                              {% set nested_components = {} %}
                               {% for v in group_vars %}
                                 {% if v.component_name %}
-                                  {% set _ = components.append(v) %}
+                                  {# Check if this is a direct child or a nested descendant #}
+                                  {% set parts = v.component_name.split('%') %}
+                                  {% if parts|length == 1 %}
+                                    {# Direct child component #}
+                                    {% set _ = components.append(v) %}
+                                    {# Initialize nested tracking for this component #}
+                                    {% if v.is_nested_type %}
+                                      {% set _ = nested_components.update({v.component_name: []}) %}
+                                    {% endif %}
+                                  {% elif parts|length > 1 %}
+                                    {# Nested component - belongs to parent component #}
+                                    {% set parent_comp = parts[0] %}
+                                    {% if parent_comp in nested_components %}
+                                      {% set _ = nested_components[parent_comp].append(v) %}
+                                    {% endif %}
+                                  {% endif %}
                                 {% endif %}
                               {% endfor %}
                               
@@ -932,6 +949,12 @@
                                   {% if components|length > 0 %}
                                     <div class="mt-2 ps-4">
                                       <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
                                         <tbody>
                                           {% for comp_var in components %}
                                             <tr>
@@ -948,6 +971,47 @@
                                                 {% else %}
                                                   :: <strong>{{ comp_var.component_name }}</strong>
                                                 {% endif %}
+                                                
+                                                {# If this component has nested components, show them indented #}
+                                                {% if comp_var.component_name in nested_components and nested_components[comp_var.component_name]|length > 0 %}
+                                                  <div class="mt-2 ms-4">
+                                                    <small class="text-muted">Nested components:</small>
+                                                    <table class="table table-sm table-borderless">
+                                                      <tbody>
+                                                        {% for nested_var in nested_components[comp_var.component_name] %}
+                                                          <tr>
+                                                            <td class="ps-2" style="border-top: none;">
+                                                              {# Extract just the nested part (remove parent prefix) #}
+                                                              {% set nested_name = nested_var.component_name.split('%')[1:] | join('%') %}
+                                                              {% if nested_var.component_details %}
+                                                                {{ nested_var.component_details.full_type }} :: <strong>{{ nested_name }}</strong>
+                                                                {% if nested_var.component_details.initial %}
+                                                                  = {{ nested_var.component_details.initial }}
+                                                                {% endif %}
+                                                              {% else %}
+                                                                :: <strong>{{ nested_name }}</strong>
+                                                              {% endif %}
+                                                            </td>
+                                                            <td style="border-top: none;">
+                                                              {% if nested_var.line_numbers %}
+                                                                <small class="text-muted">{{ nested_var.line_numbers | join(', ') }}</small>
+                                                              {% else %}
+                                                                <small class="text-muted">-</small>
+                                                              {% endif %}
+                                                            </td>
+                                                          </tr>
+                                                        {% endfor %}
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                                {% endif %}
+                                              </td>
+                                              <td style="border-top: none;">
+                                                {% if comp_var.line_numbers %}
+                                                  <small class="text-muted">{{ comp_var.line_numbers | join(', ') }}</small>
+                                                {% else %}
+                                                  <small class="text-muted">-</small>
+                                                {% endif %}
                                               </td>
                                             </tr>
                                           {% endfor %}
@@ -957,6 +1021,13 @@
                                   {% endif %}
                                 </td>
                                 <td>{{ first_var | meta('summary') }}</td>
+                                <td>
+                                  {% if first_var.line_numbers %}
+                                    <small class="text-muted">{{ first_var.line_numbers | join(', ') }}</small>
+                                  {% else %}
+                                    <small class="text-muted">-</small>
+                                  {% endif %}
+                                </td>
                               </tr>
                             {% endfor %}
                           </tbody>
