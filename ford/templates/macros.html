@@ -912,22 +912,34 @@
                               {# Get the first variable to use for common attributes #}
                               {% set first_var = group_vars[0] %}
                               
-                              {# Filter components: only include direct children (nesting_level == 0 or not nested types) #}
-                              {% set components = [] %}
+                              {# Filter components: deduplicate and organize by hierarchy #}
+                              {% set components_dict = {} %}
                               {% set nested_components = {} %}
+                              
+                              {# First pass: identify all direct children and initialize nested tracking #}
                               {% for v in group_vars %}
                                 {% if v.component_name %}
-                                  {# Check if this is a direct child or a nested descendant #}
                                   {% set parts = v.component_name.split('%') %}
                                   {% if parts|length == 1 %}
-                                    {# Direct child component #}
-                                    {% set _ = components.append(v) %}
-                                    {# Initialize nested tracking for this component #}
-                                    {% if v.is_nested_type %}
-                                      {% set _ = nested_components.update({v.component_name: []}) %}
+                                    {# Direct child - use dict to deduplicate #}
+                                    {% if parts[0] not in components_dict %}
+                                      {% set _ = components_dict.update({parts[0]: v}) %}
                                     {% endif %}
                                   {% elif parts|length > 1 %}
-                                    {# Nested component - belongs to parent component #}
+                                    {# Has nested structure - ensure parent is in nested_components #}
+                                    {% set parent_comp = parts[0] %}
+                                    {% if parent_comp not in nested_components %}
+                                      {% set _ = nested_components.update({parent_comp: []}) %}
+                                    {% endif %}
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                              
+                              {# Second pass: collect nested components #}
+                              {% for v in group_vars %}
+                                {% if v.component_name %}
+                                  {% set parts = v.component_name.split('%') %}
+                                  {% if parts|length > 1 %}
                                     {% set parent_comp = parts[0] %}
                                     {% if parent_comp in nested_components %}
                                       {% set _ = nested_components[parent_comp].append(v) %}
@@ -935,6 +947,9 @@
                                   {% endif %}
                                 {% endif %}
                               {% endfor %}
+                              
+                              {# Convert components dict to list for iteration #}
+                              {% set components = components_dict.values() | list %}
                               
                               <tr>
                                 <td>
