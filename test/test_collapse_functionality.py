@@ -1,4 +1,5 @@
 """Test control flow graph collapse functionality"""
+
 import pytest
 from ford.control_flow import parse_control_flow, BlockType
 from ford.graphs import create_control_flow_graph_svg
@@ -15,16 +16,16 @@ def test_collapse_indicators_added_to_if_blocks():
         end if
     end subroutine test_if
     """
-    
-    cfg = parse_control_flow(source, 'test_if', 'subroutine')
-    svg = create_control_flow_graph_svg(cfg, 'test_if')
-    
+
+    cfg = parse_control_flow(source, "test_if", "subroutine")
+    svg = create_control_flow_graph_svg(cfg, "test_if")
+
     # Check that the SVG contains collapse indicators
     assert 'data-collapsible="true"' in svg
     assert 'data-block-type="if_condition"' in svg
     assert 'class="collapse-indicator"' in svg
     assert 'class="collapse-icon"' in svg
-    assert 'cfg-collapsible' in svg
+    assert "cfg-collapsible" in svg
 
 
 def test_collapse_indicators_added_to_do_loops():
@@ -39,10 +40,10 @@ def test_collapse_indicators_added_to_do_loops():
         end do
     end subroutine test_do
     """
-    
-    cfg = parse_control_flow(source, 'test_do', 'subroutine')
-    svg = create_control_flow_graph_svg(cfg, 'test_do')
-    
+
+    cfg = parse_control_flow(source, "test_do", "subroutine")
+    svg = create_control_flow_graph_svg(cfg, "test_do")
+
     # Check that the SVG contains collapse indicators
     assert 'data-collapsible="true"' in svg
     assert 'data-block-type="do_loop"' in svg
@@ -65,10 +66,10 @@ def test_collapse_indicators_added_to_select_case():
         end select
     end subroutine test_select
     """
-    
-    cfg = parse_control_flow(source, 'test_select', 'subroutine')
-    svg = create_control_flow_graph_svg(cfg, 'test_select')
-    
+
+    cfg = parse_control_flow(source, "test_select", "subroutine")
+    svg = create_control_flow_graph_svg(cfg, "test_select")
+
     # Check that the SVG contains collapse indicators
     assert 'data-collapsible="true"' in svg
     assert 'data-block-type="select_case"' in svg
@@ -95,15 +96,18 @@ def test_multiple_collapsible_nodes():
         end if
     end subroutine test_multiple
     """
-    
-    cfg = parse_control_flow(source, 'test_multiple', 'subroutine')
-    svg = create_control_flow_graph_svg(cfg, 'test_multiple')
-    
+
+    cfg = parse_control_flow(source, "test_multiple", "subroutine")
+    svg = create_control_flow_graph_svg(cfg, "test_multiple")
+
     # Count collapsible nodes (IF + DO + SELECT)
     import re
+
     collapsible_count = len(re.findall(r'data-collapsible="true"', svg))
-    assert collapsible_count == 3, f"Expected 3 collapsible nodes, found {collapsible_count}"
-    
+    assert (
+        collapsible_count == 3
+    ), f"Expected 3 collapsible nodes, found {collapsible_count}"
+
     # Check that all three types are present
     assert 'data-block-type="if_condition"' in svg
     assert 'data-block-type="do_loop"' in svg
@@ -121,12 +125,12 @@ def test_collapse_icon_initial_state():
         end if
     end subroutine test_icon
     """
-    
-    cfg = parse_control_flow(source, 'test_icon', 'subroutine')
-    svg = create_control_flow_graph_svg(cfg, 'test_icon')
-    
+
+    cfg = parse_control_flow(source, "test_icon", "subroutine")
+    svg = create_control_flow_graph_svg(cfg, "test_icon")
+
     # Check that the minus sign is present (expanded state)
-    assert '−' in svg or '&minus;' in svg or '-' in svg
+    assert "−" in svg or "&minus;" in svg or "-" in svg
 
 
 def test_non_collapsible_nodes_unchanged():
@@ -136,10 +140,10 @@ def test_non_collapsible_nodes_unchanged():
         write(*,*) 'Simple'
     end subroutine test_simple
     """
-    
-    cfg = parse_control_flow(source, 'test_simple', 'subroutine')
-    svg = create_control_flow_graph_svg(cfg, 'test_simple')
-    
+
+    cfg = parse_control_flow(source, "test_simple", "subroutine")
+    svg = create_control_flow_graph_svg(cfg, "test_simple")
+
     # Should not have any collapsible indicators since there are no control structures
     assert 'data-collapsible="true"' not in svg
     assert 'class="collapse-indicator"' not in svg
