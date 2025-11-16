@@ -875,6 +875,16 @@
               {# Nested accordion for types within this module #}
               <div class="accordion" id="typesAccordion{{ module_id }}">
                 {% for type_key, type_data in module_data.types.items() %}
+                  {# Count unique base variables for this type #}
+                  {% set unique_base_vars = {} %}
+                  {% for var in type_data.vars %}
+                    {% set base_name = var.base_var_name if var.base_var_name else var.name %}
+                    {% if base_name not in unique_base_vars %}
+                      {% set _ = unique_base_vars.update({base_name: True}) %}
+                    {% endif %}
+                  {% endfor %}
+                  {% set unique_count = unique_base_vars | length %}
+                  
                   {% set type_id = (module_name ~ '_' ~ type_key) | replace(' ', '_') | replace('(', '_') | replace(')', '_') | replace('<', '_') | replace('>', '_') | replace(',', '_') | replace('[', '_') | replace(']', '_') | replace('%', '_pct_') | replace('.', '_') | replace('/', '_') | replace('\\', '_') | replace(':', '_') | replace(';', '_') | replace('"', '_') | replace("'", '_') | replace('|', '_') | replace('*', '_') | replace('+', '_') | replace('=', '_') | replace('@', '_') | replace('#', '_') | replace('$', '_') | replace('!', '_') | replace('&', '_') | replace('^', '_') | replace('~', '_') | replace('`', '_') %}
                   <div class="accordion-item">
                     <h4 class="accordion-header" id="heading{{ type_id }}">
@@ -882,7 +892,7 @@
                               data-bs-target="#collapse{{ type_id }}" aria-expanded="false" 
                               aria-controls="collapse{{ type_id }}">
                         {{ type_data.type_name | relurl(page_url) }}
-                        <small class="text-muted ms-2">({{ type_data.vars | length }} array{{ 's' if type_data.vars | length != 1 }})</small>
+                        <small class="text-muted ms-2">({{ unique_count }} variable{{ 's' if unique_count != 1 }})</small>
                       </button>
                     </h4>
                     <div id="collapse{{ type_id }}" class="accordion-collapse collapse" 
