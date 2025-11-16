@@ -320,6 +320,103 @@
       {% endif %}
       {% endif %}
       
+            
+      <h2>File Schema</h2>
+      <p class="text-muted">This section reconstructs the file format by breaking down each read and write operation into its constituent variables, showing their types, default values, and descriptions.</p>
+      
+      {% if iofile.procedures %}
+        {% for proc_info in iofile.procedures %}
+          {% set proc = proc_info.procedure %}
+          {% set ops = proc_info.operations %}
+          
+          {% if ops.timeline %}
+            {# Separate reads and writes #}
+            {% set reads = [] %}
+            {% set writes = [] %}
+            {% for op in ops.timeline %}
+              {% if op.kind == 'read' and op.parameters %}
+                {% set _ = reads.append(op) %}
+              {% elif op.kind == 'write' and op.parameters %}
+                {% set _ = writes.append(op) %}
+              {% endif %}
+            {% endfor %}
+            
+            {# Display Input Schema (Reads) #}
+            {% if reads %}
+              <h3>Input Schema from {{ proc.name }}</h3>
+              <p class="text-muted">Variables read from this file:</p>
+              
+              {% for read_op in reads %}
+                {% set schema = read_op | create_io_schema_table(proc) %}
+                {% if schema %}
+                  <h4>Read Operation at Line {{ read_op.line if read_op.line else 'unknown' }}</h4>
+                  <p><code>{{ read_op.raw }}</code></p>
+                  <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Variable Name</th>
+                          <th>Data Type</th>
+                          <th>Initial/Default Value</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for row in schema %}
+                          <tr>
+                            <td><code>{{ row.name }}</code></td>
+                            <td><code>{{ row.type }}</code></td>
+                            <td>{% if row.initial != '-' %}<code>{{ row.initial }}</code>{% else %}-{% endif %}</td>
+                            <td>{{ row.description if row.description else '-' }}</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            
+            {# Display Output Schema (Writes) #}
+            {% if writes %}
+              <h3>Output Schema from {{ proc.name }}</h3>
+              <p class="text-muted">Variables written to this file:</p>
+              
+              {% for write_op in writes %}
+                {% set schema = write_op | create_io_schema_table(proc) %}
+                {% if schema %}
+                  <h4>Write Operation at Line {{ write_op.line if write_op.line else 'unknown' }}</h4>
+                  <p><code>{{ write_op.raw }}</code></p>
+                  <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Variable Name</th>
+                          <th>Data Type</th>
+                          <th>Initial/Default Value</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for row in schema %}
+                          <tr>
+                            <td><code>{{ row.name }}</code></td>
+                            <td><code>{{ row.type }}</code></td>
+                            <td>{% if row.initial != '-' %}<code>{{ row.initial }}</code>{% else %}-{% endif %}</td>
+                            <td>{{ row.description if row.description else '-' }}</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      
+
       <h2>I/O Operations by Procedure</h2>
       {% if iofile.procedures %}
         {% for proc_info in iofile.procedures %}
