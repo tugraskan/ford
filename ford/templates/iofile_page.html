@@ -463,25 +463,79 @@
                   <h4>File Schema</h4>
                   {% if proc_read_vars %}
                     <p class="text-muted">This section shows the line-by-line schema of the input file, listing each variable/component being read.</p>
+                    
+                    {# Expand derived types in proc_read_vars #}
+                    {% set expanded_read_vars = [] %}
+                    {% set file_line_counter = namespace(value=1) %}
+                    
+                    {% for var_info in proc_read_vars %}
+                      {# Look up the variable definition #}
+                      {% set found_var = namespace(value=none) %}
+                      {% if var_info.procedure.variables is defined %}
+                        {% for v in var_info.procedure.variables %}
+                          {% if v.name.lower() == var_info.base_name.lower() %}
+                            {% set found_var.value = v %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                      {% if not found_var.value and var_info.procedure.all_vars is defined %}
+                        {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
+                          {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
+                        {% endif %}
+                      {% endif %}
+                      
+                      {# Check if it's a derived type without a component specified #}
+                      {% if not var_info.component_name and found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
+                        {% set type_obj = found_var.value.proto[0] %}
+                        {% if type_obj is not string and type_obj.variables is defined %}
+                          {# It's a derived type - expand all components #}
+                          {% for comp in type_obj.variables %}
+                            {% set comp_info = {} %}
+                            {% set _ = comp_info.update({
+                              'base_name': var_info.base_name,
+                              'component_name': comp.name,
+                              'full_name': var_info.base_name ~ '%' ~ comp.name,
+                              'procedure': var_info.procedure,
+                              'file_line': file_line_counter.value,
+                              'type_name': type_obj.name if type_obj.name else 'unknown'
+                            }) %}
+                            {% set _ = expanded_read_vars.append(comp_info) %}
+                          {% endfor %}
+                          {% set file_line_counter.value = file_line_counter.value + 1 %}
+                        {% else %}
+                          {# Not a derived type or string type - add as is #}
+                          {% set _ = var_info.update({'file_line': file_line_counter.value}) %}
+                          {% set _ = expanded_read_vars.append(var_info) %}
+                          {% set file_line_counter.value = file_line_counter.value + 1 %}
+                        {% endif %}
+                      {% else %}
+                        {# Already has a component or not a derived type - add as is #}
+                        {% set _ = var_info.update({'file_line': file_line_counter.value}) %}
+                        {% set _ = expanded_read_vars.append(var_info) %}
+                        {% set file_line_counter.value = file_line_counter.value + 1 %}
+                      {% endif %}
+                    {% endfor %}
+                    
                     <table class="table table-sm table-striped table-bordered">
                       <thead>
                         <tr>
                           <th>Line</th>
-                          <th>Type/Component/Variable</th>
-                          <th>Data Type</th>
+                          <th>Variable Name</th>
+                          <th>Type</th>
+                          <th>Component Data Type</th>
                           <th>Initial/Default Value</th>
                           <th>Description</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {% for var_info in proc_read_vars %}
+                        {% for var_info in expanded_read_vars %}
                           <tr>
-                            {# Column 1: Line - Get the line from operations #}
+                            {# Column 1: Line - File line number, not source code line #}
                             <td>
-                              {% if var_info.line %}{{ var_info.line }}{% else %}-{% endif %}
+                              {{ var_info.file_line }}
                             </td>
                             
-                            {# Column 2: Type/Component/Variable #}
+                            {# Column 2: Variable Name #}
                             <td>
                               {% set found_var = namespace(value=none) %}
                               {% if var_info.procedure.variables is defined %}
@@ -502,17 +556,25 @@
                               {% else %}
                                 <code>{{ var_info.base_name }}</code>
                               {% endif %}
-                              
-                              {# If variable is a derived type, show the type name #}
-                              {% if found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
+                            </td>
+                            
+                            {# Column 3: Type (derived type name or base type) #}
+                            <td>
+                              {% if var_info.type_name is defined %}
+                                <code>type({{ var_info.type_name }})</code>
+                              {% elif found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
                                 {% set type_obj = found_var.value.proto[0] %}
-                                {% if type_obj is not string %}
-                                  <br><small class="text-muted">({{ type_obj | relurl(page_url) }})</small>
+                                {% if type_obj is string %}
+                                  <code>{{ type_obj }}</code>
+                                {% else %}
+                                  <code>type({{ type_obj.name }})</code>
                                 {% endif %}
+                              {% else %}
+                                <em>-</em>
                               {% endif %}
                             </td>
                             
-                            {# Column 3: Data Type #}
+                            {# Column 4: Component Data Type #}
                             <td>
                               {% if var_info.component_name and found_var.value %}
                                 {% set component_var = namespace(value=none) %}
@@ -531,14 +593,12 @@
                                 {% else %}
                                   <em>unknown</em>
                                 {% endif %}
-                              {% elif found_var.value %}
-                                <code>{{ found_var.value.full_type }}</code>
                               {% else %}
-                                <em>unknown</em>
+                                <em>-</em>
                               {% endif %}
                             </td>
                             
-                            {# Column 4: Initial/Default Value #}
+                            {# Column 5: Initial/Default Value #}
                             <td>
                               {% if var_info.component_name and found_var.value %}
                                 {% set component_var = namespace(value=none) %}
@@ -564,7 +624,7 @@
                               {% endif %}
                             </td>
                             
-                            {# Column 5: Description - from variable or component doc #}
+                            {# Column 6: Description - from variable or component doc #}
                             <td>
                               {% if var_info.component_name and found_var.value %}
                                 {% set component_var = namespace(value=none) %}
@@ -600,41 +660,35 @@
                   {# Subsection 4: Sample Read Format (for inputs only - per procedure) #}
                   <h4>Sample Read Format</h4>
                   {% if proc_read_vars %}
-                    {# Categorize variables #}
-                    {% set read_header_vars = [] %}
-                    {% set read_units_vars = [] %}
-                    {% set read_data_vars = [] %}
-                    {% set read_seen_base_vars = [] %}
-                    
-                    {% for var_info in proc_read_vars %}
-                      {% set var_name = var_info.base_name %}
-                      {% if var_name not in read_seen_base_vars %}
-                        {% set _ = read_seen_base_vars.append(var_name) %}
-                        {% if '_hdr_units' in var_name.lower() or '_units' in var_name.lower() %}
-                          {% set _ = read_units_vars.append(var_info) %}
-                        {% elif '_hdr' in var_name.lower() %}
-                          {% set _ = read_header_vars.append(var_info) %}
-                        {% else %}
-                          {% set _ = read_data_vars.append(var_info) %}
-                        {% endif %}
-                      {% endif %}
-                    {% endfor %}
-                    
-                    {% if read_header_vars or read_units_vars or read_data_vars %}
-                      <p class="text-muted">The following shows an example of how this file is formatted for reading in this procedure:</p>
-                      <div class="card">
-                        <div class="card-body">
-                          <pre><code>{# Show the structure #}
-{% if read_header_vars %}Row 1 (headers): {% for var_info in read_header_vars %}{{ var_info.base_name }}{% if not loop.last %}, {% endif %}{% endfor %}
-
-{% endif %}{% if read_units_vars %}Row 2 (units): {% for var_info in read_units_vars %}{{ var_info.base_name }}{% if not loop.last %}, {% endif %}{% endfor %}
-
-{% endif %}{% if read_data_vars %}Row 3+ (data): {% for var_info in read_data_vars %}{{ var_info.full_name }}{% if not loop.last %}, {% endif %}{% endfor %}
-
-{% endif %}...</code></pre>
-                        </div>
+                    <p class="text-muted">The following shows the line-by-line format of how this file is read in this procedure:</p>
+                    <div class="card">
+                      <div class="card-body">
+                        <pre><code>{%- if expanded_read_vars is defined -%}
+{%- set lines = [] -%}
+{%- for var_info in expanded_read_vars -%}
+  {%- set line_text = 'Line ' ~ var_info.file_line ~ ': ' ~ var_info.base_name -%}
+  {%- if var_info.component_name -%}
+    {%- set line_text = line_text ~ '%' ~ var_info.component_name -%}
+  {%- endif -%}
+  {%- set _ = lines.append(line_text) -%}
+{%- endfor -%}
+{{ lines | join('\n') }}
+{%- else -%}
+{%- set lines = [] -%}
+{%- set line_num = namespace(value=1) -%}
+{%- for var_info in proc_read_vars -%}
+  {%- set line_text = 'Line ' ~ line_num.value ~ ': ' ~ var_info.base_name -%}
+  {%- if var_info.component_name -%}
+    {%- set line_text = line_text ~ '%' ~ var_info.component_name -%}
+  {%- endif -%}
+  {%- set _ = lines.append(line_text) -%}
+  {%- set line_num.value = line_num.value + 1 -%}
+{%- endfor -%}
+{{ lines | join('\n') }}
+{%- endif -%}
+</code></pre>
                       </div>
-                    {% endif %}
+                    </div>
                   {% else %}
                     <p><em>No read format information available.</em></p>
                   {% endif %}
