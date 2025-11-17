@@ -2756,6 +2756,22 @@ class FortranCodeUnit(FortranContainer):
                 # get the item of the call
                 item = self._find_chain_item(call)
 
+                # failed to find item locally, try global project lookup for simple procedure calls
+                if item is None and len(call) == 1:
+                    # Simple procedure call (not a method chain), try global lookup
+                    proc_name = call[0].lower()
+                    # Search in project procedures
+                    for proc in project.procedures:
+                        if hasattr(proc, "name") and proc.name.lower() == proc_name:
+                            item = proc
+                            break
+                    # Also search in project programs
+                    if item is None:
+                        for prog in project.programs:
+                            if hasattr(prog, "name") and prog.name.lower() == proc_name:
+                                item = prog
+                                break
+
                 # failed to find item, give up and add call's string name to the list
                 if item is None:
                     tmplst.append(call[-1])
