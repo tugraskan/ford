@@ -3946,20 +3946,10 @@ class FortranProcedure(FortranCodeUnit):
                                                             break
 
                                                 # Determine the full_type for this level
-                                                # For the first level, use the base variable's type
-                                                # For deeper levels, use the component's type
-                                                if i == 0:
-                                                    var_full_type = getattr(
-                                                        var, "full_type", "unknown"
-                                                    )
-                                                elif component_var:
-                                                    var_full_type = getattr(
-                                                        component_var,
-                                                        "full_type",
-                                                        "unknown",
-                                                    )
-                                                else:
-                                                    var_full_type = "unknown"
+                                                # Always use the base variable's type to keep nested components grouped together
+                                                var_full_type = getattr(
+                                                    var, "full_type", "unknown"
+                                                )
 
                                                 # Create the attribute variable entry for this level
                                                 # Include line numbers for this specific component usage
