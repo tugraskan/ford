@@ -936,24 +936,28 @@
                                       {% set _ = components_dict.update({parts[0]: v}) %}
                                     {% endif %}
                                   {% elif parts|length > 1 %}
-                                    {# Has nested structure - ensure parent is in nested_components #}
-                                    {% set parent_comp = parts[0] %}
-                                    {% if parent_comp not in nested_components %}
-                                      {% set _ = nested_components.update({parent_comp: []}) %}
-                                    {% endif %}
+                                    {# Has nested structure - track for ALL parent levels #}
+                                    {% for i in range(parts|length - 1) %}
+                                      {% set parent_path = parts[:i+1] | join('%') %}
+                                      {% if parent_path not in nested_components %}
+                                        {% set _ = nested_components.update({parent_path: []}) %}
+                                      {% endif %}
+                                    {% endfor %}
                                   {% endif %}
                                 {% endif %}
                               {% endfor %}
                               
-                              {# Second pass: collect nested components #}
+                              {# Second pass: collect nested components at all levels #}
                               {% for v in group_vars %}
                                 {% if v.component_name %}
                                   {% set parts = v.component_name.split('%') %}
                                   {% if parts|length > 1 %}
-                                    {% set parent_comp = parts[0] %}
-                                    {% if parent_comp in nested_components %}
-                                      {% set _ = nested_components[parent_comp].append(v) %}
-                                    {% endif %}
+                                    {% for i in range(parts|length - 1) %}
+                                      {% set parent_path = parts[:i+1] | join('%') %}
+                                      {% if parent_path in nested_components %}
+                                        {% set _ = nested_components[parent_path].append(v) %}
+                                      {% endif %}
+                                    {% endfor %}
                                   {% endif %}
                                 {% endif %}
                               {% endfor %}
@@ -989,8 +993,8 @@
                                           {% for comp_var in components %}
                                             <tr>
                                               <td class="ps-3" style="border-top: none;">
-                                                {% if comp_var.component_details %}
-                                                  {{ comp_var.component_details.full_type }}{{ add_comma(comp_var.component_details.permission or comp_var.component_details.parameter or comp_var.component_details.attribs) }}
+                                                 {% if comp_var.component_details %}
+                                                  {{ comp_var.component_details.full_type | relurl(page_url) }}{{ add_comma(comp_var.component_details.permission or comp_var.component_details.parameter or comp_var.component_details.attribs) }}
                                                   {% if comp_var.component_details.permission %}{{ comp_var.component_details.permission }}{{ add_comma(comp_var.component_details.parameter or comp_var.component_details.attribs) }}{% endif %}
                                                   {% if comp_var.component_details.parameter %}parameter{{ add_comma(comp_var.component_details.attribs) }}{% endif %}
                                                   {% if comp_var.component_details.attribs %}{{ comp_var.component_details.attribs | join(", ") }}{% endif %}
@@ -1007,14 +1011,29 @@
                                                   <div class="mt-2 ms-4">
                                                     <small class="text-muted">Nested components:</small>
                                                     <table class="table table-sm table-borderless">
+                                                      <thead>
+                                                        <tr>
+                                                          <th style="border-top: none;">Component</th>
+                                                          <th style="border-top: none;">Line Numbers</th>
+                                                        </tr>
+                                                      </thead>
                                                       <tbody>
                                                         {% for nested_var in nested_components[comp_var.component_name] %}
+                                                          {# Only show direct children - those with exactly one more level #}
+                                                          {% set nested_parts = nested_var.component_name.split('%') %}
+                                                          {% set parent_parts = comp_var.component_name.split('%') if comp_var.component_name else [] %}
+                                                          {% if nested_parts|length == (parent_parts|length + 1) %}
                                                           <tr>
                                                             <td class="ps-2" style="border-top: none;">
                                                               {# Extract just the nested part (remove parent prefix) #}
-                                                              {% set nested_name = nested_var.component_name.split('%')[1:] | join('%') %}
+                                                              {% set nested_name = nested_parts[-1] %}
                                                               {% if nested_var.component_details %}
-                                                                {{ nested_var.component_details.full_type }} :: <strong>{{ nested_name }}</strong>
+                                                                {# Show type only if it's a basic type (not a derived type) #}
+                                                                {% set comp_type = nested_var.component_details.vartype if nested_var.component_details.vartype else nested_var.component_details.full_type %}
+                                                                {% if comp_type and not comp_type.startswith('type(') %}
+                                                                  {{ comp_type }} :: 
+                                                                {% endif %}
+                                                                <strong>{{ nested_name }}</strong>
                                                                 {% if nested_var.component_details.initial %}
                                                                   = {{ nested_var.component_details.initial }}
                                                                 {% endif %}
@@ -1030,6 +1049,7 @@
                                                               {% endif %}
                                                             </td>
                                                           </tr>
+                                                          {% endif %}
                                                         {% endfor %}
                                                       </tbody>
                                                     </table>
