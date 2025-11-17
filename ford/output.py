@@ -436,7 +436,7 @@ class Documentation:
             ]:
                 for item in entity_list:
                     self.graphs.data.register(item)
-            
+
             # Now register for graph generation (only items with meta.graph == True)
             for entity_list in [
                 project.types,
