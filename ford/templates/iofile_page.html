@@ -663,11 +663,30 @@
                     <p class="text-muted">The following shows the line-by-line format of how this file is read in this procedure:</p>
                     <div class="card">
                       <div class="card-body">
-                        <pre><code>{# Show line-by-line format using expanded_read_vars from File Schema section #}
-{% if expanded_read_vars is defined %}{% for var_info in expanded_read_vars %}Line {{ var_info.file_line }}: {% if var_info.component_name %}{{ var_info.base_name }}%{{ var_info.component_name }}{% else %}{{ var_info.base_name }}{% endif %}
-{% endfor %}{% else %}{# Fallback if expanded_read_vars not available #}
-{% set line_num = namespace(value=1) %}{% for var_info in proc_read_vars %}Line {{ line_num.value }}: {{ var_info.base_name }}{% if var_info.component_name %}%{{ var_info.component_name }}{% endif %}
-{% set line_num.value = line_num.value + 1 %}{% endfor %}{% endif %}</code></pre>
+                        <pre><code>{%- if expanded_read_vars is defined -%}
+{%- set lines = [] -%}
+{%- for var_info in expanded_read_vars -%}
+  {%- set line_text = 'Line ' ~ var_info.file_line ~ ': ' ~ var_info.base_name -%}
+  {%- if var_info.component_name -%}
+    {%- set line_text = line_text ~ '%' ~ var_info.component_name -%}
+  {%- endif -%}
+  {%- set _ = lines.append(line_text) -%}
+{%- endfor -%}
+{{ lines | join('\n') }}
+{%- else -%}
+{%- set lines = [] -%}
+{%- set line_num = namespace(value=1) -%}
+{%- for var_info in proc_read_vars -%}
+  {%- set line_text = 'Line ' ~ line_num.value ~ ': ' ~ var_info.base_name -%}
+  {%- if var_info.component_name -%}
+    {%- set line_text = line_text ~ '%' ~ var_info.component_name -%}
+  {%- endif -%}
+  {%- set _ = lines.append(line_text) -%}
+  {%- set line_num.value = line_num.value + 1 -%}
+{%- endfor -%}
+{{ lines | join('\n') }}
+{%- endif -%}
+</code></pre>
                       </div>
                     </div>
                   {% else %}
