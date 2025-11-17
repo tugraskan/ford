@@ -459,7 +459,145 @@
                     <p><em>No read variables information available.</em></p>
                   {% endif %}
                   
-                  {# Subsection 3: Sample Read Format (for inputs only - per procedure) #}
+                  {# Subsection 3: FILE SCHEMA (for inputs only - per procedure) #}
+                  <h4>File Schema</h4>
+                  {% if proc_read_vars %}
+                    <p class="text-muted">This section shows the line-by-line schema of the input file, listing each variable/component being read.</p>
+                    <table class="table table-sm table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Line</th>
+                          <th>Type/Component/Variable</th>
+                          <th>Data Type</th>
+                          <th>Initial/Default Value</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for var_info in proc_read_vars %}
+                          <tr>
+                            {# Column 1: Line - Get the line from operations #}
+                            <td>
+                              {% if var_info.line %}{{ var_info.line }}{% else %}-{% endif %}
+                            </td>
+                            
+                            {# Column 2: Type/Component/Variable #}
+                            <td>
+                              {% set found_var = namespace(value=none) %}
+                              {% if var_info.procedure.variables is defined %}
+                                {% for v in var_info.procedure.variables %}
+                                  {% if v.name.lower() == var_info.base_name.lower() %}
+                                    {% set found_var.value = v %}
+                                  {% endif %}
+                                {% endfor %}
+                              {% endif %}
+                              {% if not found_var.value and var_info.procedure.all_vars is defined %}
+                                {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
+                                  {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
+                                {% endif %}
+                              {% endif %}
+                              
+                              {% if var_info.component_name %}
+                                <code>{{ var_info.base_name }}%{{ var_info.component_name }}</code>
+                              {% else %}
+                                <code>{{ var_info.base_name }}</code>
+                              {% endif %}
+                              
+                              {# If variable is a derived type, show the type name #}
+                              {% if found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
+                                {% set type_obj = found_var.value.proto[0] %}
+                                {% if type_obj is not string %}
+                                  <br><small class="text-muted">({{ type_obj | relurl(page_url) }})</small>
+                                {% endif %}
+                              {% endif %}
+                            </td>
+                            
+                            {# Column 3: Data Type #}
+                            <td>
+                              {% if var_info.component_name and found_var.value %}
+                                {% set component_var = namespace(value=none) %}
+                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                                  {% set type_obj = found_var.value.proto[0] %}
+                                  {% if type_obj is not string and type_obj.variables is defined %}
+                                    {% for comp in type_obj.variables %}
+                                      {% if comp.name.lower() == var_info.component_name.lower() %}
+                                        {% set component_var.value = comp %}
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                {% endif %}
+                                {% if component_var.value %}
+                                  <code>{{ component_var.value.full_type }}</code>
+                                {% else %}
+                                  <em>unknown</em>
+                                {% endif %}
+                              {% elif found_var.value %}
+                                <code>{{ found_var.value.full_type }}</code>
+                              {% else %}
+                                <em>unknown</em>
+                              {% endif %}
+                            </td>
+                            
+                            {# Column 4: Initial/Default Value #}
+                            <td>
+                              {% if var_info.component_name and found_var.value %}
+                                {% set component_var = namespace(value=none) %}
+                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                                  {% set type_obj = found_var.value.proto[0] %}
+                                  {% if type_obj is not string and type_obj.variables is defined %}
+                                    {% for comp in type_obj.variables %}
+                                      {% if comp.name.lower() == var_info.component_name.lower() %}
+                                        {% set component_var.value = comp %}
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                {% endif %}
+                                {% if component_var.value and component_var.value.initial %}
+                                  <code>{{ component_var.value.initial }}</code>
+                                {% else %}
+                                  <em>-</em>
+                                {% endif %}
+                              {% elif found_var.value and found_var.value.initial %}
+                                <code>{{ found_var.value.initial }}</code>
+                              {% else %}
+                                <em>-</em>
+                              {% endif %}
+                            </td>
+                            
+                            {# Column 5: Description - from variable or component doc #}
+                            <td>
+                              {% if var_info.component_name and found_var.value %}
+                                {% set component_var = namespace(value=none) %}
+                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                                  {% set type_obj = found_var.value.proto[0] %}
+                                  {% if type_obj is not string and type_obj.variables is defined %}
+                                    {% for comp in type_obj.variables %}
+                                      {% if comp.name.lower() == var_info.component_name.lower() %}
+                                        {% set component_var.value = comp %}
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                {% endif %}
+                                {% if component_var.value and component_var.value.doc %}
+                                  {{ component_var.value.doc|safe }}
+                                {% else %}
+                                  <em>-</em>
+                                {% endif %}
+                              {% elif found_var.value and found_var.value.doc %}
+                                {{ found_var.value.doc|safe }}
+                              {% else %}
+                                <em>-</em>
+                              {% endif %}
+                            </td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  {% else %}
+                    <p><em>No file schema information available.</em></p>
+                  {% endif %}
+                  
+                  {# Subsection 4: Sample Read Format (for inputs only - per procedure) #}
                   <h4>Sample Read Format</h4>
                   {% if proc_read_vars %}
                     {# Categorize variables #}
@@ -593,6 +731,46 @@
           {% endfor %}
           
           {% if header_vars or units_vars or data_vars %}
+            {# Build expanded variable list with derived type components #}
+            {% set expanded_vars = [] %}
+            
+            {# Process data_vars to expand derived types #}
+            {% for var_info in data_vars %}
+              {# Look up the variable definition #}
+              {% set found_var = namespace(value=none) %}
+              {% if var_info.procedure.variables is defined %}
+                {% for v in var_info.procedure.variables %}
+                  {% if v.name.lower() == var_info.base_name.lower() %}
+                    {% set found_var.value = v %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+              {% if not found_var.value and var_info.procedure.all_vars is defined %}
+                {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
+                  {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
+                {% endif %}
+              {% endif %}
+              
+              {# Check if it's a derived type without a component specified #}
+              {% if not var_info.component_name and found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
+                {% set type_obj = found_var.value.proto[0] %}
+                {% if type_obj is not string and type_obj.variables is defined %}
+                  {# It's a derived type - expand all components #}
+                  {% for comp in type_obj.variables %}
+                    {% set comp_info = {} %}
+                    {% set _ = comp_info.update({'base_name': var_info.base_name, 'component_name': comp.name, 'full_name': var_info.base_name ~ '%' ~ comp.name, 'procedure': var_info.procedure}) %}
+                    {% set _ = expanded_vars.append(comp_info) %}
+                  {% endfor %}
+                {% else %}
+                  {# Not a derived type or string type - add as is #}
+                  {% set _ = expanded_vars.append(var_info) %}
+                {% endif %}
+              {% else %}
+                {# Already has a component or not a derived type - add as is #}
+                {% set _ = expanded_vars.append(var_info) %}
+              {% endif %}
+            {% endfor %}
+            
             <div class="card">
               <div class="card-body">
                 <pre><code>{# Show the structure #}
@@ -600,10 +778,10 @@
 
 {% endif %}{% if units_vars %}Row 2 (units): {% for var_info in units_vars %}{{ var_info.base_name }}{% if not loop.last %}, {% endif %}{% endfor %}
 
-{% endif %}{% if data_vars %}Row 3+ (data): {% for var_info in data_vars %}{{ var_info.full_name }}{% if not loop.last %}, {% endif %}{% endfor %} [written by {% for proc_info in data_procs %}{{ proc_info.procedure.name }}{% if not loop.last %}, {% endif %}{% endfor %}]
+{% endif %}{% if expanded_vars %}Row 3+ (data): {% for var_info in expanded_vars %}{{ var_info.full_name }}{% if not loop.last %}, {% endif %}{% endfor %} [written by {% for proc_info in data_procs %}{{ proc_info.procedure.name }}{% if not loop.last %}, {% endif %}{% endfor %}]
 
 {% endif %}...</code></pre>
-                <p class="text-muted"><small>Note: This format shows how multiple procedures may contribute to the same output file (e.g., one writes the header, another writes the data).</small></p>
+                <p class="text-muted"><small>Note: This format shows how multiple procedures may contribute to the same output file (e.g., one writes the header, another writes the data). When a derived type is written in full, all its components are listed individually.</small></p>
               </div>
             </div>
           {% endif %}
