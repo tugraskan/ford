@@ -422,6 +422,22 @@ class Documentation:
         )
 
         if graphviz_installed and settings.graph:
+            # Register all entities directly in GraphData first to ensure called_by relationships
+            # can be built for all procedures, even those with graph: false
+            for entity_list in [
+                project.types,
+                project.procedures,
+                project.submodprocedures,
+                project.modules,
+                project.submodules,
+                project.programs,
+                project.files,
+                project.blockdata,
+            ]:
+                for item in entity_list:
+                    self.graphs.data.register(item)
+            
+            # Now register for graph generation (only items with meta.graph == True)
             for entity_list in [
                 project.types,
                 project.procedures,
