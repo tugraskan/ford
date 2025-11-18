@@ -891,9 +891,9 @@
   {%- endif -%}
   {%- set _ = lines_dict[line_num].append(var_name) -%}
 {%- endfor -%}
-{%- for line_num in lines_dict.keys() | sort -%}
+{%- for line_num in lines_dict.keys() | sort %}
 Line {{ line_num }}: {{ lines_dict[line_num] | join(', ') }}
-{%- endfor -%}
+{% endfor -%}
 {%- else -%}
 {%- set lines_dict = {} -%}
 {%- set line_num = namespace(value=1) -%}
@@ -908,9 +908,9 @@ Line {{ line_num }}: {{ lines_dict[line_num] | join(', ') }}
   {%- set _ = lines_dict[line_num.value].append(var_name) -%}
   {%- set line_num.value = line_num.value + 1 -%}
 {%- endfor -%}
-{%- for line_n in lines_dict.keys() | sort -%}
+{%- for line_n in lines_dict.keys() | sort %}
 Line {{ line_n }}: {{ lines_dict[line_n] | join(', ') }}
-{%- endfor -%}
+{% endfor -%}
 {%- endif -%}
 </code></pre>
                       </div>
