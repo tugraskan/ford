@@ -879,27 +879,38 @@
                     <div class="card">
                       <div class="card-body">
                         <pre><code>{%- if expanded_read_vars is defined -%}
-{%- set lines = [] -%}
+{%- set lines_dict = {} -%}
 {%- for var_info in expanded_read_vars -%}
-  {%- set line_text = 'Line ' ~ var_info.file_line ~ ': ' ~ var_info.base_name -%}
+  {%- set var_name = var_info.base_name -%}
   {%- if var_info.component_name -%}
-    {%- set line_text = line_text ~ '%' ~ var_info.component_name -%}
+    {%- set var_name = var_name ~ '%' ~ var_info.component_name -%}
   {%- endif -%}
-  {%- set _ = lines.append(line_text) -%}
+  {%- set line_num = var_info.file_line -%}
+  {%- if line_num not in lines_dict -%}
+    {%- set _ = lines_dict.update({line_num: []}) -%}
+  {%- endif -%}
+  {%- set _ = lines_dict[line_num].append(var_name) -%}
 {%- endfor -%}
-{{ lines | join('\n') }}
+{%- for line_num in lines_dict.keys() | sort %}
+Line {{ line_num }}: {{ lines_dict[line_num] | join(', ') }}
+{% endfor -%}
 {%- else -%}
-{%- set lines = [] -%}
+{%- set lines_dict = {} -%}
 {%- set line_num = namespace(value=1) -%}
 {%- for var_info in proc_read_vars -%}
-  {%- set line_text = 'Line ' ~ line_num.value ~ ': ' ~ var_info.base_name -%}
+  {%- set var_name = var_info.base_name -%}
   {%- if var_info.component_name -%}
-    {%- set line_text = line_text ~ '%' ~ var_info.component_name -%}
+    {%- set var_name = var_name ~ '%' ~ var_info.component_name -%}
   {%- endif -%}
-  {%- set _ = lines.append(line_text) -%}
+  {%- if line_num.value not in lines_dict -%}
+    {%- set _ = lines_dict.update({line_num.value: []}) -%}
+  {%- endif -%}
+  {%- set _ = lines_dict[line_num.value].append(var_name) -%}
   {%- set line_num.value = line_num.value + 1 -%}
 {%- endfor -%}
-{{ lines | join('\n') }}
+{%- for line_n in lines_dict.keys() | sort %}
+Line {{ line_n }}: {{ lines_dict[line_n] | join(', ') }}
+{% endfor -%}
 {%- endif -%}
 </code></pre>
                       </div>
