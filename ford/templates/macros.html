@@ -69,6 +69,76 @@
 {% endmacro %}
 
 
+{% macro display_nested_components(comp_var, nested_components, page_url, depth=0) %}
+  {# Recursive macro to display nested components at any depth #}
+  {% if comp_var.component_name in nested_components and nested_components[comp_var.component_name]|length > 0 %}
+    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          {# Deduplicate nested components by their component name #}
+          {% set deduplicated_nested = {} %}
+          {% for nested_var in nested_components[comp_var.component_name] %}
+            {# Only process direct children - those with exactly one more level #}
+            {% set nested_parts = nested_var.component_name.split('%') %}
+            {% set parent_parts = comp_var.component_name.split('%') if comp_var.component_name else [] %}
+            {% if nested_parts|length == (parent_parts|length + 1) %}
+              {% set nested_name = nested_parts[-1] %}
+              {% if nested_name not in deduplicated_nested %}
+                {% set _ = deduplicated_nested.update({nested_name: nested_var}) %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          
+          {# Display deduplicated nested components #}
+          {% for nested_name, nested_var in deduplicated_nested.items() %}
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                {% if nested_var.component_details %}
+                  {# For derived types, show full type; for basic types, show vartype #}
+                  {% set comp_type = nested_var.component_details.vartype if nested_var.component_details.vartype else nested_var.component_details.full_type %}
+                  {% if comp_type == 'type' %}
+                    {# This is a derived type, show the full type #}
+                    {{ nested_var.component_details.full_type | relurl(page_url) }} :: 
+                  {% elif comp_type and not comp_type.startswith('type(') %}
+                    {# This is a basic type #}
+                    {{ comp_type }} :: 
+                  {% else %}
+                    :: 
+                  {% endif %}
+                  <strong>{{ nested_name }}</strong>
+                  {% if nested_var.component_details.initial %}
+                    = {{ nested_var.component_details.initial }}
+                  {% endif %}
+                {% else %}
+                  :: <strong>{{ nested_name }}</strong>
+                {% endif %}
+                
+                {# Recursively display further nested components #}
+                {{ display_nested_components(nested_var, nested_components, page_url, depth + 1) }}
+              </td>
+              <td style="border-top: none;">
+                {% if nested_var.line_numbers %}
+                  <small class="text-muted">{{ nested_var.line_numbers | join(', ') }}</small>
+                {% else %}
+                  <small class="text-muted">-</small>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+
 {% macro panel_contents(name, collection, anchor, panelnum, collection_url=False) %}
   {% if collection %}
     <div class="card mb-4">
@@ -1006,69 +1076,8 @@
                                                   :: <strong>{{ comp_var.component_name }}</strong>
                                                 {% endif %}
                                                 
-                                                {# If this component has nested components, show them indented #}
-                                                {% if comp_var.component_name in nested_components and nested_components[comp_var.component_name]|length > 0 %}
-                                                  <div class="mt-2 ms-4">
-                                                    <small class="text-muted">Nested components:</small>
-                                                    <table class="table table-sm table-borderless">
-                                                      <thead>
-                                                        <tr>
-                                                          <th style="border-top: none;">Component</th>
-                                                          <th style="border-top: none;">Line Numbers</th>
-                                                        </tr>
-                                                      </thead>
-                                                      <tbody>
-                                                        {# Deduplicate nested components by their component name #}
-                                                        {% set deduplicated_nested = {} %}
-                                                        {% for nested_var in nested_components[comp_var.component_name] %}
-                                                          {# Only process direct children - those with exactly one more level #}
-                                                          {% set nested_parts = nested_var.component_name.split('%') %}
-                                                          {% set parent_parts = comp_var.component_name.split('%') if comp_var.component_name else [] %}
-                                                          {% if nested_parts|length == (parent_parts|length + 1) %}
-                                                            {% set nested_name = nested_parts[-1] %}
-                                                            {% if nested_name not in deduplicated_nested %}
-                                                              {% set _ = deduplicated_nested.update({nested_name: nested_var}) %}
-                                                            {% endif %}
-                                                          {% endif %}
-                                                        {% endfor %}
-                                                        
-                                                        {# Display deduplicated nested components #}
-                                                        {% for nested_name, nested_var in deduplicated_nested.items() %}
-                                                          <tr>
-                                                            <td class="ps-2" style="border-top: none;">
-                                                              {% if nested_var.component_details %}
-                                                                {# For derived types, show full type; for basic types, show vartype #}
-                                                                {% set comp_type = nested_var.component_details.vartype if nested_var.component_details.vartype else nested_var.component_details.full_type %}
-                                                                {% if comp_type == 'type' %}
-                                                                  {# This is a derived type, show the full type #}
-                                                                  {{ nested_var.component_details.full_type | relurl(page_url) }} :: 
-                                                                {% elif comp_type and not comp_type.startswith('type(') %}
-                                                                  {# This is a basic type #}
-                                                                  {{ comp_type }} :: 
-                                                                {% else %}
-                                                                  :: 
-                                                                {% endif %}
-                                                                <strong>{{ nested_name }}</strong>
-                                                                {% if nested_var.component_details.initial %}
-                                                                  = {{ nested_var.component_details.initial }}
-                                                                {% endif %}
-                                                              {% else %}
-                                                                :: <strong>{{ nested_name }}</strong>
-                                                              {% endif %}
-                                                            </td>
-                                                            <td style="border-top: none;">
-                                                              {% if nested_var.line_numbers %}
-                                                                <small class="text-muted">{{ nested_var.line_numbers | join(', ') }}</small>
-                                                              {% else %}
-                                                                <small class="text-muted">-</small>
-                                                              {% endif %}
-                                                            </td>
-                                                          </tr>
-                                                        {% endfor %}
-                                                      </tbody>
-                                                    </table>
-                                                  </div>
-                                                {% endif %}
+                                                {# Use recursive macro to display nested components at any depth #}
+                                                {{ display_nested_components(comp_var, nested_components, page_url) }}
                                               </td>
                                               <td style="border-top: none;">
                                                 {% if comp_var.line_numbers %}
