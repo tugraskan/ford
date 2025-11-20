@@ -20,24 +20,962 @@
     
     <div class="col-md-9" id='text'>
     <h2>{{ macros.proc_line(procedure,False) }}</h2>
-    {{ macros.use_list(procedure) }}
 
-    {% if procedure.doc %}
-    {{ procedure.doc }}
+    {# Section 0: Purpose - placeholder for future @!purpose directive #}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#purpose-section" 
+         aria-expanded="false" 
+         aria-controls="purpose-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Purpose
+        </h3>
+      </a>
+      <div id="purpose-section" class="collapse">
+        <div class="card-body">
+          {# TODO: This will be populated by @!purpose directive in the future #}
+          <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    {# Section 1: Stack Flow - combines Called From and Calls subsections #}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#stack-flow-section" 
+         aria-expanded="true" 
+         aria-controls="stack-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Stack Flow
+        </h3>
+      </a>
+      <div id="stack-flow-section" class="collapse show">
+        <div class="card-body">
+          {# 1a. Called From subsection #}
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#called-from-subsection" 
+               aria-expanded="false" 
+               aria-controls="called-from-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Called From
+              </h4>
+            </a>
+            <div id="called-from-subsection" class="collapse">
+              <div class="card-body">
+                {% if procedure.calledby or procedure.calledbygraph %}
+                  {% if procedure.calledby %}
+                  <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item">
+                      <ul class="list-inline">
+                        {% for caller in procedure.calledby %}
+                          <li class="list-inline-item">{{ caller | relurl(page_url) }}</li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+                  </ul>
+                  {% endif %}
+                  
+                  {% if procedure.calledbygraph %}
+                  <p class="text-muted mb-3">
+                    Procedures that call this {{ procedure.proctype }}. This shows the call stack back to the main program.
+                  </p>
+                  <div class="depgraph">
+                    {{ procedure.calledbygraph }}
+                  </div>
+                  {% endif %}
+                {% else %}
+                  <em>n/a</em>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          {# 1b. Calls subsection #}
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#calls-subsection" 
+               aria-expanded="false" 
+               aria-controls="calls-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Calls
+              </h4>
+            </a>
+            <div id="calls-subsection" class="collapse">
+              <div class="card-body">
+                {% if procedure.callsgraph or procedure.calls %}
+                  {% if procedure.calls %}
+                  <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item">
+                      <ul class="list-inline">
+                        {% for call in procedure.calls %}
+                          <li class="list-inline-item">{{ call | relurl(page_url) }}</li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+                  </ul>
+                  {% endif %}
+                  
+                  {% if procedure.callsgraph %}
+                  <p class="text-muted mb-3">
+                    Procedures called by this {{ procedure.proctype }}.
+                  </p>
+                  <div class="depgraph">
+                    {{ procedure.callsgraph }}
+                  </div>
+                  {% endif %}
+                {% else %}
+                  <em>n/a</em>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          {# 1c. Arguments subsection #}
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#arguments-subsection" 
+               aria-expanded="false" 
+               aria-controls="arguments-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Arguments
+              </h4>
+            </a>
+            <div id="arguments-subsection" class="collapse">
+              <div class="card-body">
+                {% if procedure.args %}
+                  {{ macros.variable_list(procedure.args, intent=True) }}
+                {% else %}
+                  <em>n/a</em>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Section 2: Uses - with graph and subsection for Outside Variables and Types #}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#uses-section" 
+         aria-expanded="false" 
+         aria-controls="uses-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Uses
+        </h3>
+      </a>
+      <div id="uses-section" class="collapse">
+        <div class="card-body">
+          {% if procedure.uses or procedure.ancestry %}
+            <ul class="list-group list-group-flush mb-3">
+              {% if procedure.uses %}
+                <li class="list-group-item">
+                  <ul class="list-inline">
+                    {% for use in procedure.uses %}
+                      <li class="list-inline-item">{{ use | relurl(page_url) }}</li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endif %}
+              {% if procedure.ancestry %}
+                <li class="list-group-item">
+                  <ul class="list-inline">
+                    <li><h5>Ancestors:</h5></li>
+                    {% for ancestor in procedure.ancestry %}
+                      <li class="list-inline-item">{{ ancestor | relurl(page_url) }}</li>
+                      {% if not loop.last -%}<li>:</li>{%- endif %}
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endif %}
+              {% if procedure.usesgraph %}
+                <li class="list-group-item">
+                  {{ procedure.usesgraph }}
+                </li>
+              {% endif %}
+            </ul>
+          {% else %}
+            <em>n/a</em>
+          {% endif %}
+
+          {# 2a. Outside Variables and Types as subsection #}
+          <h4 class="mt-4 mb-3">Outside Variables and Types</h4>
+          {% if procedure.outside_variables_used %}
+            {{ macros.outside_variables_list(procedure.outside_variables_used) }}
+          {% else %}
+            <em>n/a</em>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# Section 3: Local Variables #}
+    {% if procedure.local_variables %}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
+         aria-expanded="false" 
+         aria-controls="local-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Local Variables
+        </h3>
+      </a>
+      <div id="local-variables-section" class="collapse">
+        <div class="card-body">
+          {{ macros.variable_list(procedure.local_variables, permission=True) }}
+        </div>
+      </div>
+    </div>
     {% endif %}
+
+    {# Section 4: I/O - keep as is #}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+          {% if procedure.io_operations %}
+          <p class="text-muted mb-3">
+            I/O files used in this {{ procedure.proctype|lower }}.
+          </p>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Type</th>
+                <th>Filename</th>
+                <th>Operations</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for file_key, operations in procedure.io_operations.items() %}
+              <tr>
+                <td>
+                  {% if operations.unit %}
+                    <code>{{ operations.unit }}</code>
+                    {% if operations.unit_resolved %}
+                      <br><small class="text-muted">→ {{ operations.unit_resolved }}</small>
+                    {% endif %}
+                  {% else %}
+                    <em>not specified</em>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if operations.timeline %}
+                    {% set has_read = namespace(value=false) %}
+                    {% set has_write = namespace(value=false) %}
+                    {% for op in operations.timeline %}
+                      {% if op.kind == 'read' %}
+                        {% set has_read.value = true %}
+                      {% elif op.kind == 'write' %}
+                        {% set has_write.value = true %}
+                      {% endif %}
+                    {% endfor %}
+                    {% if has_read.value and has_write.value %}
+                      <span class="badge bg-info">Input/Output</span>
+                    {% elif has_read.value %}
+                      <span class="badge bg-success">Input</span>
+                    {% elif has_write.value %}
+                      <span class="badge bg-primary">Output</span>
+                    {% else %}
+                      <span class="badge bg-secondary">Unknown</span>
+                    {% endif %}
+                  {% else %}
+                    <span class="badge bg-secondary">Unknown</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% set resolved_fname = operations.filename_resolved if operations.filename_resolved else operations.filename %}
+                  {% if resolved_fname and resolved_fname in project.iofile_map %}
+                    {# Link to the I/O file page if we have a mapping #}
+                    <a href="{{ project_url }}/{{ project.iofile_map[resolved_fname].get_url() }}">
+                      <code>{{ operations.filename }}</code>
+                    </a>
+                    {% if operations.filename_resolved %}
+                      <br><small class="text-muted">→ {{ operations.filename_resolved }}</small>
+                    {% endif %}
+                  {% elif operations.filename %}
+                    <code>{{ operations.filename }}</code>
+                    {% if operations.filename_resolved %}
+                      <br><small class="text-muted">→ {{ operations.filename_resolved }}</small>
+                    {% endif %}
+                  {% else %}
+                    <em>not specified</em>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if operations.timeline %}
+                    {{ operations.timeline|length }} operation(s)
+                  {% else %}
+                    <em>n/a</em>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+            <em>n/a</em>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# Section 5: Control Flow - with graphs and bang comments integrated into logic blocks #}
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          {# Procedure Badges Section - moved here from top #}
+          {% if procedure.procedure_badges %}
+          <div class="mb-4">
+            {% if procedure.procedure_badges.complexity_level or procedure.procedure_badges.max_depth or procedure.procedure_badges.early_exits %}
+            <div class="mb-2">
+              <strong>Complexity Indicators:</strong>
+              {% if procedure.procedure_badges.complexity_level %}
+              <span class="badge {% if procedure.procedure_badges.complexity_level == 'Simple' %}bg-success{% elif procedure.procedure_badges.complexity_level == 'Moderate' %}bg-warning text-dark{% else %}bg-danger{% endif %} me-1">
+                {{ procedure.procedure_badges.complexity_level }}
+              </span>
+              {% endif %}
+              {% if procedure.procedure_badges.max_depth > 0 %}
+              <span class="badge bg-info text-dark me-1" title="Maximum nesting depth">
+                Depth: {{ procedure.procedure_badges.max_depth }}
+              </span>
+              {% endif %}
+              {% if procedure.procedure_badges.early_exits > 0 %}
+              <span class="badge bg-secondary me-1" title="Number of RETURN statements">
+                Early Exits: {{ procedure.procedure_badges.early_exits }}
+              </span>
+              {% endif %}
+            </div>
+            {% endif %}
+            
+            {% if procedure.procedure_badges.features %}
+            <div class="mb-2">
+              <strong>Features:</strong>
+              {% for feature in procedure.procedure_badges.features %}
+              <span class="badge bg-primary me-1">{{ feature }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+          
+          {% if procedure.controlflowtgraph_svg %}
+          <h4>Control Flow Graph</h4>
+          <p class="text-muted mb-3">
+            Visual representation of the execution flow within this procedure. Click on IF/DO/SELECT nodes to collapse or expand nested content. Use mouse wheel to zoom, drag to pan.
+          </p>
+          <div class="depgraph" id="control-flow-graph-container" style="border: 1px solid #ddd; overflow: auto; max-height: 600px;">
+            {{ procedure.controlflowtgraph_svg }}
+          </div>
+          <div class="mt-3 mb-4">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="resetControlFlowZoom()">Reset Zoom</button>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#ControlFlowGraph-help-text">Help</a>
+          </div>
+          <script>
+            (function() {
+              const container = document.getElementById('control-flow-graph-container');
+              const svg = container.querySelector('svg');
+              if (svg) {
+                svg.style.cursor = 'grab';
+                let scale = 1;
+                let panning = false;
+                let pointX = 0;
+                let pointY = 0;
+                let start = { x: 0, y: 0 };
+                
+                // Enable zoom on mouse wheel
+                container.addEventListener('wheel', function(e) {
+                  e.preventDefault();
+                  const xs = (e.clientX - pointX) / scale;
+                  const ys = (e.clientY - pointY) / scale;
+                  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                  scale *= delta;
+                  scale = Math.min(Math.max(0.1, scale), 10);
+                  pointX = e.clientX - xs * scale;
+                  pointY = e.clientY - ys * scale;
+                  svg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+                }, { passive: false });
+                
+                // Enable panning
+                svg.addEventListener('mousedown', function(e) {
+                  svg.style.cursor = 'grabbing';
+                  panning = true;
+                  start = { x: e.clientX - pointX, y: e.clientY - pointY };
+                });
+                
+                svg.addEventListener('mouseup', function() {
+                  svg.style.cursor = 'grab';
+                  panning = false;
+                });
+                
+                svg.addEventListener('mousemove', function(e) {
+                  if (!panning) return;
+                  e.preventDefault();
+                  pointX = e.clientX - start.x;
+                  pointY = e.clientY - start.y;
+                  svg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+                });
+                
+                svg.addEventListener('mouseleave', function() {
+                  panning = false;
+                  svg.style.cursor = 'grab';
+                });
+                
+                window.resetControlFlowZoom = function() {
+                  scale = 1;
+                  pointX = 0;
+                  pointY = 0;
+                  svg.style.transform = '';
+                };
+                
+                // Add collapse/expand functionality for control flow nodes
+                // Track collapsed state for each control node
+                const collapsedNodes = new Map();
+                
+                // Function to find all descendant nodes of a control structure
+                function findDescendantNodes(controlBlockId) {
+                  const descendants = new Set();
+                  const edges = svg.querySelectorAll('g.edge');
+                  const nodes = svg.querySelectorAll('g.node');
+                  
+                  // Build adjacency list from edges
+                  const adjacency = new Map();
+                  edges.forEach(edge => {
+                    const title = edge.querySelector('title');
+                    if (title) {
+                      const match = title.textContent.match(/^(\d+)->(\d+)$/);
+                      if (match) {
+                        const from = match[1];
+                        const to = match[2];
+                        if (!adjacency.has(from)) adjacency.set(from, []);
+                        adjacency.get(from).push(to);
+                      }
+                    }
+                  });
+                  
+                  // BFS to find all reachable nodes from the control node
+                  const queue = [controlBlockId];
+                  const visited = new Set([controlBlockId]);
+                  
+                  // Find the exit nodes for this control structure (nodes with edge labels 'F' or 'exit')
+                  const exitNodes = new Set();
+                  edges.forEach(edge => {
+                    const title = edge.querySelector('title');
+                    const text = edge.querySelector('text');
+                    if (title && text) {
+                      const match = title.textContent.match(/^(\d+)->(\d+)$/);
+                      const label = text.textContent.trim();
+                      if (match && match[1] === controlBlockId && (label === 'F' || label === 'exit')) {
+                        exitNodes.add(match[2]);
+                      }
+                    }
+                  });
+                  
+                  while (queue.length > 0) {
+                    const current = queue.shift();
+                    const neighbors = adjacency.get(current) || [];
+                    
+                    for (const neighbor of neighbors) {
+                      // Stop if we've reached an exit node
+                      if (exitNodes.has(neighbor)) continue;
+                      
+                      if (!visited.has(neighbor)) {
+                        visited.add(neighbor);
+                        descendants.add(neighbor);
+                        queue.push(neighbor);
+                      }
+                    }
+                  }
+                  
+                  return descendants;
+                }
+                
+                // Add click handlers to collapsible nodes
+                const collapsibleNodes = svg.querySelectorAll('g.cfg-collapsible');
+                collapsibleNodes.forEach(node => {
+                  const blockId = node.getAttribute('data-block-id');
+                  const indicator = node.querySelector('.collapse-indicator');
+                  const icon = node.querySelector('.collapse-icon');
+                  
+                  if (indicator && icon && blockId) {
+                    // Make the whole node clickable
+                    node.style.cursor = 'pointer';
+                    
+                    node.addEventListener('click', function(e) {
+                      // Don't trigger pan when clicking on control nodes
+                      e.stopPropagation();
+                      
+                      const isCollapsed = collapsedNodes.get(blockId) || false;
+                      collapsedNodes.set(blockId, !isCollapsed);
+                      
+                      // Find descendant nodes and edges
+                      const descendants = findDescendantNodes(blockId);
+                      
+                      if (isCollapsed) {
+                        // Expand: show descendants
+                        descendants.forEach(descId => {
+                          const descNode = svg.querySelector(`g.node title`);
+                          if (descNode) {
+                            descNode.parentElement.style.display = '';
+                          }
+                          // Find node by checking all node groups
+                          svg.querySelectorAll('g.node').forEach(n => {
+                            const title = n.querySelector('title');
+                            if (title && title.textContent === descId) {
+                              n.style.display = '';
+                            }
+                          });
+                        });
+                        
+                        // Show edges connected to descendants
+                        svg.querySelectorAll('g.edge').forEach(edge => {
+                          const title = edge.querySelector('title');
+                          if (title) {
+                            const match = title.textContent.match(/^(\d+)->(\d+)$/);
+                            if (match && (descendants.has(match[1]) || descendants.has(match[2]))) {
+                              edge.style.display = '';
+                            }
+                          }
+                        });
+                        
+                        icon.textContent = '−';
+                      } else {
+                        // Collapse: hide descendants
+                        descendants.forEach(descId => {
+                          svg.querySelectorAll('g.node').forEach(n => {
+                            const title = n.querySelector('title');
+                            if (title && title.textContent === descId) {
+                              n.style.display = 'none';
+                            }
+                          });
+                        });
+                        
+                        // Hide edges connected to descendants
+                        svg.querySelectorAll('g.edge').forEach(edge => {
+                          const title = edge.querySelector('title');
+                          if (title) {
+                            const match = title.textContent.match(/^(\d+)->(\d+)$/);
+                            if (match && (descendants.has(match[1]) || descendants.has(match[2]))) {
+                              edge.style.display = 'none';
+                            }
+                          }
+                        });
+                        
+                        icon.textContent = '+';
+                      }
+                    });
+                  }
+                });
+              }
+            })();
+          </script>
+          <div class="modal fade" id="ControlFlowGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Control Flow Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>Control flow graph showing the execution flow within the procedure. Nodes of different shapes and colors represent:</p>
+                  
+                  <h5>Control Flow Structures</h5>
+                  <ul>
+                    <li><span style="background-color: #90EE90; padding: 2px 8px;">Entry point</span></li>
+                    <li><span style="background-color: #FFB6C1; padding: 2px 8px;">Exit point</span></li>
+                    <li><span style="background-color: #87CEEB; padding: 2px 8px;">IF condition (diamond)</span></li>
+                    <li><span style="background-color: #DDA0DD; padding: 2px 8px;">DO loop (diamond)</span></li>
+                    <li><span style="background-color: #F0E68C; padding: 2px 8px;">SELECT CASE (diamond)</span></li>
+                    <li><span style="background-color: #FFE4B5; padding: 2px 8px;">CASE block</span></li>
+                    <li><span style="background-color: #E0E0E0; padding: 2px 8px;">Statement block</span></li>
+                  </ul>
+                  
+                  <h5>Keyword Nodes</h5>
+                  <p>Each keyword appears as its own node at the point where it occurs in the code:</p>
+                  <ul>
+                    <li><strong>I/O operations</strong> (rounded rectangles, distinct colors):
+                      <ul>
+                        <li><span style="background-color: #4A90E2; padding: 2px 8px; border-radius: 4px; color: white;">OPEN</span> - Medium blue</li>
+                        <li><span style="background-color: #50C878; padding: 2px 8px; border-radius: 4px; color: white;">READ</span> - Emerald green</li>
+                        <li><span style="background-color: #FF6B6B; padding: 2px 8px; border-radius: 4px; color: white;">WRITE</span> - Coral red</li>
+                        <li><span style="background-color: #9370DB; padding: 2px 8px; border-radius: 4px; color: white;">CLOSE</span> - Medium purple</li>
+                        <li><span style="background-color: #FFD700; padding: 2px 8px; border-radius: 4px;">REWIND</span> - Gold</li>
+                        <li><span style="background-color: #20B2AA; padding: 2px 8px; border-radius: 4px; color: white;">INQUIRE</span> - Light sea green</li>
+                        <li><span style="background-color: #FF69B4; padding: 2px 8px; border-radius: 4px; color: white;">PRINT</span> - Hot pink</li>
+                      </ul>
+                    </li>
+                    <li><span style="background-color: #52BE80; padding: 2px 8px; color: white;">Memory operations (ALLOCATE, DEALLOCATE)</span> - Hexagon, green</li>
+                    <li><span style="background-color: #EC7063; padding: 2px 8px; color: white;">Early exit (RETURN, EXIT, CYCLE)</span> - Octagon, red</li>
+                    <li><span style="border: 2px solid #BB8FCE; padding: 1px 7px; background-color: white; color: #BB8FCE;">Procedure call (CALL)</span> - Rectangle with purple outline</li>
+                  </ul>
+                  
+                  <p>Each keyword node shows its line number and the statement code.</p>
+                  <p>Arrows show the possible execution paths through the code. Edges from conditions are labeled with 'T' (true) and 'F' (false), or 'loop' and 'exit' for DO loops.</p>
+                  
+                  <h5>Interactive Features</h5>
+                  <ul>
+                    <li><strong>Collapse/Expand:</strong> Click on IF, DO, or SELECT CASE nodes (marked with a ⊖ or ⊕ indicator) to collapse or expand nested content. This helps simplify complex graphs by hiding internal details.</li>
+                    <li><strong>Zoom:</strong> Use mouse wheel to zoom in or out</li>
+                    <li><strong>Pan:</strong> Click and drag to move the graph around</li>
+                    <li><strong>Reset:</strong> Use the "Reset Zoom" button to return to default view</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if procedure.logic_blocks %}
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          {% macro render_statement_with_badges(stmt, keywords, line_num) %}
+            {# Render a statement with keyword badges, line number, and statement all on the same line #}
+            {# Map keywords to graph colors #}
+            {# Put badges and line number first, then statement on same line #}
+            {% if keywords %}{% for keyword in keywords %}{% if keyword == "OPEN" %}<span class="badge text-white me-1" style="background-color: #4A90E2;">{{ keyword }}</span>{% elif keyword == "READ" %}<span class="badge text-white me-1" style="background-color: #50C878;">{{ keyword }}</span>{% elif keyword == "WRITE" %}<span class="badge text-white me-1" style="background-color: #FF6B6B;">{{ keyword }}</span>{% elif keyword == "CLOSE" %}<span class="badge text-white me-1" style="background-color: #9370DB;">{{ keyword }}</span>{% elif keyword == "REWIND" %}<span class="badge me-1" style="background-color: #FFD700; color: #000;">{{ keyword }}</span>{% elif keyword == "INQUIRE" %}<span class="badge text-white me-1" style="background-color: #20B2AA;">{{ keyword }}</span>{% elif keyword == "PRINT" %}<span class="badge text-white me-1" style="background-color: #FF69B4;">{{ keyword }}</span>{% elif keyword == "ALLOCATE" or keyword == "DEALLOCATE" %}<span class="badge text-white me-1" style="background-color: #52BE80;">{{ keyword }}</span>{% elif keyword == "RETURN" or keyword == "EXIT" or keyword == "CYCLE" or keyword == "STOP" or keyword == "ERROR STOP" %}<span class="badge text-white me-1" style="background-color: #EC7063;">{{ keyword }}</span>{% elif keyword == "CALL" %}<span class="badge text-white me-1" style="background-color: #BB8FCE;">{{ keyword }}</span>{% else %}<span class="badge bg-secondary me-1">{{ keyword }}</span>{% endif %}{% endfor %} {% endif %}{% if line_num %}<span class="text-muted">{{ "%4d" | format(line_num) }}</span> {% endif %}{{ stmt }}
+          {% endmacro %}
+          
+          {% macro render_logic_block(block, index, parent_index='') %}
+            {% set block_id = parent_index ~ 'block-' ~ index %}
+            {% set indent_class = 'ms-' ~ (block.level * 3) %}
+            
+            {% if block.block_type == 'if' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>{{ block.condition }}</code>) <strong>THEN</strong>
+                    {% if block.label %}<span class="badge bg-secondary ms-2">{{ block.label }}</span>{% endif %}
+                    {% if block.start_line and block.end_line %}
+                      <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                    {% endif %}
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% if block.comments %}
+                      {% for comment in block.comments %}
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                          {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                            <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                          {% endif %}
+                        </div>
+                      {% endfor %}
+                    {% endif %}
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
+{% endfor %}</code></pre>
+                    {% endif %}
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>{% if block.label %} <span class="text-muted">{{ block.label }}</span>{% endif %}
+                      {% if block.end_line %}<span class="badge bg-light text-dark ms-2">Line {{ block.end_line }}</span>{% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'elseif' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">ELSE IF</span> (<code>{{ block.condition }}</code>) <strong>THEN</strong>
+                  {%if block.start_line and block.end_line %}
+                    <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                  {%  endif %}
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% if block.comments %}
+                                          {% for comment in block.comments %}
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                                              {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                                                <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                                              {% endif %}
+                                            </div>
+                                          {% endfor %}
+                                        {% endif %}
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
+                      {% endfor %}</code></pre>
+                    {% endif %}
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+                      {% if block.end_line %}<span class="badge bg-light text-dark ms-2">Line {{ block.end_line }}</span>{% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'else' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                    {% if block.start_line and block.end_line %}
+                      <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                    {% endif %}
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% if block.comments %}
+                                          {% for comment in block.comments %}
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                                              {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                                                <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                                              {% endif %}
+                                            </div>
+                                          {% endfor %}
+                                        {% endif %}
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
+                      {% endfor %}</code></pre>
+                    {% endif %}
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+                      {% if block.end_line %}<span class="badge bg-light text-dark ms-2">Line {{ block.end_line }}</span>{% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'do' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>{{ block.condition }}</code>
+                    {% if block.label %}<span class="badge bg-secondary ms-2">{{ block.label }}</span>{% endif %}
+                    {% if block.start_line and block.end_line %}
+                      <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                    {% endif %}
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% if block.comments %}
+                                          {% for comment in block.comments %}
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                                              {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                                                <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                                              {% endif %}
+                                            </div>
+                                          {% endfor %}
+                                        {% endif %}
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
+                      {% endfor %}</code></pre>
+                    {% endif %}
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong>{% if block.label %} <span class="text-muted">{{ block.label }}</span>{% endif %}
+                      {% if block.end_line %}<span class="badge bg-light text-dark ms-2">Line {{ block.end_line }}</span>{% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'select' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>{{ block.condition }}</code>)
+                    {% if block.label %}<span class="badge bg-secondary ms-2">{{ block.label }}</span>{% endif %}
+                    {% if block.start_line and block.end_line %}
+                      <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                    {% endif %}
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong>{% if block.label %} <span class="text-muted">{{ block.label }}</span>{% endif %}
+                      {% if block.end_line %}<span class="badge bg-light text-dark ms-2">Line {{ block.end_line }}</span>{% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'case' %}
+              <div class="card mb-2 {{ indent_class }}">
+                <a data-bs-toggle="collapse" href="#{{ block_id }}" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>{{ block.condition }}</code>)
+                    {% if block.start_line and block.end_line %}
+                      <span class="badge bg-light text-dark ms-2">Lines {{ block.start_line }}-{{ block.end_line }}</span>
+                    {% endif %}
+                  </div>
+                </a>
+                <div id="{{ block_id }}" class="collapse">
+                  <div class="card-body">
+                    {% if block.comments %}
+                                          {% for comment in block.comments %}
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                                              {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                                                <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                                              {% endif %}
+                                            </div>
+                                          {% endfor %}
+                                        {% endif %}
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
+                      {% endfor %}</code></pre>
+                    {% endif %}
+                    {% for child in block.children %}
+                      {{ render_logic_block(child, loop.index, block_id ~ '-') }}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% elif block.block_type == 'statements' %}
+              {% if block.statements or block.comments %}
+                <div class="card mb-2 {{ indent_class }}">
+                  <div class="card-body">
+                    {% if block.comments %}
+                      {% for comment in block.comments %}
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>{{ comment }}</em>
+                          {% if block.comment_lines and loop.index0 < block.comment_lines|length %}
+                            <span class="text-muted small">(line {{ block.comment_lines[loop.index0] }})</span>
+                          {% endif %}
+                        </div>
+                      {% endfor %}
+                    {% endif %}
+                    {% if block.statements %}
+                      <pre class="mb-0"><code>{% for stmt in block.statements %}{{ render_statement_with_badges(stmt, block.statement_keywords[loop.index0] if block.statement_keywords and loop.index0 < block.statement_keywords|length else [], block.statement_lines[loop.index0] if block.statement_lines and loop.index0 < block.statement_lines|length else none) }}
+                      {% endfor %}</code></pre>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endmacro %}
+          
+          {% for block in procedure.logic_blocks %}
+            {{ render_logic_block(block, loop.index) }}
+          {% endfor %}
+          {% else %}
+            <em>n/a</em>
+          {% endif %}
+          
+          {# Allocation Summary Section - Always shown, collapsible #}
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                {% if procedure.allocation_summary %}
+                <p class="text-muted mb-3">
+                  Memory allocations and deallocations grouped by variable.
+                </p>
+                <table class="table table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Allocations</th>
+                      <th>Deallocations</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for alloc in procedure.allocation_summary %}
+                    <tr>
+                      <td><code>{{ alloc.variable_name }}</code></td>
+                      <td>
+                        {% if alloc.allocate_lines %}
+                          {% for line in alloc.allocate_lines %}
+                            <span class="badge bg-success">line {{ line }}</span>{% if not loop.last %}, {% endif %}
+                          {% endfor %}
+                        {% else %}
+                          <em>none</em>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if alloc.deallocate_lines %}
+                          {% for line in alloc.deallocate_lines %}
+                            <span class="badge bg-warning text-dark">line {{ line }}</span>{% if not loop.last %}, {% endif %}
+                          {% endfor %}
+                        {% else %}
+                          <em>none</em>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                {% else %}
+                  <em>n/a</em>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 
     {% if procedure.binding %}
     <h3>Type Bound</h3>
     <p>{{ procedure.binding.parent | relurl(page_url) }}</p>
     {% endif %}
 
-    <h3>Arguments</h3>
-    {% if procedure.args %}
-      {{ macros.variable_list(procedure.args, intent=True) }}
-    {% else %}
-    <em>None</em>
-    <br>
-    {% endif %}
     {% if procedure.retvar %}
       <h3>Return Value
         <small>
@@ -47,30 +985,6 @@
       </h3>
       {{ procedure.retvar.doc }}
     {% endif %}
-    {% if procedure.calledbygraph or procedure.callsgraph %}
-    <br>
-    {% endif %}
-    {% if procedure.callsgraph %}
-    <div class="card">
-      <div class="card-header">
-  <h3 class="card-title">Calls</h3>
-      </div>
-      <div class="card-body">
-  {{ procedure.callsgraph }}
-      </div>
-    </div>
-     {% endif %}
-     {% if procedure.calledbygraph %}
-    <div class="card">
-      <div class="card-header">
-  <h3 class="card-title">Called by</h3>
-      </div>
-      <div class="card-body">
-  {{ procedure.calledbygraph }}
-      </div>
-    </div>
-     {% endif %}
-    <br>
 
     {% if procedure.common %}
     <section>
@@ -87,10 +1001,10 @@
     </script>
     {% endif %}
 
-    {% if procedure.variables %}
+    {% if procedure.non_local_variables %}
     <section>    
       <h2>Variables</h2>
-    {{ macros.variable_list(procedure.variables, permission=True) }}
+    {{ macros.variable_list(procedure.non_local_variables, permission=True) }}
     </section>
     <br>
     {% endif %}

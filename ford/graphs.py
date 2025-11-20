@@ -27,9 +27,11 @@ from __future__ import annotations
 import colorsys
 import copy
 import itertools
+import logging as log
 import os
 import pathlib
 import re
+import signal
 from typing import Dict, Iterable, List, Optional, Set, Tuple, Type, Union, cast
 
 from graphviz import Digraph, ExecutableNotFound
@@ -222,6 +224,23 @@ class GraphData:
 
         collection, _ = self._get_collection_and_node_type(obj)
         if obj not in collection:
+            # Before creating a new node, check if a node with the same name
+            # already exists (for procedures and programs only, since they can
+            # have multiple Python objects representing the same entity)
+            if is_proc(obj) or is_program(obj):
+                if hasattr(obj, "name"):
+                    obj_name = obj.name.lower()
+                    # Search for existing node with this name
+                    for existing_obj, existing_node in collection.items():
+                        if (
+                            hasattr(existing_obj, "name")
+                            and existing_obj.name.lower() == obj_name
+                        ):
+                            # Found existing node with same name - add obj to collection
+                            # pointing to the same node
+                            collection[obj] = existing_node
+                            return existing_node
+
             self.register(obj, hist)
 
         return collection[obj]
@@ -591,6 +610,9 @@ class FileNode(BaseNode):
             obj.programs,
             obj.blockdata,
         ):
+            # Only modules and submodules have deplist
+            if not hasattr(mod, "deplist"):
+                continue
             for dep in mod.deplist:
                 if dep.source_file == obj:
                     continue
@@ -830,21 +852,77 @@ class FortranGraph:
         self.add_nodes(self.root)
 
         if graphviz_installed:
-            self.svg_src = self.dot.pipe().decode("utf-8")
-            self.svg_src = self.svg_src.replace(
-                "<svg ", '<svg id="' + re.sub(r"[^\w]", "", self.ident) + '" '
-            )
-            if match := WIDTH_RE.search(self.svg_src):
-                width = int(match.group(1))
+            # Render graph with timeout protection to prevent hanging on complex graphs
+            svg_src = self._render_graph_with_timeout(timeout_seconds=60)
+            if svg_src:
+                self.svg_src = svg_src
+                self.svg_src = self.svg_src.replace(
+                    "<svg ", '<svg id="' + re.sub(r"[^\w]", "", self.ident) + '" '
+                )
+                if match := WIDTH_RE.search(self.svg_src):
+                    width = int(match.group(1))
+                else:
+                    width = 0
+                if isinstance(self, (ModuleGraph, CallGraph, TypeGraph)):
+                    self.scaled = width >= 855
+                else:
+                    self.scaled = width >= 641
             else:
-                width = 0
-            if isinstance(self, (ModuleGraph, CallGraph, TypeGraph)):
-                self.scaled = width >= 855
-            else:
-                self.scaled = width >= 641
+                # Timeout or error occurred
+                self.svg_src = ""
+                self.scaled = False
         else:
             self.svg_src = ""
             self.scaled = False
+
+    def _render_graph_with_timeout(self, timeout_seconds=30):
+        """
+        Render the graph with timeout protection to prevent hanging on complex graphs.
+
+        Parameters
+        ----------
+        timeout_seconds : int
+            Maximum time in seconds to wait for graphviz rendering
+
+        Returns
+        -------
+        str or None
+            SVG source string, or None if timeout/error occurs
+        """
+
+        def timeout_handler(signum, frame):
+            raise TimeoutError(f"Graphviz rendering timed out for graph {self.ident}")
+
+        # Try to render the graph with timeout protection
+        if hasattr(signal, "SIGALRM"):
+            # Unix-like systems with SIGALRM support
+            old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(timeout_seconds)
+            try:
+                svg_src = self.dot.pipe().decode("utf-8")
+                signal.alarm(0)
+                return svg_src
+            except TimeoutError:
+                signal.alarm(0)
+                warn(
+                    f"Graph rendering timed out for '{self.ident}' after {timeout_seconds} seconds. "
+                    f"Graph will be skipped. Consider reducing graph complexity or using graph_maxnodes/graph_maxdepth settings."
+                )
+                return None
+            except Exception as e:
+                signal.alarm(0)
+                warn(f"Error rendering graph '{self.ident}': {e}")
+                return None
+            finally:
+                signal.signal(signal.SIGALRM, old_handler)
+        else:
+            # Windows or systems without SIGALRM - no timeout protection
+            # Just try to render and catch exceptions
+            try:
+                return self.dot.pipe().decode("utf-8")
+            except Exception as e:
+                warn(f"Error rendering graph '{self.ident}': {e}")
+                return None
 
     def add_to_graph(self, nodes, edges, nesting):
         """
@@ -978,7 +1056,7 @@ class FortranGraph:
             try:
                 link = f'<a href="{attribs["URL"]}">{attribs["label"]}</a></td>'
             except KeyError:
-                link = f"{attribs['label']}</td>"
+                link = f'{attribs["label"]}</td>'
 
             node = f'<td rowspan="2" class="node" bgcolor="{attribs["color"]}">{link}'
 
@@ -1366,8 +1444,117 @@ class GraphManager:
             self.data.register(obj)
             self.graph_objs.append(obj)
 
+    def _build_name_to_nodes_mapping(self, collection):
+        """
+        Build a mapping from entity names to their graph nodes.
+
+        Parameters
+        ----------
+        collection:
+            Dictionary mapping Fortran entities to their graph nodes
+
+        Returns
+        -------
+        dict
+            Mapping from lowercase entity names to list of (entity, node) tuples
+        """
+        name_to_nodes = {}
+        for entity, node in collection.items():
+            if hasattr(entity, "name"):
+                name_key = entity.name.lower()
+            else:
+                # This should not happen for procedures/programs, but handle gracefully
+                warn(f"Entity {entity} in graph does not have a 'name' attribute")
+                continue
+
+            if name_key not in name_to_nodes:
+                name_to_nodes[name_key] = []
+            name_to_nodes[name_key].append((entity, node))
+
+        return name_to_nodes
+
+    def _populate_called_by_relationships(self):
+        """
+        Populate called_by relationships for all procedure nodes based on procedure names.
+
+        This fixes the issue where multiple FortranProcedure objects can exist for the same
+        logical procedure (e.g., one from project.procedures and another from correlation lookups).
+        Since graph nodes are keyed by object identity, different objects create different nodes,
+        breaking the called_by relationships.
+
+        This method builds a name-based mapping and explicitly populates called_by sets
+        after all nodes are registered.
+        """
+        # Build mappings from names to nodes for both procedures and programs
+        name_to_proc_nodes = self._build_name_to_nodes_mapping(self.data.procedures)
+        name_to_prog_nodes = self._build_name_to_nodes_mapping(self.data.programs)
+
+        # Combine both mappings - a call could target either a procedure or a program
+        all_name_to_nodes = {}
+        for name, nodes in name_to_proc_nodes.items():
+            all_name_to_nodes[name] = nodes
+        for name, nodes in name_to_prog_nodes.items():
+            all_name_to_nodes.setdefault(name, []).extend(nodes)
+
+        # Now iterate through all procedure and program nodes and populate called_by
+        all_caller_items = list(self.data.procedures.items()) + list(
+            self.data.programs.items()
+        )
+
+        for caller_obj, caller_node in all_caller_items:
+            # Get the calls from the original Fortran object
+            calls = getattr(caller_obj, "calls", [])
+
+            for called in calls:
+                # Get the name of the called entity
+                if isinstance(called, str):
+                    called_name = called.lower()
+                elif hasattr(called, "name"):
+                    called_name = called.name.lower()
+                else:
+                    continue
+
+                # Find all nodes with this name (could be procedures or programs)
+                matching_nodes = all_name_to_nodes.get(called_name, [])
+
+                # Add the caller to the called_by set of all matching nodes
+                for _, called_node in matching_nodes:
+                    called_node.called_by.add(caller_node)
+
+    def _populate_calledby_lists(self):
+        """
+        Populate calledby lists on procedure objects from graph node data.
+
+        This extracts the called_by information from graph nodes and stores it
+        as a list on the procedure object for easy access in templates.
+        """
+        for proc_obj, proc_node in self.data.procedures.items():
+            # Get the calling procedures from the graph node
+            calledby_procs = []
+            for caller_node in sorted(
+                proc_node.called_by, key=lambda n: n.name.lower()
+            ):
+                # Find the procedure object corresponding to this caller node
+                # by looking it up in the procedures dictionary
+                for caller_obj, node in self.data.procedures.items():
+                    if node == caller_node:
+                        calledby_procs.append(caller_obj)
+                        break
+                # Also check programs
+                for caller_obj, node in self.data.programs.items():
+                    if node == caller_node:
+                        calledby_procs.append(caller_obj)
+                        break
+
+            # Store as a list on the procedure object
+            proc_obj.calledby = calledby_procs
+
     def graph_all(self):
         """Create all graphs"""
+
+        # First, populate called_by relationships based on procedure names
+        # This fixes the issue where multiple FortranProcedure objects exist for the same procedure
+        self._populate_called_by_relationships()
 
         for obj in (bar := ProgressBar("Generating graphs", sorted(self.graph_objs))):
             bar.set_current(obj.name)
@@ -1390,6 +1577,31 @@ class GraphManager:
                 obj.callsgraph = CallsGraph(obj, self.data)
                 obj.calledbygraph = CalledByGraph(obj, self.data)
                 obj.usesgraph = UsesGraph(obj, self.data)
+
+                # Generate control flow graph
+                try:
+                    cfg = obj.get_control_flow_graph()
+                    if cfg:
+                        # Skip CFG visualization for very large procedures (>1000 blocks)
+                        # as graphviz rendering becomes too slow
+                        if len(cfg.blocks) > 1000:
+                            log.debug(
+                                f"Skipping control flow graph for {obj.name} "
+                                f"({len(cfg.blocks)} blocks > 1000 block limit)"
+                            )
+                            obj.controlflowtgraph_svg = ""
+                        else:
+                            obj.controlflowtgraph_svg = create_control_flow_graph_svg(
+                                cfg, obj.name
+                            )
+                    else:
+                        obj.controlflowtgraph_svg = ""
+                except Exception as e:
+                    log.debug(
+                        f"Failed to generate control flow graph for {obj.name}: {e}"
+                    )
+                    obj.controlflowtgraph_svg = ""
+
                 self.procedures.add(obj)
                 # regester internal procedures
                 for p in traverse(obj, ["subroutines", "functions"]):
@@ -1429,6 +1641,9 @@ class GraphManager:
         self.typegraph = TypeGraph(self.types, self.data, "type~~graph")
         self.callgraph = CallGraph(callnodes, self.data, "call~~graph")
         self.filegraph = FileGraph(self.sourcefiles, self.data, "file~~graph")
+
+        # Populate calledby lists on procedure objects from graph node data
+        self._populate_calledby_lists()
 
     def output_graphs(self, njobs=0):
         """Save graphs to file"""
@@ -1497,3 +1712,467 @@ class GraphManager:
         for graph in [self.usegraph, self.typegraph, self.callgraph, self.filegraph]:
             if graph:
                 graph.create_svg(self.graphdir)
+
+
+def add_collapse_functionality_to_svg(svg_str: str, cfg, procedure_name: str) -> str:
+    """Add collapse/expand functionality to control flow graph SVG
+
+    This function post-processes the SVG to add:
+    - Data attributes to identify collapsible nodes (IF/DO/SELECT)
+    - CSS classes for styling
+    - Collapse/expand indicators
+
+    Parameters
+    ----------
+    svg_str : str
+        The original SVG string from Graphviz
+    cfg : ControlFlowGraph
+        The control flow graph
+    procedure_name : str
+        Name of the procedure
+
+    Returns
+    -------
+    str
+        Enhanced SVG with collapse functionality
+    """
+    try:
+        from bs4 import BeautifulSoup
+        from ford.control_flow import BlockType
+
+        # Try to use XML parser, fall back to HTML parser if not available
+        try:
+            soup = BeautifulSoup(svg_str, "xml")
+        except:
+            soup = BeautifulSoup(svg_str, "html.parser")
+
+        # Find all node groups in the SVG
+        # Graphviz creates nodes with a <title> element containing the block ID
+        for block_id, block in cfg.blocks.items():
+            # Check if this is a collapsible node type
+            if block.block_type in [
+                BlockType.IF_CONDITION,
+                BlockType.DO_LOOP,
+                BlockType.SELECT_CASE,
+            ]:
+                # Find the corresponding SVG node group by looking for <title>block_id</title>
+                # The title is a child of the node group
+                all_nodes = soup.find_all("g", class_="node")
+                target_node = None
+
+                for node_group in all_nodes:
+                    title = node_group.find("title")
+                    if title and title.string and title.string.strip() == str(block_id):
+                        target_node = node_group
+                        break
+
+                if target_node:
+                    # Add data attribute to mark as collapsible
+                    target_node["data-collapsible"] = "true"
+                    target_node["data-block-id"] = str(block_id)
+                    target_node["data-block-type"] = block.block_type.value
+                    # Add CSS class for styling
+                    existing_class = target_node.get("class", [])
+                    if isinstance(existing_class, str):
+                        existing_class = existing_class.split()
+                    existing_class.append("cfg-collapsible")
+                    target_node["class"] = existing_class
+
+                    # Add a small circle indicator for collapse/expand
+                    # Find the text element to position the indicator
+                    text_elem = target_node.find("text")
+                    if text_elem and "x" in text_elem.attrs and "y" in text_elem.attrs:
+                        x = float(text_elem["x"])
+                        y = float(text_elem["y"])
+
+                        # Add a small circle at the top-right as a collapse indicator
+                        circle = soup.new_tag("circle")
+                        circle["cx"] = str(x + 20)
+                        circle["cy"] = str(y - 20)
+                        circle["r"] = "6"
+                        circle["fill"] = "white"
+                        circle["stroke"] = "black"
+                        circle["stroke-width"] = "1.5"
+                        circle["class"] = "collapse-indicator"
+                        circle["style"] = "cursor: pointer;"
+                        target_node.append(circle)
+
+                        # Add a minus sign (−) as initial state (expanded)
+                        minus_sign = soup.new_tag("text")
+                        minus_sign["x"] = str(x + 20)
+                        minus_sign["y"] = str(y - 15)
+                        minus_sign["text-anchor"] = "middle"
+                        minus_sign["font-family"] = "monospace"
+                        minus_sign["font-size"] = "12"
+                        minus_sign["font-weight"] = "bold"
+                        minus_sign["class"] = "collapse-icon"
+                        minus_sign["style"] = "pointer-events: none;"
+                        minus_sign.string = "−"
+                        target_node.append(minus_sign)
+
+        return str(soup)
+    except ImportError:
+        # If BeautifulSoup is not available, return original SVG
+        log.debug("BeautifulSoup not available, skipping collapse functionality")
+        return svg_str
+    except Exception as e:
+        log.debug(f"Error adding collapse functionality to SVG: {e}")
+        return svg_str
+
+
+def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
+    """Create an SVG representation of a control flow graph
+
+    Parameters
+    ----------
+    cfg : ControlFlowGraph
+        The control flow graph to visualize
+    procedure_name : str
+        Name of the procedure (for identification)
+
+    Returns
+    -------
+    str
+        SVG representation of the graph, or empty string if graphviz is not installed
+    """
+    if not graphviz_installed:
+        return ""
+
+    try:
+        import signal
+        from ford.control_flow import BlockType, detect_statement_keywords
+
+        def timeout_handler(signum, frame):
+            raise TimeoutError("SVG generation timed out")
+
+        dot = Digraph(
+            f"cfg_{procedure_name}",
+            graph_attr={
+                "rankdir": "TB",
+                "concentrate": "false",
+                "id": f"cfg_{procedure_name}",
+            },
+            node_attr={
+                "shape": "box",
+                "style": "filled",
+                "fontname": "Helvetica",
+                "fontsize": "10",
+            },
+            edge_attr={
+                "fontname": "Helvetica",
+                "fontsize": "9",
+            },
+            format="svg",
+            engine="dot",
+        )
+
+        # Color scheme for different block types
+        colors = {
+            BlockType.ENTRY: "#90EE90",  # Light green
+            BlockType.EXIT: "#FFB3BA",  # Light red
+            BlockType.RETURN: "#FFB6C1",  # Light pink
+            BlockType.USE: "#B0E0E6",  # Powder blue
+            BlockType.STATEMENT: "#E0E0E0",  # Light gray
+            BlockType.IF_CONDITION: "#87CEEB",  # Sky blue
+            BlockType.DO_LOOP: "#DDA0DD",  # Plum
+            BlockType.SELECT_CASE: "#F0E68C",  # Khaki
+            BlockType.CASE: "#FFE4B5",  # Moccasin
+            # I/O operation colors - distinct color for each operation type
+            BlockType.KEYWORD_IO_OPEN: "#4A90E2",  # Medium blue
+            BlockType.KEYWORD_IO_READ: "#50C878",  # Emerald green
+            BlockType.KEYWORD_IO_WRITE: "#FF6B6B",  # Coral red
+            BlockType.KEYWORD_IO_CLOSE: "#9370DB",  # Medium purple
+            BlockType.KEYWORD_IO_REWIND: "#FFD700",  # Gold
+            BlockType.KEYWORD_IO_INQUIRE: "#20B2AA",  # Light sea green
+            BlockType.KEYWORD_IO_PRINT: "#FF69B4",  # Hot pink
+            # Other keyword node colors
+            BlockType.KEYWORD_MEMORY: "#52BE80",  # Green (hexagon)
+            BlockType.KEYWORD_BRANCH: "#E59866",  # Orange (diamond) - not used
+            BlockType.KEYWORD_LOOP: "#48C9B0",  # Teal (ellipse) - not used
+            BlockType.KEYWORD_EXIT: "#EC7063",  # Red (octagon)
+            BlockType.KEYWORD_CALL: "#BB8FCE",  # Purple (rectangle with bold outline)
+        }
+
+        # Shape scheme for different block types
+        shapes = {
+            # Control flow structures
+            BlockType.IF_CONDITION: "diamond",
+            BlockType.DO_LOOP: "diamond",
+            BlockType.SELECT_CASE: "diamond",
+            # I/O keyword node shapes - all rounded boxes
+            BlockType.KEYWORD_IO_OPEN: "box",
+            BlockType.KEYWORD_IO_READ: "box",
+            BlockType.KEYWORD_IO_WRITE: "box",
+            BlockType.KEYWORD_IO_CLOSE: "box",
+            BlockType.KEYWORD_IO_REWIND: "box",
+            BlockType.KEYWORD_IO_INQUIRE: "box",
+            BlockType.KEYWORD_IO_PRINT: "box",
+            # Other keyword node shapes
+            BlockType.KEYWORD_MEMORY: "hexagon",
+            BlockType.KEYWORD_EXIT: "octagon",
+            BlockType.KEYWORD_CALL: "box",  # Will use bold outline
+        }
+
+        # Helper function to check if a block should be skipped from visualization
+        def should_skip_block(block):
+            """Check if a block should be skipped from the graph visualization"""
+            # Skip unreachable blocks (blocks with no predecessors except entry/exit)
+            if (
+                not block.predecessors
+                and block.id != cfg.entry_block_id
+                and block.id != cfg.exit_block_id
+            ):
+                return True
+
+            # Skip EXIT block (pink "Return") - we show KEYWORD_EXIT (red octagon) for actual RETURN statements instead
+            if block.block_type == BlockType.EXIT:
+                return True
+
+            # Skip "After" merge blocks (they add clutter without useful information)
+            if block.block_type == BlockType.STATEMENT and any(
+                after_keyword in block.label
+                for after_keyword in [
+                    "After IF",
+                    "After THEN",
+                    "After loop",
+                    "After SELECT",
+                ]
+            ):
+                return True
+
+            # Skip THEN and ELSE blocks that have no statements (they're just intermediate nodes)
+            if block.block_type == BlockType.STATEMENT and block.label in [
+                "THEN",
+                "ELSE",
+                "ELSE IF body",
+            ]:
+                if not block.statements or len(block.statements) == 0:
+                    return True
+
+            # Skip empty "Loop body" blocks (they're just intermediate nodes)
+            if block.block_type == BlockType.STATEMENT and block.label == "Loop body":
+                if not block.statements or len(block.statements) == 0:
+                    return True
+
+            return False
+
+        # Helper function to find the next non-skipped successor
+        def find_next_visible_successor(block_id, visited=None):
+            """Find the next visible (non-skipped) successor of a block, following edges through skipped blocks"""
+            if visited is None:
+                visited = set()
+
+            if block_id in visited:
+                return []  # Avoid infinite loops
+
+            visited.add(block_id)
+
+            if block_id not in cfg.blocks:
+                return []
+
+            block = cfg.blocks[block_id]
+
+            # If this block should not be skipped, return it
+            if not should_skip_block(block):
+                return [block_id]
+
+            # Otherwise, recursively find visible successors
+            visible_successors = []
+            for succ_id in block.successors:
+                visible_successors.extend(find_next_visible_successor(succ_id, visited))
+
+            return visible_successors
+
+        # Add nodes
+        for block in cfg.blocks.values():
+            if should_skip_block(block):
+                continue
+
+            color = colors.get(block.block_type, "#FFFFFF")
+
+            # Build label based on block type
+            label = ""
+
+            # For keyword nodes, format as "Line X\nKEYWORD\nstatement"
+            if block.block_type in [
+                BlockType.KEYWORD_IO_OPEN,
+                BlockType.KEYWORD_IO_READ,
+                BlockType.KEYWORD_IO_WRITE,
+                BlockType.KEYWORD_IO_CLOSE,
+                BlockType.KEYWORD_IO_REWIND,
+                BlockType.KEYWORD_IO_INQUIRE,
+                BlockType.KEYWORD_IO_PRINT,
+                BlockType.KEYWORD_MEMORY,
+                BlockType.KEYWORD_EXIT,
+                BlockType.KEYWORD_CALL,
+            ]:
+                # Extract statement from existing label (format is "KEYWORD (LX)\nstatement")
+                parts = block.label.split("\n", 1)
+                keyword_part = parts[0] if parts else block.label
+                # Extract just the keyword name (before the " (L")
+                keyword = (
+                    keyword_part.split(" (L")[0]
+                    if " (L" in keyword_part
+                    else keyword_part
+                )
+
+                if block.line_number is not None:
+                    label = f"Line {block.line_number}"
+                else:
+                    label = keyword
+
+                # Add the statement if it exists
+                if len(parts) > 1:
+                    label = f"{label}\\n---\\n{parts[1]}"
+
+            # For IF/DO/SELECT conditions, include line number and condition
+            elif block.condition:
+                if block.line_number is not None:
+                    label = f"Line {block.line_number}\\n{block.label}"
+                else:
+                    label = block.label
+
+            # For statement blocks with multiple statements, show line range
+            elif block.block_type == BlockType.STATEMENT and block.statements:
+                # Get line range for the statements
+                if (
+                    block.statement_line_numbers
+                    and len(block.statement_line_numbers) > 0
+                ):
+                    start_line = block.statement_line_numbers[0]
+                    end_line = block.statement_line_numbers[-1]
+                    if start_line == end_line:
+                        label = f"Line {start_line}"
+                    else:
+                        label = f"Line {start_line} - {end_line}"
+                else:
+                    label = block.label
+
+                # Add statements (without duplication)
+                stmt_lines = []
+                for stmt in block.statements:
+                    stmt_lines.append(stmt)
+                stmts = "\\n".join(stmt_lines)
+                label = f"{label}\\n---\\n{stmts}"
+
+            # For other blocks (ENTRY, EXIT, etc.)
+            else:
+                label = block.label
+                if block.line_number is not None:
+                    label = f"Line {block.line_number}\\n{label}"
+
+            # Determine shape based on block type
+            shape = shapes.get(block.block_type, "box")
+
+            # Determine style based on block type
+            style = "filled"
+            if block.block_type in [
+                BlockType.KEYWORD_IO_OPEN,
+                BlockType.KEYWORD_IO_READ,
+                BlockType.KEYWORD_IO_WRITE,
+                BlockType.KEYWORD_IO_CLOSE,
+                BlockType.KEYWORD_IO_REWIND,
+                BlockType.KEYWORD_IO_INQUIRE,
+                BlockType.KEYWORD_IO_PRINT,
+            ]:
+                # I/O operations: rounded rectangle
+                style = "filled,rounded"
+            elif block.block_type == BlockType.KEYWORD_CALL:
+                # Procedure calls: bold outline
+                style = "filled,bold"
+
+            # Create node with optional size attributes
+            node_attrs = {
+                "label": label,
+                "fillcolor": color,
+                "shape": shape,
+                "style": style,
+            }
+
+            # Make hexagons (KEYWORD_MEMORY) smaller to reduce visual clutter
+            if block.block_type == BlockType.KEYWORD_MEMORY:
+                node_attrs["width"] = "0.75"
+                node_attrs["height"] = "0.5"
+
+            dot.node(str(block.id), **node_attrs)
+
+        # Add edges
+        for block in cfg.blocks.values():
+            if should_skip_block(block):
+                continue
+
+            for succ_id in block.successors:
+                # Find visible successors (skip through "After" blocks)
+                visible_successors = find_next_visible_successor(succ_id)
+
+                for visible_succ_id in visible_successors:
+                    # Label edges from conditions
+                    edge_label = ""
+                    if block.block_type == BlockType.IF_CONDITION:
+                        # First successor is "true", second is "false"
+                        idx = block.successors.index(succ_id)
+                        edge_label = "T" if idx == 0 else "F"
+                    elif block.block_type == BlockType.DO_LOOP:
+                        # First successor is loop body, second is exit
+                        idx = block.successors.index(succ_id)
+                        edge_label = "loop" if idx == 0 else "exit"
+
+                    dot.edge(str(block.id), str(visible_succ_id), label=edge_label)
+
+        # Render with timeout protection (30 seconds for graphviz rendering)
+        if hasattr(signal, "SIGALRM"):
+            old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(30)
+            try:
+                svg_src = dot.pipe().decode("utf-8")
+                signal.alarm(0)
+                svg_src = svg_src.replace("<svg ", f'<svg id="cfg_{procedure_name}" ')
+                # Add collapse functionality
+                svg_src = add_collapse_functionality_to_svg(
+                    svg_src, cfg, procedure_name
+                )
+                return svg_src
+            except TimeoutError:
+                signal.alarm(0)
+                log.debug(f"SVG generation timed out for procedure {procedure_name}")
+                return ""
+            finally:
+                signal.signal(signal.SIGALRM, old_handler)
+        else:
+            # On Windows or systems without SIGALRM, render without timeout
+            svg_src = dot.pipe().decode("utf-8")
+            svg_src = svg_src.replace("<svg ", f'<svg id="cfg_{procedure_name}" ')
+            # Add collapse functionality
+            svg_src = add_collapse_functionality_to_svg(svg_src, cfg, procedure_name)
+            return svg_src
+    except Exception as e:
+        log.debug(f"Error rendering control flow graph for {procedure_name}: {e}")
+        return ""
+
+
+CONTROL_FLOW_GRAPH_KEY = """
+<p>Control flow graph showing the execution flow within the procedure. Nodes of different shapes and colors represent:</p>
+
+<h5>Control Flow Structures</h5>
+<ul>
+<li><span style="color: #90EE90;">■</span> Entry point (shows procedure name and arguments)</li>
+<li><span style="color: #FFB6C1;">■</span> Return (exit point)</li>
+<li><span style="color: #87CEEB;">◆</span> IF condition (diamond)</li>
+<li><span style="color: #DDA0DD;">◆</span> DO loop (diamond)</li>
+<li><span style="color: #F0E68C;">◆</span> SELECT CASE (diamond)</li>
+<li><span style="color: #FFE4B5;">■</span> CASE block</li>
+<li><span style="color: #E0E0E0;">■</span> Statement block</li>
+</ul>
+
+<h5>Keyword Nodes</h5>
+<p>Each keyword appears as its own node at the point where it occurs in the code:</p>
+<ul>
+<li><span style="color: #5DADE2;">●</span> I/O operations (OPEN, READ, WRITE, CLOSE, REWIND, INQUIRE) - Rounded rectangle, blue</li>
+<li><span style="color: #52BE80;">⬡</span> Memory operations (ALLOCATE, DEALLOCATE) - Hexagon, green</li>
+<li><span style="color: #EC7063;">⬢</span> Early exit (RETURN, EXIT, CYCLE) - Octagon, red</li>
+<li><span style="color: #BB8FCE;">◻</span> Procedure call (CALL) - Rectangle with purple outline</li>
+</ul>
+
+<p>Each keyword node includes its line number in the format: KEYWORD (Lxxx)</p>
+<p>Arrows show the possible execution paths through the code. Edges from conditions are labeled with 'T' (true) and 'F' (false), or 'loop' and 'exit' for DO loops.</p>
+"""
