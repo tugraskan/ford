@@ -622,7 +622,7 @@
                     const lineEnd = node.getAttribute('data-line-end');
                     
                     // Match exact line number or line within range
-                    if (nodeLineNumber == lineNumber || 
+                    if ((nodeLineNumber && parseInt(nodeLineNumber) === lineNumber) || 
                         (lineStart && lineEnd && lineNumber >= parseInt(lineStart) && lineNumber <= parseInt(lineEnd))) {
                       targetNode = node;
                     }
@@ -649,12 +649,14 @@
                     if (rect) {
                       const originalStroke = rect.getAttribute('stroke');
                       const originalStrokeWidth = rect.getAttribute('stroke-width');
+                      const DEFAULT_STROKE_COLOR = 'black';
+                      const DEFAULT_STROKE_WIDTH = '1';
                       rect.setAttribute('stroke', '#FF0000');
                       rect.setAttribute('stroke-width', '3');
                       
                       setTimeout(() => {
-                        rect.setAttribute('stroke', originalStroke || 'black');
-                        rect.setAttribute('stroke-width', originalStrokeWidth || '1');
+                        rect.setAttribute('stroke', originalStroke || DEFAULT_STROKE_COLOR);
+                        rect.setAttribute('stroke-width', originalStrokeWidth || DEFAULT_STROKE_WIDTH);
                       }, 2000);
                     }
                     
