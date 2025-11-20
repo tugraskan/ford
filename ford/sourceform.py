@@ -958,8 +958,6 @@ class FortranBase:
         self.io_tracker = IoTracker()
         # start an allocation tracker for this code unit
         self.allocation_tracker = AllocationTracker()
-        # start an allocation tracker for this code unit
-        self.allocation_tracker = AllocationTracker()
 
         # Record starting line number
         if line_number is not None:
