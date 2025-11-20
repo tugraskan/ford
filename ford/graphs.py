@@ -1719,6 +1719,7 @@ def add_collapse_functionality_to_svg(svg_str: str, cfg, procedure_name: str) ->
 
     This function post-processes the SVG to add:
     - Data attributes to identify collapsible nodes (IF/DO/SELECT)
+    - Line number data attributes for linking from logic blocks
     - CSS classes for styling
     - Collapse/expand indicators
 
@@ -1749,24 +1750,35 @@ def add_collapse_functionality_to_svg(svg_str: str, cfg, procedure_name: str) ->
         # Find all node groups in the SVG
         # Graphviz creates nodes with a <title> element containing the block ID
         for block_id, block in cfg.blocks.items():
-            # Check if this is a collapsible node type
-            if block.block_type in [
-                BlockType.IF_CONDITION,
-                BlockType.DO_LOOP,
-                BlockType.SELECT_CASE,
-            ]:
-                # Find the corresponding SVG node group by looking for <title>block_id</title>
-                # The title is a child of the node group
-                all_nodes = soup.find_all("g", class_="node")
-                target_node = None
+            # Find the corresponding SVG node group by looking for <title>block_id</title>
+            # The title is a child of the node group
+            all_nodes = soup.find_all("g", class_="node")
+            target_node = None
 
-                for node_group in all_nodes:
-                    title = node_group.find("title")
-                    if title and title.string and title.string.strip() == str(block_id):
-                        target_node = node_group
-                        break
+            for node_group in all_nodes:
+                title = node_group.find("title")
+                if title and title.string and title.string.strip() == str(block_id):
+                    target_node = node_group
+                    break
 
-                if target_node:
+            if target_node:
+                # Add line number data attribute for linking from logic blocks
+                if block.line_number is not None:
+                    target_node["data-line-number"] = str(block.line_number)
+                
+                # For statement blocks with multiple lines, add line range
+                if block.statement_line_numbers and len(block.statement_line_numbers) > 0:
+                    start_line = block.statement_line_numbers[0]
+                    end_line = block.statement_line_numbers[-1]
+                    target_node["data-line-start"] = str(start_line)
+                    target_node["data-line-end"] = str(end_line)
+                
+                # Check if this is a collapsible node type
+                if block.block_type in [
+                    BlockType.IF_CONDITION,
+                    BlockType.DO_LOOP,
+                    BlockType.SELECT_CASE,
+                ]:
                     # Add data attribute to mark as collapsible
                     target_node["data-collapsible"] = "true"
                     target_node["data-block-id"] = str(block_id)
@@ -1797,18 +1809,18 @@ def add_collapse_functionality_to_svg(svg_str: str, cfg, procedure_name: str) ->
                         circle["style"] = "cursor: pointer;"
                         target_node.append(circle)
 
-                        # Add a minus sign (−) as initial state (expanded)
-                        minus_sign = soup.new_tag("text")
-                        minus_sign["x"] = str(x + 20)
-                        minus_sign["y"] = str(y - 15)
-                        minus_sign["text-anchor"] = "middle"
-                        minus_sign["font-family"] = "monospace"
-                        minus_sign["font-size"] = "12"
-                        minus_sign["font-weight"] = "bold"
-                        minus_sign["class"] = "collapse-icon"
-                        minus_sign["style"] = "pointer-events: none;"
-                        minus_sign.string = "−"
-                        target_node.append(minus_sign)
+                        # Add a plus sign (+) as initial state (collapsed)
+                        plus_sign = soup.new_tag("text")
+                        plus_sign["x"] = str(x + 20)
+                        plus_sign["y"] = str(y - 15)
+                        plus_sign["text-anchor"] = "middle"
+                        plus_sign["font-family"] = "monospace"
+                        plus_sign["font-size"] = "12"
+                        plus_sign["font-weight"] = "bold"
+                        plus_sign["class"] = "collapse-icon"
+                        plus_sign["style"] = "pointer-events: none;"
+                        plus_sign.string = "+"
+                        target_node.append(plus_sign)
 
         return str(soup)
     except ImportError:
