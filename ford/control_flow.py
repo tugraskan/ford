@@ -37,25 +37,36 @@ from typing import List, Optional, Dict, Set, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 
-# Import shared Fortran regex patterns to avoid duplication with sourceform.py
-from ford.fortran_patterns import (
-    IF_THEN_RE,
-    ELSE_IF_RE,
-    ELSE_RE,
-    END_IF_RE,
-    DO_LOOP_RE,
-    END_DO_RE,
-    SELECT_CASE_RE,
-    CASE_RE,
-    CASE_DEFAULT_RE,
-    END_SELECT_RE,
-    SINGLE_IF_RE,
-    RETURN_RE,
-    USE_RE,
-    IMPLICIT_RE,
-    DECLARATION_RE,
-    is_declaration_or_use,
+# Import shared Fortran regex patterns from sourceform.py to avoid duplication
+# sourceform.py is the authoritative source for these patterns
+from ford.sourceform import (
+    FORTRAN_IF_THEN_RE as IF_THEN_RE,
+    FORTRAN_ELSE_IF_RE as ELSE_IF_RE,
+    FORTRAN_ELSE_RE as ELSE_RE,
+    FORTRAN_END_IF_RE as END_IF_RE,
+    FORTRAN_DO_LOOP_RE as DO_LOOP_RE,
+    FORTRAN_END_DO_RE as END_DO_RE,
+    FORTRAN_SELECT_CASE_RE as SELECT_CASE_RE,
+    FORTRAN_CASE_RE as CASE_RE,
+    FORTRAN_CASE_DEFAULT_RE as CASE_DEFAULT_RE,
+    FORTRAN_END_SELECT_RE as END_SELECT_RE,
+    FORTRAN_SINGLE_IF_RE as SINGLE_IF_RE,
+    FORTRAN_RETURN_RE as RETURN_RE,
+    FORTRAN_USE_RE as USE_RE,
+    FORTRAN_IMPLICIT_RE as IMPLICIT_RE,
+    FORTRAN_DECLARATION_RE as DECLARATION_RE,
 )
+
+
+def is_declaration_or_use(line: str) -> bool:
+    """Check if a line is a USE, IMPLICIT, or type declaration statement.
+    
+    These statements should not appear in the control flow graph as they
+    are not part of the execution flow.
+    """
+    return bool(
+        USE_RE.match(line) or IMPLICIT_RE.match(line) or DECLARATION_RE.match(line)
+    )
 
 
 class BlockType(Enum):
