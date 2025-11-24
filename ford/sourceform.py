@@ -5937,3 +5937,39 @@ class ExternalSourceFile(FortranSourceFile):
         self.programs = []
         self.blockdata = []
         self.external_url = ""
+
+
+# ============================================================================
+# Shared Fortran Control Flow Parsing Patterns
+# ============================================================================
+# These patterns are exported for use by other modules (e.g., control_flow.py)
+# to avoid duplication while keeping sourceform.py as the authoritative source.
+
+# Control flow statement patterns
+FORTRAN_IF_THEN_RE = re.compile(
+    r"^\s*(?:(\w+)\s*:)?\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE
+)
+FORTRAN_ELSE_IF_RE = re.compile(r"^\s*else\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE)
+FORTRAN_ELSE_RE = re.compile(r"^\s*else\s*$", re.IGNORECASE)
+FORTRAN_END_IF_RE = re.compile(r"^\s*end\s*if(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+FORTRAN_DO_LOOP_RE = re.compile(r"^\s*(?:(\w+)\s*:)?\s*do\s+(.*)$", re.IGNORECASE)
+FORTRAN_END_DO_RE = re.compile(r"^\s*end\s*do(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+FORTRAN_SELECT_CASE_RE = re.compile(
+    r"^\s*(?:(\w+)\s*:)?\s*select\s+case\s*\((.*?)\)\s*$", re.IGNORECASE
+)
+FORTRAN_CASE_RE = re.compile(r"^\s*case\s*\((.*?)\)\s*$", re.IGNORECASE)
+FORTRAN_CASE_DEFAULT_RE = re.compile(r"^\s*case\s+default\s*$", re.IGNORECASE)
+FORTRAN_END_SELECT_RE = re.compile(r"^\s*end\s*select(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+FORTRAN_SINGLE_IF_RE = re.compile(r"^\s*if\s*\((.*?)\)\s+(.+)$", re.IGNORECASE)
+
+# Statement type patterns
+FORTRAN_RETURN_RE = re.compile(r"^\s*return\s*$", re.IGNORECASE)
+FORTRAN_USE_RE = re.compile(r"^\s*use\s+", re.IGNORECASE)
+FORTRAN_IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
+FORTRAN_DECLARATION_RE = re.compile(
+    r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*(?:\(|::))",
+    re.IGNORECASE,
+)
