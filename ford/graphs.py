@@ -1765,14 +1765,17 @@ def add_collapse_functionality_to_svg(svg_str: str, cfg, procedure_name: str) ->
                 # Add line number data attribute for linking from logic blocks
                 if block.line_number is not None:
                     target_node["data-line-number"] = str(block.line_number)
-                
+
                 # For statement blocks with multiple lines, add line range
-                if block.statement_line_numbers and len(block.statement_line_numbers) > 0:
+                if (
+                    block.statement_line_numbers
+                    and len(block.statement_line_numbers) > 0
+                ):
                     start_line = block.statement_line_numbers[0]
                     end_line = block.statement_line_numbers[-1]
                     target_node["data-line-start"] = str(start_line)
                     target_node["data-line-end"] = str(end_line)
-                
+
                 # Check if this is a collapsible node type
                 if block.block_type in [
                     BlockType.IF_CONDITION,
