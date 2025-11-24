@@ -60,6 +60,13 @@ from ford.intrinsics import INTRINSICS
 from ford._markdown import MetaMarkdown
 from ford.settings import ProjectSettings, EntitySettings
 from ford._typing import PathLike
+# Import shared Fortran regex patterns to avoid duplication with control_flow.py
+from ford.fortran_patterns import (
+    extract_if_condition,
+    extract_elseif_condition,
+    extract_select_expression,
+    extract_case_value,
+)
 
 import logging
 from collections import defaultdict
@@ -2386,99 +2393,69 @@ class FortranContainer(FortranBase):
         return variables
 
     def _parse_control_flow(self, line: str, line_no: int = None) -> None:
-        """Parse control flow statements and update condition context."""
+        """Parse control flow statements and update condition context using shared patterns."""
         if not hasattr(self, "io_tracker"):
             return
 
         raw = self.restore_strings(line, self.strings)
-        stripped = raw.strip().lower()
+        stripped = raw.strip()
 
-        # Handle if statements
-        if stripped.startswith("if") and ("then" in stripped or "=" in stripped):
-            # Extract the condition part
-            if "then" in stripped:
-                condition_match = re.match(
-                    r"if\s*\((.+?)\)\s*then", stripped, re.IGNORECASE
-                )
-                if condition_match:
-                    condition = f"if ({condition_match.group(1)})"
-                    self.io_tracker.push_condition(condition, line_no)
-                    if hasattr(self, "allocation_tracker"):
-                        self.allocation_tracker.push_condition(condition, line_no)
+        # Handle if statements using shared pattern extractor
+        if if_cond := extract_if_condition(stripped):
+            condition = f"if ({if_cond})"
+            self.io_tracker.push_condition(condition, line_no)
+            if hasattr(self, "allocation_tracker"):
+                self.allocation_tracker.push_condition(condition, line_no)
 
-        # Handle select case statements
-        elif stripped.startswith("select case"):
-            case_match = re.match(r"select\s+case\s*\((.+?)\)", stripped, re.IGNORECASE)
-            if case_match:
-                condition = f"select case ({case_match.group(1)})"
-                self.io_tracker.push_condition(condition, line_no)
-                if hasattr(self, "allocation_tracker"):
-                    self.allocation_tracker.push_condition(condition, line_no)
+        # Handle select case statements using shared pattern extractor
+        elif select_expr := extract_select_expression(stripped):
+            condition = f"select case ({select_expr})"
+            self.io_tracker.push_condition(condition, line_no)
+            if hasattr(self, "allocation_tracker"):
+                self.allocation_tracker.push_condition(condition, line_no)
 
-        # Handle case statements
-        elif stripped.startswith("case"):
-            case_match = re.match(r"case\s*\((.+?)\)", stripped, re.IGNORECASE)
-            if case_match:
-                condition = f"case ({case_match.group(1)})"
-                # Pop previous case and push new one
+        # Handle case statements using shared pattern extractor
+        elif case_val := extract_case_value(stripped):
+            condition = f"case ({case_val})" if case_val != "DEFAULT" else "case default"
+            # Pop previous case and push new one
+            if (
+                self.io_tracker.condition_stack
+                and self.io_tracker.condition_stack[-1]["type"] == "case"
+            ):
+                self.io_tracker.pop_condition()
+            self.io_tracker.push_condition(condition, line_no)
+            if hasattr(self, "allocation_tracker"):
                 if (
-                    self.io_tracker.condition_stack
-                    and self.io_tracker.condition_stack[-1]["type"] == "case"
+                    self.allocation_tracker.condition_stack
+                    and self.allocation_tracker.condition_stack[-1]["type"]
+                    == "case"
                 ):
-                    self.io_tracker.pop_condition()
-                self.io_tracker.push_condition(condition, line_no)
-                if hasattr(self, "allocation_tracker"):
-                    if (
-                        self.allocation_tracker.condition_stack
-                        and self.allocation_tracker.condition_stack[-1]["type"]
-                        == "case"
-                    ):
-                        self.allocation_tracker.pop_condition()
-                    self.allocation_tracker.push_condition(condition, line_no)
-            elif "default" in stripped:
-                condition = "case default"
-                if (
-                    self.io_tracker.condition_stack
-                    and self.io_tracker.condition_stack[-1]["type"] == "case"
-                ):
-                    self.io_tracker.pop_condition()
-                self.io_tracker.push_condition(condition, line_no)
-                if hasattr(self, "allocation_tracker"):
-                    if (
-                        self.allocation_tracker.condition_stack
-                        and self.allocation_tracker.condition_stack[-1]["type"]
-                        == "case"
-                    ):
-                        self.allocation_tracker.pop_condition()
-                    self.allocation_tracker.push_condition(condition, line_no)
+                    self.allocation_tracker.pop_condition()
+                self.allocation_tracker.push_condition(condition, line_no)
 
         # Handle else statements
-        elif stripped.startswith("else") and not stripped.startswith("elseif"):
+        elif stripped.lower().startswith("else") and not stripped.lower().startswith("elseif"):
             condition = "else"
             self.io_tracker.push_condition(condition, line_no)
             if hasattr(self, "allocation_tracker"):
                 self.allocation_tracker.push_condition(condition, line_no)
 
-        # Handle elseif statements
-        elif stripped.startswith("elseif"):
-            elseif_match = re.match(
-                r"elseif\s*\((.+?)\)\s*then", stripped, re.IGNORECASE
-            )
-            if elseif_match:
-                condition = f"elseif ({elseif_match.group(1)})"
-                # Pop previous condition and push new one
-                if self.io_tracker.condition_stack:
-                    self.io_tracker.pop_condition()
-                self.io_tracker.push_condition(condition, line_no)
-                if hasattr(self, "allocation_tracker"):
-                    if self.allocation_tracker.condition_stack:
-                        self.allocation_tracker.pop_condition()
-                    self.allocation_tracker.push_condition(condition, line_no)
+        # Handle elseif statements using shared pattern extractor
+        elif elseif_cond := extract_elseif_condition(stripped):
+            condition = f"elseif ({elseif_cond})"
+            # Pop previous condition and push new one
+            if self.io_tracker.condition_stack:
+                self.io_tracker.pop_condition()
+            self.io_tracker.push_condition(condition, line_no)
+            if hasattr(self, "allocation_tracker"):
+                if self.allocation_tracker.condition_stack:
+                    self.allocation_tracker.pop_condition()
+                self.allocation_tracker.push_condition(condition, line_no)
 
         # Handle end statements
-        elif stripped.startswith("end"):
+        elif stripped.lower().startswith("end"):
             if any(
-                end_kw in stripped
+                end_kw in stripped.lower()
                 for end_kw in ["endif", "end if", "endselect", "end select"]
             ):
                 if self.io_tracker.condition_stack:
