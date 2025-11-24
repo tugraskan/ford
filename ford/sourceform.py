@@ -2399,6 +2399,7 @@ class FortranContainer(FortranBase):
 
         raw = self.restore_strings(line, self.strings)
         stripped = raw.strip()
+        stripped_lower = stripped.lower()
 
         # Handle if statements using shared pattern extractor
         if if_cond := extract_if_condition(stripped):
@@ -2434,7 +2435,7 @@ class FortranContainer(FortranBase):
                 self.allocation_tracker.push_condition(condition, line_no)
 
         # Handle else statements
-        elif stripped.lower().startswith("else") and not stripped.lower().startswith("elseif"):
+        elif stripped_lower.startswith("else") and not stripped_lower.startswith("elseif"):
             condition = "else"
             self.io_tracker.push_condition(condition, line_no)
             if hasattr(self, "allocation_tracker"):
@@ -2453,9 +2454,9 @@ class FortranContainer(FortranBase):
                 self.allocation_tracker.push_condition(condition, line_no)
 
         # Handle end statements
-        elif stripped.lower().startswith("end"):
+        elif stripped_lower.startswith("end"):
             if any(
-                end_kw in stripped.lower()
+                end_kw in stripped_lower
                 for end_kw in ["endif", "end if", "endselect", "end select"]
             ):
                 if self.io_tracker.condition_stack:

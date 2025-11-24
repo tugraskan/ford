@@ -129,7 +129,7 @@ def extract_if_condition(line: str) -> str | None:
 
     Returns
     -------
-    str or None
+    str | None
         The condition expression, or None if not an IF-THEN statement
     """
     if match := IF_THEN_RE.match(line.strip()):
@@ -148,7 +148,7 @@ def extract_elseif_condition(line: str) -> str | None:
 
     Returns
     -------
-    str or None
+    str | None
         The condition expression, or None if not an ELSE IF statement
     """
     if match := ELSE_IF_RE.match(line.strip()):
@@ -166,7 +166,7 @@ def extract_select_expression(line: str) -> str | None:
 
     Returns
     -------
-    str or None
+    str | None
         The select expression, or None if not a SELECT CASE statement
     """
     if match := SELECT_CASE_RE.match(line.strip()):
@@ -185,7 +185,7 @@ def extract_case_value(line: str) -> str | None:
 
     Returns
     -------
-    str or None
+    str | None
         The case value, 'DEFAULT' for CASE DEFAULT, or None if not a CASE statement
     """
     line_stripped = line.strip()
@@ -206,7 +206,7 @@ def extract_do_control(line: str) -> str | None:
 
     Returns
     -------
-    str or None
+    str | None
         The loop control expression, or None if not a DO statement
     """
     if match := DO_LOOP_RE.match(line.strip()):
