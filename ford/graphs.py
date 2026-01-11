@@ -1840,7 +1840,7 @@ def create_control_flow_graph_svg(cfg, procedure_name: str) -> str:
 
     try:
         import signal
-        from ford.control_flow import BlockType, detect_statement_keywords
+        from ford.control_flow import BlockType
 
         def timeout_handler(signum, frame):
             raise TimeoutError("SVG generation timed out")
