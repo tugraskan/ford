@@ -38,11 +38,44 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 
-# Regular expression for RETURN statement (shared by parser and extractor)
-RETURN_RE = re.compile(r"^\s*return\s*$", re.IGNORECASE)
+# Regular expressions shared by parser and extractor classes
+# These are defined at module level to avoid duplicate compilation
 
-# Regular expression for USE statement (shared by parser and extractor)
+# RETURN and USE statements
+RETURN_RE = re.compile(r"^\s*return\s*$", re.IGNORECASE)
 USE_RE = re.compile(r"^\s*use\s+", re.IGNORECASE)
+
+# Control flow statements
+IF_THEN_RE = re.compile(
+    r"^\s*(?:(\w+)\s*:)?\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE
+)
+ELSE_IF_RE = re.compile(r"^\s*else\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE)
+ELSE_RE = re.compile(r"^\s*else\s*$", re.IGNORECASE)
+END_IF_RE = re.compile(r"^\s*end\s*if(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+DO_LOOP_RE = re.compile(r"^\s*(?:(\w+)\s*:)?\s*do\s+(.*)$", re.IGNORECASE)
+END_DO_RE = re.compile(r"^\s*end\s*do(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+SELECT_CASE_RE = re.compile(
+    r"^\s*(?:(\w+)\s*:)?\s*select\s+case\s*\((.*?)\)\s*$", re.IGNORECASE
+)
+CASE_RE = re.compile(r"^\s*case\s*\((.*?)\)\s*$", re.IGNORECASE)
+CASE_DEFAULT_RE = re.compile(r"^\s*case\s+default\s*$", re.IGNORECASE)
+END_SELECT_RE = re.compile(r"^\s*end\s*select(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+# Single-line IF statement
+SINGLE_IF_RE = re.compile(r"^\s*if\s*\((.*?)\)\s+(.+)$", re.IGNORECASE)
+
+# Statements to skip/exclude
+IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
+DECLARATION_RE = re.compile(
+    r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*(?:\(|::))",
+    re.IGNORECASE,
+)
+
+# Allocation/deallocation statements
+ALLOCATE_RE = re.compile(r"^\s*allocate\s*\((.*?)\)", re.IGNORECASE)
+DEALLOCATE_RE = re.compile(r"^\s*deallocate\s*\((.*?)\)", re.IGNORECASE)
 
 
 class BlockType(Enum):
@@ -177,35 +210,6 @@ class FortranControlFlowParser:
         Type of procedure ('subroutine' or 'function')
     """
 
-    # Regular expressions for Fortran control flow statements
-    IF_THEN_RE = re.compile(
-        r"^\s*(?:(\w+)\s*:)?\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE
-    )
-    ELSE_IF_RE = re.compile(r"^\s*else\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE)
-    ELSE_RE = re.compile(r"^\s*else\s*$", re.IGNORECASE)
-    END_IF_RE = re.compile(r"^\s*end\s*if(?:\s+(\w+))?\s*$", re.IGNORECASE)
-
-    DO_LOOP_RE = re.compile(r"^\s*(?:(\w+)\s*:)?\s*do\s+(.*)$", re.IGNORECASE)
-    END_DO_RE = re.compile(r"^\s*end\s*do(?:\s+(\w+))?\s*$", re.IGNORECASE)
-
-    SELECT_CASE_RE = re.compile(
-        r"^\s*(?:(\w+)\s*:)?\s*select\s+case\s*\((.*?)\)\s*$", re.IGNORECASE
-    )
-    CASE_RE = re.compile(r"^\s*case\s*\((.*?)\)\s*$", re.IGNORECASE)
-    CASE_DEFAULT_RE = re.compile(r"^\s*case\s+default\s*$", re.IGNORECASE)
-    END_SELECT_RE = re.compile(r"^\s*end\s*select(?:\s+(\w+))?\s*$", re.IGNORECASE)
-
-    # Single-line IF statement
-    SINGLE_IF_RE = re.compile(r"^\s*if\s*\((.*?)\)\s+(.+)$", re.IGNORECASE)
-
-    # Regular expressions for statements to skip in CFG (same as LogicBlockExtractor)
-    IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
-    # Matches type declarations including: type(...) and type ::
-    DECLARATION_RE = re.compile(
-        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*(?:\(|::))",
-        re.IGNORECASE,
-    )
-
     def __init__(self, source_code: str, procedure_name: str, procedure_type: str):
         self.source_code = source_code
         self.procedure_name = procedure_name
@@ -230,8 +234,8 @@ class FortranControlFlowParser:
         """
         return (
             USE_RE.match(line_stripped)
-            or self.IMPLICIT_RE.match(line_stripped)
-            or self.DECLARATION_RE.match(line_stripped)
+            or IMPLICIT_RE.match(line_stripped)
+            or DECLARATION_RE.match(line_stripped)
         )
 
     def parse(self) -> ControlFlowGraph:
@@ -279,7 +283,7 @@ class FortranControlFlowParser:
                 continue
 
             # Check for IF-THEN-ELSE blocks
-            if match := self.IF_THEN_RE.match(line_stripped):
+            if match := IF_THEN_RE.match(line_stripped):
                 label, condition = match.groups()
 
                 # Create condition block
@@ -300,8 +304,8 @@ class FortranControlFlowParser:
                 control_stack.append(("if", cond_block, merge_block, False))
                 current_block = then_block
 
-            elif self.ELSE_IF_RE.match(line_stripped):
-                match = self.ELSE_IF_RE.match(line_stripped)
+            elif ELSE_IF_RE.match(line_stripped):
+                match = ELSE_IF_RE.match(line_stripped)
                 condition = match.group(1)
 
                 if control_stack and control_stack[-1][0] == "if":
@@ -328,7 +332,7 @@ class FortranControlFlowParser:
                     control_stack[-1] = ("if", elseif_cond, merge_block, False)
                     current_block = elseif_body
 
-            elif self.ELSE_RE.match(line_stripped):
+            elif ELSE_RE.match(line_stripped):
                 if control_stack and control_stack[-1][0] == "if":
                     _, cond_block, merge_block, _ = control_stack[-1]
 
@@ -342,7 +346,7 @@ class FortranControlFlowParser:
                     control_stack[-1] = ("if", cond_block, merge_block, True)
                     current_block = else_block
 
-            elif self.END_IF_RE.match(line_stripped):
+            elif END_IF_RE.match(line_stripped):
                 if control_stack and control_stack[-1][0] == "if":
                     _, cond_block, merge_block, has_else = control_stack.pop()
 
@@ -356,7 +360,7 @@ class FortranControlFlowParser:
                     current_block = merge_block
 
             # Check for DO loops
-            elif match := self.DO_LOOP_RE.match(line_stripped):
+            elif match := DO_LOOP_RE.match(line_stripped):
                 label, loop_control = match.groups()
 
                 # Create loop header block
@@ -378,7 +382,7 @@ class FortranControlFlowParser:
                 control_stack.append(("do", loop_header, after_loop))
                 current_block = loop_body
 
-            elif self.END_DO_RE.match(line_stripped):
+            elif END_DO_RE.match(line_stripped):
                 if control_stack and control_stack[-1][0] == "do":
                     _, loop_header, after_loop = control_stack.pop()
 
@@ -387,7 +391,7 @@ class FortranControlFlowParser:
                     current_block = after_loop
 
             # Check for SELECT CASE
-            elif match := self.SELECT_CASE_RE.match(line_stripped):
+            elif match := SELECT_CASE_RE.match(line_stripped):
                 label, select_expr = match.groups()
 
                 # Create select block
@@ -408,7 +412,7 @@ class FortranControlFlowParser:
                 control_stack.append(("select", select_block, after_select))
                 current_block = select_block
 
-            elif self.CASE_RE.match(line_stripped) or self.CASE_DEFAULT_RE.match(
+            elif CASE_RE.match(line_stripped) or CASE_DEFAULT_RE.match(
                 line_stripped
             ):
                 if control_stack and control_stack[-1][0] == "select":
@@ -419,7 +423,7 @@ class FortranControlFlowParser:
                         self.cfg.add_edge(current_block.id, after_select.id)
 
                     # Parse case value
-                    case_match = self.CASE_RE.match(line_stripped)
+                    case_match = CASE_RE.match(line_stripped)
                     if case_match:
                         case_value = case_match.group(1)
                         case_label = f"CASE ({case_value})"
@@ -435,7 +439,7 @@ class FortranControlFlowParser:
                     self.cfg.add_edge(select_block.id, case_block.id)
                     current_block = case_block
 
-            elif self.END_SELECT_RE.match(line_stripped):
+            elif END_SELECT_RE.match(line_stripped):
                 if control_stack and control_stack[-1][0] == "select":
                     _, _, after_select = control_stack.pop()
 
@@ -444,7 +448,7 @@ class FortranControlFlowParser:
                     current_block = after_select
 
             # Single-line IF statement
-            elif match := self.SINGLE_IF_RE.match(line_stripped):
+            elif match := SINGLE_IF_RE.match(line_stripped):
                 condition, statement = match.groups()
 
                 # Don't process if it's an IF-THEN (already handled above)
@@ -718,38 +722,6 @@ class LogicBlockExtractor:
     as they appear in the source code, suitable for display in the UI.
     """
 
-    # Regular expressions for control flow statements
-    IF_THEN_RE = re.compile(
-        r"^\s*(?:(\w+)\s*:)?\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE
-    )
-    ELSE_IF_RE = re.compile(r"^\s*else\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE)
-    ELSE_RE = re.compile(r"^\s*else\s*$", re.IGNORECASE)
-    END_IF_RE = re.compile(r"^\s*end\s*if(?:\s+(\w+))?\s*$", re.IGNORECASE)
-
-    DO_LOOP_RE = re.compile(r"^\s*(?:(\w+)\s*:)?\s*do\s+(.*)$", re.IGNORECASE)
-    END_DO_RE = re.compile(r"^\s*end\s*do(?:\s+(\w+))?\s*$", re.IGNORECASE)
-
-    SELECT_CASE_RE = re.compile(
-        r"^\s*(?:(\w+)\s*:)?\s*select\s+case\s*\((.*?)\)\s*$", re.IGNORECASE
-    )
-    CASE_RE = re.compile(r"^\s*case\s*\((.*?)\)\s*$", re.IGNORECASE)
-    CASE_DEFAULT_RE = re.compile(r"^\s*case\s+default\s*$", re.IGNORECASE)
-    END_SELECT_RE = re.compile(r"^\s*end\s*select(?:\s+(\w+))?\s*$", re.IGNORECASE)
-
-    # Regular expressions for statements to exclude from logic blocks
-    IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
-    # Match variable declarations (type declarations)
-    # Matches: integer, real, double precision, complex, logical, character, class, procedure
-    # Also matches: type(...) and type ::
-    DECLARATION_RE = re.compile(
-        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*(?:\(|::))",
-        re.IGNORECASE,
-    )
-
-    # Regular expressions for allocation/deallocation statements
-    ALLOCATE_RE = re.compile(r"^\s*allocate\s*\((.*?)\)", re.IGNORECASE)
-    DEALLOCATE_RE = re.compile(r"^\s*deallocate\s*\((.*?)\)", re.IGNORECASE)
-
     def __init__(self, source_code: str, procedure_name: str, procedure_type: str):
         self.source_code = source_code
         self.procedure_name = procedure_name
@@ -771,8 +743,8 @@ class LogicBlockExtractor:
         """
         return (
             USE_RE.match(line_stripped)
-            or self.IMPLICIT_RE.match(line_stripped)
-            or self.DECLARATION_RE.match(line_stripped)
+            or IMPLICIT_RE.match(line_stripped)
+            or DECLARATION_RE.match(line_stripped)
         )
 
     def _extract_variable_names(self, alloc_content: str) -> List[str]:
@@ -835,7 +807,7 @@ class LogicBlockExtractor:
             Line number (1-indexed)
         """
         # Check for allocate statement
-        if match := self.ALLOCATE_RE.search(line_stripped):
+        if match := ALLOCATE_RE.search(line_stripped):
             alloc_content = match.group(1)
             variables = self._extract_variable_names(alloc_content)
             for var in variables:
@@ -844,7 +816,7 @@ class LogicBlockExtractor:
                 self.allocations[var].allocate_lines.append(line_num)
 
         # Check for deallocate statement
-        elif match := self.DEALLOCATE_RE.search(line_stripped):
+        elif match := DEALLOCATE_RE.search(line_stripped):
             dealloc_content = match.group(1)
             variables = self._extract_variable_names(dealloc_content)
             for var in variables:
@@ -907,7 +879,7 @@ class LogicBlockExtractor:
                 continue
 
             # Check for IF-THEN-ELSE blocks
-            if match := self.IF_THEN_RE.match(line_stripped):
+            if match := IF_THEN_RE.match(line_stripped):
                 label, condition = match.groups()
 
                 # Create IF block
@@ -951,8 +923,8 @@ class LogicBlockExtractor:
                 # Push to stack
                 stack.append((if_block, [], [], [], []))
 
-            elif self.ELSE_IF_RE.match(line_stripped):
-                match = self.ELSE_IF_RE.match(line_stripped)
+            elif ELSE_IF_RE.match(line_stripped):
+                match = ELSE_IF_RE.match(line_stripped)
                 condition = match.group(1)
 
                 if stack and stack[-1][0].block_type in ["if", "elseif"]:
@@ -981,7 +953,7 @@ class LogicBlockExtractor:
                         stack.pop()
                         stack.append((elseif_block, [], [], [], []))
 
-            elif self.ELSE_RE.match(line_stripped):
+            elif ELSE_RE.match(line_stripped):
                 if stack and stack[-1][0].block_type in ["if", "elseif"]:
                     # Save statements to current IF/ELSEIF block
                     stack[-1][0].statements = stack[-1][1]
@@ -1005,7 +977,7 @@ class LogicBlockExtractor:
                         stack.pop()
                         stack.append((else_block, [], [], [], []))
 
-            elif self.END_IF_RE.match(line_stripped):
+            elif END_IF_RE.match(line_stripped):
                 if stack and stack[-1][0].block_type in ["if", "elseif", "else"]:
                     # Save statements to current block
                     stack[-1][0].statements = stack[-1][1]
@@ -1022,7 +994,7 @@ class LogicBlockExtractor:
                         blocks.append(block)
 
             # Check for DO loops
-            elif match := self.DO_LOOP_RE.match(line_stripped):
+            elif match := DO_LOOP_RE.match(line_stripped):
                 label, loop_control = match.groups()
 
                 # Create DO block
@@ -1062,7 +1034,7 @@ class LogicBlockExtractor:
                 # Push to stack
                 stack.append((do_block, [], [], [], []))
 
-            elif self.END_DO_RE.match(line_stripped):
+            elif END_DO_RE.match(line_stripped):
                 if stack and stack[-1][0].block_type == "do":
                     # Save statements to DO block
                     stack[-1][0].statements = stack[-1][1]
@@ -1079,7 +1051,7 @@ class LogicBlockExtractor:
                         blocks.append(do_block)
 
             # Check for SELECT CASE
-            elif match := self.SELECT_CASE_RE.match(line_stripped):
+            elif match := SELECT_CASE_RE.match(line_stripped):
                 label, select_expr = match.groups()
 
                 # Create SELECT block
@@ -1119,7 +1091,7 @@ class LogicBlockExtractor:
                 # Push to stack
                 stack.append((select_block, [], [], [], []))
 
-            elif self.CASE_RE.match(line_stripped) or self.CASE_DEFAULT_RE.match(
+            elif CASE_RE.match(line_stripped) or CASE_DEFAULT_RE.match(
                 line_stripped
             ):
                 if stack and stack[-1][0].block_type in ["select", "case"]:
@@ -1134,7 +1106,7 @@ class LogicBlockExtractor:
                         stack[-1][0].children.append(case_block)
 
                     # Parse case value
-                    case_match = self.CASE_RE.match(line_stripped)
+                    case_match = CASE_RE.match(line_stripped)
                     if case_match:
                         case_value = case_match.group(1)
                     else:
@@ -1153,7 +1125,7 @@ class LogicBlockExtractor:
                     current_comment_lines = []
                     stack.append((case_block, [], [], [], []))
 
-            elif self.END_SELECT_RE.match(line_stripped):
+            elif END_SELECT_RE.match(line_stripped):
                 if stack:
                     # Close any open CASE
                     if stack[-1][0].block_type == "case":
