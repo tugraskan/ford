@@ -828,7 +828,6 @@ class AllocationTracker:
         return result
 
 
-
 SUBLINK_TYPES = {
     "variable": "variables",
     "type": "types",
@@ -2234,7 +2233,6 @@ class FortranContainer(FortranBase):
                     variables.append(part)
 
         return variables
-
 
     def _parse_control_flow(self, line: str, line_no: int = None) -> None:
         """Parse control flow statements and update condition context."""
