@@ -1,0 +1,1639 @@
+# -*- coding: utf-8 -*-
+#
+#  control_flow.py
+#  This file is part of FORD.
+#
+#  Copyright 2024
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
+#
+
+"""
+Control flow graph generation for Fortran procedures.
+
+This module provides functionality to parse Fortran subroutines and functions,
+extract control flow structures (IF, DO, SELECT CASE, etc.), and generate
+control flow graphs showing the execution order and conditions.
+"""
+
+from __future__ import annotations
+
+import re
+from typing import List, Optional, Dict, Set, Tuple
+from dataclasses import dataclass, field
+from enum import Enum
+
+
+# Regular expression for RETURN statement (shared by parser and extractor)
+RETURN_RE = re.compile(r"^\s*return\s*$", re.IGNORECASE)
+
+# Regular expression for USE statement (shared by parser and extractor)
+USE_RE = re.compile(r"^\s*use\s+", re.IGNORECASE)
+
+
+class BlockType(Enum):
+    """Types of basic blocks in a control flow graph"""
+
+    ENTRY = "entry"
+    EXIT = "exit"
+    RETURN = "return"
+    USE = "use"
+    STATEMENT = "statement"
+    IF_CONDITION = "if_condition"
+    DO_LOOP = "do_loop"
+    SELECT_CASE = "select_case"
+    CASE = "case"
+    # Keyword node types - I/O operations (each with distinct color)
+    KEYWORD_IO_OPEN = "keyword_io_open"  # OPEN statement
+    KEYWORD_IO_READ = "keyword_io_read"  # READ statement
+    KEYWORD_IO_WRITE = "keyword_io_write"  # WRITE statement
+    KEYWORD_IO_CLOSE = "keyword_io_close"  # CLOSE statement
+    KEYWORD_IO_REWIND = "keyword_io_rewind"  # REWIND statement
+    KEYWORD_IO_INQUIRE = "keyword_io_inquire"  # INQUIRE statement
+    KEYWORD_IO_PRINT = "keyword_io_print"  # PRINT statement
+    # Other keyword types
+    KEYWORD_MEMORY = "keyword_memory"  # Memory operations: ALLOCATE, DEALLOCATE
+    KEYWORD_BRANCH = "keyword_branch"  # Branch: IF, SELECT CASE (already handled by IF_CONDITION/SELECT_CASE)
+    KEYWORD_LOOP = "keyword_loop"  # Loop: DO, DO WHILE (already handled by DO_LOOP)
+    KEYWORD_EXIT = "keyword_exit"  # Early exit: RETURN, EXIT, CYCLE
+    KEYWORD_CALL = "keyword_call"  # Procedure call: CALL
+
+
+@dataclass
+class BasicBlock:
+    """Represents a basic block in a control flow graph
+
+    A basic block is a sequence of statements with a single entry point
+    and a single exit point.
+
+    Attributes
+    ----------
+    id : int
+        Unique identifier for this block
+    block_type : BlockType
+        Type of this basic block
+    label : str
+        Human-readable label for the block
+    statements : List[str]
+        List of Fortran statements in this block
+    condition : Optional[str]
+        Condition expression for conditional blocks (IF, DO WHILE, etc.)
+    successors : List[int]
+        IDs of blocks that can follow this one
+    predecessors : List[int]
+        IDs of blocks that can precede this one
+    line_number : Optional[int]
+        Line number in source file (1-indexed), for keyword nodes
+    statement_line_numbers : List[int]
+        Line numbers corresponding to each statement in the statements list
+    """
+
+    id: int
+    block_type: BlockType
+    label: str
+    statements: List[str] = field(default_factory=list)
+    condition: Optional[str] = None
+    successors: List[int] = field(default_factory=list)
+    predecessors: List[int] = field(default_factory=list)
+    line_number: Optional[int] = None
+    statement_line_numbers: List[int] = field(default_factory=list)
+
+
+class ControlFlowGraph:
+    """Control flow graph for a Fortran procedure
+
+    This class represents the control flow within a subroutine or function,
+    showing how different parts of the code connect through conditional
+    branches and loops.
+
+    Parameters
+    ----------
+    procedure_name : str
+        Name of the procedure this CFG represents
+    procedure_type : str
+        Type of procedure ('subroutine' or 'function')
+    """
+
+    def __init__(self, procedure_name: str, procedure_type: str):
+        self.procedure_name = procedure_name
+        self.procedure_type = procedure_type
+        self.blocks: Dict[int, BasicBlock] = {}
+        self.entry_block_id: Optional[int] = None
+        self.exit_block_id: Optional[int] = None
+        self._next_block_id = 0
+
+    def create_block(
+        self, block_type: BlockType, label: str, condition: Optional[str] = None
+    ) -> BasicBlock:
+        """Create a new basic block and add it to the graph"""
+        block_id = self._next_block_id
+        self._next_block_id += 1
+
+        block = BasicBlock(
+            id=block_id, block_type=block_type, label=label, condition=condition
+        )
+        self.blocks[block_id] = block
+        return block
+
+    def add_edge(self, from_id: int, to_id: int) -> None:
+        """Add a directed edge between two blocks"""
+        if from_id not in self.blocks or to_id not in self.blocks:
+            return
+
+        if to_id not in self.blocks[from_id].successors:
+            self.blocks[from_id].successors.append(to_id)
+
+        if from_id not in self.blocks[to_id].predecessors:
+            self.blocks[to_id].predecessors.append(from_id)
+
+
+class FortranControlFlowParser:
+    """Parser for extracting control flow from Fortran source code
+
+    This parser analyzes Fortran subroutines and functions to identify
+    control flow structures and build a control flow graph.
+
+    Parameters
+    ----------
+    source_code : str
+        The Fortran source code to parse
+    procedure_name : str
+        Name of the procedure
+    procedure_type : str
+        Type of procedure ('subroutine' or 'function')
+    """
+
+    # Regular expressions for Fortran control flow statements
+    IF_THEN_RE = re.compile(
+        r"^\s*(?:(\w+)\s*:)?\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE
+    )
+    ELSE_IF_RE = re.compile(r"^\s*else\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE)
+    ELSE_RE = re.compile(r"^\s*else\s*$", re.IGNORECASE)
+    END_IF_RE = re.compile(r"^\s*end\s*if(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+    DO_LOOP_RE = re.compile(r"^\s*(?:(\w+)\s*:)?\s*do\s+(.*)$", re.IGNORECASE)
+    END_DO_RE = re.compile(r"^\s*end\s*do(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+    SELECT_CASE_RE = re.compile(
+        r"^\s*(?:(\w+)\s*:)?\s*select\s+case\s*\((.*?)\)\s*$", re.IGNORECASE
+    )
+    CASE_RE = re.compile(r"^\s*case\s*\((.*?)\)\s*$", re.IGNORECASE)
+    CASE_DEFAULT_RE = re.compile(r"^\s*case\s+default\s*$", re.IGNORECASE)
+    END_SELECT_RE = re.compile(r"^\s*end\s*select(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+    # Single-line IF statement
+    SINGLE_IF_RE = re.compile(r"^\s*if\s*\((.*?)\)\s+(.+)$", re.IGNORECASE)
+
+    # Regular expressions for statements to skip in CFG (same as LogicBlockExtractor)
+    IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
+    # Matches type declarations including: type(...) and type ::
+    DECLARATION_RE = re.compile(
+        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*(?:\(|::))",
+        re.IGNORECASE,
+    )
+
+    def __init__(self, source_code: str, procedure_name: str, procedure_type: str):
+        self.source_code = source_code
+        self.procedure_name = procedure_name
+        self.procedure_type = procedure_type
+        self.cfg = ControlFlowGraph(procedure_name, procedure_type)
+
+    def _is_declaration_or_use(self, line_stripped: str) -> bool:
+        """Check if a line is a USE, IMPLICIT, or type declaration statement
+
+        These statements should not appear in the control flow graph as they
+        are not part of the execution flow.
+
+        Parameters
+        ----------
+        line_stripped : str
+            The stripped line to check
+
+        Returns
+        -------
+        bool
+            True if the line should be skipped, False otherwise
+        """
+        return (
+            USE_RE.match(line_stripped)
+            or self.IMPLICIT_RE.match(line_stripped)
+            or self.DECLARATION_RE.match(line_stripped)
+        )
+
+    def parse(self) -> ControlFlowGraph:
+        """Parse the source code and build the control flow graph"""
+        lines, line_numbers = self._preprocess_source()
+
+        # Extract procedure arguments for the entry block label
+        args = self._extract_procedure_arguments()
+
+        # Create entry block with procedure name and arguments
+        entry_label = f"{self.procedure_name}{args}"
+        entry = self.cfg.create_block(BlockType.ENTRY, entry_label)
+        self.cfg.entry_block_id = entry.id
+
+        # Create exit block with "Return" label
+        exit_block = self.cfg.create_block(BlockType.EXIT, "Return")
+        self.cfg.exit_block_id = exit_block.id
+
+        # Parse the procedure body
+        current_block = entry
+        i = 0
+
+        # Stack for tracking nested structures
+        control_stack: List[Tuple[str, BasicBlock, Optional[BasicBlock]]] = []
+
+        while i < len(lines):
+            line = lines[i]
+            line_num = line_numbers[i] if i < len(line_numbers) else None
+            line_stripped = line.strip()
+
+            # Skip empty lines and comments
+            if not line_stripped or line_stripped.startswith("!"):
+                i += 1
+                continue
+
+            # Strip inline comments (! but not in strings)
+            # Simple approach: remove everything after the first ! (may need refinement for strings)
+            comment_start = line_stripped.find("!")
+            if comment_start >= 0:
+                line_stripped = line_stripped[:comment_start].rstrip()
+
+            # Skip if line becomes empty after comment removal
+            if not line_stripped:
+                i += 1
+                continue
+
+            # Check for IF-THEN-ELSE blocks
+            if match := self.IF_THEN_RE.match(line_stripped):
+                label, condition = match.groups()
+
+                # Create condition block
+                cond_block = self.cfg.create_block(
+                    BlockType.IF_CONDITION, f"IF ({condition})", condition=condition
+                )
+                cond_block.line_number = line_num
+                self.cfg.add_edge(current_block.id, cond_block.id)
+
+                # Create then block
+                then_block = self.cfg.create_block(BlockType.STATEMENT, "THEN")
+                self.cfg.add_edge(cond_block.id, then_block.id)
+
+                # Create merge block for after the if
+                merge_block = self.cfg.create_block(BlockType.STATEMENT, "After IF")
+
+                # Push onto stack (third element tracks if else was seen)
+                control_stack.append(("if", cond_block, merge_block, False))
+                current_block = then_block
+
+            elif self.ELSE_IF_RE.match(line_stripped):
+                match = self.ELSE_IF_RE.match(line_stripped)
+                condition = match.group(1)
+
+                if control_stack and control_stack[-1][0] == "if":
+                    _, cond_block, merge_block, _ = control_stack[-1]
+
+                    # Connect current block to merge
+                    self.cfg.add_edge(current_block.id, merge_block.id)
+
+                    # Create else-if condition block
+                    elseif_cond = self.cfg.create_block(
+                        BlockType.IF_CONDITION,
+                        f"ELSE IF ({condition})",
+                        condition=condition,
+                    )
+                    self.cfg.add_edge(cond_block.id, elseif_cond.id)
+
+                    # Create block for else-if body
+                    elseif_body = self.cfg.create_block(
+                        BlockType.STATEMENT, "ELSE IF body"
+                    )
+                    self.cfg.add_edge(elseif_cond.id, elseif_body.id)
+
+                    # Update stack (still no else seen)
+                    control_stack[-1] = ("if", elseif_cond, merge_block, False)
+                    current_block = elseif_body
+
+            elif self.ELSE_RE.match(line_stripped):
+                if control_stack and control_stack[-1][0] == "if":
+                    _, cond_block, merge_block, _ = control_stack[-1]
+
+                    # Connect current block to merge
+                    self.cfg.add_edge(current_block.id, merge_block.id)
+
+                    # Create else block
+                    else_block = self.cfg.create_block(BlockType.STATEMENT, "ELSE")
+                    self.cfg.add_edge(cond_block.id, else_block.id)
+                    # Mark that we've seen an else
+                    control_stack[-1] = ("if", cond_block, merge_block, True)
+                    current_block = else_block
+
+            elif self.END_IF_RE.match(line_stripped):
+                if control_stack and control_stack[-1][0] == "if":
+                    _, cond_block, merge_block, has_else = control_stack.pop()
+
+                    # Connect current block to merge
+                    self.cfg.add_edge(current_block.id, merge_block.id)
+
+                    # If no else was seen, connect condition to merge (false branch)
+                    if not has_else:
+                        self.cfg.add_edge(cond_block.id, merge_block.id)
+
+                    current_block = merge_block
+
+            # Check for DO loops
+            elif match := self.DO_LOOP_RE.match(line_stripped):
+                label, loop_control = match.groups()
+
+                # Create loop header block
+                loop_header = self.cfg.create_block(
+                    BlockType.DO_LOOP, f"DO {loop_control}", condition=loop_control
+                )
+                loop_header.line_number = line_num
+                self.cfg.add_edge(current_block.id, loop_header.id)
+
+                # Create loop body block
+                loop_body = self.cfg.create_block(BlockType.STATEMENT, "Loop body")
+                self.cfg.add_edge(loop_header.id, loop_body.id)
+
+                # Create after-loop block
+                after_loop = self.cfg.create_block(BlockType.STATEMENT, "After loop")
+                self.cfg.add_edge(loop_header.id, after_loop.id)
+
+                # Push onto stack
+                control_stack.append(("do", loop_header, after_loop))
+                current_block = loop_body
+
+            elif self.END_DO_RE.match(line_stripped):
+                if control_stack and control_stack[-1][0] == "do":
+                    _, loop_header, after_loop = control_stack.pop()
+
+                    # Create back-edge to loop header
+                    self.cfg.add_edge(current_block.id, loop_header.id)
+                    current_block = after_loop
+
+            # Check for SELECT CASE
+            elif match := self.SELECT_CASE_RE.match(line_stripped):
+                label, select_expr = match.groups()
+
+                # Create select block
+                select_block = self.cfg.create_block(
+                    BlockType.SELECT_CASE,
+                    f"SELECT CASE ({select_expr})",
+                    condition=select_expr,
+                )
+                select_block.line_number = line_num
+                self.cfg.add_edge(current_block.id, select_block.id)
+
+                # Create after-select block
+                after_select = self.cfg.create_block(
+                    BlockType.STATEMENT, "After SELECT"
+                )
+
+                # Push onto stack
+                control_stack.append(("select", select_block, after_select))
+                current_block = select_block
+
+            elif self.CASE_RE.match(line_stripped) or self.CASE_DEFAULT_RE.match(
+                line_stripped
+            ):
+                if control_stack and control_stack[-1][0] == "select":
+                    _, select_block, after_select = control_stack[-1]
+
+                    # Connect previous case to after-select
+                    if current_block != select_block:
+                        self.cfg.add_edge(current_block.id, after_select.id)
+
+                    # Parse case value
+                    case_match = self.CASE_RE.match(line_stripped)
+                    if case_match:
+                        case_value = case_match.group(1)
+                        case_label = f"CASE ({case_value})"
+                    else:
+                        case_value = "DEFAULT"
+                        case_label = "CASE DEFAULT"
+
+                    # Create case block
+                    case_block = self.cfg.create_block(
+                        BlockType.CASE, case_label, condition=case_value
+                    )
+                    case_block.line_number = line_num
+                    self.cfg.add_edge(select_block.id, case_block.id)
+                    current_block = case_block
+
+            elif self.END_SELECT_RE.match(line_stripped):
+                if control_stack and control_stack[-1][0] == "select":
+                    _, _, after_select = control_stack.pop()
+
+                    # Connect current case to after-select
+                    self.cfg.add_edge(current_block.id, after_select.id)
+                    current_block = after_select
+
+            # Single-line IF statement
+            elif match := self.SINGLE_IF_RE.match(line_stripped):
+                condition, statement = match.groups()
+
+                # Don't process if it's an IF-THEN (already handled above)
+                if not statement.strip().lower() == "then":
+                    # Create condition block
+                    cond_block = self.cfg.create_block(
+                        BlockType.IF_CONDITION, f"IF ({condition})", condition=condition
+                    )
+                    self.cfg.add_edge(current_block.id, cond_block.id)
+
+                    # Create statement block
+                    stmt_block = self.cfg.create_block(
+                        BlockType.STATEMENT, statement[:50]  # Truncate long statements
+                    )
+                    stmt_block.statements.append(statement)
+                    self.cfg.add_edge(cond_block.id, stmt_block.id)
+
+                    # Create merge block
+                    merge_block = self.cfg.create_block(BlockType.STATEMENT, "Continue")
+                    self.cfg.add_edge(stmt_block.id, merge_block.id)
+                    self.cfg.add_edge(cond_block.id, merge_block.id)
+
+                    current_block = merge_block
+
+            # Check for RETURN statement - create a keyword node for it
+            elif RETURN_RE.match(line_stripped):
+                # Create RETURN keyword node with statement content
+                label = (
+                    f"RETURN (L{line_num})\n{line_stripped}"
+                    if line_num
+                    else f"RETURN\n{line_stripped}"
+                )
+                return_node = self.cfg.create_block(
+                    BlockType.KEYWORD_EXIT,
+                    label,
+                )
+                return_node.line_number = line_num
+                return_node.statements.append(line_stripped)
+                self.cfg.add_edge(current_block.id, return_node.id)
+
+                # Connect RETURN node directly to exit
+                self.cfg.add_edge(return_node.id, exit_block.id)
+
+                # Update current_block to return_node to prevent spurious edges
+                # Any subsequent statements in this branch are unreachable
+                current_block = return_node
+
+            # Skip USE, IMPLICIT, and variable declarations - they're not part of control flow
+            elif self._is_declaration_or_use(line_stripped):
+                i += 1
+                continue
+
+            else:
+                # Regular statement - detect keywords and create nodes
+                keywords = detect_statement_keywords(line_stripped)
+
+                # Create keyword nodes for each detected keyword
+                for keyword in keywords:
+                    block_type = get_keyword_block_type(keyword)
+                    if block_type:
+                        # Create keyword node with line number and statement content
+                        label = (
+                            f"{keyword} (L{line_num})\n{line_stripped}"
+                            if line_num
+                            else f"{keyword}\n{line_stripped}"
+                        )
+                        kw_node = self.cfg.create_block(
+                            block_type,
+                            label,
+                        )
+                        kw_node.line_number = line_num
+                        kw_node.statements.append(line_stripped)
+                        self.cfg.add_edge(current_block.id, kw_node.id)
+                        current_block = kw_node
+
+                # If no keywords, or after keyword nodes, create/append to statement block
+                # Only create statement block if there are no keywords or we need to store the full statement
+                if not keywords:
+                    if current_block.block_type == BlockType.STATEMENT:
+                        current_block.statements.append(line_stripped)
+                        current_block.statement_line_numbers.append(line_num)
+                    else:
+                        # Create a new statement block
+                        stmt_block = self.cfg.create_block(
+                            BlockType.STATEMENT,
+                            line_stripped[:50],  # Truncate long statements
+                        )
+                        stmt_block.statements.append(line_stripped)
+                        stmt_block.statement_line_numbers.append(line_num)
+                        self.cfg.add_edge(current_block.id, stmt_block.id)
+                        current_block = stmt_block
+
+            i += 1
+
+        # Connect final block to exit only if it's not already connected
+        # and it's not a RETURN node (which is already connected to exit)
+        if (
+            current_block.id != exit_block.id
+            and current_block.block_type != BlockType.KEYWORD_EXIT
+        ):
+            # Check if this block doesn't already have exit as a successor
+            if exit_block.id not in current_block.successors:
+                self.cfg.add_edge(current_block.id, exit_block.id)
+
+        return self.cfg
+
+    def _extract_procedure_arguments(self) -> str:
+        """Extract the argument list from the procedure signature
+
+        Returns
+        -------
+        str
+            The argument list (e.g., "(x, y, z)"), or empty string if no arguments
+        """
+        lines = self.source_code.split("\n")
+
+        # Pattern to match procedure declaration with arguments
+        # Matches: subroutine name(...) or function name(...)
+        proc_sig_pattern = re.compile(
+            rf"^\s*{re.escape(self.procedure_type)}\s+{re.escape(self.procedure_name)}\s*(\([^)]*\))?",
+            re.IGNORECASE,
+        )
+
+        for line in lines:
+            if match := proc_sig_pattern.match(line.strip()):
+                # Group 1 contains the argument list with parentheses
+                args = match.group(1)
+                if args:
+                    return args
+                else:
+                    # Procedure with no arguments
+                    return "()"
+
+        # If we couldn't find the signature, return empty parentheses
+        return "()"
+
+    def _preprocess_source(self) -> Tuple[List[str], List[int]]:
+        """Preprocess source code to extract the procedure body
+
+        Returns
+        -------
+        Tuple[List[str], List[int]]
+            List of lines and their corresponding line numbers (1-indexed)
+        """
+        lines = self.source_code.split("\n")
+        result = []
+        line_numbers = []
+        in_procedure = False
+
+        # Patterns to match procedure start and end
+        proc_start = re.compile(
+            rf"^\s*{re.escape(self.procedure_type)}\s+{re.escape(self.procedure_name)}\b",
+            re.IGNORECASE,
+        )
+        proc_end = re.compile(
+            rf"^\s*end\s+{re.escape(self.procedure_type)}\b", re.IGNORECASE
+        )
+        contains_re = re.compile(r"^\s*contains\s*$", re.IGNORECASE)
+
+        for line_num, line in enumerate(lines, start=1):
+            if proc_start.match(line.strip()):
+                in_procedure = True
+                continue
+
+            if in_procedure:
+                # Stop at 'contains' or 'end subroutine/function'
+                if contains_re.match(line.strip()) or proc_end.match(line.strip()):
+                    break
+
+                result.append(line)
+                line_numbers.append(line_num)
+
+        return result, line_numbers
+
+
+def parse_control_flow(
+    source_code: str, procedure_name: str, procedure_type: str
+) -> Optional[ControlFlowGraph]:
+    """Parse control flow from Fortran procedure source code
+
+    Parameters
+    ----------
+    source_code : str
+        The complete source code of the procedure
+    procedure_name : str
+        Name of the procedure
+    procedure_type : str
+        Type of procedure ('subroutine' or 'function')
+
+    Returns
+    -------
+    ControlFlowGraph or None
+        The control flow graph, or None if parsing fails
+    """
+    try:
+        parser = FortranControlFlowParser(source_code, procedure_name, procedure_type)
+        return parser.parse()
+    except Exception:
+        return None
+
+
+@dataclass
+class AllocationSummary:
+    """Summary of allocations and deallocations grouped by variable
+
+    Attributes
+    ----------
+    variable_name : str
+        Name of the variable being allocated/deallocated
+    allocate_lines : List[int]
+        Line numbers where this variable is allocated
+    deallocate_lines : List[int]
+        Line numbers where this variable is deallocated
+    """
+
+    variable_name: str
+    allocate_lines: List[int] = field(default_factory=list)
+    deallocate_lines: List[int] = field(default_factory=list)
+
+
+@dataclass
+class LogicBlock:
+    """Represents a logic block in a procedure for hierarchical display
+
+    Attributes
+    ----------
+    block_type : str
+        Type of block (e.g., 'if', 'do', 'select', 'case', 'else', 'statements')
+    condition : Optional[str]
+        Condition or control expression (for IF, DO, SELECT CASE, etc.)
+    statements : List[str]
+        Statements within this block (before any nested blocks)
+    children : List[LogicBlock]
+        Nested logic blocks within this one
+    level : int
+        Nesting level (0 for top-level)
+    label : Optional[str]
+        Optional Fortran label
+    start_line : Optional[int]
+        Starting line number of this block (1-indexed)
+    end_line : Optional[int]
+        Ending line number of this block (1-indexed)
+    statement_lines : List[int]
+        Line numbers corresponding to each statement
+    comments : List[str]
+        Documentation comments (!! comments) associated with this block
+    comment_lines : List[int]
+        Line numbers corresponding to each comment
+    statement_keywords : List[List[str]]
+        Keywords detected in each statement (e.g., [['INQUIRE'], ['OPEN'], ['READ']])
+    """
+
+    block_type: str
+    condition: Optional[str] = None
+    statements: List[str] = field(default_factory=list)
+    children: List["LogicBlock"] = field(default_factory=list)
+    level: int = 0
+    label: Optional[str] = None
+    start_line: Optional[int] = None
+    end_line: Optional[int] = None
+    statement_lines: List[int] = field(default_factory=list)
+    comments: List[str] = field(default_factory=list)
+    comment_lines: List[int] = field(default_factory=list)
+    statement_keywords: List[List[str]] = field(default_factory=list)
+
+
+class LogicBlockExtractor:
+    """Extracts logic blocks from Fortran source code in hierarchical form
+
+    This extracts control structures and organizes them hierarchically
+    as they appear in the source code, suitable for display in the UI.
+    """
+
+    # Regular expressions for control flow statements
+    IF_THEN_RE = re.compile(
+        r"^\s*(?:(\w+)\s*:)?\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE
+    )
+    ELSE_IF_RE = re.compile(r"^\s*else\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE)
+    ELSE_RE = re.compile(r"^\s*else\s*$", re.IGNORECASE)
+    END_IF_RE = re.compile(r"^\s*end\s*if(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+    DO_LOOP_RE = re.compile(r"^\s*(?:(\w+)\s*:)?\s*do\s+(.*)$", re.IGNORECASE)
+    END_DO_RE = re.compile(r"^\s*end\s*do(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+    SELECT_CASE_RE = re.compile(
+        r"^\s*(?:(\w+)\s*:)?\s*select\s+case\s*\((.*?)\)\s*$", re.IGNORECASE
+    )
+    CASE_RE = re.compile(r"^\s*case\s*\((.*?)\)\s*$", re.IGNORECASE)
+    CASE_DEFAULT_RE = re.compile(r"^\s*case\s+default\s*$", re.IGNORECASE)
+    END_SELECT_RE = re.compile(r"^\s*end\s*select(?:\s+(\w+))?\s*$", re.IGNORECASE)
+
+    # Regular expressions for statements to exclude from logic blocks
+    IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
+    # Match variable declarations (type declarations)
+    # Matches: integer, real, double precision, complex, logical, character, class, procedure
+    # Also matches: type(...) and type ::
+    DECLARATION_RE = re.compile(
+        r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*(?:\(|::))",
+        re.IGNORECASE,
+    )
+
+    # Regular expressions for allocation/deallocation statements
+    ALLOCATE_RE = re.compile(r"^\s*allocate\s*\((.*?)\)", re.IGNORECASE)
+    DEALLOCATE_RE = re.compile(r"^\s*deallocate\s*\((.*?)\)", re.IGNORECASE)
+
+    def __init__(self, source_code: str, procedure_name: str, procedure_type: str):
+        self.source_code = source_code
+        self.procedure_name = procedure_name
+        self.procedure_type = procedure_type
+        self.allocations: Dict[str, AllocationSummary] = {}
+
+    def _is_declaration_or_use(self, line_stripped: str) -> bool:
+        """Check if a line is a USE, IMPLICIT, or type declaration statement
+
+        Parameters
+        ----------
+        line_stripped : str
+            The stripped line to check
+
+        Returns
+        -------
+        bool
+            True if the line is a declaration/use statement, False otherwise
+        """
+        return (
+            USE_RE.match(line_stripped)
+            or self.IMPLICIT_RE.match(line_stripped)
+            or self.DECLARATION_RE.match(line_stripped)
+        )
+
+    def _extract_variable_names(self, alloc_content: str) -> List[str]:
+        """Extract variable names from allocation statement content
+
+        Parameters
+        ----------
+        alloc_content : str
+            The content inside allocate() or deallocate() parentheses
+
+        Returns
+        -------
+        List[str]
+            List of variable names being allocated/deallocated
+        """
+        variables = []
+        # Split by comma, but need to handle nested parentheses
+        parts = []
+        current = []
+        paren_depth = 0
+
+        for char in alloc_content:
+            if char == "(":
+                paren_depth += 1
+                current.append(char)
+            elif char == ")":
+                paren_depth -= 1
+                current.append(char)
+            elif char == "," and paren_depth == 0:
+                parts.append("".join(current))
+                current = []
+            else:
+                current.append(char)
+
+        if current:
+            parts.append("".join(current))
+
+        # Extract variable name from each part
+        for part in parts:
+            part = part.strip()
+            if not part:
+                continue
+
+            # Variable name is the first identifier before ( or =
+            # Examples: "hru(10)", "res", "var = value"
+            var_match = re.match(r"^([a-zA-Z_]\w*)", part)
+            if var_match:
+                variables.append(var_match.group(1))
+
+        return variables
+
+    def _track_allocation(self, line_stripped: str, line_num: int):
+        """Track allocation/deallocation statements
+
+        Parameters
+        ----------
+        line_stripped : str
+            The stripped line to check
+        line_num : int
+            Line number (1-indexed)
+        """
+        # Check for allocate statement
+        if match := self.ALLOCATE_RE.search(line_stripped):
+            alloc_content = match.group(1)
+            variables = self._extract_variable_names(alloc_content)
+            for var in variables:
+                if var not in self.allocations:
+                    self.allocations[var] = AllocationSummary(variable_name=var)
+                self.allocations[var].allocate_lines.append(line_num)
+
+        # Check for deallocate statement
+        elif match := self.DEALLOCATE_RE.search(line_stripped):
+            dealloc_content = match.group(1)
+            variables = self._extract_variable_names(dealloc_content)
+            for var in variables:
+                if var not in self.allocations:
+                    self.allocations[var] = AllocationSummary(variable_name=var)
+                self.allocations[var].deallocate_lines.append(line_num)
+
+    def extract(self) -> List[LogicBlock]:
+        """Extract logic blocks from the source code
+
+        Returns
+        -------
+        List[LogicBlock]
+            List of top-level logic blocks
+        """
+        lines, line_numbers = self._preprocess_source()
+        blocks: List[LogicBlock] = []
+
+        if not lines:
+            return blocks
+
+        # Stack to track nested blocks: (block, current_statements, current_statement_lines, current_comments, current_comment_lines)
+        stack: List[Tuple[LogicBlock, List[str], List[int], List[str], List[int]]] = []
+        current_statements: List[str] = []
+        current_statement_lines: List[int] = []
+        current_comments: List[str] = []
+        current_comment_lines: List[int] = []
+
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            line_num = line_numbers[i]
+            line_stripped = line.strip()
+
+            # Collect documentation comments (!! comments)
+            if line_stripped.startswith("!!"):
+                # Strip the !! prefix and add to current comments
+                comment_text = line_stripped[2:].strip()
+                current_comments.append(comment_text)
+                current_comment_lines.append(line_num)
+                i += 1
+                continue
+
+            # Skip empty lines and other comments (single !)
+            if not line_stripped or (
+                line_stripped.startswith("!") and not line_stripped.startswith("!!")
+            ):
+                i += 1
+                continue
+
+            # Strip inline comments (! but not in strings)
+            # Simple approach: remove everything after the first ! (may need refinement for strings)
+            comment_start = line_stripped.find("!")
+            if comment_start >= 0:
+                line_stripped = line_stripped[:comment_start].rstrip()
+
+            # Skip if line becomes empty after comment removal
+            if not line_stripped:
+                i += 1
+                continue
+
+            # Check for IF-THEN-ELSE blocks
+            if match := self.IF_THEN_RE.match(line_stripped):
+                label, condition = match.groups()
+
+                # Create IF block
+                if_block = LogicBlock(
+                    block_type="if",
+                    condition=condition,
+                    level=len(stack),
+                    label=label,
+                    start_line=line_num,
+                    comments=current_comments.copy(),
+                    comment_lines=current_comment_lines.copy(),
+                )
+
+                # Save current statements to parent or top-level
+                if stack:
+                    stack[-1][1].extend(current_statements)
+                    stack[-1][2].extend(current_statement_lines)
+                    stack[-1][3].extend(current_comments)
+                    stack[-1][4].extend(current_comment_lines)
+                    stack[-1][3].extend(current_comments)
+                    stack[-1][4].extend(current_comment_lines)
+                else:
+                    if current_statements:
+                        blocks.append(
+                            LogicBlock(
+                                block_type="statements",
+                                statements=current_statements,
+                                level=0,
+                                statement_lines=current_statement_lines,
+                                comments=current_comments,
+                                comment_lines=current_comment_lines,
+                            )
+                        )
+                current_statements = []
+                current_statement_lines = []
+                current_comments = []
+                current_comment_lines = []
+                current_comments = []
+                current_comment_lines = []
+
+                # Push to stack
+                stack.append((if_block, [], [], [], []))
+
+            elif self.ELSE_IF_RE.match(line_stripped):
+                match = self.ELSE_IF_RE.match(line_stripped)
+                condition = match.group(1)
+
+                if stack and stack[-1][0].block_type in ["if", "elseif"]:
+                    # Save statements to current IF/ELSEIF block
+                    stack[-1][0].statements = stack[-1][1]
+                    stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].comments = stack[-1][3]
+                    stack[-1][0].comment_lines = stack[-1][4]
+                    stack[-1][0].end_line = line_num - 1
+
+                    # Create ELSE IF block
+                    elseif_block = LogicBlock(
+                        block_type="elseif",
+                        condition=condition,
+                        level=stack[-1][0].level,
+                        start_line=line_num,
+                    )
+
+                    # Get parent level
+                    if len(stack) > 1:
+                        stack[-2][0].children.append(stack[-1][0])
+                        stack.pop()
+                        stack.append((elseif_block, [], [], [], []))
+                    else:
+                        blocks.append(stack[-1][0])
+                        stack.pop()
+                        stack.append((elseif_block, [], [], [], []))
+
+            elif self.ELSE_RE.match(line_stripped):
+                if stack and stack[-1][0].block_type in ["if", "elseif"]:
+                    # Save statements to current IF/ELSEIF block
+                    stack[-1][0].statements = stack[-1][1]
+                    stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].comments = stack[-1][3]
+                    stack[-1][0].comment_lines = stack[-1][4]
+                    stack[-1][0].end_line = line_num - 1
+
+                    # Create ELSE block at same level
+                    else_block = LogicBlock(
+                        block_type="else", level=stack[-1][0].level, start_line=line_num
+                    )
+
+                    # Add current block to parent and push ELSE
+                    if len(stack) > 1:
+                        stack[-2][0].children.append(stack[-1][0])
+                        stack.pop()
+                        stack.append((else_block, [], [], [], []))
+                    else:
+                        blocks.append(stack[-1][0])
+                        stack.pop()
+                        stack.append((else_block, [], [], [], []))
+
+            elif self.END_IF_RE.match(line_stripped):
+                if stack and stack[-1][0].block_type in ["if", "elseif", "else"]:
+                    # Save statements to current block
+                    stack[-1][0].statements = stack[-1][1]
+                    stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].comments = stack[-1][3]
+                    stack[-1][0].comment_lines = stack[-1][4]
+                    stack[-1][0].end_line = line_num
+
+                    # Pop and add to parent
+                    block, _, _, _, _ = stack.pop()
+                    if stack:
+                        stack[-1][0].children.append(block)
+                    else:
+                        blocks.append(block)
+
+            # Check for DO loops
+            elif match := self.DO_LOOP_RE.match(line_stripped):
+                label, loop_control = match.groups()
+
+                # Create DO block
+                do_block = LogicBlock(
+                    block_type="do",
+                    condition=loop_control,
+                    level=len(stack),
+                    label=label,
+                    start_line=line_num,
+                    comments=current_comments.copy(),
+                    comment_lines=current_comment_lines.copy(),
+                )
+
+                # Save current statements
+                if stack:
+                    stack[-1][1].extend(current_statements)
+                    stack[-1][2].extend(current_statement_lines)
+                    stack[-1][3].extend(current_comments)
+                    stack[-1][4].extend(current_comment_lines)
+                else:
+                    if current_statements:
+                        blocks.append(
+                            LogicBlock(
+                                block_type="statements",
+                                statements=current_statements,
+                                level=0,
+                                statement_lines=current_statement_lines,
+                                comments=current_comments,
+                                comment_lines=current_comment_lines,
+                            )
+                        )
+                current_statements = []
+                current_statement_lines = []
+                current_comments = []
+                current_comment_lines = []
+
+                # Push to stack
+                stack.append((do_block, [], [], [], []))
+
+            elif self.END_DO_RE.match(line_stripped):
+                if stack and stack[-1][0].block_type == "do":
+                    # Save statements to DO block
+                    stack[-1][0].statements = stack[-1][1]
+                    stack[-1][0].statement_lines = stack[-1][2]
+                    stack[-1][0].comments = stack[-1][3]
+                    stack[-1][0].comment_lines = stack[-1][4]
+                    stack[-1][0].end_line = line_num
+
+                    # Pop and add to parent
+                    do_block, _, _, _, _ = stack.pop()
+                    if stack:
+                        stack[-1][0].children.append(do_block)
+                    else:
+                        blocks.append(do_block)
+
+            # Check for SELECT CASE
+            elif match := self.SELECT_CASE_RE.match(line_stripped):
+                label, select_expr = match.groups()
+
+                # Create SELECT block
+                select_block = LogicBlock(
+                    block_type="select",
+                    condition=select_expr,
+                    level=len(stack),
+                    label=label,
+                    start_line=line_num,
+                    comments=current_comments.copy(),
+                    comment_lines=current_comment_lines.copy(),
+                )
+
+                # Save current statements
+                if stack:
+                    stack[-1][1].extend(current_statements)
+                    stack[-1][2].extend(current_statement_lines)
+                    stack[-1][3].extend(current_comments)
+                    stack[-1][4].extend(current_comment_lines)
+                else:
+                    if current_statements:
+                        blocks.append(
+                            LogicBlock(
+                                block_type="statements",
+                                statements=current_statements,
+                                level=0,
+                                statement_lines=current_statement_lines,
+                                comments=current_comments,
+                                comment_lines=current_comment_lines,
+                            )
+                        )
+                current_statements = []
+                current_statement_lines = []
+                current_comments = []
+                current_comment_lines = []
+
+                # Push to stack
+                stack.append((select_block, [], [], [], []))
+
+            elif self.CASE_RE.match(line_stripped) or self.CASE_DEFAULT_RE.match(
+                line_stripped
+            ):
+                if stack and stack[-1][0].block_type in ["select", "case"]:
+                    # If we were in a previous CASE, save it
+                    if stack[-1][0].block_type == "case":
+                        stack[-1][0].statements = stack[-1][1]
+                        stack[-1][0].statement_lines = stack[-1][2]
+                        stack[-1][0].comments = stack[-1][3]
+                        stack[-1][0].comment_lines = stack[-1][4]
+                        stack[-1][0].end_line = line_num - 1
+                        case_block, _, _, _, _ = stack.pop()
+                        stack[-1][0].children.append(case_block)
+
+                    # Parse case value
+                    case_match = self.CASE_RE.match(line_stripped)
+                    if case_match:
+                        case_value = case_match.group(1)
+                    else:
+                        case_value = "DEFAULT"
+
+                    # Create CASE block
+                    case_block = LogicBlock(
+                        block_type="case",
+                        condition=case_value,
+                        level=len(stack),
+                        start_line=line_num,
+                        comments=current_comments.copy(),
+                        comment_lines=current_comment_lines.copy(),
+                    )
+                    current_comments = []
+                    current_comment_lines = []
+                    stack.append((case_block, [], [], [], []))
+
+            elif self.END_SELECT_RE.match(line_stripped):
+                if stack:
+                    # Close any open CASE
+                    if stack[-1][0].block_type == "case":
+                        stack[-1][0].statements = stack[-1][1]
+                        stack[-1][0].statement_lines = stack[-1][2]
+                        stack[-1][0].comments = stack[-1][3]
+                        stack[-1][0].comment_lines = stack[-1][4]
+                        stack[-1][0].end_line = line_num - 1
+                        case_block, _, _, _, _ = stack.pop()
+                        stack[-1][0].children.append(case_block)
+
+                    # Close SELECT - Add END SELECT to the block
+                    if stack and stack[-1][0].block_type == "select":
+                        stack[-1][0].end_line = line_num
+                        # Note: END SELECT is not added as a statement to match Fortran structure
+                        select_block, _, _, _, _ = stack.pop()
+                        if stack:
+                            stack[-1][0].children.append(select_block)
+                        else:
+                            blocks.append(select_block)
+
+            else:
+                # Regular statement - skip USE, IMPLICIT, and declarations
+                if not self._is_declaration_or_use(line_stripped):
+                    # Track allocation/deallocation statements
+                    self._track_allocation(line_stripped, line_num)
+
+                    if stack:
+                        # We're inside a block, add to that block's statements
+                        # First add any accumulated comments
+                        if current_comments:
+                            stack[-1][3].extend(current_comments)
+                            stack[-1][4].extend(current_comment_lines)
+                            current_comments = []
+                            current_comment_lines = []
+                        stack[-1][1].append(line_stripped)
+                        stack[-1][2].append(line_num)
+                    else:
+                        # We're at top level
+                        current_statements.append(line_stripped)
+                        current_statement_lines.append(line_num)
+
+            i += 1
+
+        # Add any remaining statements
+        if current_statements:
+            if stack:
+                stack[-1][1].extend(current_statements)
+                stack[-1][2].extend(current_statement_lines)
+                stack[-1][3].extend(current_comments)
+                stack[-1][4].extend(current_comment_lines)
+            else:
+                final_block = LogicBlock(
+                    block_type="statements",
+                    statements=current_statements,
+                    level=0,
+                    statement_lines=current_statement_lines,
+                    comments=current_comments,
+                    comment_lines=current_comment_lines,
+                )
+                blocks.append(final_block)
+
+        # Close any unclosed blocks (shouldn't happen in valid code)
+        while stack:
+            block, stmts, stmt_lines, cmts, cmt_lines = stack.pop()
+            block.statements = stmts
+            block.statement_lines = stmt_lines
+            block.comments = cmts
+            block.comment_lines = cmt_lines
+            if stack:
+                stack[-1][0].children.append(block)
+            else:
+                blocks.append(block)
+
+        # Populate statement keywords for all blocks recursively
+        self._populate_all_keywords(blocks)
+
+        return blocks
+
+    def _populate_statement_keywords(self, block: LogicBlock) -> None:
+        """Populate statement_keywords field for a logic block
+
+        Parameters
+        ----------
+        block : LogicBlock
+            The block to populate keywords for
+        """
+        block.statement_keywords = []
+        for stmt in block.statements:
+            keywords = detect_statement_keywords(stmt)
+            block.statement_keywords.append(keywords)
+
+    def _populate_all_keywords(self, blocks: List[LogicBlock]) -> None:
+        """Recursively populate statement keywords for all blocks
+
+        Parameters
+        ----------
+        blocks : List[LogicBlock]
+            List of blocks to process
+        """
+        for block in blocks:
+            self._populate_statement_keywords(block)
+            if block.children:
+                self._populate_all_keywords(block.children)
+
+    def _preprocess_source(self) -> Tuple[List[str], List[int]]:
+        """Preprocess source code to extract the procedure body
+
+        Returns
+        -------
+        Tuple[List[str], List[int]]
+            List of lines and their corresponding line numbers (1-indexed)
+        """
+        lines = self.source_code.split("\n")
+        result = []
+        line_numbers = []
+        in_procedure = False
+
+        # Patterns to match procedure start and end
+        proc_start = re.compile(
+            rf"^\s*{re.escape(self.procedure_type)}\s+{re.escape(self.procedure_name)}\b",
+            re.IGNORECASE,
+        )
+        proc_end = re.compile(
+            rf"^\s*end\s+{re.escape(self.procedure_type)}\b", re.IGNORECASE
+        )
+        contains_re = re.compile(r"^\s*contains\s*$", re.IGNORECASE)
+
+        for line_num, line in enumerate(lines, start=1):
+            if proc_start.match(line.strip()):
+                in_procedure = True
+                continue
+
+            if in_procedure:
+                # Stop at 'contains' or 'end subroutine/function'
+                if contains_re.match(line.strip()) or proc_end.match(line.strip()):
+                    break
+
+                result.append(line)
+                line_numbers.append(line_num)
+
+        return result, line_numbers
+
+
+def extract_logic_blocks(
+    source_code: str, procedure_name: str, procedure_type: str
+) -> Optional[Tuple[List[LogicBlock], List[AllocationSummary]]]:
+    """Extract logic blocks from Fortran procedure source code
+
+    Parameters
+    ----------
+    source_code : str
+        The complete source code of the procedure
+    procedure_name : str
+        Name of the procedure
+    procedure_type : str
+        Type of procedure ('subroutine' or 'function')
+
+    Returns
+    -------
+    Tuple[List[LogicBlock], List[AllocationSummary]] or None
+        Tuple of (list of logic blocks, list of allocation summaries), or None if extraction fails
+    """
+    try:
+        extractor = LogicBlockExtractor(source_code, procedure_name, procedure_type)
+        blocks = extractor.extract()
+        allocations = list(extractor.allocations.values())
+        return (blocks, allocations)
+    except Exception:
+        return None
+
+
+@dataclass
+class ProcedureBadges:
+    """Badges and tags for a procedure based on code analysis
+
+    Attributes
+    ----------
+    keywords : List[str]
+        Raw Fortran keywords found (e.g., ALLOCATE, READ, RETURN)
+    features : List[str]
+        Higher-level feature tags (e.g., I/O, ALLOC, FILE, ERROR)
+    complexity_level : str
+        Complexity indicator: Simple, Moderate, or Complex
+    max_depth : int
+        Maximum nesting depth of control structures
+    early_exits : int
+        Number of RETURN statements (early exits)
+    """
+
+    keywords: List[str] = field(default_factory=list)
+    features: List[str] = field(default_factory=list)
+    complexity_level: str = "Simple"
+    max_depth: int = 0
+    early_exits: int = 0
+
+
+class ProcedureBadgeAnalyzer:
+    """Analyzes Fortran procedure source code to extract badges and tags"""
+
+    # Fortran keywords to track
+    KEYWORDS = {
+        "ALLOCATE": re.compile(r"\ballocate\s*\(", re.IGNORECASE),
+        "DEALLOCATE": re.compile(r"\bdeallocate\s*\(", re.IGNORECASE),
+        "READ": re.compile(r"\bread\s*\(", re.IGNORECASE),
+        "WRITE": re.compile(r"\bwrite\s*\(", re.IGNORECASE),
+        "PRINT": re.compile(r"\bprint\s+", re.IGNORECASE),
+        "OPEN": re.compile(r"\bopen\s*\(", re.IGNORECASE),
+        "CLOSE": re.compile(r"\bclose\s*\(", re.IGNORECASE),
+        "RETURN": RETURN_RE,
+        "STOP": re.compile(r"\bstop\b", re.IGNORECASE),
+        "ERROR STOP": re.compile(r"\berror\s+stop\b", re.IGNORECASE),
+        "CALL": re.compile(r"\bcall\s+", re.IGNORECASE),
+    }
+
+    # Feature detection patterns
+    FEATURES = {
+        "I/O": [
+            re.compile(r"\b(read|write|print)\s*[\(\*]", re.IGNORECASE),
+            re.compile(r"\b(open|close|rewind|backspace)\s*\(", re.IGNORECASE),
+        ],
+        "FILE": [
+            re.compile(r"\b(open|close)\s*\(", re.IGNORECASE),
+            re.compile(r"\bfile\s*=", re.IGNORECASE),
+        ],
+        "ALLOC": [
+            re.compile(r"\b(allocate|deallocate)\s*\(", re.IGNORECASE),
+        ],
+        "ERROR": [
+            re.compile(r"\berror\s+stop\b", re.IGNORECASE),
+            re.compile(r"\biost?at\s*=", re.IGNORECASE),
+            re.compile(r"\bstat\s*=", re.IGNORECASE),
+        ],
+        "IF": [
+            re.compile(r"\bif\s*\(", re.IGNORECASE),
+        ],
+        "DO": [
+            re.compile(r"\bdo\s+", re.IGNORECASE),
+        ],
+        "SELECT": [
+            re.compile(r"\bselect\s+case\s*\(", re.IGNORECASE),
+        ],
+    }
+
+    def __init__(self, source_code: str, procedure_name: str, procedure_type: str):
+        self.source_code = source_code
+        self.procedure_name = procedure_name
+        self.procedure_type = procedure_type
+
+    def analyze(self) -> ProcedureBadges:
+        """Analyze the procedure and generate badges"""
+        badges = ProcedureBadges()
+
+        lines, _ = self._preprocess_source()
+
+        # Track keywords
+        keywords_found = set()
+        for keyword, pattern in self.KEYWORDS.items():
+            for line in lines:
+                if pattern.search(line):
+                    keywords_found.add(keyword)
+
+        badges.keywords = sorted(keywords_found)
+
+        # Track features
+        features_found = set()
+        for feature, patterns in self.FEATURES.items():
+            for pattern in patterns:
+                for line in lines:
+                    if pattern.search(line):
+                        features_found.add(feature)
+                        break
+                if feature in features_found:
+                    break
+
+        badges.features = sorted(features_found)
+
+        # Count early exits (RETURN statements)
+        badges.early_exits = sum(1 for line in lines if RETURN_RE.match(line.strip()))
+
+        # Calculate complexity
+        badges.max_depth = self._calculate_max_depth(lines)
+        badges.complexity_level = self._determine_complexity(
+            len(lines), badges.max_depth, len(badges.keywords)
+        )
+
+        return badges
+
+    def _calculate_max_depth(self, lines: List[str]) -> int:
+        """Calculate maximum nesting depth of control structures"""
+        depth = 0
+        max_depth = 0
+
+        for line in lines:
+            line_stripped = line.strip().lower()
+
+            # Count opening structures
+            if any(line_stripped.startswith(kw) for kw in ["if", "do", "select"]):
+                if (
+                    "then" in line_stripped
+                    or line_stripped.startswith("do ")
+                    or "select case" in line_stripped
+                ):
+                    depth += 1
+                    max_depth = max(max_depth, depth)
+
+            # Count closing structures
+            if any(
+                line_stripped.startswith(kw)
+                for kw in ["end if", "end do", "end select", "endif", "enddo"]
+            ):
+                depth = max(0, depth - 1)
+
+        return max_depth
+
+    def _determine_complexity(
+        self, num_lines: int, max_depth: int, num_keywords: int
+    ) -> str:
+        """Determine complexity level based on metrics"""
+        # Simple heuristic: combine multiple factors
+        complexity_score = 0
+
+        if num_lines > 50:
+            complexity_score += 1
+        if num_lines > 100:
+            complexity_score += 1
+
+        if max_depth > 2:
+            complexity_score += 1
+        if max_depth > 4:
+            complexity_score += 1
+
+        if num_keywords > 5:
+            complexity_score += 1
+        if num_keywords > 10:
+            complexity_score += 1
+
+        if complexity_score >= 4:
+            return "Complex"
+        elif complexity_score >= 2:
+            return "Moderate"
+        else:
+            return "Simple"
+
+    def _preprocess_source(self) -> Tuple[List[str], List[int]]:
+        """Preprocess source code to extract the procedure body"""
+        lines_text = self.source_code.split("\n")
+        result = []
+        line_numbers = []
+        in_procedure = False
+
+        # Patterns to match procedure start and end
+        proc_start = re.compile(
+            rf"^\s*{re.escape(self.procedure_type)}\s+{re.escape(self.procedure_name)}\b",
+            re.IGNORECASE,
+        )
+        proc_end = re.compile(
+            rf"^\s*end\s+{re.escape(self.procedure_type)}\b", re.IGNORECASE
+        )
+        contains_re = re.compile(r"^\s*contains\s*$", re.IGNORECASE)
+
+        for line_num, line in enumerate(lines_text, start=1):
+            if proc_start.match(line.strip()):
+                in_procedure = True
+                continue
+
+            if in_procedure:
+                if contains_re.match(line.strip()) or proc_end.match(line.strip()):
+                    break
+
+                result.append(line)
+                line_numbers.append(line_num)
+
+        return result, line_numbers
+
+
+def analyze_procedure_badges(
+    source_code: str, procedure_name: str, procedure_type: str
+) -> Optional[ProcedureBadges]:
+    """Analyze procedure source code and generate badges
+
+    Parameters
+    ----------
+    source_code : str
+        The complete source code of the procedure
+    procedure_name : str
+        Name of the procedure
+    procedure_type : str
+        Type of procedure ('subroutine' or 'function')
+
+    Returns
+    -------
+    ProcedureBadges or None
+        The badge analysis results, or None if analysis fails
+    """
+    try:
+        analyzer = ProcedureBadgeAnalyzer(source_code, procedure_name, procedure_type)
+        return analyzer.analyze()
+    except Exception:
+        return None
+
+
+def detect_statement_keywords(statement: str) -> List[str]:
+    """Detect Fortran keywords in a single statement
+
+    Parameters
+    ----------
+    statement : str
+        A Fortran statement
+
+    Returns
+    -------
+    List[str]
+        List of keywords found in the statement (e.g., ['INQUIRE'], ['READ'], etc.)
+    """
+    keywords = []
+    stmt_lower = statement.lower()
+
+    # Check for each keyword pattern
+    keyword_patterns = {
+        "INQUIRE": re.compile(r"\binquire\s*\(", re.IGNORECASE),
+        "OPEN": re.compile(r"\bopen\s*\(", re.IGNORECASE),
+        "CLOSE": re.compile(r"\bclose\s*\(", re.IGNORECASE),
+        "READ": re.compile(r"\bread\s*\(", re.IGNORECASE),
+        "WRITE": re.compile(r"\bwrite\s*\(", re.IGNORECASE),
+        "PRINT": re.compile(r"\bprint\s+", re.IGNORECASE),
+        "REWIND": re.compile(r"\brewind\s*\(", re.IGNORECASE),
+        "ALLOCATE": re.compile(r"\ballocate\s*\(", re.IGNORECASE),
+        "DEALLOCATE": re.compile(r"\bdeallocate\s*\(", re.IGNORECASE),
+        "RETURN": re.compile(r"^\s*return\s*$", re.IGNORECASE),
+        "EXIT": re.compile(r"^\s*exit\b", re.IGNORECASE),
+        "CYCLE": re.compile(r"^\s*cycle\b", re.IGNORECASE),
+        "STOP": re.compile(r"\bstop\b", re.IGNORECASE),
+        "ERROR STOP": re.compile(r"\berror\s+stop\b", re.IGNORECASE),
+        "CALL": re.compile(r"\bcall\s+", re.IGNORECASE),
+    }
+
+    for keyword, pattern in keyword_patterns.items():
+        if pattern.search(statement):
+            keywords.append(keyword)
+
+    return keywords
+
+
+def get_keyword_block_type(keyword: str) -> Optional[BlockType]:
+    """Get the block type for a keyword
+
+    Parameters
+    ----------
+    keyword : str
+        The keyword (e.g., 'READ', 'ALLOCATE', 'CALL')
+
+    Returns
+    -------
+    BlockType or None
+        The block type for this keyword, or None if not a keyword node type
+    """
+    # I/O keywords - each gets its own block type for distinct coloring
+    if keyword == "OPEN":
+        return BlockType.KEYWORD_IO_OPEN
+    elif keyword == "READ":
+        return BlockType.KEYWORD_IO_READ
+    elif keyword == "WRITE":
+        return BlockType.KEYWORD_IO_WRITE
+    elif keyword == "CLOSE":
+        return BlockType.KEYWORD_IO_CLOSE
+    elif keyword == "REWIND":
+        return BlockType.KEYWORD_IO_REWIND
+    elif keyword == "INQUIRE":
+        return BlockType.KEYWORD_IO_INQUIRE
+    elif keyword == "PRINT":
+        return BlockType.KEYWORD_IO_PRINT
+    # Memory keywords
+    elif keyword in ["ALLOCATE", "DEALLOCATE"]:
+        return BlockType.KEYWORD_MEMORY
+    # Early exit keywords
+    elif keyword in ["RETURN", "EXIT", "CYCLE", "STOP", "ERROR STOP"]:
+        return BlockType.KEYWORD_EXIT
+    # Call keyword
+    elif keyword == "CALL":
+        return BlockType.KEYWORD_CALL
+    else:
+        return None

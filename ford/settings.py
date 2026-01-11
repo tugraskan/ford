@@ -132,7 +132,6 @@ class ProjectSettings:
     display: List[str] = field(default_factory=lambda: ["public", "protected"])
     doc_license: str = ""
     docmark: str = "!"
-    doxygen: bool = True
     docmark_alt: str = "*"
     email: Optional[str] = None
     encoding: str = "utf-8"
@@ -177,6 +176,10 @@ class ProjectSettings:
     md_base_dir: Path = Path(".")
     md_extensions: List[str] = field(default_factory=list)
     media_dir: Optional[Path] = None
+    modular_database: bool = False
+    modular_database_generator: Optional[str] = None
+    modular_database_output_dir: Optional[Path] = None
+    modular_database_json_outputs: bool = True
     output_dir: Path = Path("./doc")
     page_dir: Optional[Path] = None
     parallel: int = default_cpus()
@@ -214,7 +217,7 @@ class ProjectSettings:
     def __post_init__(self):
         self.relative = self.project_url == ""
 
-        field_types = get_type_hints(ProjectSettings)
+        field_types = get_type_hints(self)
 
         for key, value in asdict(self).items():
             default_type = field_types[key]
@@ -271,7 +274,7 @@ class ProjectSettings:
         if directory is None:
             directory = Path.cwd()
         self.directory = Path(directory).absolute()
-        field_types = get_type_hints(ProjectSettings)
+        field_types = get_type_hints(self)
 
         if self.favicon == FAVICON_PATH:
             self.favicon = Path(__file__).parent / FAVICON_PATH
@@ -390,6 +393,22 @@ def convert_types_from_metapreprocessor(
     cls: Type, settings: Dict[str, Any], parent: Optional[str] = None
 ):
     """Convert a dict's value's types to be consistent with a given dataclass"""
+
+    # Define common aliases for settings
+    # These map alternative names to their canonical ProjectSettings field names
+    SETTING_ALIASES = {
+        "graphs": "graph",
+        "show_graphs": "graph",
+        "graphviz": "graph",
+    }
+
+    # Apply aliases - replace aliased keys with canonical names
+    for alias, canonical in SETTING_ALIASES.items():
+        if alias in settings and canonical not in settings:
+            settings[canonical] = settings.pop(alias)
+        elif alias in settings:
+            # If both alias and canonical exist, use canonical and drop alias
+            settings.pop(alias)
 
     field_types = get_type_hints(cls)
 

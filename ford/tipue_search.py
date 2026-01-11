@@ -80,10 +80,13 @@ class Tipue_Search_JSON_Generator:
         # Should set default category?
         page_category = meta.category or ""
 
+        # Convert loc to string if it's a Path object
+        loc_str = str(loc)
+
         if self.siteurl != "":
-            page_url = urljoin(self.siteurl, loc)
+            page_url = urljoin(self.siteurl, loc_str)
         else:
-            page_url = loc
+            page_url = loc_str
 
         node = {
             "title": page_title,

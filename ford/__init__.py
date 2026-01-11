@@ -50,6 +50,7 @@ from ford._typing import PathLike
 from ford.pagetree import get_page_tree
 from ford._markdown import MetaMarkdown
 from ford.version import __version__
+from ford.console import warn
 from ford.settings import (
     ProjectSettings,
     load_markdown_settings,
@@ -298,6 +299,34 @@ def get_command_line_arguments() -> argparse.Namespace:
         help="Any other FORD options as a semicolon-separated TOML string. "
         "Options set through this have lower precedence than other command line options",
     )
+    parser.add_argument(
+        "--modular-database",
+        dest="modular_database",
+        action="store_true",
+        default=None,
+        help="generate modular parameter database similar to SWAT+ Modular Database",
+    )
+    parser.add_argument(
+        "--no-modular-database",
+        dest="modular_database",
+        action="store_false",
+        default=None,
+        help="don't generate modular parameter database",
+    )
+    parser.add_argument(
+        "--modular-database-generator",
+        dest="modular_database_generator",
+        choices=["auto", "dynamic", "static", "enhanced"],
+        default=None,
+        help="specify which modular database generator to use (default: auto)",
+    )
+    parser.add_argument(
+        "--modular-database-output-dir",
+        dest="modular_database_output_dir",
+        type=pathlib.Path,
+        default=None,
+        help="output directory for modular database files (default: OUTPUT_DIR/modular_database)",
+    )
 
     return parser.parse_args()
 
@@ -416,6 +445,50 @@ def parse_arguments(
     return proj_data, proj_docs
 
 
+def _export_project_to_json(project, json_outputs_dir):
+    """Export project analysis to JSON files for modular database generation"""
+    import json
+    from pathlib import Path
+
+    # Export procedure analysis
+    for proc in project.procedures:
+        try:
+            proc_data = {
+                "name": proc.name,
+                "calls": [],
+                "variables": [],
+                "io_operations": [],
+            }
+
+            # Add procedure calls if available
+            if hasattr(proc, "calls"):
+                for call in proc.calls:
+                    proc_data["calls"].append({"name": str(call)})
+
+            # Export to JSON
+            proc_file = json_outputs_dir / f"{proc.name}.json"
+            with open(proc_file, "w") as f:
+                json.dump(proc_data, f, indent=2)
+
+        except Exception as e:
+            warn(f"Error exporting procedure {proc.name}: {e}")
+
+    # Export I/O analysis from existing enhanced analysis if available
+    try:
+        # Check if enhanced HTML analysis files exist
+        from ford.output import Documentation
+
+        # Try to use existing enhanced analysis data
+        for proc in project.procedures:
+            if hasattr(proc, "enhanced_io_analysis"):
+                io_file = json_outputs_dir / f"{proc.name}.io.json"
+                with open(io_file, "w") as f:
+                    json.dump(proc.enhanced_io_analysis, f, indent=2)
+
+    except Exception as e:
+        warn(f"Enhanced I/O analysis not available for modular database: {e}")
+
+
 def main(proj_data: ProjectSettings, proj_docs: str):
     """
     Main driver of FORD.
@@ -491,6 +564,155 @@ def main(proj_data: ProjectSettings, proj_docs: str):
         # save FortranModules to a JSON file which then can be used
         # for external modules
         dump_modules(project, path=proj_data.output_dir)
+
+    # Generate modular database if enabled
+    if proj_data.modular_database:
+        try:
+            modular_db_start = time.time()
+
+            # Configure output directories
+            if proj_data.modular_database_json_outputs:
+                json_outputs_dir = proj_data.output_dir / "json_outputs"
+                json_outputs_dir.mkdir(exist_ok=True)
+                # Export project analysis to JSON files for modular database processing
+                _export_project_to_json(project, json_outputs_dir)
+            else:
+                json_outputs_dir = None
+
+            # Configure modular database output directory
+            if proj_data.modular_database_output_dir:
+                modular_db_dir = proj_data.modular_database_output_dir
+            else:
+                modular_db_dir = proj_data.output_dir / "modular_database"
+
+            # Determine which generator to use
+            generator_type = (proj_data.modular_database_generator or "auto").lower()
+            generated = False
+
+            if generator_type in ["auto", "dynamic"]:
+                # Try dynamic generator first
+                try:
+                    # Add both project directory and FORD directory to path
+                    ford_dir = pathlib.Path(__file__).parent.parent
+                    sys.path.insert(0, str(proj_data.directory))
+                    sys.path.insert(0, str(ford_dir))
+                    from dynamic_modular_database_generator import (
+                        DynamicModularDatabaseGenerator,
+                    )
+
+                    print("  Generating modular database (dynamic templates)...")
+
+                    # Enhanced: Try to find input_file_module.f90 for enhanced discovery
+                    fortran_src_dir = None
+                    for src_dir in proj_data.src_dir:
+                        input_module_path = (
+                            pathlib.Path(src_dir) / "input_file_module.f90"
+                        )
+                        if input_module_path.exists():
+                            fortran_src_dir = str(src_dir)
+                            break
+
+                    generator = DynamicModularDatabaseGenerator(
+                        str(json_outputs_dir) if json_outputs_dir else "",
+                        str(modular_db_dir),
+                        fortran_src_dir=fortran_src_dir,
+                    )
+                    generator.generate_all()
+
+                    modular_db_end = time.time()
+                    print(
+                        f"  ...dynamic modular database generated in {modular_db_end - modular_db_start:5.3f}s"
+                    )
+                    generated = True
+
+                except ImportError as e:
+                    if proj_data.dbg:
+                        warn(f"Dynamic generator import failed: {e}")
+                    if generator_type == "dynamic":
+                        warn(
+                            "Dynamic modular database generator not found, falling back to static"
+                        )
+                    # Fall through to try other generators
+                    generated = False
+
+            if generator_type in ["auto", "static"] and not generated:
+                # Try static generator
+                try:
+                    # Add both project directory and FORD directory to path
+                    ford_dir = pathlib.Path(__file__).parent.parent
+                    sys.path.insert(0, str(proj_data.directory))
+                    sys.path.insert(0, str(ford_dir))
+                    from modular_database_generator import ModularDatabaseGenerator
+
+                    print("  Generating modular database (static templates)...")
+
+                    generator = ModularDatabaseGenerator(
+                        str(json_outputs_dir) if json_outputs_dir else "",
+                        str(modular_db_dir),
+                    )
+                    generator.generate_all()
+
+                    modular_db_end = time.time()
+                    print(
+                        f"  ...static modular database generated in {modular_db_end - modular_db_start:5.3f}s"
+                    )
+                    generated = True
+
+                except ImportError as e:
+                    if proj_data.dbg:
+                        warn(f"Static generator import failed: {e}")
+                    if generator_type == "static":
+                        warn(
+                            "Static modular database generator not found, falling back to enhanced"
+                        )
+                    # Fall through to try enhanced generator
+                    generated = False
+
+            if generator_type in ["auto", "enhanced"] and not generated:
+                # Try enhanced generator
+                try:
+                    # Add both project directory and FORD directory to path
+                    ford_dir = pathlib.Path(__file__).parent.parent
+                    sys.path.insert(0, str(proj_data.directory))
+                    sys.path.insert(0, str(ford_dir))
+                    from enhanced_modular_database_generator import (
+                        EnhancedModularDatabaseGenerator,
+                    )
+
+                    print("  Generating modular database (enhanced analysis)...")
+
+                    generator = EnhancedModularDatabaseGenerator(
+                        json_outputs_dir=(
+                            str(json_outputs_dir) if json_outputs_dir else ""
+                        ),
+                        output_dir=str(modular_db_dir),
+                    )
+                    generator.generate_comprehensive_database()
+
+                    modular_db_end = time.time()
+                    print(
+                        f"  ...enhanced modular database generated in {modular_db_end - modular_db_start:5.3f}s"
+                    )
+                    generated = True
+
+                except ImportError as e:
+                    if proj_data.dbg:
+                        warn(f"Enhanced generator import failed: {e}")
+                    warn("Enhanced modular database generator not found")
+                    generated = False
+
+            if not generated:
+                warn(
+                    "No modular database generators found - please ensure generator scripts are available"
+                )
+                warn(
+                    "Looking for: dynamic_modular_database_generator.py, modular_database_generator.py, enhanced_modular_database_generator.py"
+                )
+
+        except Exception as e:
+            warn(f"Error generating modular database: {e}")
+            if proj_data.dbg:
+                raise
 
     return 0
 

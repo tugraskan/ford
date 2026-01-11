@@ -25,6 +25,7 @@
 from dataclasses import asdict
 import sys
 import os
+import re
 import shutil
 import traceback
 from itertools import chain
@@ -101,9 +102,213 @@ def relative_url(entity: Union[FortranBase, str], page_url: pathlib.Path) -> str
     return link_str.replace(link_path, new_path)
 
 
+def extract_io_variables(io_statement, procedure=None):
+    """
+    Extract variable names and their types from I/O statements.
+
+    Args:
+        io_statement: String containing the Fortran I/O statement
+        procedure: FortranProcedure object to get variable type information
+
+    Returns:
+        List of tuples (variable_name, variable_type)
+    """
+    if not procedure or not io_statement:
+        return []
+
+    # Get all variables from the procedure (args + local + non-local)
+    all_vars = {}
+
+    # Add arguments
+    if hasattr(procedure, "args") and procedure.args:
+        for var in procedure.args:
+            if hasattr(var, "name") and hasattr(var, "full_type"):
+                all_vars[var.name.lower()] = str(var.full_type)
+
+    # Add local variables
+    if hasattr(procedure, "local_variables") and procedure.local_variables:
+        for var in procedure.local_variables:
+            if hasattr(var, "name") and hasattr(var, "full_type"):
+                all_vars[var.name.lower()] = str(var.full_type)
+
+    # Add non-local variables
+    if hasattr(procedure, "non_local_variables") and procedure.non_local_variables:
+        for var in procedure.non_local_variables:
+            if hasattr(var, "name") and hasattr(var, "full_type"):
+                all_vars[var.name.lower()] = str(var.full_type)
+
+    # Extract variable names from I/O statement
+    # For write/read statements with format: write(unit, 'format') variables
+    # Match patterns like: write(..., '...') var1, var2
+
+    # Pattern to match write/read with format and variables
+    patterns = [
+        # write(unit, 'format') variables
+        r"(?:read|write)\s*\([^)]+\s*,\s*\'[^\']*\'\s*\)\s*(.+)",
+        # write(unit, "format") variables
+        r"(?:read|write)\s*\([^)]+\s*,\s*\"[^\"]*\"\s*\)\s*(.+)",
+        # write(unit, format=...) variables
+        r"(?:read|write)\s*\([^)]+\)\s*(.+)",
+    ]
+
+    var_part = None
+    for pattern in patterns:
+        io_match = re.search(pattern, io_statement, re.IGNORECASE)
+        if io_match:
+            var_part = io_match.group(1).strip()
+            break
+
+    if not var_part:
+        return []
+
+    # Split by commas, but be careful with quoted strings
+    var_items = []
+    current_item = ""
+    in_quotes = False
+    quote_char = None
+
+    for char in var_part:
+        if char in ["'", '"'] and not in_quotes:
+            in_quotes = True
+            quote_char = char
+            current_item += char
+        elif char == quote_char and in_quotes:
+            in_quotes = False
+            quote_char = None
+            current_item += char
+        elif char == "," and not in_quotes:
+            if current_item.strip():
+                var_items.append(current_item.strip())
+            current_item = ""
+        else:
+            current_item += char
+
+    # Add the last item
+    if current_item.strip():
+        var_items.append(current_item.strip())
+
+    # Extract variable names from each item
+    var_names = []
+    for item in var_items:
+        # Skip string literals
+        if item.startswith(("'", '"')):
+            continue
+
+        # Extract variable names (handle array indices, expressions, etc.)
+        # Look for word characters at the start (variable name)
+        var_match = re.match(r"([a-zA-Z_][a-zA-Z0-9_]*)", item)
+        if var_match:
+            var_names.append(var_match.group(1))
+
+    # Match variable names to their types
+    result = []
+    for var_name in var_names:
+        var_key = var_name.lower()
+        if var_key in all_vars:
+            result.append((var_name, all_vars[var_key]))
+        else:
+            # If we can't find the type, still show the variable name
+            result.append((var_name, "unknown"))
+
+    return result
+
+
+def create_header_table(var, parent_type_name=None):
+    """
+    Create a transposed table for Fortran header type declarations.
+
+    Args:
+        var: FortranVariable or FortranType object containing the header type
+        parent_type_name: Optional name of the parent type for the Attributes row
+
+    Returns:
+        Dictionary with table data structure:
+        {
+            'fields': [field_names],
+            'attributes': [attribute_references],
+            'names': [field_names],
+            'initials': [initial_values],
+            'types': [type_declarations]
+        }
+    """
+    if not var:
+        return None
+
+    # Get the type definition - could be from var.proto[0] if it's a variable
+    # or directly if it's a type
+    type_def = None
+    if hasattr(var, "proto") and var.proto and len(var.proto) > 0:
+        type_def = var.proto[0]
+        # If proto[0] is a string, we couldn't resolve the type
+        if isinstance(type_def, str):
+            return None
+    elif hasattr(var, "variables"):
+        # It's already a type definition
+        type_def = var
+    else:
+        return None
+
+    # Check if it's actually a FortranType with variables
+    if not hasattr(type_def, "variables") or not type_def.variables:
+        return None
+
+    # Extract the type name for attributes
+    if parent_type_name is None:
+        parent_type_name = getattr(type_def, "name", "unknown")
+
+    fields = []
+    attributes = []
+    names = []
+    initials = []
+    types = []
+
+    # Process each variable in the type
+    for component in type_def.variables:
+        if not hasattr(component, "name"):
+            continue
+
+        field_name = component.name
+        fields.append(field_name)
+
+        # Attributes: parent_type%field_name
+        attributes.append(f"{parent_type_name}%{field_name}")
+
+        # Name: just the field name
+        names.append(field_name)
+
+        # Initial: the initial value (preserve exact spacing)
+        initial_value = getattr(component, "initial", None)
+        if initial_value is not None:
+            # Initial values should already be strings with quotes preserved
+            initials.append(str(initial_value))
+        else:
+            initials.append("")
+
+        # Type: the full type specification (e.g., character(len=6))
+        type_str = getattr(
+            component,
+            "full_type",
+            component.vartype if hasattr(component, "vartype") else "",
+        )
+        types.append(str(type_str))
+
+    if not fields:
+        return None
+
+    return {
+        "fields": fields,
+        "attributes": attributes,
+        "names": names,
+        "initials": initials,
+        "types": types,
+    }
+
+
 env.tests["more_than_one"] = is_more_than_one
 env.filters["meta"] = meta
 env.filters["relurl"] = relative_url
+env.filters["extract_io_variables"] = extract_io_variables
+env.filters["create_header_table"] = create_header_table
 
 USER_WRITABLE_ONLY = 0o755
 
@@ -163,6 +368,7 @@ class Documentation:
                 (project.programs, ProgPage),
                 (project.blockdata, BlockPage),
                 (project.namelists, NamelistPage),
+                (project.iofiles, IOFilePage),
             ]
             if settings.incl_src:
                 entity_list_page_map.append((project.allfiles, FilePage))
@@ -190,6 +396,8 @@ class Documentation:
                 self.lists.append(BlockList(self.data, project))
             if project.namelists:
                 self.lists.append(NamelistList(self.data, project))
+            if project.iofiles:
+                self.lists.append(IOList(self.data, project))
 
             # Create static pages
             self.pagetree = [
@@ -214,6 +422,22 @@ class Documentation:
         )
 
         if graphviz_installed and settings.graph:
+            # Register all entities directly in GraphData first to ensure called_by relationships
+            # can be built for all procedures, even those with graph: false
+            for entity_list in [
+                project.types,
+                project.procedures,
+                project.submodprocedures,
+                project.modules,
+                project.submodules,
+                project.programs,
+                project.files,
+                project.blockdata,
+            ]:
+                for item in entity_list:
+                    self.graphs.data.register(item)
+
+            # Now register for graph generation (only items with meta.graph == True)
             for entity_list in [
                 project.types,
                 project.procedures,
@@ -233,10 +457,47 @@ class Documentation:
             project.usegraph = self.graphs.usegraph
             project.filegraph = self.graphs.filegraph
         else:
+            # Even when graphs are disabled, we still need to populate calledby lists
+            # Register all entities first (bypass meta.graph check)
+            for entity_list in [
+                project.types,
+                project.procedures,
+                project.submodprocedures,
+                project.modules,
+                project.submodules,
+                project.programs,
+                project.files,
+                project.blockdata,
+            ]:
+                for item in entity_list:
+                    # Register directly in GraphData, bypassing the meta.graph check
+                    self.graphs.data.register(item)
+
+            # Populate called_by relationships
+            self.graphs._populate_called_by_relationships()
+            # Populate calledby lists on procedure objects
+            self.graphs._populate_calledby_lists()
+
             project.callgraph = ""
             project.typegraph = ""
             project.usegraph = ""
             project.filegraph = ""
+
+        # Extract logic blocks for procedures (independent of graph generation)
+        for entity_list in [
+            project.procedures,
+            project.submodprocedures,
+        ]:
+            for proc in entity_list:
+                try:
+                    proc.logic_blocks = proc.get_logic_blocks()
+                except Exception:
+                    proc.logic_blocks = None
+
+                try:
+                    proc.procedure_badges = proc.get_procedure_badges()
+                except Exception:
+                    proc.procedure_badges = None
 
         if settings.search:
             url = "" if settings.relative else settings.project_url
@@ -280,6 +541,7 @@ class Documentation:
             "src",
             "blockdata",
             "namelist",
+            "iofile",
         ]:
             (out_dir / directory).mkdir(USER_WRITABLE_ONLY)
 
@@ -463,6 +725,11 @@ class NamelistList(ListPage):
     template_path = "namelist_list.html"
 
 
+class IOList(ListPage):
+    out_page = "iofiles.html"
+    template_path = "io_list.html"
+
+
 class DocPage(BasePage):
     """
     Abstract class to be inherited by all pages for items in the code.
@@ -542,6 +809,11 @@ class InterfacePage(DocPage):
 class NamelistPage(DocPage):
     template_path = "namelist_page.html"
     payload_key = "namelist"
+
+
+class IOFilePage(DocPage):
+    template_path = "iofile_page.html"
+    payload_key = "iofile"
 
 
 def ProcPage(data, proj, obj):

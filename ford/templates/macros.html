@@ -69,6 +69,76 @@
 {% endmacro %}
 
 
+{% macro display_nested_components(comp_var, nested_components, page_url, depth=0) %}
+  {# Recursive macro to display nested components at any depth #}
+  {% if comp_var.component_name in nested_components and nested_components[comp_var.component_name]|length > 0 %}
+    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          {# Deduplicate nested components by their component name #}
+          {% set deduplicated_nested = {} %}
+          {% for nested_var in nested_components[comp_var.component_name] %}
+            {# Only process direct children - those with exactly one more level #}
+            {% set nested_parts = nested_var.component_name.split('%') %}
+            {% set parent_parts = comp_var.component_name.split('%') if comp_var.component_name else [] %}
+            {% if nested_parts|length == (parent_parts|length + 1) %}
+              {% set nested_name = nested_parts[-1] %}
+              {% if nested_name not in deduplicated_nested %}
+                {% set _ = deduplicated_nested.update({nested_name: nested_var}) %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          
+          {# Display deduplicated nested components #}
+          {% for nested_name, nested_var in deduplicated_nested.items() %}
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                {% if nested_var.component_details %}
+                  {# For derived types, show full type; for basic types, show vartype #}
+                  {% set comp_type = nested_var.component_details.vartype if nested_var.component_details.vartype else nested_var.component_details.full_type %}
+                  {% if comp_type == 'type' %}
+                    {# This is a derived type, show the full type #}
+                    {{ nested_var.component_details.full_type | relurl(page_url) }} :: 
+                  {% elif comp_type and not comp_type.startswith('type(') %}
+                    {# This is a basic type #}
+                    {{ comp_type }} :: 
+                  {% else %}
+                    :: 
+                  {% endif %}
+                  <strong>{{ nested_name }}</strong>
+                  {% if nested_var.component_details.initial %}
+                    = {{ nested_var.component_details.initial }}
+                  {% endif %}
+                {% else %}
+                  :: <strong>{{ nested_name }}</strong>
+                {% endif %}
+                
+                {# Recursively display further nested components #}
+                {{ display_nested_components(nested_var, nested_components, page_url, depth + 1) }}
+              </td>
+              <td style="border-top: none;">
+                {% if nested_var.line_numbers %}
+                  <small class="text-muted">{{ nested_var.line_numbers | join(', ') }}</small>
+                {% else %}
+                  <small class="text-muted">-</small>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+
 {% macro panel_contents(name, collection, anchor, panelnum, collection_url=False) %}
   {% if collection %}
     <div class="card mb-4">
@@ -93,6 +163,25 @@
       </div>
     </div>
   {% endif %}
+{% endmacro %}
+
+{% macro collapsible_section(title, anchor_id, content, default_expanded=False) %}
+  {# Create a collapsible section with a card #}
+  <div class="card mb-3">
+    <a data-bs-toggle="collapse" href="#{{ anchor_id }}" 
+       aria-expanded="{{ 'true' if default_expanded else 'false' }}" 
+       aria-controls="{{ anchor_id }}" 
+       class="text-decoration-none">
+      <h3 class="card-header bg-light text-dark">
+        <i class="fa fa-caret-down me-2"></i>{{ title }}
+      </h3>
+    </a>
+    <div id="{{ anchor_id }}" class="collapse{{ ' show' if default_expanded else '' }}">
+      <div class="card-body">
+        {{ content }}
+      </div>
+    </div>
+  </div>
 {% endmacro %}
 
 {% macro content_list(self, panelnum=0) %}
@@ -292,6 +381,10 @@
     <small>{{ proc.retvar.full_declaration | relurl(page_url) }}</small>
     {{ close_header(4, small) }}
     {{ docstring(proc.retvar, full_docstring) }}
+  {% endif %}
+  {% if proc.calledbygraph %}
+    {{ header(4, small) }}Called by{{ close_header(4, small) }}
+    {{ proc.calledbygraph }}
   {% endif %}
 {% endmacro %}
 
@@ -805,5 +898,547 @@
         <dt>Category</dt><dd>{{ meta.category }}</dd>
       {% endif %}
     </dl>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro outside_variables_list(variables) %}
+  {% if variables %}
+    {% set modules_dict = {} %}
+    {% for var in variables %}
+      {% set module_name = var.parent.name if var.parent else 'Unknown' %}
+      {% if module_name not in modules_dict %}
+        {% set _ = modules_dict.update({module_name: {'module_obj': var.parent, 'types': {}}}) %}
+      {% endif %}
+      {# Get the full type as a string for display (may contain HTML) #}
+      {% set type_display = var.full_type | string %}
+      {# Create a plain text version for use as dictionary key and IDs by stripping HTML tags #}
+      {% set type_key_plain = type_display | striptags %}
+      {# Now sanitize the plain text for use as an HTML ID #}
+      {% set type_key = type_key_plain | replace(' ', '_') | replace('(', '_') | replace(')', '_') %}
+      {% if type_key not in modules_dict[module_name]['types'] %}
+        {% set _ = modules_dict[module_name]['types'].update({type_key: {'type_name': type_display, 'vars': []}}) %}
+      {% endif %}
+      {% set _ = modules_dict[module_name]['types'][type_key]['vars'].append(var) %}
+    {% endfor %}
+    
+    <div class="accordion" id="outsideVarsAccordion">
+      {% for module_name, module_data in modules_dict.items() %}
+        {% set module_id = ('module_' ~ module_name) | replace(' ', '_') | replace('(', '_') | replace(')', '_') | replace('<', '_') | replace('>', '_') | replace(',', '_') | replace('[', '_') | replace(']', '_') | replace('%', '_pct_') | replace('.', '_') | replace('/', '_') | replace('\\', '_') | replace(':', '_') | replace(';', '_') | replace('"', '_') | replace("'", '_') | replace('|', '_') | replace('*', '_') | replace('+', '_') | replace('=', '_') | replace('@', '_') | replace('#', '_') | replace('$', '_') | replace('!', '_') | replace('&', '_') | replace('^', '_') | replace('~', '_') | replace('`', '_') %}
+        
+        {# Module as a collapsible accordion item #}
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="heading{{ module_id }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapse{{ module_id }}" aria-expanded="false" 
+                    aria-controls="collapse{{ module_id }}">
+              {% if module_data.module_obj %}
+                {{ module_data.module_obj | relurl(page_url) }}
+              {% else %}
+                {{ module_name }}
+              {% endif %}
+            </button>
+          </h3>
+          <div id="collapse{{ module_id }}" class="accordion-collapse collapse" 
+               aria-labelledby="heading{{ module_id }}" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              {# Nested accordion for types within this module #}
+              <div class="accordion" id="typesAccordion{{ module_id }}">
+                {% for type_key, type_data in module_data.types.items() %}
+                  {# Count unique base variables for this type #}
+                  {% set unique_base_vars = {} %}
+                  {% for var in type_data.vars %}
+                    {% set base_name = var.base_var_name if var.base_var_name else var.name %}
+                    {% if base_name not in unique_base_vars %}
+                      {% set _ = unique_base_vars.update({base_name: True}) %}
+                    {% endif %}
+                  {% endfor %}
+                  {% set unique_count = unique_base_vars | length %}
+                  
+                  {% set type_id = (module_name ~ '_' ~ type_key) | replace(' ', '_') | replace('(', '_') | replace(')', '_') | replace('<', '_') | replace('>', '_') | replace(',', '_') | replace('[', '_') | replace(']', '_') | replace('%', '_pct_') | replace('.', '_') | replace('/', '_') | replace('\\', '_') | replace(':', '_') | replace(';', '_') | replace('"', '_') | replace("'", '_') | replace('|', '_') | replace('*', '_') | replace('+', '_') | replace('=', '_') | replace('@', '_') | replace('#', '_') | replace('$', '_') | replace('!', '_') | replace('&', '_') | replace('^', '_') | replace('~', '_') | replace('`', '_') %}
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="heading{{ type_id }}">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapse{{ type_id }}" aria-expanded="false" 
+                              aria-controls="collapse{{ type_id }}">
+                        {{ type_data.type_name | relurl(page_url) }}
+                        <small class="text-muted ms-2">({{ unique_count }} variable{{ 's' if unique_count != 1 }})</small>
+                      </button>
+                    </h4>
+                    <div id="collapse{{ type_id }}" class="accordion-collapse collapse" 
+                         aria-labelledby="heading{{ type_id }}" data-bs-parent="#typesAccordion{{ module_id }}">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {# Group variables by base_var_name #}
+                            {% set grouped_vars = {} %}
+                            {% for var in type_data.vars %}
+                              {% set group_key = var.base_var_name if var.base_var_name else var.name %}
+                              {% if group_key not in grouped_vars %}
+                                {% set _ = grouped_vars.update({group_key: []}) %}
+                              {% endif %}
+                              {% set _ = grouped_vars[group_key].append(var) %}
+                            {% endfor %}
+                            
+                            {# Display grouped variables #}
+                            {% for group_key, group_vars in grouped_vars.items() %}
+                              {# Get the first variable to use for common attributes #}
+                              {% set first_var = group_vars[0] %}
+                              
+                              {# Filter components: deduplicate and organize by hierarchy #}
+                              {% set components_dict = {} %}
+                              {% set nested_components = {} %}
+                              
+                              {# First pass: identify all direct children and initialize nested tracking #}
+                              {% for v in group_vars %}
+                                {% if v.component_name %}
+                                  {% set parts = v.component_name.split('%') %}
+                                  {% if parts|length == 1 %}
+                                    {# Direct child - use dict to deduplicate #}
+                                    {% if parts[0] not in components_dict %}
+                                      {% set _ = components_dict.update({parts[0]: v}) %}
+                                    {% endif %}
+                                  {% elif parts|length > 1 %}
+                                    {# Has nested structure - track for ALL parent levels #}
+                                    {% for i in range(parts|length - 1) %}
+                                      {% set parent_path = parts[:i+1] | join('%') %}
+                                      {% if parent_path not in nested_components %}
+                                        {% set _ = nested_components.update({parent_path: []}) %}
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                              
+                              {# Second pass: collect nested components at all levels #}
+                              {% for v in group_vars %}
+                                {% if v.component_name %}
+                                  {% set parts = v.component_name.split('%') %}
+                                  {% if parts|length > 1 %}
+                                    {% for i in range(parts|length - 1) %}
+                                      {% set parent_path = parts[:i+1] | join('%') %}
+                                      {% if parent_path in nested_components %}
+                                        {% set _ = nested_components[parent_path].append(v) %}
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                              
+                              {# Convert components dict to list for iteration #}
+                              {% set components = components_dict.values() | list %}
+                              
+                              <tr>
+                                <td>
+                                  {# Show variable declaration without type prefix for derived types #}
+                                  {% if first_var.permission %}{{ first_var.permission }}{{ add_comma(first_var.parameter or first_var.attribs) }}{% endif %}
+                                  {% if first_var.parameter %}parameter{{ add_comma(first_var.attribs) }}{% endif %}
+                                  {% if first_var.attribs %}{{ first_var.attribs | join(", ") }}{% endif %}
+                                  {% if first_var.permission or first_var.parameter or first_var.attribs %}{{ ", " if first_var.permission or first_var.parameter or first_var.attribs }}{% endif %}
+                                  :: <strong>{{ group_key }}</strong>{{ first_var.dimension }}
+                                  
+                                  {# Show component count if applicable #}
+                                  {% if components|length > 0 %}
+                                    <small class="text-muted"> ({{ components|length }} component{{ 's' if components|length != 1 }})</small>
+                                  {% endif %}
+                                  
+                                  {# Show component details as sub-rows #}
+                                  {% if components|length > 0 %}
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% for comp_var in components %}
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                 {% if comp_var.component_details %}
+                                                  {{ comp_var.component_details.full_type | relurl(page_url) }}{{ add_comma(comp_var.component_details.permission or comp_var.component_details.parameter or comp_var.component_details.attribs) }}
+                                                  {% if comp_var.component_details.permission %}{{ comp_var.component_details.permission }}{{ add_comma(comp_var.component_details.parameter or comp_var.component_details.attribs) }}{% endif %}
+                                                  {% if comp_var.component_details.parameter %}parameter{{ add_comma(comp_var.component_details.attribs) }}{% endif %}
+                                                  {% if comp_var.component_details.attribs %}{{ comp_var.component_details.attribs | join(", ") }}{% endif %}
+                                                  :: <strong>{{ comp_var.component_name }}</strong>{{ comp_var.component_details.dimension }}
+                                                  {% if comp_var.component_details.initial %}
+                                                    = {{ comp_var.component_details.initial }}
+                                                  {% endif %}
+                                                {% else %}
+                                                  :: <strong>{{ comp_var.component_name }}</strong>
+                                                {% endif %}
+                                                
+                                                {# Use recursive macro to display nested components at any depth #}
+                                                {{ display_nested_components(comp_var, nested_components, page_url) }}
+                                              </td>
+                                              <td style="border-top: none;">
+                                                {% if comp_var.line_numbers %}
+                                                  <small class="text-muted">{{ comp_var.line_numbers | join(', ') }}</small>
+                                                {% else %}
+                                                  <small class="text-muted">-</small>
+                                                {% endif %}
+                                              </td>
+                                            </tr>
+                                          {% endfor %}
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  {% endif %}
+                                </td>
+                                <td>{{ first_var | meta('summary') }}</td>
+                                <td>
+                                  {% if first_var.line_numbers %}
+                                    <small class="text-muted">{{ first_var.line_numbers | join(', ') }}</small>
+                                  {% else %}
+                                    <small class="text-muted">-</small>
+                                  {% endif %}
+                                </td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <em>None</em>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro io_operations_list(io_data, procedure=None) %}
+  {% if io_data and io_data.keys() %}
+    <!-- First, collect all conditions across all units -->
+    {% set all_conditions = {} %}
+    {% for unit, operations in io_data.items() %}
+      {% if operations.timeline %}
+        {% for op in operations.timeline %}
+          {% set condition_key = op.condition.text if op.condition else "no_condition" %}
+          {% set condition_line = op.condition.line if op.condition else None %}
+          {% if condition_key not in all_conditions %}
+            {% set _ = all_conditions.update({condition_key: {'operations': [], 'line': condition_line, 'units': {}}}) %}
+          {% endif %}
+          
+          <!-- Group by unit within this condition -->
+          {% if unit not in all_conditions[condition_key]['units'] %}
+            {% set _ = all_conditions[condition_key]['units'].update({unit: []}) %}
+          {% endif %}
+          {% set _ = all_conditions[condition_key]['units'][unit].append(op) %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+    
+    <div class="accordion" id="ioConditionsAccordion">
+      {% for condition_key, condition_data in all_conditions.items() %}
+        {% set condition_id = condition_key | replace(' ', '_') | replace('(', '_') | replace(')', '_') | replace('<', '_') | replace('>', '_') | replace(',', '_') | replace('[', '_') | replace(']', '_') | replace('%', '_pct_') | replace('.', '_') | replace('/', '_') | replace('\\', '_') | replace(':', '_') | replace(';', '_') | replace('"', '_') | replace("'", '_') | replace('|', '_') | replace('*', '_') | replace('+', '_') | replace('=', '_') | replace('@', '_') | replace('#', '_') | replace('$', '_') | replace('!', '_') | replace('&', '_') | replace('^', '_') | replace('~', '_') | replace('`', '_') | replace('==', '_eq_') | replace('!=', '_neq_') | replace('>', '_gt_') | replace('<', '_lt_') | replace('>=', '_gte_') | replace('<=', '_lte_') %}
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingCond{{ condition_id }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseCond{{ condition_id }}" aria-expanded="false" 
+                    aria-controls="collapseCond{{ condition_id }}">
+              {% if condition_key != "no_condition" %}
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>{{ condition_key }}</strong>
+                {% if condition_data.line %}
+                  <small class="text-muted ms-2">(line {{ condition_data.line }})</small>
+                {% endif %}
+              {% else %}
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>Unconditional Operations</strong>
+              {% endif %}
+            </button>
+          </h3>
+          <div id="collapseCond{{ condition_id }}" class="accordion-collapse collapse" 
+               aria-labelledby="headingCond{{ condition_id }}" data-bs-parent="#ioConditionsAccordion">
+            <div class="accordion-body">
+              {% for unit, unit_ops in condition_data.units.items() %}
+                <div class="unit-section mb-3">
+                  <h6 class="text-secondary">
+                    <i class="fa fa-file-o me-1"></i>
+                    <strong>Unit {{ unit }}</strong>
+                    {% set unit_filename = io_data[unit].filename if unit in io_data and io_data[unit].filename %}
+                    {% if unit_filename %}
+                      - {{ unit_filename }}
+                    {% endif %}
+                  </h6>
+                  <div class="ms-3">
+                    <table class="table table-sm">
+                      <thead>
+                        <tr>
+                          <th>Operation</th>
+                          <th>Details</th>
+                          <th>Parameters</th>
+                          <th>Variable Defaults</th>
+                          <th>Local</th>
+                          <th>Line</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for op in unit_ops %}
+                          <tr>
+                            <td><span class="badge bg-primary">{{ op.kind }}</span></td>
+                            <td><code>{{ op.raw }}</code></td>
+                            <td>
+                              {% if op.parameters %}
+                                <ul class="mb-0" style="list-style: none; padding-left: 0;">
+                                  {% for param in op.parameters %}
+                                    <li><small><code>{{ param }}</code></small></li>
+                                  {% endfor %}
+                                </ul>
+                              {% else %}
+                                <small class="text-muted">-</small>
+                              {% endif %}
+                            </td>
+                            <td>
+                              {% if op.variable_defaults %}
+                                {% for var_name, var_info in op.variable_defaults.items() %}
+                                  <small><code>{{ var_name }} = {{ var_info.value if var_info is mapping and 'value' in var_info else var_info }}</code></small>{% if not loop.last %}<br>{% endif %}
+                                {% endfor %}
+                              {% else %}
+                                <small class="text-muted">-</small>
+                              {% endif %}
+                            </td>
+                            <td>
+                              {% if op.variable_defaults %}
+                                {% for var_name, var_info in op.variable_defaults.items() %}
+                                  {% if var_info is mapping and 'is_local' in var_info %}
+                                    <small>{% if var_info.is_local %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}</small>{% if not loop.last %}<br>{% endif %}
+                                  {% else %}
+                                    <small class="text-muted">-</small>{% if not loop.last %}<br>{% endif %}
+                                  {% endif %}
+                                {% endfor %}
+                              {% else %}
+                                <small class="text-muted">-</small>
+                              {% endif %}
+                            </td>
+                            <td>{{ op.line if op.line else '-' }}</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <em>No I/O operations detected</em>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro allocation_operations_list(allocation_data) %}
+  {% if allocation_data and allocation_data.keys() %}
+    <div class="accordion" id="allocationConditionsAccordion">
+      {% for condition_key, condition_data in allocation_data.items() %}
+        {% set condition_id = condition_key | replace(' ', '_') | replace('(', '_') | replace(')', '_') | replace('<', '_') | replace('>', '_') | replace(',', '_') | replace('[', '_') | replace(']', '_') | replace('%', '_pct_') | replace('.', '_') | replace('/', '_') | replace('\\', '_') | replace(':', '_') | replace(';', '_') | replace('"', '_') | replace("'", '_') | replace('|', '_') | replace('*', '_') | replace('+', '_') | replace('=', '_') | replace('@', '_') | replace('#', '_') | replace('$', '_') | replace('!', '_') | replace('&', '_') | replace('^', '_') | replace('~', '_') | replace('`', '_') | replace('==', '_eq_') | replace('!=', '_neq_') | replace('>', '_gt_') | replace('<', '_lt_') | replace('>=', '_gte_') | replace('<=', '_lte_') %}
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="headingAlloc{{ condition_id }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseAlloc{{ condition_id }}" aria-expanded="false" 
+                    aria-controls="collapseAlloc{{ condition_id }}">
+              {% if condition_key != "no_condition" %}
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>{{ condition_key }}</strong>
+                {% if condition_data.line %}
+                  <small class="text-muted ms-2">(line {{ condition_data.line }})</small>
+                {% endif %}
+              {% else %}
+                <i class="fa fa-caret-up me-2" style="transform: rotate(45deg);"></i>
+                <strong>Unconditional Allocations</strong>
+              {% endif %}
+            </button>
+          </h3>
+          <div id="collapseAlloc{{ condition_id }}" class="accordion-collapse collapse" 
+               aria-labelledby="headingAlloc{{ condition_id }}" data-bs-parent="#allocationConditionsAccordion">
+            <div class="accordion-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Variables</th>
+                    <th>Details</th>
+                    <th>Line</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for op in condition_data.operations %}
+                    <tr>
+                      <td>
+                        {% if op.kind == 'allocate' %}
+                          <span class="badge bg-success">{{ op.kind }}</span>
+                        {% else %}
+                          <span class="badge bg-warning">{{ op.kind }}</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if op.variables %}
+                          {% for var in op.variables %}
+                            <code>{{ var }}</code>{% if not loop.last %}, {% endif %}
+                          {% endfor %}
+                        {% else %}
+                          -
+                        {% endif %}
+                      </td>
+                      <td><code>{{ op.raw }}</code></td>
+                      <td>{{ op.line if op.line else '-' }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <em>No allocation operations detected</em>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro io_file_summary(io_data) %}
+  {# Extract and display File I/O Summary from io_data #}
+  {% if io_data and io_data.keys() %}
+    {% set input_files = [] %}
+    {% set output_files = [] %}
+    {% set io_files = [] %}
+    
+    {% for unit, operations in io_data.items() %}
+      {% if operations.timeline %}
+        {% set has_read = namespace(value=false) %}
+        {% set has_write = namespace(value=false) %}
+        {% for op in operations.timeline %}
+          {% if op.kind == 'read' %}
+            {% set has_read.value = true %}
+          {% elif op.kind == 'write' %}
+            {% set has_write.value = true %}
+          {% endif %}
+        {% endfor %}
+        
+        {% set file_info = {'unit': unit, 'filename': operations.filename if operations.filename else 'unit_' + unit|string} %}
+        {% if has_read.value and has_write.value %}
+          {% set _ = io_files.append(file_info) %}
+        {% elif has_read.value %}
+          {% set _ = input_files.append(file_info) %}
+        {% elif has_write.value %}
+          {% set _ = output_files.append(file_info) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    
+    {% if input_files or output_files or io_files %}
+      <div class="alert alert-info mb-3">
+        <h6 class="alert-heading"><i class="fa fa-info-circle"></i> File I/O Summary</h6>
+        <div class="row">
+          {% if input_files %}
+            <div class="col-md-4">
+              <strong><i class="fa fa-download"></i> Input Files:</strong>
+              <ul class="mb-0">
+                {% for file in input_files %}
+                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if output_files %}
+            <div class="col-md-4">
+              <strong><i class="fa fa-upload"></i> Output Files:</strong>
+              <ul class="mb-0">
+                {% for file in output_files %}
+                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if io_files %}
+            <div class="col-md-4">
+              <strong><i class="fa fa-exchange"></i> Input/Output Files:</strong>
+              <ul class="mb-0">
+                {% for file in io_files %}
+                  <li><code>{{ file.filename }}</code> <small class="text-muted">(unit {{ file.unit }})</small></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+
+{% macro io_parameters_accessed(io_data) %}
+  {# Extract and display Parameters Accessed from io_data #}
+  {% if io_data and io_data.keys() %}
+    {% set params_read = [] %}
+    {% set params_written = [] %}
+    {% for unit, operations in io_data.items() %}
+      {% if operations.timeline %}
+        {% for op in operations.timeline %}
+          {% if op.parameters %}
+            {% if op.kind == 'read' %}
+              {% for param in op.parameters %}
+                {% if param not in params_read %}
+                  {% set _ = params_read.append(param) %}
+                {% endif %}
+              {% endfor %}
+            {% elif op.kind == 'write' %}
+              {% for param in op.parameters %}
+                {% if param not in params_written %}
+                  {% set _ = params_written.append(param) %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+    
+    {% if params_read or params_written %}
+      <div class="alert alert-secondary mb-3">
+        <h6 class="alert-heading"><i class="fa fa-list"></i> Parameters Accessed</h6>
+        <div class="row">
+          {% if params_read %}
+            <div class="col-md-6">
+              <strong><i class="fa fa-arrow-down"></i> Read Parameters:</strong>
+              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
+                {% for param in params_read %}
+                  <li><code>{{ param }}</code></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if params_written %}
+            <div class="col-md-6">
+              <strong><i class="fa fa-arrow-up"></i> Written Parameters:</strong>
+              <ul class="mb-0" style="max-height: 200px; overflow-y: auto;">
+                {% for param in params_written %}
+                  <li><code>{{ param }}</code></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
   {% endif %}
 {% endmacro %}
