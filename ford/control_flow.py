@@ -41,17 +41,18 @@ from enum import Enum
 # Regular expressions shared by parser and extractor classes
 # These are defined at module level to avoid duplicate compilation
 
-# RETURN and USE statements
+# Regular expressions for basic statements
 RETURN_RE = re.compile(r"^\s*return\s*$", re.IGNORECASE)
 USE_RE = re.compile(r"^\s*use\s+", re.IGNORECASE)
 
-# Control flow statements
+# Regular expressions for control flow statements
 IF_THEN_RE = re.compile(
     r"^\s*(?:(\w+)\s*:)?\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE
 )
 ELSE_IF_RE = re.compile(r"^\s*else\s*if\s*\((.*?)\)\s*then\s*$", re.IGNORECASE)
 ELSE_RE = re.compile(r"^\s*else\s*$", re.IGNORECASE)
 END_IF_RE = re.compile(r"^\s*end\s*if(?:\s+(\w+))?\s*$", re.IGNORECASE)
+SINGLE_IF_RE = re.compile(r"^\s*if\s*\((.*?)\)\s+(.+)$", re.IGNORECASE)
 
 DO_LOOP_RE = re.compile(r"^\s*(?:(\w+)\s*:)?\s*do\s+(.*)$", re.IGNORECASE)
 END_DO_RE = re.compile(r"^\s*end\s*do(?:\s+(\w+))?\s*$", re.IGNORECASE)
@@ -63,17 +64,14 @@ CASE_RE = re.compile(r"^\s*case\s*\((.*?)\)\s*$", re.IGNORECASE)
 CASE_DEFAULT_RE = re.compile(r"^\s*case\s+default\s*$", re.IGNORECASE)
 END_SELECT_RE = re.compile(r"^\s*end\s*select(?:\s+(\w+))?\s*$", re.IGNORECASE)
 
-# Single-line IF statement
-SINGLE_IF_RE = re.compile(r"^\s*if\s*\((.*?)\)\s+(.+)$", re.IGNORECASE)
-
-# Statements to skip/exclude
+# Regular expressions for declaration and implicit statements (used for filtering)
 IMPLICIT_RE = re.compile(r"^\s*implicit\s+", re.IGNORECASE)
 DECLARATION_RE = re.compile(
     r"^\s*(?:integer|real|double\s+precision|complex|logical|character|class|procedure|type\s*(?:\(|::))",
     re.IGNORECASE,
 )
 
-# Allocation/deallocation statements
+# Regular expressions for memory allocation statements
 ALLOCATE_RE = re.compile(r"^\s*allocate\s*\((.*?)\)", re.IGNORECASE)
 DEALLOCATE_RE = re.compile(r"^\s*deallocate\s*\((.*?)\)", re.IGNORECASE)
 
