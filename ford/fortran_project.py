@@ -406,7 +406,7 @@ class Project:
         type_dict = {}
 
         # copy variables to var_ug_local
-        subroutine.var_ug_local = subroutine.variables
+        subroutine.var_ug_local = list(subroutine.variables)
 
         # Check if member_access_results is a valid list
         if not isinstance(subroutine.member_access_results, list):
