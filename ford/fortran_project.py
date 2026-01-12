@@ -279,9 +279,7 @@ class Project:
 
             # Filter only those whose name appears in proc.calls (subroutines)
             subroutine_calls = [
-                call
-                for call in all_procedure_calls
-                if call["name"] in procedure.calls
+                call for call in all_procedure_calls if call["name"] in procedure.calls
             ]
 
             # Write full calls JSON
