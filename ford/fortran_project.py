@@ -1364,6 +1364,65 @@ class Project:
 
         call_site_map = {}
 
+        def merge_continuation_lines(source_lines, fixed_form):
+            merged_lines = []
+            current_line = ""
+            current_line_no = None
+            continue_pending = False
+
+            for line_no, line in enumerate(source_lines, 1):
+                raw_line = line.rstrip("\n")
+
+                if fixed_form:
+                    if not raw_line:
+                        continue
+                    if raw_line[0] in ("c", "C", "*", "!"):
+                        continue
+                    is_continuation = (
+                        len(raw_line) > 5 and raw_line[5].strip() not in ("", "0")
+                    )
+                    content = raw_line[6:] if len(raw_line) > 6 else ""
+                    content = content.rstrip()
+
+                    if current_line_no is None:
+                        current_line_no = line_no
+                        current_line = content
+                    else:
+                        if is_continuation:
+                            current_line = f"{current_line} {content}".strip()
+                        else:
+                            merged_lines.append((current_line_no, current_line))
+                            current_line_no = line_no
+                            current_line = content
+                else:
+                    comment_pos = raw_line.find("!")
+                    content = raw_line[:comment_pos] if comment_pos >= 0 else raw_line
+                    content = content.rstrip()
+                    if not content and current_line_no is None:
+                        continue
+
+                    if continue_pending:
+                        continuation_content = content.lstrip()
+                        if continuation_content.startswith("&"):
+                            continuation_content = continuation_content[1:].lstrip()
+                        current_line = f"{current_line} {continuation_content}".strip()
+                    else:
+                        current_line_no = line_no
+                        current_line = content.strip()
+
+                    continue_pending = content.endswith("&")
+                    if continue_pending:
+                        current_line = current_line[:-1].rstrip()
+                    if not continue_pending and current_line_no is not None:
+                        merged_lines.append((current_line_no, current_line))
+                        current_line_no = None
+                        current_line = ""
+
+            if current_line_no is not None and current_line:
+                merged_lines.append((current_line_no, current_line))
+
+            return merged_lines
+
         # Pattern to match procedure calls: call procname(arg1, arg2, ...)
         # Also handle function-style calls: result = procname(arg1, arg2)
         call_pattern = re.compile(
@@ -1382,8 +1441,11 @@ class Project:
             elif hasattr(proc.source_file, "source"):
                 source_lines = proc.source_file.source
 
+            fixed_form = getattr(proc.source_file, "fixed", False)
+            merged_lines = merge_continuation_lines(source_lines, fixed_form)
+
             # Look for call statements
-            for line_no, line in enumerate(source_lines, 1):
+            for line_no, line in merged_lines:
                 # Skip comments
                 comment_pos = line.find("!")
                 if comment_pos >= 0:
