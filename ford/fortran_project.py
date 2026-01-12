@@ -348,23 +348,35 @@ class Project:
             A filtered set of items that are neither Fortran keywords, integers, symbols, nor self-defined variables.
         """
 
+        other_results = getattr(subroutine, "other_results", None)
+        variables = getattr(subroutine, "variables", None)
+        number_re = getattr(subroutine, "NUMBER_RE", None)
+        member_access_results = getattr(subroutine, "member_access_results", None)
+
+        if not isinstance(member_access_results, list):
+            subroutine.member_access_results = []
+            member_access_results = subroutine.member_access_results
+
+        if variables is None or other_results is None or number_re is None:
+            return set()
+
         # Extract the names of subroutine variables
-        subroutine_variable_names = {var.name for var in subroutine.variables}
+        subroutine_variable_names = {var.name for var in variables}
 
         # Combine all Fortran keywords dynamically using set union
         all_fortran_keywords = (
-            subroutine.fortran_control
-            | subroutine.fortran_operators
-            | subroutine.fortran_intrinsics
-            | subroutine.fortran_reserved
-            | subroutine.fortran_custom
-            | subroutine.symbols
-            | subroutine.fortran_io
+            getattr(subroutine, "fortran_control", set())
+            | getattr(subroutine, "fortran_operators", set())
+            | getattr(subroutine, "fortran_intrinsics", set())
+            | getattr(subroutine, "fortran_reserved", set())
+            | getattr(subroutine, "fortran_custom", set())
+            | getattr(subroutine, "symbols", set())
+            | getattr(subroutine, "fortran_io", set())
             | subroutine_variable_names
         )
 
         # Convert `other_results` to a set for efficient processing
-        items = {item.strip().strip("'\"") for item in subroutine.other_results}
+        items = {item.strip().strip("'\"") for item in other_results}
 
         # Initialize a filtered set for deduplication
         filtered_items = set()
@@ -374,11 +386,11 @@ class Project:
             if (
                 item
                 and item not in all_fortran_keywords
-                and not subroutine.NUMBER_RE.match(item)
+                and not number_re.match(item)
             ):
                 # Add to filtered set if not already in member_access_results
-                if item not in subroutine.member_access_results:
-                    subroutine.member_access_results.append(item)
+                if item not in member_access_results:
+                    member_access_results.append(item)
                     filtered_items.add(item)
 
         return filtered_items
@@ -408,11 +420,12 @@ class Project:
         # copy variables to var_ug_local
         subroutine.var_ug_local = subroutine.variables
 
-        # Check if member_access_results is a valid list
-        if not isinstance(subroutine.member_access_results, list):
-            raise TypeError("Expected 'member_access_results' to be a list.")
+        member_access_results = getattr(subroutine, "member_access_results", None)
+        if not isinstance(member_access_results, list):
+            subroutine.type_results = {}
+            return subroutine.type_results
 
-        for var in subroutine.member_access_results:
+        for var in member_access_results:
             parts = var.split("%")  # Split by '%' to get nested type parts
             current = type_dict
 
