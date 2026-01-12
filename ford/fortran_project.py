@@ -383,11 +383,7 @@ class Project:
 
         for item in items:
             # Skip empty strings, Fortran keywords, integers, symbols, and subroutine variables
-            if (
-                item
-                and item not in all_fortran_keywords
-                and not number_re.match(item)
-            ):
+            if item and item not in all_fortran_keywords and not number_re.match(item):
                 # Add to filtered set if not already in member_access_results
                 if item not in member_access_results:
                     member_access_results.append(item)
