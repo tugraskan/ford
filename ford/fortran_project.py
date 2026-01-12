@@ -687,7 +687,10 @@ class Project:
         project_summary = {}
 
         for proc in procedures:
-            tracker = proc.io_tracker
+            tracker = getattr(proc, "io_tracker", None)
+            if tracker is None:
+                log.debug("Skipping I/O summary for %s: no I/O tracker", proc.name)
+                continue
             tracker.finalize()
 
             result = tracker.summarize_file_io()
