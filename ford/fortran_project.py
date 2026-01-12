@@ -22,7 +22,6 @@
 #
 #
 
-import re
 import os
 import json
 import toposort
@@ -32,7 +31,7 @@ from pathlib import Path
 from fnmatch import fnmatch
 
 from ford.console import warn
-from ford.external_project import load_external_modules, get_module_metadata
+from ford.external_project import load_external_modules
 from ford.utils import ProgressBar
 from ford.sourceform import (
     _find_in_list,
@@ -57,8 +56,6 @@ from ford.sourceform import (
     FortranSourceFile,
     GenericSource,
     FortranProgram,
-    FortranSubroutine,  # ← add this
-    FortranFunction,
 )
 from ford.settings import ProjectSettings
 from ford._typing import PathLike
@@ -265,68 +262,88 @@ class Project:
             out_dir: Output directory path. Defaults to ./json_outputs/calls_json
         """
         # Set up per-procedure directory
-        calls_dir = out_dir or os.path.join(os.getcwd(), "json_outputs", "calls_json")
-        os.makedirs(calls_dir, exist_ok=True)
+        calls_output_dir = out_dir or os.path.join(
+            os.getcwd(), "json_outputs", "calls_json"
+        )
+        os.makedirs(calls_output_dir, exist_ok=True)
 
         # Prepare master dict for subroutine calls
-        master_subs: dict[str, list[dict]] = {}
+        master_subroutine_calls: Dict[str, List[Dict[str, Optional[int]]]] = {}
 
-        for proc in procedures:
+        for procedure in procedures:
             # Gather all calls from proc.call_records (chain, line_no)
-            all_calls = [
-                {"name": chain[-1], "line_number": ln}
-                for chain, ln in getattr(proc, "call_records", [])
+            all_procedure_calls = [
+                {"name": chain[-1], "line_number": line_number}
+                for chain, line_number in getattr(procedure, "call_records", [])
             ]
 
             # Filter only those whose name appears in proc.calls (subroutines)
-            sub_calls = [c for c in all_calls if c["name"] in proc.calls]
+            subroutine_calls = [
+                call
+                for call in all_procedure_calls
+                if call["name"] in procedure.calls
+            ]
 
             # Write full calls JSON
-            full_path = os.path.join(calls_dir, f"{proc.name}.json")
+            full_output_path = os.path.join(calls_output_dir, f"{procedure.name}.json")
             full_payload = {
-                "file": proc.filename,
-                "line_number": getattr(proc, "line_number", None),
-                "calls": all_calls,
+                "file": procedure.filename,
+                "line_number": getattr(procedure, "line_number", None),
+                "calls": all_procedure_calls,
             }
             try:
-                with open(full_path, "w") as fp:
-                    json.dump(full_payload, fp, indent=2)
-                log.info("Wrote full call graph for %s → %s", proc.name, full_path)
-            except IOError as e:
-                log.error("Failed to write full call graph for %s: %s", proc.name, e)
-
-            # --- write subroutine‐only JSON ---
-            sub_path = os.path.join(calls_dir, f"{proc.name}_subs.json")
-            sub_payload = {
-                "file": proc.filename,
-                "line_number": getattr(proc, "line_number", None),
-                "subroutines": sub_calls,
-            }
-            try:
-                with open(sub_path, "w") as sp:
-                    json.dump(sub_payload, sp, indent=2)
-                log.info("Wrote subroutine-only graph for %s → %s", proc.name, sub_path)
+                with open(full_output_path, "w") as handle:
+                    json.dump(full_payload, handle, indent=2)
+                log.info(
+                    "Wrote full call graph for %s → %s",
+                    procedure.name,
+                    full_output_path,
+                )
             except IOError as e:
                 log.error(
-                    "Failed to write subroutine-only graph for %s: %s", proc.name, e
+                    "Failed to write full call graph for %s: %s", procedure.name, e
+                )
+
+            # --- write subroutine‐only JSON ---
+            sub_output_path = os.path.join(
+                calls_output_dir, f"{procedure.name}_subs.json"
+            )
+            sub_payload = {
+                "file": procedure.filename,
+                "line_number": getattr(procedure, "line_number", None),
+                "subroutines": subroutine_calls,
+            }
+            try:
+                with open(sub_output_path, "w") as handle:
+                    json.dump(sub_payload, handle, indent=2)
+                log.info(
+                    "Wrote subroutine-only graph for %s → %s",
+                    procedure.name,
+                    sub_output_path,
+                )
+            except IOError as e:
+                log.error(
+                    "Failed to write subroutine-only graph for %s: %s",
+                    procedure.name,
+                    e,
                 )
 
             # collect for master if any subroutine calls exist
-            if sub_calls:
-                master_subs[proc.name] = sub_calls
+            if subroutine_calls:
+                master_subroutine_calls[procedure.name] = subroutine_calls
 
         # 3) write master subroutine_calls.json in json_outputs
-        master_dir = os.path.dirname(calls_dir)
+        master_dir = os.path.dirname(calls_output_dir)
         os.makedirs(master_dir, exist_ok=True)
         master_path = os.path.join(master_dir, "subroutine_calls.json")
         try:
-            with open(master_path, "w") as mf:
-                json.dump(master_subs, mf, indent=2)
+            with open(master_path, "w") as handle:
+                json.dump(master_subroutine_calls, handle, indent=2)
             log.info("Wrote master subroutine-call graph → %s", master_path)
         except IOError as e:
             log.error("Failed to write master subroutine-call graph: %s", e)
 
-        return master_subs
+        return master_subroutine_calls
 
     def extract_non_fortran_and_non_integers(self, subroutine):
         """
@@ -367,7 +384,7 @@ class Project:
         items = {item.strip().strip("'\"") for item in subroutine.other_results}
 
         # Initialize a filtered set for deduplication
-        filtered_items = set()
+        filtered_items: Set[str] = set()
 
         for item in items:
             # Skip empty strings, Fortran keywords, integers, symbols, and subroutine variables
@@ -403,7 +420,7 @@ class Project:
         dict
             A nested dictionary representing the types and their attributes.
         """
-        type_dict = {}
+        type_dict: Dict[str, Dict] = {}
 
         # copy variables to var_ug_local
         subroutine.var_ug_local = subroutine.variables
@@ -412,14 +429,14 @@ class Project:
         if not isinstance(subroutine.member_access_results, list):
             raise TypeError("Expected 'member_access_results' to be a list.")
 
-        for var in subroutine.member_access_results:
-            parts = var.split("%")  # Split by '%' to get nested type parts
-            current = type_dict
+        for variable_path in subroutine.member_access_results:
+            parts = variable_path.split("%")  # Split by '%' to get nested type parts
+            current_level = type_dict
 
             for part in parts:
                 # Skip empty parts to avoid creating unnecessary empty dictionaries
                 if part:
-                    current = current.setdefault(part, {})
+                    current_level = current_level.setdefault(part, {})
 
         # Update the subroutine with the final type dictionary
         subroutine.type_results = type_dict
@@ -470,50 +487,52 @@ class Project:
             out_dir = os.path.join(os.getcwd(), "json_outputs", "fvar_json")
         os.makedirs(out_dir, exist_ok=True)
 
-        for proc in procedures:
+        for procedure in procedures:
             # Clean the existing fvar dict
-            cleaned = {}
-            if hasattr(proc, "fvar"):
-                cleaned = self._clean_fvar_recursive(proc.fvar) or {}
+            cleaned_fvar = {}
+            if hasattr(procedure, "fvar"):
+                cleaned_fvar = self._clean_fvar_recursive(procedure.fvar) or {}
 
             # Build the local-variable list
-            local_list = []
-            if hasattr(proc, "var_ug_local"):
-                for var in proc.var_ug_local:
-                    local_list.append(
+            local_variables: List[Dict[str, Optional[Union[str, int]]]] = []
+            if hasattr(procedure, "var_ug_local"):
+                for variable in procedure.var_ug_local:
+                    local_variables.append(
                         {
-                            "name": var.name,
+                            "name": variable.name,
                             "vartype": getattr(
-                                var, "vartype", getattr(var, "type", None)
+                                variable,
+                                "vartype",
+                                getattr(variable, "type", None),
                             ),
-                            "initial": getattr(var, "initial", None),
-                            "doc_list": getattr(var, "doc_list", []),
-                            "line_number": getattr(var, "line_number", None),
+                            "initial": getattr(variable, "initial", None),
+                            "doc_list": getattr(variable, "doc_list", []),
+                            "line_number": getattr(variable, "line_number", None),
                         }
                     )
 
             # 4. only write JSON if there’s any fvar or any locals
-            if cleaned or local_list:
+            if cleaned_fvar or local_variables:
                 payload = {}
-                if cleaned:
-                    payload["fvar"] = cleaned
-                if local_list:
-                    payload["locals"] = local_list
+                if cleaned_fvar:
+                    payload["fvar"] = cleaned_fvar
+                if local_variables:
+                    payload["locals"] = local_variables
 
                 # Add top-level line number of the procedure
-                payload["line_number"] = getattr(proc, "line_number", None)
+                payload["line_number"] = getattr(procedure, "line_number", None)
 
                 # Write to file
-                fname = os.path.join(out_dir, f"{proc.name}.json")
+                output_path = os.path.join(out_dir, f"{procedure.name}.json")
                 try:
-                    with open(fname, "w") as fp:
-                        json.dump(payload, fp, indent=2)
-                    log.info("Wrote JSON for %s → %s", proc.name, fname)
-                    proc.pjson = json.dumps(payload, indent=2)
+                    with open(output_path, "w") as handle:
+                        json.dump(payload, handle, indent=2)
+                    log.info("Wrote JSON for %s → %s", procedure.name, output_path)
+                    procedure.pjson = json.dumps(payload, indent=2)
                 except IOError as e:
-                    log.error("Failed to write JSON for %s: %s", proc.name, e)
+                    log.error("Failed to write JSON for %s: %s", procedure.name, e)
             else:
-                log.debug("No fvar or locals for %s; skipping JSON", proc.name)
+                log.debug("No fvar or locals for %s; skipping JSON", procedure.name)
 
     def _find_variable_info(self, procedure, var_ref):
         """
@@ -533,19 +552,19 @@ class Project:
             return None
 
         # Start at the top-level fvar
-        current_dict = procedure.fvar
+        current_fvar = procedure.fvar
         for i, part in enumerate(parts):
-            if part in current_dict:
+            if part in current_fvar:
                 # If this is not the last part, move into its 'variables' sub-dict
                 if i < len(parts) - 1:
                     # Move inside the nested structure
-                    next_dict = current_dict[part].get("variables", None)
+                    next_dict = current_fvar[part].get("variables", None)
                     if not next_dict:
                         return None
-                    current_dict = next_dict
+                    current_fvar = next_dict
                 else:
                     # Last part; we've found the final variable dict
-                    return current_dict[part]
+                    return current_fvar[part]
             else:
                 # No match
                 return None
@@ -560,16 +579,16 @@ class Project:
             List of procedures that have 'sourcefile' as their parent object,
             sorted alphabetically by name.
         """
-        procedures = [
+        sourcefile_procedures = [
             procedure
             for procedure in self.procedures
             if procedure.parobj == "sourcefile"
         ]
 
         # Sort procedures alphabetically by name
-        procedures.sort(key=lambda x: x.name)
+        sourcefile_procedures.sort(key=lambda x: x.name)
 
-        return procedures
+        return sourcefile_procedures
 
     def cross_walk_type_dicts(self, procedures: List[FortranProcedure]) -> None:
         """
@@ -583,28 +602,28 @@ class Project:
             procedures: List of procedures to process
         """
         for procedure in procedures:
-            for key, value in procedure.type_results.items():
-                if key in procedure.all_vars:
-                    procedure.fvar[key] = {
-                        "name": procedure.all_vars[key].name,
-                        "vartype": procedure.all_vars[key].vartype,
-                        "initial": procedure.all_vars[key].initial,
-                        "filename": procedure.all_vars[key].filename,
-                        "doc_list": procedure.all_vars[key].doc_list,
+            for type_name, nested_types in procedure.type_results.items():
+                if type_name in procedure.all_vars:
+                    procedure.fvar[type_name] = {
+                        "name": procedure.all_vars[type_name].name,
+                        "vartype": procedure.all_vars[type_name].vartype,
+                        "initial": procedure.all_vars[type_name].initial,
+                        "filename": procedure.all_vars[type_name].filename,
+                        "doc_list": procedure.all_vars[type_name].doc_list,
                         "variables": {},
-                        "original": procedure.all_vars[key],
+                        "original": procedure.all_vars[type_name],
                     }
-                    if value:
+                    if nested_types:
                         # Handle nested structure
-                        self.r_check(procedure.fvar[key], value)
+                        self.r_check(procedure.fvar[type_name], nested_types)
                         # Remove original from the top-level branch after recursion
-                        procedure.fvar[key].pop("original", None)
+                        procedure.fvar[type_name].pop("original", None)
                     else:
-                        procedure.fvar[key].pop("original", None)
+                        procedure.fvar[type_name].pop("original", None)
                 else:
-                    procedure.var_ug_na.append(key)
+                    procedure.var_ug_na.append(type_name)
 
-    def r_check(self, parent_rep, value):
+    def r_check(self, parent_representation, nested_values_map):
         """
         Recursive function to check nested keys/values and add them to the parent's custom representation.
 
@@ -614,44 +633,45 @@ class Project:
 
                 log.error("Parent original object not found; cannot continue recursion.")
         """
-        for nested_key, nested_values in value.items():
-            parent_orig = parent_rep.get("original")
-            if not parent_orig:
+        for nested_name, nested_values in nested_values_map.items():
+            parent_original = parent_representation.get("original")
+            if not parent_original:
                 log.error(
                     "Parent original object not found; cannot continue recursion."
                 )
                 continue
             # Find the matching variable in parent's proto[0].variables by name.
-            found_var = next(
+            found_variable = next(
                 (
                     var
-                    for var in parent_orig.proto[0].variables
-                    if var.name == nested_key
+                    for var in parent_original.proto[0].variables
+                    if var.name == nested_name
                 ),
                 None,
             )
 
-            if found_var is not None:
+            if found_variable is not None:
                 # Build a custom representation for the nested variable.
-                new_rep = {
-                    "name": found_var.name,
-                    "vartype": found_var.vartype,
-                    "initial": found_var.initial,
+                new_representation = {
+                    "name": found_variable.name,
+                    "vartype": found_variable.vartype,
+                    "initial": found_variable.initial,
                     # 'filename': found_var.filename,  # If you want to include filename, uncomment it.
-                    "doc_list": found_var.doc_list,
+                    "doc_list": found_variable.doc_list,
                     "variables": {},
-                    "original": found_var,  # temporary; used only for recursion.
+                    "original": found_variable,  # temporary; used only for recursion.
                 }
-                parent_rep["variables"][nested_key] = new_rep
+                parent_representation["variables"][nested_name] = new_representation
 
                 if nested_values:
-                    self.r_check(new_rep, nested_values)
+                    self.r_check(new_representation, nested_values)
 
                 # Remove the 'original' key from this branch now that recursion is complete.
-                new_rep.pop("original", None)
+                new_representation.pop("original", None)
             else:
                 log.warning(
-                    "Key '%s' not found in parent's proto variables by name", nested_key
+                    "Key '%s' not found in parent's proto variables by name",
+                    nested_name,
                 )
 
     def procedures_io_to_json(
@@ -982,7 +1002,7 @@ class Project:
         var_part = match.group(1).strip()
 
         # Split on commas, handling nested parentheses
-        variables = []
+        write_variables = []
         current_var = ""
         paren_depth = 0
 
@@ -995,15 +1015,15 @@ class Project:
                 current_var += char
             elif char == "," and paren_depth == 0:
                 if current_var.strip():
-                    variables.append(current_var.strip())
+                    write_variables.append(current_var.strip())
                 current_var = ""
             else:
                 current_var += char
 
         if current_var.strip():
-            variables.append(current_var.strip())
+            write_variables.append(current_var.strip())
 
-        return variables
+        return write_variables
 
     def _analyze_input_patterns(
         self, proc: FortranProcedure, tracker, io_summary: Dict
@@ -1362,7 +1382,7 @@ class Project:
         """
         import re
 
-        call_site_map = {}
+        call_sites_by_procedure: Dict[str, List[Dict[str, object]]] = {}
 
         # Pattern to match procedure calls: call procname(arg1, arg2, ...)
         # Also handle function-style calls: result = procname(arg1, arg2)
@@ -1403,30 +1423,36 @@ class Project:
 
                     # Extract the argument list by matching parentheses
                     try:
-                        args_str = self._extract_parenthesized_content(
+                        args_text = self._extract_parenthesized_content(
                             line[paren_start:]
                         )
-                        if args_str:
+                        if args_text:
                             # Split arguments by commas (respecting nested parentheses)
-                            arguments = self._split_arguments(args_str)
+                            call_arguments = self._split_arguments(args_text)
 
                             # Store call site info
-                            if called_proc_name not in call_site_map:
-                                call_site_map[called_proc_name] = []
+                            if called_proc_name not in call_sites_by_procedure:
+                                call_sites_by_procedure[called_proc_name] = []
 
-                            call_site_map[called_proc_name].append(
+                            call_sites_by_procedure[called_proc_name].append(
                                 {
                                     "caller": proc,
-                                    "arguments": arguments,
+                                    "arguments": call_arguments,
                                     "line_no": line_no,
                                     "raw_line": line,
                                 }
                             )
-                    except:
+                    except Exception as exc:
                         # If parsing fails, skip this call
+                        log.debug(
+                            "Failed to parse call arguments for %s on line %s: %s",
+                            match.group(1),
+                            line_no,
+                            exc,
+                        )
                         continue
 
-        return call_site_map
+        return call_sites_by_procedure
 
     def _extract_parenthesized_content(self, text: str) -> str:
         """
