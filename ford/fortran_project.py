@@ -1848,9 +1848,7 @@ class Project:
                             ]
                             if not display_filename:
                                 fallback_key = (
-                                    file_key
-                                    if file_key
-                                    else f"unknown{unit}"
+                                    file_key if file_key else f"unknown{unit}"
                                 )
                                 log.debug(
                                     "Falling back to I/O file key %r for %s (unit=%s)",
