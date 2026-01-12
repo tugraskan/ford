@@ -1390,8 +1390,9 @@ class Project:
                         continue
                     if raw_line[0] in ("c", "C", "*", "!"):
                         continue
-                    is_continuation = (
-                        len(raw_line) > 5 and raw_line[5].strip() not in ("", "0")
+                    is_continuation = len(raw_line) > 5 and raw_line[5].strip() not in (
+                        "",
+                        "0",
                     )
                     content = raw_line[6:] if len(raw_line) > 6 else ""
                     content = content.rstrip()
