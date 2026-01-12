@@ -1846,6 +1846,19 @@ class Project:
                             filename_resolved_for_entry = filename_info[
                                 "filename_resolved"
                             ]
+                            if not display_filename:
+                                fallback_key = (
+                                    file_key
+                                    if file_key
+                                    else f"unknown{unit}"
+                                )
+                                log.debug(
+                                    "Falling back to I/O file key %r for %s (unit=%s)",
+                                    fallback_key,
+                                    proc.name,
+                                    unit,
+                                )
+                                display_filename = fallback_key
 
                             # Create a unique key for this file based on filename only
                             # Multiple procedures can access the same file with different unit numbers
