@@ -414,7 +414,7 @@ class Project:
         type_dict = {}
 
         # copy variables to var_ug_local
-        subroutine.var_ug_local = subroutine.variables
+        subroutine.var_ug_local = list(subroutine.variables)
 
         member_access_results = getattr(subroutine, "member_access_results", None)
         if not isinstance(member_access_results, list):
