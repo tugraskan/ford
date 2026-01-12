@@ -363,37 +363,45 @@ class Project:
             A filtered set of items that are neither Fortran keywords, integers, symbols, nor self-defined variables.
         """
 
+        other_results = getattr(subroutine, "other_results", None)
+        variables = getattr(subroutine, "variables", None)
+        number_re = getattr(subroutine, "NUMBER_RE", None)
+        member_access_results = getattr(subroutine, "member_access_results", None)
+
+        if not isinstance(member_access_results, list):
+            subroutine.member_access_results = []
+            member_access_results = subroutine.member_access_results
+
+        if variables is None or other_results is None or number_re is None:
+            return set()
+
         # Extract the names of subroutine variables
-        subroutine_variable_names = {var.name for var in subroutine.variables}
+        subroutine_variable_names = {var.name for var in variables}
 
         # Combine all Fortran keywords dynamically using set union
         all_fortran_keywords = (
-            subroutine.fortran_control
-            | subroutine.fortran_operators
-            | subroutine.fortran_intrinsics
-            | subroutine.fortran_reserved
-            | subroutine.fortran_custom
-            | subroutine.symbols
-            | subroutine.fortran_io
+            getattr(subroutine, "fortran_control", set())
+            | getattr(subroutine, "fortran_operators", set())
+            | getattr(subroutine, "fortran_intrinsics", set())
+            | getattr(subroutine, "fortran_reserved", set())
+            | getattr(subroutine, "fortran_custom", set())
+            | getattr(subroutine, "symbols", set())
+            | getattr(subroutine, "fortran_io", set())
             | subroutine_variable_names
         )
 
         # Convert `other_results` to a set for efficient processing
-        items = {item.strip().strip("'\"") for item in subroutine.other_results}
+        items = {item.strip().strip("'\"") for item in other_results}
 
         # Initialize a filtered set for deduplication
         filtered_items: Set[str] = set()
 
         for item in items:
             # Skip empty strings, Fortran keywords, integers, symbols, and subroutine variables
-            if (
-                item
-                and item not in all_fortran_keywords
-                and not subroutine.NUMBER_RE.match(item)
-            ):
+            if item and item not in all_fortran_keywords and not number_re.match(item):
                 # Add to filtered set if not already in member_access_results
-                if item not in subroutine.member_access_results:
-                    subroutine.member_access_results.append(item)
+                if item not in member_access_results:
+                    member_access_results.append(item)
                     filtered_items.add(item)
 
         return filtered_items
@@ -421,11 +429,12 @@ class Project:
         type_dict: Dict[str, Dict] = {}
 
         # copy variables to var_ug_local
-        subroutine.var_ug_local = subroutine.variables
+        subroutine.var_ug_local = list(subroutine.variables)
 
-        # Check if member_access_results is a valid list
-        if not isinstance(subroutine.member_access_results, list):
-            raise TypeError("Expected 'member_access_results' to be a list.")
+        member_access_results = getattr(subroutine, "member_access_results", None)
+        if not isinstance(member_access_results, list):
+            subroutine.type_results = {}
+            return subroutine.type_results
 
         for variable_path in subroutine.member_access_results:
             parts = variable_path.split("%")  # Split by '%' to get nested type parts
@@ -696,7 +705,10 @@ class Project:
         project_summary = {}
 
         for proc in procedures:
-            tracker = proc.io_tracker
+            tracker = getattr(proc, "io_tracker", None)
+            if tracker is None:
+                log.debug("Skipping I/O summary for %s: no I/O tracker", proc.name)
+                continue
             tracker.finalize()
 
             result = tracker.summarize_file_io()
@@ -1382,6 +1394,66 @@ class Project:
 
         call_sites_by_procedure: Dict[str, List[Dict[str, object]]] = {}
 
+        def merge_continuation_lines(source_lines, fixed_form):
+            merged_lines = []
+            current_line = ""
+            current_line_no = None
+            continue_pending = False
+
+            for line_no, line in enumerate(source_lines, 1):
+                raw_line = line.rstrip("\n")
+
+                if fixed_form:
+                    if not raw_line:
+                        continue
+                    if raw_line[0] in ("c", "C", "*", "!"):
+                        continue
+                    is_continuation = len(raw_line) > 5 and raw_line[5].strip() not in (
+                        "",
+                        "0",
+                    )
+                    content = raw_line[6:] if len(raw_line) > 6 else ""
+                    content = content.rstrip()
+
+                    if current_line_no is None:
+                        current_line_no = line_no
+                        current_line = content
+                    else:
+                        if is_continuation:
+                            current_line = f"{current_line} {content}".strip()
+                        else:
+                            merged_lines.append((current_line_no, current_line))
+                            current_line_no = line_no
+                            current_line = content
+                else:
+                    comment_pos = raw_line.find("!")
+                    content = raw_line[:comment_pos] if comment_pos >= 0 else raw_line
+                    content = content.rstrip()
+                    if not content and current_line_no is None:
+                        continue
+
+                    if continue_pending:
+                        continuation_content = content.lstrip()
+                        if continuation_content.startswith("&"):
+                            continuation_content = continuation_content[1:].lstrip()
+                        current_line = f"{current_line} {continuation_content}".strip()
+                    else:
+                        current_line_no = line_no
+                        current_line = content.strip()
+
+                    continue_pending = content.endswith("&")
+                    if continue_pending:
+                        current_line = current_line[:-1].rstrip()
+                    if not continue_pending and current_line_no is not None:
+                        merged_lines.append((current_line_no, current_line))
+                        current_line_no = None
+                        current_line = ""
+
+            if current_line_no is not None and current_line:
+                merged_lines.append((current_line_no, current_line))
+
+            return merged_lines
+
         # Pattern to match procedure calls: call procname(arg1, arg2, ...)
         # Also handle function-style calls: result = procname(arg1, arg2)
         call_pattern = re.compile(
@@ -1400,8 +1472,11 @@ class Project:
             elif hasattr(proc.source_file, "source"):
                 source_lines = proc.source_file.source
 
+            fixed_form = getattr(proc.source_file, "fixed", False)
+            merged_lines = merge_continuation_lines(source_lines, fixed_form)
+
             # Look for call statements
-            for line_no, line in enumerate(source_lines, 1):
+            for line_no, line in merged_lines:
                 # Skip comments
                 comment_pos = line.find("!")
                 if comment_pos >= 0:
@@ -1604,6 +1679,183 @@ class Project:
 
         return type_defaults
 
+    def _resolve_io_filename(
+        self,
+        proc: FortranProcedure,
+        operations: Dict[str, str],
+        file_key: str,
+        unit_to_filename_map: Dict[str, str],
+        type_defaults_map: Dict[str, str],
+        var_to_type_map: Dict[str, str],
+        call_site_map: Dict[str, List[Dict[str, List[str]]]],
+    ) -> List[Dict[str, Optional[str]]]:
+        filename = operations.get("filename", file_key)
+        filename_resolved = operations.get("filename_resolved")
+        unit = operations.get("unit", "unknown")
+        unit_resolved = operations.get("unit_resolved")
+
+        # FIRST: Try call-site resolution if filename appears to be a parameter
+        # This takes precedence over other resolution methods to avoid incorrect
+        # unit-based fallback matches
+        filenames_from_calls = []
+        if filename:
+            # Check if filename is a simple identifier (could be a parameter)
+            # Skip if it's a literal string (starts/ends with quotes) or synthetic unit name
+            if (
+                not filename.startswith('"')
+                and not filename.startswith("'")
+                and not filename.startswith("unit_")
+                and "%" not in filename
+            ):
+                # Check if this procedure has the filename as a parameter
+                if hasattr(proc, "args") and proc.args:
+                    param_index = -1
+                    for i, arg in enumerate(proc.args):
+                        # Args can be FortranVariable objects or strings
+                        arg_name = arg.name if hasattr(arg, "name") else str(arg)
+                        if arg_name.lower() == filename.lower():
+                            param_index = i
+                            break
+
+                    # If filename matches a parameter, look at call sites
+                    if param_index >= 0:
+                        proc_name_lower = proc.name.lower()
+                        if proc_name_lower in call_site_map:
+                            for call_site in call_site_map[proc_name_lower]:
+                                args = call_site["arguments"]
+                                if param_index < len(args):
+                                    arg_value = args[param_index].strip()
+
+                                    # Try to resolve the argument value
+                                    resolved_arg = None
+
+                                    # Check if it's a literal string
+                                    if arg_value.startswith(
+                                        '"'
+                                    ) or arg_value.startswith("'"):
+                                        resolved_arg = arg_value.strip('"').strip("'")
+                                    # Check if it's a compound variable in type defaults
+                                    elif "%" in arg_value:
+                                        arg_lower = arg_value.lower()
+                                        # Try exact match first
+                                        if arg_lower in type_defaults_map:
+                                            resolved_arg = type_defaults_map[arg_lower]
+                                        else:
+                                            # Try to resolve by matching variable to its type
+                                            # E.g., in_con%hru_con -> get type of in_con -> input_con -> look up input_con%hru_con
+                                            parts = arg_value.split("%")
+                                            if len(parts) == 2:
+                                                var_name = parts[0].strip().lower()
+                                                component_name = (
+                                                    parts[1].strip().lower()
+                                                )
+                                                if var_name in var_to_type_map:
+                                                    type_name = var_to_type_map[
+                                                        var_name
+                                                    ]
+                                                    type_component_key = (
+                                                        f"{type_name}%{component_name}"
+                                                    )
+                                                    if (
+                                                        type_component_key
+                                                        in type_defaults_map
+                                                    ):
+                                                        resolved_arg = (
+                                                            type_defaults_map[
+                                                                type_component_key
+                                                            ]
+                                                        )
+                                            # If still not resolved, try just the last component
+                                            if not resolved_arg and len(parts) >= 2:
+                                                simple_name = parts[-1].lower()
+                                                if simple_name in type_defaults_map:
+                                                    resolved_arg = type_defaults_map[
+                                                        simple_name
+                                                    ]
+
+                                    if resolved_arg:
+                                        # Clean up the resolved value (remove quotes if present)
+                                        resolved_arg = resolved_arg.strip('"').strip(
+                                            "'"
+                                        )
+                                        if resolved_arg not in filenames_from_calls:
+                                            filenames_from_calls.append(resolved_arg)
+
+        # If we found filenames from call sites, use those and skip other resolution
+        # Otherwise, continue with normal resolution
+        if not filenames_from_calls:
+            # Try to resolve using project-wide mappings
+            # 1. If unit is a number (either directly or resolved), try to find its filename from OPEN statements
+            # BUT: Only use unit-based resolution for synthetic filenames (unit_XXX)
+            # Don't use it for literal strings or variable references, as unit numbers are reused
+            unit_number = unit_resolved if unit_resolved else unit
+            # Only use unit-based resolution if:
+            # - We don't have a concrete filename (it's a synthetic unit_XXX name)
+            # - The filename is not a literal string or variable reference
+            should_use_unit_resolution = (
+                filename
+                and filename.startswith("unit_")
+                and unit_number
+                and str(unit_number) in unit_to_filename_map
+            )
+            if should_use_unit_resolution:
+                cross_file_filename = unit_to_filename_map[str(unit_number)]
+                # Only use if we don't already have a better resolution
+                if not filename_resolved:
+                    filename_resolved = cross_file_filename
+
+            # 2. If filename looks like a variable, try type defaults mapping
+            if filename and not filename_resolved:
+                # Check for compound names (e.g., in_sim%time)
+                if "%" in filename:
+                    filename_lower = filename.lower()
+                    # Try exact match first
+                    if filename_lower in type_defaults_map:
+                        filename_resolved = type_defaults_map[filename_lower]
+                    else:
+                        # Try to resolve by matching variable to its type
+                        # E.g., in_exco%pest -> get type of in_exco -> input_exco -> look up input_exco%pest
+                        parts = filename.split("%")
+                        if len(parts) == 2:
+                            var_name = parts[0].strip().lower()
+                            component_name = parts[1].strip().lower()
+                            if var_name in var_to_type_map:
+                                type_name = var_to_type_map[var_name]
+                                type_component_key = f"{type_name}%{component_name}"
+                                if type_component_key in type_defaults_map:
+                                    filename_resolved = type_defaults_map[
+                                        type_component_key
+                                    ]
+
+        # Determine the final display filename(s)
+        # If we found multiple filenames from call sites, create separate entries
+        filenames_to_process = []
+        if filenames_from_calls:
+            # We have call-site resolved filenames, use them
+            for resolved_filename in filenames_from_calls:
+                filenames_to_process.append(
+                    {
+                        "display_filename": resolved_filename,
+                        "filename_resolved": resolved_filename,
+                        "source": "call_site",
+                    }
+                )
+        else:
+            # Use the single resolved or unresolved filename
+            display_filename = filename_resolved if filename_resolved else filename
+            # Strip quotes from display filename if present
+            if display_filename:
+                display_filename = display_filename.strip('"').strip("'")
+            filenames_to_process.append(
+                {
+                    "display_filename": display_filename,
+                    "filename_resolved": filename_resolved,
+                    "source": "direct",
+                }
+            )
+
+        return filenames_to_process
+
     def collect_io_files(self):
         """
         Collect all I/O files accessed by procedures in the project.
@@ -1632,225 +1884,16 @@ class Project:
                 io_ops = proc.io_operations
                 if io_ops:
                     for file_key, operations in io_ops.items():
-                        # Enhanced filename resolution
-                        filename = operations.get("filename", file_key)
-                        filename_resolved = operations.get("filename_resolved")
                         unit = operations.get("unit", "unknown")
-                        unit_resolved = operations.get("unit_resolved")
-
-                        # FIRST: Try call-site resolution if filename appears to be a parameter
-                        # This takes precedence over other resolution methods to avoid incorrect
-                        # unit-based fallback matches
-                        filenames_from_calls = []
-                        if filename:
-                            # Check if filename is a simple identifier (could be a parameter)
-                            # Skip if it's a literal string (starts/ends with quotes) or synthetic unit name
-                            if (
-                                not filename.startswith('"')
-                                and not filename.startswith("'")
-                                and not filename.startswith("unit_")
-                                and "%" not in filename
-                            ):
-                                # Check if this procedure has the filename as a parameter
-                                if hasattr(proc, "args") and proc.args:
-                                    param_index = -1
-                                    for i, arg in enumerate(proc.args):
-                                        # Args can be FortranVariable objects or strings
-                                        arg_name = (
-                                            arg.name
-                                            if hasattr(arg, "name")
-                                            else str(arg)
-                                        )
-                                        if arg_name.lower() == filename.lower():
-                                            param_index = i
-                                            break
-
-                                    # If filename matches a parameter, look at call sites
-                                    if param_index >= 0:
-                                        proc_name_lower = proc.name.lower()
-                                        if proc_name_lower in call_site_map:
-                                            for call_site in call_site_map[
-                                                proc_name_lower
-                                            ]:
-                                                args = call_site["arguments"]
-                                                if param_index < len(args):
-                                                    arg_value = args[
-                                                        param_index
-                                                    ].strip()
-
-                                                    # Try to resolve the argument value
-                                                    resolved_arg = None
-
-                                                    # Check if it's a literal string
-                                                    if arg_value.startswith(
-                                                        '"'
-                                                    ) or arg_value.startswith("'"):
-                                                        resolved_arg = arg_value.strip(
-                                                            '"'
-                                                        ).strip("'")
-                                                    # Check if it's a compound variable in type defaults
-                                                    elif "%" in arg_value:
-                                                        arg_lower = arg_value.lower()
-                                                        # Try exact match first
-                                                        if (
-                                                            arg_lower
-                                                            in type_defaults_map
-                                                        ):
-                                                            resolved_arg = (
-                                                                type_defaults_map[
-                                                                    arg_lower
-                                                                ]
-                                                            )
-                                                        else:
-                                                            # Try to resolve by matching variable to its type
-                                                            # E.g., in_con%hru_con -> get type of in_con -> input_con -> look up input_con%hru_con
-                                                            parts = arg_value.split("%")
-                                                            if len(parts) == 2:
-                                                                var_name = (
-                                                                    parts[0]
-                                                                    .strip()
-                                                                    .lower()
-                                                                )
-                                                                component_name = (
-                                                                    parts[1]
-                                                                    .strip()
-                                                                    .lower()
-                                                                )
-                                                                if (
-                                                                    var_name
-                                                                    in var_to_type_map
-                                                                ):
-                                                                    type_name = (
-                                                                        var_to_type_map[
-                                                                            var_name
-                                                                        ]
-                                                                    )
-                                                                    type_component_key = f"{type_name}%{component_name}"
-                                                                    if (
-                                                                        type_component_key
-                                                                        in type_defaults_map
-                                                                    ):
-                                                                        resolved_arg = type_defaults_map[
-                                                                            type_component_key
-                                                                        ]
-                                                            # If still not resolved, try just the last component
-                                                            if (
-                                                                not resolved_arg
-                                                                and len(parts) >= 2
-                                                            ):
-                                                                simple_name = parts[
-                                                                    -1
-                                                                ].lower()
-                                                                if (
-                                                                    simple_name
-                                                                    in type_defaults_map
-                                                                ):
-                                                                    resolved_arg = type_defaults_map[
-                                                                        simple_name
-                                                                    ]
-
-                                                    if resolved_arg:
-                                                        # Clean up the resolved value (remove quotes if present)
-                                                        resolved_arg = (
-                                                            resolved_arg.strip(
-                                                                '"'
-                                                            ).strip("'")
-                                                        )
-                                                        if (
-                                                            resolved_arg
-                                                            not in filenames_from_calls
-                                                        ):
-                                                            filenames_from_calls.append(
-                                                                resolved_arg
-                                                            )
-
-                        # If we found filenames from call sites, use those and skip other resolution
-                        # Otherwise, continue with normal resolution
-                        if not filenames_from_calls:
-                            # Try to resolve using project-wide mappings
-                            # 1. If unit is a number (either directly or resolved), try to find its filename from OPEN statements
-                            # BUT: Only use unit-based resolution for synthetic filenames (unit_XXX)
-                            # Don't use it for literal strings or variable references, as unit numbers are reused
-                            unit_number = unit_resolved if unit_resolved else unit
-                            # Only use unit-based resolution if:
-                            # - We don't have a concrete filename (it's a synthetic unit_XXX name)
-                            # - The filename is not a literal string or variable reference
-                            should_use_unit_resolution = (
-                                filename
-                                and filename.startswith("unit_")
-                                and unit_number
-                                and str(unit_number) in unit_to_filename_map
-                            )
-                            if should_use_unit_resolution:
-                                cross_file_filename = unit_to_filename_map[
-                                    str(unit_number)
-                                ]
-                                # Only use if we don't already have a better resolution
-                                if not filename_resolved:
-                                    filename_resolved = cross_file_filename
-
-                            # 2. If filename looks like a variable, try type defaults mapping
-                            if filename and not filename_resolved:
-                                # Check for compound names (e.g., in_sim%time)
-                                if "%" in filename:
-                                    filename_lower = filename.lower()
-                                    # Try exact match first
-                                    if filename_lower in type_defaults_map:
-                                        filename_resolved = type_defaults_map[
-                                            filename_lower
-                                        ]
-                                    else:
-                                        # Try to resolve by matching variable to its type
-                                        # E.g., in_exco%pest -> get type of in_exco -> input_exco -> look up input_exco%pest
-                                        parts = filename.split("%")
-                                        if len(parts) == 2:
-                                            var_name = parts[0].strip().lower()
-                                            component_name = parts[1].strip().lower()
-                                            if var_name in var_to_type_map:
-                                                type_name = var_to_type_map[var_name]
-                                                type_component_key = (
-                                                    f"{type_name}%{component_name}"
-                                                )
-                                                if (
-                                                    type_component_key
-                                                    in type_defaults_map
-                                                ):
-                                                    filename_resolved = (
-                                                        type_defaults_map[
-                                                            type_component_key
-                                                        ]
-                                                    )
-
-                        # Determine the final display filename(s)
-                        # If we found multiple filenames from call sites, create separate entries
-                        filenames_to_process = []
-                        if filenames_from_calls:
-                            # We have call-site resolved filenames, use them
-                            for resolved_filename in filenames_from_calls:
-                                filenames_to_process.append(
-                                    {
-                                        "display_filename": resolved_filename,
-                                        "filename_resolved": resolved_filename,
-                                        "source": "call_site",
-                                    }
-                                )
-                        else:
-                            # Use the single resolved or unresolved filename
-                            display_filename = (
-                                filename_resolved if filename_resolved else filename
-                            )
-                            # Strip quotes from display filename if present
-                            if display_filename:
-                                display_filename = display_filename.strip('"').strip(
-                                    "'"
-                                )
-                            filenames_to_process.append(
-                                {
-                                    "display_filename": display_filename,
-                                    "filename_resolved": filename_resolved,
-                                    "source": "direct",
-                                }
-                            )
+                        filenames_to_process = self._resolve_io_filename(
+                            proc,
+                            operations,
+                            file_key,
+                            unit_to_filename_map,
+                            type_defaults_map,
+                            var_to_type_map,
+                            call_site_map,
+                        )
 
                         # Process each filename (usually just one, but could be multiple from call sites)
                         for filename_info in filenames_to_process:
@@ -1858,6 +1901,17 @@ class Project:
                             filename_resolved_for_entry = filename_info[
                                 "filename_resolved"
                             ]
+                            if not display_filename:
+                                fallback_key = (
+                                    file_key if file_key else f"unknown{unit}"
+                                )
+                                log.debug(
+                                    "Falling back to I/O file key %r for %s (unit=%s)",
+                                    fallback_key,
+                                    proc.name,
+                                    unit,
+                                )
+                                display_filename = fallback_key
 
                             # Create a unique key for this file based on filename only
                             # Multiple procedures can access the same file with different unit numbers
