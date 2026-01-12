@@ -1722,7 +1722,9 @@ class Project:
                                             parts = arg_value.split("%")
                                             if len(parts) == 2:
                                                 var_name = parts[0].strip().lower()
-                                                component_name = parts[1].strip().lower()
+                                                component_name = (
+                                                    parts[1].strip().lower()
+                                                )
                                                 if var_name in var_to_type_map:
                                                     type_name = var_to_type_map[
                                                         var_name
