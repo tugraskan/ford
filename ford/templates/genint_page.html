@@ -13,7 +13,7 @@
   </div>
 
   <div class="row">
-    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+    <div class="col-md-3 d-none d-md-block">
       {{ macros.sidebar(project,interface) }}
     </div>
 
@@ -21,38 +21,16 @@
       <h2>{{ interface.permission }} interface {{ interface.name }}</h2>
       {{ interface.doc }}
       {% if interface.callsgraph %}
-        <div class="card mb-3">
-          <a data-bs-toggle="collapse" href="#calls-section" 
-             aria-expanded="false" 
-             aria-controls="calls-section" 
-             class="text-decoration-none">
-            <h3 class="card-header bg-light text-dark">
-              <i class="fa fa-caret-down me-2"></i>Calls
-            </h3>
-          </a>
-          <div id="calls-section" class="collapse">
-            <div class="card-body">
-              {{ interface.callsgraph }}
-            </div>
-          </div>
-        </div>
+        {% set calls_content %}
+          {{ interface.callsgraph }}
+        {% endset %}
+        {{ macros.collapsible_section("Calls", "calls-section", calls_content) }}
       {% endif %}
       {% if interface.calledbygraph %}
-        <div class="card mb-3">
-          <a data-bs-toggle="collapse" href="#called-by-section" 
-             aria-expanded="false" 
-             aria-controls="called-by-section" 
-             class="text-decoration-none">
-            <h3 class="card-header bg-light text-dark">
-              <i class="fa fa-caret-down me-2"></i>Called by
-            </h3>
-          </a>
-          <div id="called-by-section" class="collapse">
-            <div class="card-body">
-              {{ interface.calledbygraph }}
-            </div>
-          </div>
-        </div>
+        {% set called_by_content %}
+          {{ interface.calledbygraph }}
+        {% endset %}
+        {{ macros.collapsible_section("Called by", "called-by-section", called_by_content) }}
       {% endif %}
       {% if interface.doc or interface.callsgraph or interface.calledbygraph %}<br>{% endif %}
 
