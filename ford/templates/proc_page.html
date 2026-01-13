@@ -14,7 +14,7 @@
   </div>
   
   <div class="row">
-    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+    <div class="col-md-3 d-none d-md-block">
     {{ macros.sidebar(project,procedure) }}
     </div>
     
@@ -279,16 +279,17 @@
                       {% endif %}
                     {% endfor %}
                     {% if has_read.value and has_write.value %}
-                      <span class="badge bg-info">Input/Output</span>
+                      {% set io_type = 'Input/Output' %}
                     {% elif has_read.value %}
-                      <span class="badge bg-success">Input</span>
+                      {% set io_type = 'Input' %}
                     {% elif has_write.value %}
-                      <span class="badge bg-primary">Output</span>
+                      {% set io_type = 'Output' %}
                     {% else %}
-                      <span class="badge bg-secondary">Unknown</span>
+                      {% set io_type = 'Unknown' %}
                     {% endif %}
+                    {{ macros.io_type_badge(io_type) }}
                   {% else %}
-                    <span class="badge bg-secondary">Unknown</span>
+                    {{ macros.io_type_badge('Unknown') }}
                   {% endif %}
                 </td>
                 <td>
