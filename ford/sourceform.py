@@ -27,6 +27,7 @@ from __future__ import annotations
 from contextlib import suppress
 from collections import defaultdict
 from dataclasses import dataclass, fields
+import logging
 import re
 import os.path
 import pathlib
@@ -61,83 +62,41 @@ from ford._markdown import MetaMarkdown
 from ford.settings import ProjectSettings, EntitySettings
 from ford._typing import PathLike
 
-import logging
-from collections import defaultdict
-
 if TYPE_CHECKING:
     from ford.fortran_project import Project
 
 log = logging.getLogger(__name__)
 
 
-def extract_base(col: str) -> str:
-    """
-    Strip off any array‐index or component qualifiers
-    so you only get the raw variable name.
-    E.g. "aq_ch(iaq)%name"  → "aq_ch"
-    """
-    # take everything before the first '('
-    base = col.split("(", 1)[0]
-    # then drop any %component
-    return base.split("%", 1)[0]
+def _split_top_level_commas(text: str) -> list[str]:
+    """Split a string on commas, ignoring commas inside parentheses."""
+    parts = []
+    buffer = ""
+    depth = 0
+    for ch in text:
+        if ch == "(":
+            depth += 1
+            buffer += ch
+        elif ch == ")" and depth > 0:
+            depth -= 1
+            buffer += ch
+        elif ch == "," and depth == 0:
+            if buffer.strip():
+                parts.append(buffer.strip())
+            buffer = ""
+        else:
+            buffer += ch
+    if buffer.strip():
+        parts.append(buffer.strip())
+    return parts
 
 
-class IoSession:
-    def __init__(self, unit, filename, loop_context=None, line_no=None):
-        self.unit = unit
-        self.file = filename
-        self.operations = []
-        self.closed = False
-        self.loop_context = loop_context  # e.g., loop variable/name
-        self.line_no = line_no  # record line number for context
-
-    def add(self, kind, raw, line_no=None, condition=None):
-        """Record an I/O operation with optional line number and condition."""
-        self.operations.append(
-            {"kind": kind, "raw": raw.strip(), "line": line_no, "condition": condition}
-        )
-
-    def close(self) -> None:
-        """Mark the session as closed."""
-        self.closed = True
-
-
-class IoTracker:
-    # Class-level attributes for project-wide mappings
-    # These are set by the Project.collect_io_files() method before template rendering
-    _unit_filename_map = {}  # unit number -> filename from OPEN statements
-    _type_defaults_map = {}  # typename%component -> default value from type definitions
-    _var_to_type_map = {}  # variable name -> type name from variable declarations
+class ConditionTracker:
+    """Tracks nested conditions for operations."""
 
     def __init__(self):
-        self._open_sessions = {}  # unit → IoSession
-        self.completed = defaultdict(list)  # unit → [IoSession,...]
-        self.file_mappings = defaultdict(set)  # filename → {unit1, unit2, ...}
-        self.stragglers = []  # IoSessions never closed
-        self.condition_stack = []  # Stack of active conditions
-        self.current_condition = None  # Current active condition context
-
-    def normalize_file_key(self, fname: str) -> str:
-        """
-        Collapse any TRIM/ADJUSTL wrappers and '//' concatenations so that
-        both
-        TRIM(ADJUSTL(in_path_hmd%hmd))//hmd(i)%filename
-        and
-        hmd(i)%filename
-        become simply
-        hmd(i)%filename
-        """
-        if not fname:
-            return "<unknown>"
-        f = fname.strip().strip('"').strip("'")
-        # if string‐concat present, keep only after the last //
-        if "//" in f:
-            f = f.rsplit("//", 1)[-1].strip()
-        # strip single TRIM(...) or ADJUSTL(...) wrapper
-        m = re.match(r"^(?:TRIM|ADJUSTL)\((.+)\)$", f, re.IGNORECASE)
-        if m:
-            return self.normalize_file_key(m.group(1).strip())
-        return f
+        self.condition_stack = []
+        self.current_condition = None
 
     def push_condition(self, condition_text, line_no=None):
         """Push a new condition context onto the stack."""
@@ -172,22 +131,82 @@ class IoTracker:
             return "do"
         return "unknown"
 
+
+class IoSession:
+    def __init__(self, unit, filename, loop_context=None, line_no=None):
+        self.unit = unit
+        self.file = filename
+        self.operations = []
+        self.closed = False
+        self.loop_context = loop_context  # e.g., loop variable/name
+        self.line_no = line_no  # record line number for context
+
+    def add(self, kind, raw, line_no=None, condition=None):
+        """Record an I/O operation with optional line number and condition."""
+        self.operations.append(
+            {"kind": kind, "raw": raw.strip(), "line": line_no, "condition": condition}
+        )
+
+    def close(self) -> None:
+        """Mark the session as closed."""
+        self.closed = True
+
+
+class IoTracker(ConditionTracker):
+    # Class-level attributes for project-wide mappings
+    # These are set by the Project.collect_io_files() method before template rendering
+    _unit_filename_map = {}  # unit number -> filename from OPEN statements
+    _type_defaults_map = {}  # typename%component -> default value from type definitions
+    _var_to_type_map = {}  # variable name -> type name from variable declarations
+
+    def __init__(self):
+        super().__init__()
+        self._open_sessions = {}  # unit → IoSession
+        self.completed = defaultdict(list)  # unit → [IoSession,...]
+        self.file_mappings = defaultdict(set)  # filename → {unit1, unit2, ...}
+        self.stragglers = []  # IoSessions never closed
+
+    def normalize_file_key(self, fname: str) -> str:
+        """
+        Collapse any TRIM/ADJUSTL wrappers and '//' concatenations so that
+        both
+        TRIM(ADJUSTL(in_path_hmd%hmd))//hmd(i)%filename
+        and
+        hmd(i)%filename
+        become simply
+        hmd(i)%filename
+        """
+        if not fname:
+            return "<unknown>"
+        filename_key = fname.strip().strip('"').strip("'")
+        # if string‐concat present, keep only after the last //
+        if "//" in filename_key:
+            filename_key = filename_key.rsplit("//", 1)[-1].strip()
+        # strip single TRIM(...) or ADJUSTL(...) wrapper
+        match = re.match(
+            r"^(?:TRIM|ADJUSTL)\((.+)\)$", filename_key, re.IGNORECASE
+        )
+        if match:
+            return self.normalize_file_key(match.group(1).strip())
+        return filename_key
+
+
     def operations_timeline(self) -> dict[str, list[dict]]:
         """
         Returns a dict mapping file or synthetic unit-based name → chronological list of raw I/O operations.
         Used to populate the 'timeline' entry per unit or file.
         """
-        result = {}
+        timeline_by_file = {}
 
-        for unit, sessions in self.completed.items():  # 🔄 FIXED
+        for unit, sessions in self.completed.items():
             for sess in sessions:
                 # Normalize the file key to match what's used in summarize_file_io
                 key = self.normalize_file_key(sess.file)
                 if key == "<unknown>" and sess.unit:
                     key = f"unit_{sess.unit}"
-                result.setdefault(key, []).extend(sess.operations)
+                timeline_by_file.setdefault(key, []).extend(sess.operations)
 
-        return result
+        return timeline_by_file
 
     def extract_variable_defaults(self, source_lines: list[str]) -> dict[str, str]:
         """
@@ -195,7 +214,7 @@ class IoTracker:
         Returns a dictionary mapping variable names to their assigned values.
         Skips empty string defaults to preserve variable names in documentation.
         """
-        defaults = {}
+        variable_defaults = {}
 
         # Patterns for variable assignments
         assignment_patterns = [
@@ -209,29 +228,29 @@ class IoTracker:
             r'^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']*)["\']',
         ]
 
-        for line in source_lines:
+        for source_line in source_lines:
             # Skip comment lines
-            comment_pos = line.find("!")
+            comment_pos = source_line.find("!")
             if comment_pos >= 0:
-                line = line[:comment_pos]
+                source_line = source_line[:comment_pos]
 
-            line = line.strip()
-            if not line:
+            source_line = source_line.strip()
+            if not source_line:
                 continue
 
             for pattern in assignment_patterns:
-                match = re.match(pattern, line, re.IGNORECASE)
+                match = re.match(pattern, source_line, re.IGNORECASE)
                 if match:
                     var_name = match.group(1).strip()
                     var_value = match.group(2).strip()
                     # Skip empty string defaults - preserve variable name in output
                     if var_value:  # Only add non-empty values
-                        defaults[var_name] = var_value
+                        variable_defaults[var_name] = var_value
                         log.debug(f"Found variable default: {var_name} = {var_value}")
                     else:
                         log.debug(f"Skipping empty default for variable: {var_name}")
 
-        return defaults
+        return variable_defaults
 
     def start(self, unit, filename, line_no=None):
         """Begin a new I/O session, closing any prior one on same unit."""
@@ -324,15 +343,17 @@ class IoTracker:
         if variable_defaults is None:
             variable_defaults = {}
 
-        raw_result: dict[str, dict] = {}
+        file_io_records: dict[str, dict] = {}
+        timeline_by_file = self.operations_timeline()
+        log.debug("Available timeline keys: %s", list(timeline_by_file.keys()))
 
         for sessions in self.completed.values():
             for sess in sessions:
-                fname = self.normalize_file_key(sess.file)
-                if fname == "<unknown>" and sess.unit:
-                    fname = f"unit_{sess.unit}"
-                rec = raw_result.setdefault(
-                    fname,
+                file_key = self.normalize_file_key(sess.file)
+                if file_key == "<unknown>" and sess.unit:
+                    file_key = f"unit_{sess.unit}"
+                file_record = file_io_records.setdefault(
+                    file_key,
                     {
                         "unit": sess.unit,
                         "original_filename": sess.file,  # Store original filename
@@ -368,21 +389,7 @@ class IoTracker:
                     cols_part = raw_line[end_idx + 1 :].strip()
 
                     # --- Split on top-level commas (ignoring nested parentheses)
-                    cols, buf, depth = [], "", 0
-                    for ch in cols_part:
-                        if ch == "(":
-                            depth += 1
-                            buf += ch
-                        elif ch == ")" and depth > 0:
-                            depth -= 1
-                            buf += ch
-                        elif ch == "," and depth == 0:
-                            cols.append(buf.strip())
-                            buf = ""
-                        else:
-                            buf += ch
-                    if buf.strip():
-                        cols.append(buf.strip())
+                    cols = _split_top_level_commas(cols_part)
 
                     # --- Strip one layer of parens from each col
                     clean_cols = []
@@ -397,53 +404,53 @@ class IoTracker:
                         if len(clean_cols) == 1:
                             single = clean_cols[0]
                             if single == "i":
-                                if single not in rec["index_reads"]:
-                                    rec["index_reads"].append(single)
+                                if single not in file_record["index_reads"]:
+                                    file_record["index_reads"].append(single)
                             elif single in ("titldum", "header"):
-                                if single not in rec["headers"]:
-                                    rec["headers"].append(single)
+                                if single not in file_record["headers"]:
+                                    file_record["headers"].append(single)
                             elif "(" in single or "%" in single:
-                                rec["data_reads"].append((single,))
+                                file_record["data_reads"].append((single,))
                             else:
-                                if single not in rec["headers"]:
-                                    rec["headers"].append(single)
+                                if single not in file_record["headers"]:
+                                    file_record["headers"].append(single)
                         else:
-                            rec["data_reads"].append(tuple(clean_cols))
+                            file_record["data_reads"].append(tuple(clean_cols))
 
                     elif kind == "write":
                         if len(clean_cols) == 1 and clean_cols[0] in (
                             "titldum",
                             "header",
                         ):
-                            if clean_cols[0] not in rec["header_writes"]:
-                                rec["header_writes"].append(clean_cols[0])
+                            if clean_cols[0] not in file_record["header_writes"]:
+                                file_record["header_writes"].append(clean_cols[0])
                         else:
-                            rec["data_writes"].append(tuple(clean_cols))
+                            file_record["data_writes"].append(tuple(clean_cols))
 
         # Step 2: Collapse duplicate reads and writes
         final_result = {}
 
-        for fname, rec in raw_result.items():
+        for file_key, file_record in file_io_records.items():
             # collapse data_reads
-            dr_counts: dict[tuple[str, ...], int] = defaultdict(int)
-            for cols in rec["data_reads"]:
-                dr_counts[cols] += 1
-            rec["data_reads"] = [
+            data_read_counts: dict[tuple[str, ...], int] = defaultdict(int)
+            for cols in file_record["data_reads"]:
+                data_read_counts[cols] += 1
+            file_record["data_reads"] = [
                 {"columns": list(cols), "rows": count}
-                for cols, count in dr_counts.items()
+                for cols, count in data_read_counts.items()
             ]
 
             # collapse data_writes
-            dw_counts: dict[tuple[str, ...], int] = defaultdict(int)
-            for cols in rec["data_writes"]:
-                dw_counts[cols] += 1
-            rec["data_writes"] = [
+            data_write_counts: dict[tuple[str, ...], int] = defaultdict(int)
+            for cols in file_record["data_writes"]:
+                data_write_counts[cols] += 1
+            file_record["data_writes"] = [
                 {"columns": list(cols), "rows": count}
-                for cols, count in dw_counts.items()
+                for cols, count in data_write_counts.items()
             ]
 
             # attach timeline with variable defaults
-            timeline = self.operations_timeline().get(fname, [])
+            timeline = timeline_by_file.get(file_key, [])
 
             # Enhance operations with variable defaults and parameter lists
             enhanced_timeline = []
@@ -467,15 +474,9 @@ class IoTracker:
 
                 enhanced_timeline.append(enhanced_op)
 
-            all_timelines = self.operations_timeline()
-            log.debug("Available timeline keys: %s", list(all_timelines.keys()))
-            log.debug(
-                "Available ops for key %s: %s", fname, all_timelines.get(fname, [])
-            )
-
             # Resolve unit and filename from variable defaults
-            unit = rec.get("unit", "")
-            original_filename = rec.get("original_filename", fname)
+            unit = file_record.get("unit", "")
+            original_filename = file_record.get("original_filename", file_key)
             unit_resolved = None
             filename_resolved = None
 
@@ -553,8 +554,8 @@ class IoTracker:
                 if unit_number and str(unit_number) in IoTracker._unit_filename_map:
                     filename_resolved = IoTracker._unit_filename_map[str(unit_number)]
 
-            final_result[fname] = {
-                "summary": rec,
+            final_result[file_key] = {
+                "summary": file_record,
                 "timeline": enhanced_timeline,
                 "unit": unit,
                 "unit_resolved": unit_resolved,
@@ -575,10 +576,10 @@ class IoTracker:
         - read(101) var1, var2, var3 -> ['var1', 'var2', 'var3']
         - write(102) result(i), value -> ['result(i)', 'value']
         """
-        variables = []
+        extracted_variables = []
 
         if operation_kind.lower() not in ("read", "write"):
-            return variables
+            return extracted_variables
 
         # Find the closing parenthesis of the unit specification
         paren_level = 0
@@ -593,39 +594,23 @@ class IoTracker:
                     break
 
         if end_idx is None or end_idx + 1 >= len(raw_statement):
-            return variables
+            return extracted_variables
 
         # Get the part after the closing parenthesis
         vars_part = raw_statement[end_idx + 1 :].strip()
 
         # Split on top-level commas (ignoring nested parentheses)
-        buf, depth = "", 0
-        for ch in vars_part:
-            if ch == "(":
-                depth += 1
-                buf += ch
-            elif ch == ")" and depth > 0:
-                depth -= 1
-                buf += ch
-            elif ch == "," and depth == 0:
-                if buf.strip():
-                    variables.append(buf.strip())
-                buf = ""
-            else:
-                buf += ch
-
-        if buf.strip():
-            variables.append(buf.strip())
+        extracted_variables = _split_top_level_commas(vars_part)
 
         # Clean up the variables - remove one layer of parens if entire thing is wrapped
-        clean_vars = []
-        for var in variables:
-            var = var.strip()
-            if var.startswith("(") and var.endswith(")"):
-                var = var[1:-1].strip()
-            clean_vars.append(var)
+        cleaned_variables = []
+        for variable in extracted_variables:
+            variable = variable.strip()
+            if variable.startswith("(") and variable.endswith(")"):
+                variable = variable[1:-1].strip()
+            cleaned_variables.append(variable)
 
-        return clean_vars
+        return cleaned_variables
 
     def _find_relevant_variable_defaults(
         self, operation: dict, variable_defaults: dict[str, str], procedure=None
@@ -635,10 +620,10 @@ class IoTracker:
         Looks for file-related variables in the operation and matches them with defaults.
         Returns a dictionary mapping variable names to dicts with 'value' and 'is_local' keys.
         """
-        relevant_defaults = {}
+        matched_defaults = {}
 
         if not variable_defaults:
-            return relevant_defaults
+            return matched_defaults
 
         # Get list of local variable names if procedure is provided
         local_var_names = set()
@@ -651,34 +636,34 @@ class IoTracker:
         raw_statement = operation.get("raw", "")
 
         # Look for file= parameters in open statements
-        file_match = re.search(
+        file_parameter_match = re.search(
             r"file\s*=\s*([a-zA-Z_][a-zA-Z0-9_%]*)", raw_statement, re.IGNORECASE
         )
-        if file_match:
-            file_var = file_match.group(1)
+        if file_parameter_match:
+            file_variable = file_parameter_match.group(1)
             # Check if this variable has a default value
             for var_name, var_value in variable_defaults.items():
                 # Direct match
-                if var_name == file_var:
+                if var_name == file_variable:
                     is_local = var_name.lower() in local_var_names
-                    relevant_defaults[f"{file_var}"] = {
+                    matched_defaults[f"{file_variable}"] = {
                         "value": var_value,
                         "is_local": is_local,
                     }
                 # Match module%variable with variable (e.g., in_sim%prt with prt)
-                elif file_var.count("%") > 0:
-                    var_parts = file_var.split("%")
+                elif file_variable.count("%") > 0:
+                    var_parts = file_variable.split("%")
                     if len(var_parts) >= 2 and var_name == var_parts[-1]:
                         # Check if the simple variable name is local
                         is_local = var_name.lower() in local_var_names
-                        relevant_defaults[file_var] = {
+                        matched_defaults[file_variable] = {
                             "value": var_value,
                             "is_local": is_local,
                         }
                 # Match variable%subvar with variable
-                elif var_name.endswith(f"%{file_var}"):
+                elif var_name.endswith(f"%{file_variable}"):
                     is_local = var_name.split("%")[0].lower() in local_var_names
-                    relevant_defaults[var_name] = {
+                    matched_defaults[var_name] = {
                         "value": var_value,
                         "is_local": is_local,
                     }
@@ -692,8 +677,8 @@ class IoTracker:
                 re.IGNORECASE,
             ):
                 is_local = var_name.lower() in local_var_names
-                if var_name not in relevant_defaults:
-                    relevant_defaults[var_name] = {
+                if var_name not in matched_defaults:
+                    matched_defaults[var_name] = {
                         "value": var_value,
                         "is_local": is_local,
                     }
@@ -710,16 +695,16 @@ class IoTracker:
                 simple_name = var_parts[-1]  # Get the part after the last %
                 if (
                     simple_name in variable_defaults
-                    and compound_var not in relevant_defaults
+                    and compound_var not in matched_defaults
                 ):
                     # Check if the simple name is local
                     is_local = simple_name.lower() in local_var_names
-                    relevant_defaults[compound_var] = {
+                    matched_defaults[compound_var] = {
                         "value": variable_defaults[simple_name],
                         "is_local": is_local,
                     }
 
-        return relevant_defaults
+        return matched_defaults
 
 
 VAR_TYPE_STRING = r"^integer|real|double\s*precision|character|complex|double\s*complex|logical|type|class|procedure|enumerator"
@@ -746,47 +731,13 @@ CALL_AND_WHITESPACE_RE = re.compile(r"\(\)|\s")
 base_url = ""
 
 
-class AllocationTracker:
+class AllocationTracker(ConditionTracker):
     """Tracks memory allocation and deallocation operations."""
 
     def __init__(self):
+        super().__init__()
         self.operations = []  # List of allocation operations
-        self.condition_stack = []  # Stack of active conditions
-        self.current_condition = None  # Current active condition context
         self.completed = False
-
-    def push_condition(self, condition_text, line_no=None):
-        """Push a new condition context onto the stack."""
-        condition_info = {
-            "text": condition_text.strip(),
-            "line": line_no,
-            "type": self._determine_condition_type(condition_text),
-        }
-        self.condition_stack.append(condition_info)
-        self.current_condition = condition_info
-
-    def pop_condition(self):
-        """Pop the current condition context from the stack."""
-        if self.condition_stack:
-            self.condition_stack.pop()
-        self.current_condition = (
-            self.condition_stack[-1] if self.condition_stack else None
-        )
-
-    def _determine_condition_type(self, condition_text):
-        """Determine the type of control structure."""
-        text_lower = condition_text.lower().strip()
-        if text_lower.startswith("if"):
-            return "if"
-        elif text_lower.startswith("select case"):
-            return "select"
-        elif text_lower.startswith("case"):
-            return "case"
-        elif text_lower.startswith("else"):
-            return "else"
-        elif text_lower.startswith("do"):
-            return "do"
-        return "unknown"
 
     def record_allocation(self, kind, raw, line_no=None, variables=None):
         """Record an allocation operation."""
