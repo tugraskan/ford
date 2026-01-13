@@ -183,13 +183,10 @@ class IoTracker(ConditionTracker):
         if "//" in filename_key:
             filename_key = filename_key.rsplit("//", 1)[-1].strip()
         # strip single TRIM(...) or ADJUSTL(...) wrapper
-        match = re.match(
-            r"^(?:TRIM|ADJUSTL)\((.+)\)$", filename_key, re.IGNORECASE
-        )
+        match = re.match(r"^(?:TRIM|ADJUSTL)\((.+)\)$", filename_key, re.IGNORECASE)
         if match:
             return self.normalize_file_key(match.group(1).strip())
         return filename_key
-
 
     def operations_timeline(self) -> dict[str, list[dict]]:
         """
