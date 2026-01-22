@@ -55,9 +55,6 @@ contains
     ! Close the file
     close(107)
     
-    ! Rewind could be used if we need to read again
-    ! rewind(107)
-    
   end subroutine aqu_read
 
 end module aquifer_module

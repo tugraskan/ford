@@ -44,11 +44,11 @@ contains
   
   !> Write management operation to mgt.out
   !! @param mgt_op Management operation data structure
+  !! @note Unit 201 must be opened via output_init before calling this routine
   subroutine write_mgt_operation(mgt_op)
     type(mgt_operation_type), intent(in) :: mgt_op  !< Management operation to write
     
     ! Write management operation record
-    ! Unit 201 should already be open from output_init
     write(201, '(i5, i5, i8, 2x, a16, f12.3)') &
       mgt_op%year, mgt_op%day, mgt_op%hru_id, mgt_op%op_type, mgt_op%amount
     
@@ -58,6 +58,7 @@ contains
   !! @param year Simulation year
   !! @param day Day of year
   !! @param aqu_id Aquifer index
+  !! @note Unit 202 must be opened via output_init before calling this routine
   subroutine write_aquifer_output(year, day, aqu_id)
     integer, intent(in) :: year     !< Simulation year
     integer, intent(in) :: day      !< Day of year
@@ -76,7 +77,6 @@ contains
     recharge = 0.0
     
     ! Write aquifer output record
-    ! Unit 202 should already be open from output_init
     write(202, '(i5, i5, i5, 2x, a16, 4f15.3)') &
       year, day, aqu_id, aqudb(aqu_id)%name, &
       storage, seepage, revap, recharge

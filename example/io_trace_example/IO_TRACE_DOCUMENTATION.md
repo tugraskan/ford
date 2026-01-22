@@ -19,7 +19,7 @@ This document provides a comprehensive analysis of all I/O operations involving 
 - **Type:** Component of `input_files_type` derived type
 - **Default value:** `"aquifer.aqu"` (character(len=25))
 - **Defined at:** `example/io_trace_example/src/input_file_module.f90:9`
-- **Instance declaration:** `example/io_trace_example/src/input_file_module.f90:15`
+- **Instance declaration:** `example/io_trace_example/src/input_file_module.f90:14`
 - **Potential override:** `example/io_trace_example/src/input_file_module.f90:24-28` (via `init_input_files` subroutine)
 
 **Usage sites:**
@@ -36,7 +36,7 @@ This document provides a comprehensive analysis of all I/O operations involving 
 - **Type:** Component of `input_files_type` derived type
 - **Default value:** `"object.cnt"` (character(len=25))
 - **Defined at:** `example/io_trace_example/src/input_file_module.f90:10`
-- **Instance declaration:** `example/io_trace_example/src/input_file_module.f90:16`
+- **Instance declaration:** `example/io_trace_example/src/input_file_module.f90:14`
 - **Potential override:** `example/io_trace_example/src/input_file_module.f90:24-28` (via `init_input_files` subroutine)
 
 **Usage sites:**

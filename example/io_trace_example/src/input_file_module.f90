@@ -11,8 +11,7 @@ module input_file_module
   end type input_files_type
   
   !> Global instance of input filenames
-  type(input_files_type) :: in_aqu
-  type(input_files_type) :: in_obj
+  type(input_files_type) :: in_aqu, in_obj
   
 contains
 
