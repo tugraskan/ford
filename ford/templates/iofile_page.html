@@ -91,6 +91,44 @@
                   <p><em>No operations recorded for this procedure.</em></p>
                 {% endif %}
                 
+                {# Subsection 1b: Filename Resolution Chain #}
+                {% if ops.resolution_chain %}
+                  <h4>Filename Resolution Chain</h4>
+                  <div class="alert alert-info">
+                    <p><strong>Expression:</strong> <code>{{ ops.resolution_chain.expression }}</code></p>
+                    <p class="mb-0"><strong>Resolution:</strong></p>
+                    <ol class="mb-0">
+                      <li>
+                        Variable: <code>{{ ops.resolution_chain.variable_name }}</code>
+                        {% if ops.resolution_chain.variable_object %}
+                          ({{ ops.resolution_chain.variable_object | relurl(page_url) }})
+                        {% endif %}
+                        {% if ops.resolution_chain.variable_location %}
+                          <br><small class="text-muted">Declared at: {{ ops.resolution_chain.variable_location }}</small>
+                        {% endif %}
+                      </li>
+                      <li>
+                        Type: <code>{{ ops.resolution_chain.variable_type }}</code>
+                        {% if ops.resolution_chain.type_object %}
+                          ({{ ops.resolution_chain.type_object | relurl(page_url) }})
+                        {% endif %}
+                        {% if ops.resolution_chain.type_location %}
+                          <br><small class="text-muted">Defined at: {{ ops.resolution_chain.type_location }}</small>
+                        {% endif %}
+                      </li>
+                      <li>
+                        Component: <code>{{ ops.resolution_chain.component_name }}</code>
+                        {% if ops.resolution_chain.component_location %}
+                          <br><small class="text-muted">Declared at: {{ ops.resolution_chain.component_location }}</small>
+                        {% endif %}
+                      </li>
+                      <li>
+                        Default Value: <code>"{{ ops.resolution_chain.default_value }}"</code>
+                      </li>
+                    </ol>
+                  </div>
+                {% endif %}
+                
                 {# Subsection 2a: Variables Written to This File (for Output and Input/Output files) - ONLY for procedures that write #}
                 {% if iofile.io_type in ['Output', 'Input/Output'] %}
                   {% set has_write_ops = namespace(value=false) %}
