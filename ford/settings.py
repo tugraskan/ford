@@ -209,6 +209,11 @@ class ProjectSettings:
     warn: bool = False
     website: Optional[str] = None
     year: str = str(date.today().year)
+    
+    # I/O trace analysis options
+    io_trace: bool = False
+    io_trace_files: Optional[List[str]] = None
+    io_trace_output: str = "IO_TRACE_REPORT.md"
 
     def __post_init__(self):
         self.relative = self.project_url == ""

@@ -298,6 +298,27 @@ def get_command_line_arguments() -> argparse.Namespace:
         help="Any other FORD options as a semicolon-separated TOML string. "
         "Options set through this have lower precedence than other command line options",
     )
+    parser.add_argument(
+        "--io-trace",
+        dest="io_trace",
+        action="store_true",
+        default=False,
+        help="Generate I/O trace documentation analyzing file read/write operations",
+    )
+    parser.add_argument(
+        "--io-trace-files",
+        dest="io_trace_files",
+        action="append",
+        help="Specific files to trace in I/O analysis (e.g., aquifer.aqu, object.cnt). "
+        "If not specified, all files will be analyzed.",
+    )
+    parser.add_argument(
+        "--io-trace-output",
+        dest="io_trace_output",
+        type=str,
+        default="IO_TRACE_REPORT.md",
+        help="Output filename for I/O trace documentation (default: IO_TRACE_REPORT.md)",
+    )
 
     return parser.parse_args()
 
@@ -464,6 +485,22 @@ def main(proj_data: ProjectSettings, proj_docs: str):
         proj_data.summary = md.convert(proj_data.summary)
     if proj_data.author_description is not None:
         proj_data.author_description = md.convert(proj_data.author_description)
+
+    # Run I/O trace analysis if requested
+    if hasattr(proj_data, 'io_trace') and proj_data.io_trace:
+        from ford.io_trace import run_io_trace_analysis
+        from pathlib import Path
+        
+        print("Running I/O trace analysis...")
+        target_files = getattr(proj_data, 'io_trace_files', None)
+        output_file = Path(getattr(proj_data, 'io_trace_output', 'IO_TRACE_REPORT.md'))
+        
+        # Make output path relative to output directory if not absolute
+        if not output_file.is_absolute():
+            output_file = proj_data.output_dir / output_file
+        
+        run_io_trace_analysis(project, target_files=target_files, output_file=output_file)
+        print(f"I/O trace analysis complete. Report written to {output_file}")
 
     # Process any pages
     if proj_data.page_dir is not None:
