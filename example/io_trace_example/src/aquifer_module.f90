@@ -17,6 +17,7 @@ contains
     integer :: k                  !< Counter/index variable
     integer :: eof                !< End-of-file status indicator
     integer :: max_aqu            !< Maximum number of aquifers to allocate
+    logical :: file_exists        !< File existence check flag
     
     ! Inquire if file exists before opening
     inquire(file=in_aqu%aqu, exist=file_exists)
@@ -58,7 +59,5 @@ contains
     ! rewind(107)
     
   end subroutine aqu_read
-  
-  logical :: file_exists  !< File existence check flag
 
 end module aquifer_module

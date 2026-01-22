@@ -891,7 +891,7 @@ This statement is executed `num_aquifers` times (controlled by the do-loop at li
 
 **Variable 1: k**
 
-- **Declared at:** `example/io_trace_example/src/aquifer_module.f90:14`
+- **Declared at:** `example/io_trace_example/src/aquifer_module.f90:15`
 - **Declaration:**
   ```fortran
   integer :: k  !< Counter/index variable
@@ -994,7 +994,7 @@ This would be read as:
 
 ### 4.6 Error Handling
 
-**IOSTAT variable:** `eof` (declared at line 15)
+**IOSTAT variable:** `eof` (declared at line 16)
 
 ```fortran
 integer :: eof  !< End-of-file status indicator

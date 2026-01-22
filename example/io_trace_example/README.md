@@ -55,4 +55,23 @@ This example serves as:
 
 To view the full I/O trace analysis, see [IO_TRACE_DOCUMENTATION.md](IO_TRACE_DOCUMENTATION.md).
 
+To build and run the example:
+
+```bash
+# Build the program
+make
+
+# Run the demonstration
+make run
+
+# Clean up build artifacts
+make clean
+```
+
+The demonstration program will:
+1. Read aquifer parameters from `data/aquifer.aqu`
+2. Read object counts from `data/object.cnt`
+3. Create and write to `mgt.out` (management operations)
+4. Create and write to `aquifer.out` (aquifer water balance)
+
 The source code can be compiled and used as a starting point for similar I/O documentation tasks in other Fortran projects.
