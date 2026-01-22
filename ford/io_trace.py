@@ -156,7 +156,9 @@ class IOTraceAnalyzer:
         # Scan all source files in the project
         for source_file in self.project.files:
             try:
-                content = source_file.path.read_text()
+                # Ensure path is a Path object
+                file_path = Path(source_file.path) if isinstance(source_file.path, str) else source_file.path
+                content = file_path.read_text()
                 lines = content.splitlines()
                 
                 for line_num, line in enumerate(lines, 1):
@@ -175,7 +177,7 @@ class IOTraceAnalyzer:
                             ref = FileReference(
                                 filename=filename,
                                 expression=match.group(0),
-                                file_path=source_file.path,
+                                file_path=file_path,
                                 line_number=line_num,
                                 io_type=io_type
                             )
@@ -200,7 +202,9 @@ class IOTraceAnalyzer:
         
         for source_file in self.project.files:
             try:
-                content = source_file.path.read_text()
+                # Ensure path is a Path object
+                file_path = Path(source_file.path) if isinstance(source_file.path, str) else source_file.path
+                content = file_path.read_text()
                 lines = content.splitlines()
                 
                 for line_num, line in enumerate(lines, 1):
@@ -229,11 +233,11 @@ class IOTraceAnalyzer:
                                 operation_type=op_type,
                                 unit_number=unit_number,
                                 file_expression=file_expr,
-                                file_path=source_file.path,
+                                file_path=file_path,
                                 line_number=line_num,
                                 statement=line.strip()
                             )
-                            self.io_operations[source_file.path].append(operation)
+                            self.io_operations[file_path].append(operation)
             except Exception as e:
                 log.warning(f"Error scanning I/O operations in {source_file.path}: {e}")
     
@@ -382,6 +386,9 @@ def generate_io_trace_markdown(analysis_results: Dict[str, Any], output_path: Pa
         analysis_results: Results from IOTraceAnalyzer.analyze()
         output_path: Path where markdown file should be written
     """
+    # Ensure output directory exists
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    
     lines = []
     
     # Header
@@ -471,7 +478,14 @@ def run_io_trace_analysis(project, target_files: Optional[List[str]] = None, out
     analyzer = IOTraceAnalyzer(project)
     results = analyzer.analyze(target_files=target_files)
     
+    # Print summary
+    print(f"  Found {len(results.get('filename_resolution_map', {}))} file references")
+    print(f"  Found {sum(len(ops) for ops in results.get('io_sites_and_mappings', {}).values())} I/O operations")
+    print(f"  Found {len(results.get('variable_definitions', {}))} variable definitions")
+    print(f"  Found {len(results.get('type_definitions', {}))} type definitions")
+    
     if output_file:
         generate_io_trace_markdown(results, output_file)
+        print(f"  Report saved to: {output_file}")
     
     return results

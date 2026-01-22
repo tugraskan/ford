@@ -308,8 +308,9 @@ def get_command_line_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--io-trace-files",
         dest="io_trace_files",
-        action="append",
-        help="Specific files to trace in I/O analysis (e.g., aquifer.aqu, object.cnt). "
+        nargs='+',
+        metavar='FILE',
+        help="Specific files to trace in I/O analysis (e.g., aquifer.aqu object.cnt). "
         "If not specified, all files will be analyzed.",
     )
     parser.add_argument(
@@ -495,12 +496,18 @@ def main(proj_data: ProjectSettings, proj_docs: str):
         target_files = getattr(proj_data, 'io_trace_files', None)
         output_file = Path(getattr(proj_data, 'io_trace_output', 'IO_TRACE_REPORT.md'))
         
-        # Make output path relative to output directory if not absolute
+        # Make output path relative to project directory (not output directory)
+        # since output directory gets cleaned during writeout
         if not output_file.is_absolute():
-            output_file = proj_data.output_dir / output_file
+            output_file = proj_data.directory / output_file
         
-        run_io_trace_analysis(project, target_files=target_files, output_file=output_file)
-        print(f"I/O trace analysis complete. Report written to {output_file}")
+        try:
+            run_io_trace_analysis(project, target_files=target_files, output_file=output_file)
+            print(f"I/O trace analysis complete. Report written to {output_file}")
+        except Exception as e:
+            print(f"Error during I/O trace analysis: {e}")
+            import traceback
+            traceback.print_exc()
 
     # Process any pages
     if proj_data.page_dir is not None:
