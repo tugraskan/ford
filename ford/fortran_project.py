@@ -61,7 +61,6 @@ from ford.settings import ProjectSettings
 from ford._typing import PathLike
 import logging as log
 
-
 LINK_TYPES = {
     "module": "modules",
     "submodule": "submodules",
@@ -1864,46 +1863,46 @@ class Project:
     ) -> Optional[Dict[str, any]]:
         """
         Build a detailed resolution chain for a filename expression.
-        
+
         Args:
             filename_expr: The filename expression (e.g., "in_aqu%aqu")
             var_to_type_map: Mapping of variable names to their types
             type_defaults_map: Mapping of type%component to default values
-            
+
         Returns:
             Dict with resolution chain information or None if unable to resolve
         """
         if not filename_expr or "%" not in filename_expr:
             return None
-            
+
         parts = filename_expr.split("%")
         if len(parts) != 2:
             return None
-            
+
         var_name = parts[0].strip().lower()
         component_name = parts[1].strip().lower()
-        
+
         # Get the type of the variable
         if var_name not in var_to_type_map:
             return None
-            
+
         type_name = var_to_type_map[var_name]
-        
+
         # Build the type%component key
         type_component_key = f"{type_name}%{component_name}"
-        
+
         # Get the default value
         default_value = type_defaults_map.get(type_component_key)
         if not default_value:
             return None
-            
+
         # Now find the actual source locations
         var_location = None
         type_location = None
         component_location = None
         type_obj = None
         var_obj = None
-        
+
         # Find the variable declaration
         for module in self.modules:
             if hasattr(module, "variables"):
@@ -1911,9 +1910,11 @@ class Project:
                     if var.name.lower() == var_name:
                         var_obj = var
                         if hasattr(var, "meta") and hasattr(var.meta, "file"):
-                            var_location = f"{var.meta['file']}:{var.meta.get('line', '?')}"
+                            var_location = (
+                                f"{var.meta['file']}:{var.meta.get('line', '?')}"
+                            )
                         break
-                        
+
         # Find the type definition and component
         for module in self.modules:
             if hasattr(module, "types"):
@@ -1927,16 +1928,18 @@ class Project:
                             type_location = f"{dtype.meta['file']}:{type_start}"
                             if type_end != type_start:
                                 type_location += f"-{type_end}"
-                                
+
                         # Find the component within the type
                         if hasattr(dtype, "variables"):
                             for comp in dtype.variables:
                                 if comp.name.lower() == component_name:
-                                    if hasattr(comp, "meta") and hasattr(comp.meta, "file"):
+                                    if hasattr(comp, "meta") and hasattr(
+                                        comp.meta, "file"
+                                    ):
                                         component_location = f"{comp.meta['file']}:{comp.meta.get('line', '?')}"
                                     break
                         break
-                        
+
         # Build the resolution chain
         chain = {
             "expression": filename_expr,
@@ -1950,7 +1953,7 @@ class Project:
             "type_object": type_obj,  # For template linking
             "variable_object": var_obj,  # For template linking
         }
-        
+
         return chain
 
     def collect_io_files(self):
@@ -2029,7 +2032,7 @@ class Project:
                                 enhanced_operations["filename_resolved"] = (
                                     filename_resolved_for_entry
                                 )
-                            
+
                             # Build filename resolution chain if the file_key looks like a variable expression
                             if file_key and "%" in file_key:
                                 resolution_chain = self.build_filename_resolution_chain(
@@ -2038,7 +2041,9 @@ class Project:
                                     type_defaults_map,
                                 )
                                 if resolution_chain:
-                                    enhanced_operations["resolution_chain"] = resolution_chain
+                                    enhanced_operations["resolution_chain"] = (
+                                        resolution_chain
+                                    )
 
                             # Add this procedure to the file's list of users
                             io_files_dict[io_key].add_procedure(
