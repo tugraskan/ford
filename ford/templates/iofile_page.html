@@ -404,7 +404,7 @@
                             <td>{{ var_info.file_line }}</td>
                             
                             {# Column 2: Position in File - position within that line #}
-                            <td>{{ var_info.position if var_info.position is defined else '-' }}</td>
+                            <td>{{ '-' if var_info.component_name else (var_info.position if var_info.position is defined else '-') }}</td>
                             
                             {# Find variable info for remaining columns #}
                             {% set found_var = namespace(value=none) %}
@@ -584,13 +584,7 @@
                             </td>
                             
                             {# Column 11: Swat_codetype #}
-                            <td>
-                              {% if found_var.value and found_var.value.name %}
-                                {{ found_var.value.name }}
-                              {% else %}
-                                -
-                              {% endif %}
-                            </td>
+                            <td>{{ var_info.base_name if var_info.base_name else '-' }}</td>
                           </tr>
                         {% endfor %}
                       </tbody>
@@ -862,7 +856,7 @@
                             <td>{{ var_info.file_line }}</td>
                             
                             {# Column 2: Position in File - position within that line #}
-                            <td>{{ var_info.position if var_info.position is defined else '-' }}</td>
+                            <td>{{ '-' if var_info.component_name else (var_info.position if var_info.position is defined else '-') }}</td>
                             
                             {# Find variable info for remaining columns #}
                             {% set found_var = namespace(value=none) %}
@@ -1042,13 +1036,7 @@
                             </td>
                             
                             {# Column 11: Swat_codetype #}
-                            <td>
-                              {% if found_var.value and found_var.value.name %}
-                                {{ found_var.value.name }}
-                              {% else %}
-                                -
-                              {% endif %}
-                            </td>
+                            <td>{{ var_info.base_name if var_info.base_name else '-' }}</td>
                           </tr>
                         {% endfor %}
                       </tbody>
