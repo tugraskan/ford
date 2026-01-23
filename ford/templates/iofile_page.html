@@ -145,14 +145,19 @@
                     {% set proc_write_vars = [] %}
                     {% set seen_write_vars = [] %}
                     
-                    {# Collect write variables for this procedure #}
+                    {# Collect write variables for this procedure with position tracking #}
                     {% if ops.timeline %}
                       {% for op in ops.timeline %}
                         {% if op.kind == 'write' and op.parameters %}
                           {% for param in op.parameters %}
                             {# Parse the parameter to extract its components #}
                             {% set param_info = {} %}
-                            {% set _ = param_info.update({'full_name': param, 'procedure': proc, 'line': op.line}) %}
+                            {% set _ = param_info.update({
+                              'full_name': param, 
+                              'procedure': proc, 
+                              'line': op.line,
+                              'position': loop.index
+                            }) %}
                             
                             {# Extract base variable name #}
                             {% set base_name = none %}
@@ -167,12 +172,8 @@
                             {% endif %}
                             {% set _ = param_info.update({'base_name': base_name, 'component_name': component_name}) %}
                             
-                            {# Add to list only if not already seen (remove duplicates) #}
-                            {% set var_key = base_name ~ '_' ~ (component_name if component_name else '') %}
-                            {% if var_key not in seen_write_vars %}
-                              {% set _ = seen_write_vars.append(var_key) %}
-                              {% set _ = proc_write_vars.append(param_info) %}
-                            {% endif %}
+                            {# Always add to list to preserve order and position #}
+                            {% set _ = proc_write_vars.append(param_info) %}
                           {% endfor %}
                         {% endif %}
                       {% endfor %}
@@ -182,70 +183,74 @@
                       <table class="table table-sm table-striped">
                         <thead>
                           <tr>
-                            <th>Module</th>
-                            <th>Derived Type</th>
-                            <th>Variable Name</th>
-                            <th>Data Type</th>
-                            <th>Component Name</th>
-                            <th>Default Value / Initial</th>
+                            <th>Line in File</th>
+                            <th>Position in File</th>
+                            <th>Local (Y/N)</th>
+                            <th>Derived Type Name</th>
+                            <th>Component (or Var Name if Local)</th>
+                            <th>Type</th>
+                            <th>Default</th>
+                            <th>Units</th>
+                            <th>Description</th>
+                            <th>Source Line</th>
+                            <th>Swat_codetype</th>
                           </tr>
                         </thead>
                         <tbody>
                           {% for var_info in proc_write_vars %}
                             <tr>
-                              {# Column 1: Module #}
-                              <td>
-                                {% set found_var = namespace(value=none) %}
-                                {% set is_local = namespace(value=false) %}
-                                
-                                {% if var_info.procedure.variables is defined %}
-                                  {% for v in var_info.procedure.variables %}
-                                    {% if v.name.lower() == var_info.base_name.lower() %}
-                                      {% set found_var.value = v %}
-                                      {% set is_local.value = true %}
-                                    {% endif %}
-                                  {% endfor %}
-                                {% endif %}
-                                
-                                {% if not found_var.value and var_info.procedure.all_vars is defined %}
-                                  {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
-                                    {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
-                                  {% endif %}
-                                {% endif %}
-                                
-                                {% if is_local.value %}
-                                  Local
-                                {% elif found_var.value and found_var.value.parent %}
-                                  {% if found_var.value.parent.obj == 'module' %}
-                                    {{ found_var.value.parent | relurl(page_url) }}
-                                  {% else %}
-                                    Local
-                                  {% endif %}
-                                {% else %}
-                                  <em>unknown</em>
-                                {% endif %}
-                              </td>
+                              {# Column 1: Line in File - the line number where write occurs #}
+                              <td>{{ var_info.line if var_info.line else '-' }}</td>
                               
-                              {# Column 2: Derived Type #}
+                              {# Column 2: Position in File - position within the write statement #}
+                              <td>{{ var_info.position }}</td>
+                              
+                              {# Find variable info for remaining columns #}
+                              {% set found_var = namespace(value=none) %}
+                              {% set is_local = namespace(value=false) %}
+                              
+                              {% if var_info.procedure.variables is defined %}
+                                {% for v in var_info.procedure.variables %}
+                                  {% if v.name.lower() == var_info.base_name.lower() %}
+                                    {% set found_var.value = v %}
+                                    {% set is_local.value = true %}
+                                  {% endif %}
+                                {% endfor %}
+                              {% endif %}
+                              
+                              {% if not found_var.value and var_info.procedure.all_vars is defined %}
+                                {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
+                                  {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
+                                {% endif %}
+                              {% endif %}
+                              
+                              {# Column 3: Local (Y/N) #}
+                              <td>{{ 'Y' if is_local.value else 'N' }}</td>
+                              
+                              {# Column 4: Derived Type Name #}
                               <td>
                                 {% if found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
                                   {% set type_obj = found_var.value.proto[0] %}
                                   {% if type_obj is string %}
-                                    <code>{{ type_obj }}</code>
+                                    {{ type_obj }}
                                   {% else %}
-                                    {{ type_obj | relurl(page_url) }}
+                                    {{ type_obj.name if type_obj.name else 'N/A' }}
                                   {% endif %}
                                 {% else %}
-                                  NA
+                                  N/A
                                 {% endif %}
                               </td>
                               
-                              {# Column 3: Variable Name #}
+                              {# Column 5: Component (or Var Name if Local) #}
                               <td>
-                                <code>{{ var_info.base_name }}</code>
+                                {% if var_info.component_name %}
+                                  {{ var_info.component_name }}
+                                {% else %}
+                                  {{ var_info.base_name }}
+                                {% endif %}
                               </td>
                               
-                              {# Column 4: Data Type #}
+                              {# Column 6: Type #}
                               <td>
                                 {% if var_info.component_name and found_var.value %}
                                   {% set component_var = namespace(value=none) %}
@@ -260,27 +265,18 @@
                                     {% endif %}
                                   {% endif %}
                                   {% if component_var.value %}
-                                    <code>{{ component_var.value.full_type }}</code>
+                                    {{ component_var.value.full_type }}
                                   {% else %}
-                                    <em>unknown</em>
+                                    unknown
                                   {% endif %}
                                 {% elif found_var.value %}
-                                  <code>{{ found_var.value.full_type }}</code>
+                                  {{ found_var.value.full_type }}
                                 {% else %}
-                                  <em>unknown</em>
+                                  unknown
                                 {% endif %}
                               </td>
                               
-                              {# Column 5: Component Name #}
-                              <td>
-                                {% if var_info.component_name %}
-                                  <code>{{ var_info.component_name }}</code>
-                                {% else %}
-                                  <em>-</em>
-                                {% endif %}
-                              </td>
-                              
-                              {# Column 6: Default Value / Initial #}
+                              {# Column 7: Default #}
                               <td>
                                 {% if var_info.component_name and found_var.value %}
                                   {% set component_var = namespace(value=none) %}
@@ -295,14 +291,103 @@
                                     {% endif %}
                                   {% endif %}
                                   {% if component_var.value and component_var.value.initial %}
-                                    <code>{{ component_var.value.initial }}</code>
+                                    {{ component_var.value.initial }}
                                   {% else %}
-                                    <em>-</em>
+                                    -
                                   {% endif %}
                                 {% elif found_var.value and found_var.value.initial %}
-                                  <code>{{ found_var.value.initial }}</code>
+                                  {{ found_var.value.initial }}
                                 {% else %}
-                                  <em>-</em>
+                                  -
+                                {% endif %}
+                              </td>
+                              
+                              {# Column 8: Units - extract from doc/comments #}
+                              <td>
+                                {% if var_info.component_name and found_var.value %}
+                                  {% set component_var = namespace(value=none) %}
+                                  {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                                    {% set type_obj = found_var.value.proto[0] %}
+                                    {% if type_obj is not string and type_obj.variables is defined %}
+                                      {% for comp in type_obj.variables %}
+                                        {% if comp.name.lower() == var_info.component_name.lower() %}
+                                          {% set component_var.value = comp %}
+                                        {% endif %}
+                                      {% endfor %}
+                                    {% endif %}
+                                  {% endif %}
+                                  {% if component_var.value and component_var.value.units %}
+                                    {{ component_var.value.units }}
+                                  {% else %}
+                                    N/A
+                                  {% endif %}
+                                {% elif found_var.value and found_var.value.units %}
+                                  {{ found_var.value.units }}
+                                {% else %}
+                                  N/A
+                                {% endif %}
+                              </td>
+                              
+                              {# Column 9: Description - from doc/comments #}
+                              <td>
+                                {% if var_info.component_name and found_var.value %}
+                                  {% set component_var = namespace(value=none) %}
+                                  {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                                    {% set type_obj = found_var.value.proto[0] %}
+                                    {% if type_obj is not string and type_obj.variables is defined %}
+                                      {% for comp in type_obj.variables %}
+                                        {% if comp.name.lower() == var_info.component_name.lower() %}
+                                          {% set component_var.value = comp %}
+                                        {% endif %}
+                                      {% endfor %}
+                                    {% endif %}
+                                  {% endif %}
+                                  {% if component_var.value and component_var.value.doc %}
+                                    {{ component_var.value.doc|striptags|truncate(100) }}
+                                  {% else %}
+                                    -
+                                  {% endif %}
+                                {% elif found_var.value and found_var.value.doc %}
+                                  {{ found_var.value.doc|striptags|truncate(100) }}
+                                {% else %}
+                                  -
+                                {% endif %}
+                              </td>
+                              
+                              {# Column 10: Source Line - where variable/component is declared #}
+                              <td>
+                                {% if var_info.component_name and found_var.value %}
+                                  {% set component_var = namespace(value=none) %}
+                                  {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                                    {% set type_obj = found_var.value.proto[0] %}
+                                    {% if type_obj is not string and type_obj.variables is defined %}
+                                      {% for comp in type_obj.variables %}
+                                        {% if comp.name.lower() == var_info.component_name.lower() %}
+                                          {% set component_var.value = comp %}
+                                        {% endif %}
+                                      {% endfor %}
+                                    {% endif %}
+                                  {% endif %}
+                                  {% if component_var.value and component_var.value.meta and component_var.value.meta.file %}
+                                    {{ component_var.value.meta.file }}:{{ component_var.value.meta.line if component_var.value.meta.line else '?' }}
+                                  {% else %}
+                                    -
+                                  {% endif %}
+                                {% elif found_var.value and found_var.value.meta and found_var.value.meta.file %}
+                                  {{ found_var.value.meta.file }}:{{ found_var.value.meta.line if found_var.value.meta.line else '?' }}
+                                {% else %}
+                                  -
+                                {% endif %}
+                              </td>
+                              
+                              {# Column 11: Swat_codetype - cross-reference filename to type #}
+                              <td>
+                                {% if ops.resolution_chain and ops.resolution_chain.variable_name %}
+                                  {{ ops.resolution_chain.variable_name }}
+                                {% elif found_var.value and found_var.value.name %}
+                                  {{ found_var.value.name }}
+                                {% else %}
+                                  -
                                 {% endif %}
                               </td>
                             </tr>
@@ -525,16 +610,20 @@
                 {% if iofile.io_type in ['Input', 'Input/Output'] %}
                   <h4>Variables Read from This File</h4>
                   {% set proc_read_vars = [] %}
-                  {% set seen_vars = [] %}
                   
-                  {# Collect read variables for this procedure #}
+                  {# Collect read variables for this procedure with position tracking #}
                   {% if ops.timeline %}
                     {% for op in ops.timeline %}
                       {% if op.kind == 'read' and op.parameters %}
                         {% for param in op.parameters %}
                           {# Parse the parameter to extract its components #}
                           {% set param_info = {} %}
-                          {% set _ = param_info.update({'full_name': param, 'procedure': proc, 'line': op.line}) %}
+                          {% set _ = param_info.update({
+                            'full_name': param, 
+                            'procedure': proc, 
+                            'line': op.line,
+                            'position': loop.index
+                          }) %}
                           
                           {# Extract base variable name #}
                           {% set base_name = none %}
@@ -549,12 +638,8 @@
                           {% endif %}
                           {% set _ = param_info.update({'base_name': base_name, 'component_name': component_name}) %}
                           
-                          {# Add to list only if not already seen (remove duplicates) #}
-                          {% set var_key = base_name ~ '_' ~ (component_name if component_name else '') %}
-                          {% if var_key not in seen_vars %}
-                            {% set _ = seen_vars.append(var_key) %}
-                            {% set _ = proc_read_vars.append(param_info) %}
-                          {% endif %}
+                          {# Always add to list to preserve order and position #}
+                          {% set _ = proc_read_vars.append(param_info) %}
                         {% endfor %}
                       {% endif %}
                     {% endfor %}
@@ -564,70 +649,74 @@
                     <table class="table table-sm table-striped">
                       <thead>
                         <tr>
-                          <th>Module</th>
-                          <th>Derived Type</th>
-                          <th>Variable Name</th>
-                          <th>Data Type</th>
-                          <th>Component Name</th>
-                          <th>Default Value / Initial</th>
+                          <th>Line in File</th>
+                          <th>Position in File</th>
+                          <th>Local (Y/N)</th>
+                          <th>Derived Type Name</th>
+                          <th>Component (or Var Name if Local)</th>
+                          <th>Type</th>
+                          <th>Default</th>
+                          <th>Units</th>
+                          <th>Description</th>
+                          <th>Source Line</th>
+                          <th>Swat_codetype</th>
                         </tr>
                       </thead>
                       <tbody>
                         {% for var_info in proc_read_vars %}
                           <tr>
-                            {# Column 1: Module #}
-                            <td>
-                              {% set found_var = namespace(value=none) %}
-                              {% set is_local = namespace(value=false) %}
-                              
-                              {% if var_info.procedure.variables is defined %}
-                                {% for v in var_info.procedure.variables %}
-                                  {% if v.name.lower() == var_info.base_name.lower() %}
-                                    {% set found_var.value = v %}
-                                    {% set is_local.value = true %}
-                                  {% endif %}
-                                {% endfor %}
-                              {% endif %}
-                              
-                              {% if not found_var.value and var_info.procedure.all_vars is defined %}
-                                {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
-                                  {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
-                                {% endif %}
-                              {% endif %}
-                              
-                              {% if is_local.value %}
-                                Local
-                              {% elif found_var.value and found_var.value.parent %}
-                                {% if found_var.value.parent.obj == 'module' %}
-                                  {{ found_var.value.parent | relurl(page_url) }}
-                                {% else %}
-                                  Local
-                                {% endif %}
-                              {% else %}
-                                <em>unknown</em>
-                              {% endif %}
-                            </td>
+                            {# Column 1: Line in File #}
+                            <td>{{ var_info.line if var_info.line else '-' }}</td>
                             
-                            {# Column 2: Derived Type #}
+                            {# Column 2: Position in File #}
+                            <td>{{ var_info.position }}</td>
+                            
+                            {# Find variable info #}
+                            {% set found_var = namespace(value=none) %}
+                            {% set is_local = namespace(value=false) %}
+                            
+                            {% if var_info.procedure.variables is defined %}
+                              {% for v in var_info.procedure.variables %}
+                                {% if v.name.lower() == var_info.base_name.lower() %}
+                                  {% set found_var.value = v %}
+                                  {% set is_local.value = true %}
+                                {% endif %}
+                              {% endfor %}
+                            {% endif %}
+                            
+                            {% if not found_var.value and var_info.procedure.all_vars is defined %}
+                              {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
+                                {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
+                              {% endif %}
+                            {% endif %}
+                            
+                            {# Column 3: Local (Y/N) #}
+                            <td>{{ 'Y' if is_local.value else 'N' }}</td>
+                            
+                            {# Column 4: Derived Type Name #}
                             <td>
                               {% if found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
                                 {% set type_obj = found_var.value.proto[0] %}
                                 {% if type_obj is string %}
-                                  <code>{{ type_obj }}</code>
+                                  {{ type_obj }}
                                 {% else %}
-                                  {{ type_obj | relurl(page_url) }}
+                                  {{ type_obj.name if type_obj.name else 'N/A' }}
                                 {% endif %}
                               {% else %}
-                                NA
+                                N/A
                               {% endif %}
                             </td>
                             
-                            {# Column 3: Variable Name #}
+                            {# Column 5: Component (or Var Name if Local) #}
                             <td>
-                              <code>{{ var_info.base_name }}</code>
+                              {% if var_info.component_name %}
+                                {{ var_info.component_name }}
+                              {% else %}
+                                {{ var_info.base_name }}
+                              {% endif %}
                             </td>
                             
-                            {# Column 4: Data Type #}
+                            {# Column 6: Type #}
                             <td>
                               {% if var_info.component_name and found_var.value %}
                                 {% set component_var = namespace(value=none) %}
@@ -642,27 +731,18 @@
                                   {% endif %}
                                 {% endif %}
                                 {% if component_var.value %}
-                                  <code>{{ component_var.value.full_type }}</code>
+                                  {{ component_var.value.full_type }}
                                 {% else %}
-                                  <em>unknown</em>
+                                  unknown
                                 {% endif %}
                               {% elif found_var.value %}
-                                <code>{{ found_var.value.full_type }}</code>
+                                {{ found_var.value.full_type }}
                               {% else %}
-                                <em>unknown</em>
+                                unknown
                               {% endif %}
                             </td>
                             
-                            {# Column 5: Component Name #}
-                            <td>
-                              {% if var_info.component_name %}
-                                <code>{{ var_info.component_name }}</code>
-                              {% else %}
-                                <em>-</em>
-                              {% endif %}
-                            </td>
-                            
-                            {# Column 6: Default Value / Initial #}
+                            {# Column 7: Default #}
                             <td>
                               {% if var_info.component_name and found_var.value %}
                                 {% set component_var = namespace(value=none) %}
@@ -677,14 +757,103 @@
                                   {% endif %}
                                 {% endif %}
                                 {% if component_var.value and component_var.value.initial %}
-                                  <code>{{ component_var.value.initial }}</code>
+                                  {{ component_var.value.initial }}
                                 {% else %}
-                                  <em>-</em>
+                                  -
                                 {% endif %}
                               {% elif found_var.value and found_var.value.initial %}
-                                <code>{{ found_var.value.initial }}</code>
+                                {{ found_var.value.initial }}
                               {% else %}
-                                <em>-</em>
+                                -
+                              {% endif %}
+                            </td>
+                            
+                            {# Column 8: Units #}
+                            <td>
+                              {% if var_info.component_name and found_var.value %}
+                                {% set component_var = namespace(value=none) %}
+                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                                  {% set type_obj = found_var.value.proto[0] %}
+                                  {% if type_obj is not string and type_obj.variables is defined %}
+                                    {% for comp in type_obj.variables %}
+                                      {% if comp.name.lower() == var_info.component_name.lower() %}
+                                        {% set component_var.value = comp %}
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                {% endif %}
+                                {% if component_var.value and component_var.value.units %}
+                                  {{ component_var.value.units }}
+                                {% else %}
+                                  N/A
+                                {% endif %}
+                              {% elif found_var.value and found_var.value.units %}
+                                {{ found_var.value.units }}
+                              {% else %}
+                                N/A
+                              {% endif %}
+                            </td>
+                            
+                            {# Column 9: Description #}
+                            <td>
+                              {% if var_info.component_name and found_var.value %}
+                                {% set component_var = namespace(value=none) %}
+                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                                  {% set type_obj = found_var.value.proto[0] %}
+                                  {% if type_obj is not string and type_obj.variables is defined %}
+                                    {% for comp in type_obj.variables %}
+                                      {% if comp.name.lower() == var_info.component_name.lower() %}
+                                        {% set component_var.value = comp %}
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                {% endif %}
+                                {% if component_var.value and component_var.value.doc %}
+                                  {{ component_var.value.doc|striptags|truncate(100) }}
+                                {% else %}
+                                  -
+                                {% endif %}
+                              {% elif found_var.value and found_var.value.doc %}
+                                {{ found_var.value.doc|striptags|truncate(100) }}
+                              {% else %}
+                                -
+                              {% endif %}
+                            </td>
+                            
+                            {# Column 10: Source Line #}
+                            <td>
+                              {% if var_info.component_name and found_var.value %}
+                                {% set component_var = namespace(value=none) %}
+                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                                  {% set type_obj = found_var.value.proto[0] %}
+                                  {% if type_obj is not string and type_obj.variables is defined %}
+                                    {% for comp in type_obj.variables %}
+                                      {% if comp.name.lower() == var_info.component_name.lower() %}
+                                        {% set component_var.value = comp %}
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                {% endif %}
+                                {% if component_var.value and component_var.value.meta and component_var.value.meta.file %}
+                                  {{ component_var.value.meta.file }}:{{ component_var.value.meta.line if component_var.value.meta.line else '?' }}
+                                {% else %}
+                                  -
+                                {% endif %}
+                              {% elif found_var.value and found_var.value.meta and found_var.value.meta.file %}
+                                {{ found_var.value.meta.file }}:{{ found_var.value.meta.line if found_var.value.meta.line else '?' }}
+                              {% else %}
+                                -
+                              {% endif %}
+                            </td>
+                            
+                            {# Column 11: Swat_codetype #}
+                            <td>
+                              {% if ops.resolution_chain and ops.resolution_chain.variable_name %}
+                                {{ ops.resolution_chain.variable_name }}
+                              {% elif found_var.value and found_var.value.name %}
+                                {{ found_var.value.name }}
+                              {% else %}
+                                -
                               {% endif %}
                             </td>
                           </tr>
