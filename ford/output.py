@@ -526,9 +526,16 @@ class Documentation:
             shutil.rmtree(out_dir, ignore_errors=True)
 
         try:
-            out_dir.mkdir(USER_WRITABLE_ONLY, parents=True)
+            out_dir.mkdir(parents=True, exist_ok=True)
+            try:
+                out_dir.chmod(USER_WRITABLE_ONLY)
+            except Exception:
+                # chmod may not be supported on all platforms/filesystems
+                pass
         except Exception as e:
-            print(f"Error: Could not create output directory. {e.args[0]}")
+            err = getattr(e, "errno", None) or str(e)
+            print(f"Error: Could not create output directory. {err}")
+            raise
 
         for directory in [
             "lists",
@@ -543,7 +550,12 @@ class Documentation:
             "namelist",
             "iofile",
         ]:
-            (out_dir / directory).mkdir(USER_WRITABLE_ONLY)
+            subdir = out_dir / directory
+            subdir.mkdir(parents=True, exist_ok=True)
+            try:
+                subdir.chmod(USER_WRITABLE_ONLY)
+            except Exception:
+                pass
 
         for directory in ["css", "js", "webfonts"]:
             copytree(loc / directory, out_dir / directory)

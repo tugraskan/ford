@@ -54,7 +54,49 @@
             </a>
             <div id="{{ proc_id }}" class="collapse">
               <div class="card-body">
-                {# Subsection 1: I/O Operations #}
+                {# Subsection 1: Filename (moved up) #}
+                {% if ops.resolution_chain %}
+                  <h4>Filename</h4>
+                  <table class="table table-sm table-striped">
+                    <thead>
+                      <tr>
+                        <th>Type</th>
+                        <th>Component</th>
+                        <th>Default Value</th>
+                        <th>Hardcoded</th>
+                        <th>file.cio</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          {% if ops.resolution_chain.type_object %}
+                            {{ ops.resolution_chain.type_object | relurl(page_url) }}
+                          {% else %}
+                            {{ ops.resolution_chain.variable_type }}
+                          {% endif %}
+                        </td>
+                        <td>{{ ops.resolution_chain.component_name if ops.resolution_chain.component_name else '-' }}</td>
+                        <td>{{ '"' ~ ops.resolution_chain.default_value ~ '"' if ops.resolution_chain.default_value is defined else '-' }}</td>
+                        <td>
+                          {% set expr = ops.resolution_chain.expression if ops.resolution_chain.expression is defined else '' %}
+                          {% if '"' in expr or "'" in expr %}Y{% else %}N{% endif %}
+                        </td>
+                        <td>
+                          {% set is_cio = 'N' %}
+                          {% if ops.resolution_chain.type_object and ops.resolution_chain.type_object.meta and ops.resolution_chain.type_object.meta.parent %}
+                            {% if ops.resolution_chain.type_object.meta.parent.name == 'input_file_module' %}
+                              {% set is_cio = 'Y' %}
+                            {% endif %}
+                          {% endif %}
+                          {{ is_cio }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                {% endif %}
+
+                {# Subsection 2: I/O Operations #}
                 <h4>I/O Operations</h4>
                 {% if ops.timeline %}
                   <table class="table table-sm table-striped">
@@ -91,43 +133,7 @@
                   <p><em>No operations recorded for this procedure.</em></p>
                 {% endif %}
                 
-                {# Subsection 1b: Filename Resolution Chain #}
-                {% if ops.resolution_chain %}
-                  <h4>Filename Resolution Chain</h4>
-                  <div class="alert alert-info">
-                    <p><strong>Expression:</strong> <code>{{ ops.resolution_chain.expression }}</code></p>
-                    <p class="mb-0"><strong>Resolution:</strong></p>
-                    <ol class="mb-0">
-                      <li>
-                        Variable: <code>{{ ops.resolution_chain.variable_name }}</code>
-                        {% if ops.resolution_chain.variable_object %}
-                          ({{ ops.resolution_chain.variable_object | relurl(page_url) }})
-                        {% endif %}
-                        {% if ops.resolution_chain.variable_location %}
-                          <br><small class="text-muted">Declared at: {{ ops.resolution_chain.variable_location }}</small>
-                        {% endif %}
-                      </li>
-                      <li>
-                        Type: <code>{{ ops.resolution_chain.variable_type }}</code>
-                        {% if ops.resolution_chain.type_object %}
-                          ({{ ops.resolution_chain.type_object | relurl(page_url) }})
-                        {% endif %}
-                        {% if ops.resolution_chain.type_location %}
-                          <br><small class="text-muted">Defined at: {{ ops.resolution_chain.type_location }}</small>
-                        {% endif %}
-                      </li>
-                      <li>
-                        Component: <code>{{ ops.resolution_chain.component_name }}</code>
-                        {% if ops.resolution_chain.component_location %}
-                          <br><small class="text-muted">Declared at: {{ ops.resolution_chain.component_location }}</small>
-                        {% endif %}
-                      </li>
-                      <li>
-                        Default Value: <code>"{{ ops.resolution_chain.default_value }}"</code>
-                      </li>
-                    </ol>
-                  </div>
-                {% endif %}
+                {# Filename Resolution Chain moved and shown as Filename table earlier in card #}
                 
                 {# Subsection 2a: Variables Written to This File (for Output and Input/Output files) - ONLY for procedures that write #}
                 {% if iofile.io_type in ['Output', 'Input/Output'] %}
@@ -183,6 +189,16 @@
                     {% endif %}
                     
                     {% if proc_write_vars %}
+                      {# Deduplicate write variables so each variable/type appears only once #}
+                      {% set proc_write_vars_unique = [] %}
+                      {% set seen_write = {} %}
+                      {% for wv in proc_write_vars %}
+                        {% set wkey = (wv.base_name.lower() if wv.base_name else '') ~ '|' ~ (wv.component_name.lower() if wv.component_name else '') %}
+                        {% if wkey not in seen_write %}
+                          {% set _ = proc_write_vars_unique.append(wv) %}
+                          {% set _ = seen_write.update({wkey: True}) %}
+                        {% endif %}
+                      {% endfor %}
                       <table class="table table-sm table-striped">
                         <thead>
                           <tr>
@@ -195,7 +211,7 @@
                           </tr>
                         </thead>
                         <tbody>
-                          {% for var_info in proc_write_vars %}
+                          {% for var_info in proc_write_vars_unique %}
                             <tr>
                               {# Find variable info for all columns #}
                               {% set found_var = namespace(value=none) %}
@@ -218,12 +234,49 @@
                               {# Try to find the parent module #}
                               {% if found_var.value and found_var.value.meta and found_var.value.meta.parent %}
                                 {% set parent_module.value = found_var.value.meta.parent %}
+                              {% else %}
+                                {# Fallback 1: check procedure's outside variables for this base name #}
+                                {% if not found_var.value and var_info.procedure.outside_variables_used is defined %}
+                                  {% for ov in var_info.procedure.outside_variables_used %}
+                                    {% set ov_name = ov.base_var_name if ov.base_var_name is defined else ov.name %}
+                                    {% if ov_name and ov_name.lower() == var_info.base_name.lower() %}
+                                      {% set found_var.value = ov %}
+                                      {% if ov.meta and ov.meta.parent %}
+                                        {% set parent_module.value = ov.meta.parent %}
+                                      {% endif %}
+                                    {% endif %}
+                                  {% endfor %}
+                                {% endif %}
+
+                                {# Fallback 2: search modules listed in the procedure's uses for this variable #}
+                                {% if not parent_module.value and proc.uses is defined %}
+                                  {% for u in proc.uses %}
+                                    {% set candidate = u[0] if (u is sequence and u|length > 0) else u %}
+                                    {% if candidate is defined and candidate is not none %}
+                                      {% if candidate.variables is defined %}
+                                        {% for cv in candidate.variables %}
+                                          {% if cv.name.lower() == var_info.base_name.lower() %}
+                                            {% set parent_module.value = candidate %}
+                                            {% set found_var.value = cv %}
+                                          {% endif %}
+                                        {% endfor %}
+                                      {% endif %}
+                                      {% if not parent_module.value and candidate.all_vars is defined %}
+                                        {% if var_info.base_name.lower() in candidate.all_vars %}
+                                          {% set parent_module.value = candidate %}
+                                          {% set found_var.value = candidate.all_vars[var_info.base_name.lower()] %}
+                                        {% endif %}
+                                      {% endif %}
+                                    {% endif %}
+                                    {% if parent_module.value %}{% endif %}
+                                  {% endfor %}
+                                {% endif %}
                               {% endif %}
                               
                               {# Column 1: Module #}
                               <td>
-                                {% if parent_module.value and parent_module.value.name %}
-                                  {{ parent_module.value.name }}
+                                {% if parent_module.value %}
+                                  {{ parent_module.value | relurl(page_url) }}
                                 {% else %}
                                   -
                                 {% endif %}
@@ -597,6 +650,18 @@
                 
                 {# Subsection 2b: Variables Read from This File (for Input and Input/Output files) #}
                 {% if iofile.io_type in ['Input', 'Input/Output'] %}
+                  {# New subsection: Modules Used by this procedure (helps identify origins of external variables) #}
+                  <h4>Modules Used</h4>
+                  {% if proc.uses %}
+                    <p>
+                      {% for u in proc.uses %}
+                        {{ u | relurl(page_url) }}{% if not loop.last %}, {% endif %}
+                      {% endfor %}
+                    </p>
+                  {% else %}
+                    <p><em>n/a</em></p>
+                  {% endif %}
+
                   <h4>Variables Read from This File</h4>
                   {% set proc_read_vars = [] %}
                   
@@ -635,6 +700,17 @@
                   {% endif %}
                   
                   {% if proc_read_vars %}
+                    {# Deduplicate read variables so each variable/type appears only once #}
+                    {% set proc_read_vars_unique = [] %}
+                    {% set seen_read = {} %}
+                    {# Deduplicate by base variable only so components collapse to the type-level entry #}
+                    {% for rv in proc_read_vars %}
+                      {% set key = (rv.base_name.lower() if rv.base_name else '') %}
+                      {% if key not in seen_read %}
+                        {% set _ = proc_read_vars_unique.append(rv) %}
+                        {% set _ = seen_read.update({key: True}) %}
+                      {% endif %}
+                    {% endfor %}
                     <table class="table table-sm table-striped">
                       <thead>
                         <tr>
@@ -642,12 +718,11 @@
                           <th>Derived Type</th>
                           <th>Variable Name</th>
                           <th>Data Type</th>
-                          <th>Component Name</th>
                           <th>Default Value / Initial</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {% for var_info in proc_read_vars %}
+                        {% for var_info in proc_read_vars_unique %}
                           <tr>
                             {# Find variable info for all columns #}
                             {% set found_var = namespace(value=none) %}
@@ -670,12 +745,49 @@
                             {# Try to find the parent module #}
                             {% if found_var.value and found_var.value.meta and found_var.value.meta.parent %}
                               {% set parent_module.value = found_var.value.meta.parent %}
+                            {% else %}
+                              {# Fallback 1: check procedure's outside variables for this base name #}
+                              {% if not found_var.value and var_info.procedure.outside_variables_used is defined %}
+                                {% for ov in var_info.procedure.outside_variables_used %}
+                                  {% set ov_name = ov.base_var_name if ov.base_var_name is defined else ov.name %}
+                                  {% if ov_name and ov_name.lower() == var_info.base_name.lower() %}
+                                    {% set found_var.value = ov %}
+                                    {% if ov.meta and ov.meta.parent %}
+                                      {% set parent_module.value = ov.meta.parent %}
+                                    {% endif %}
+                                  {% endif %}
+                                {% endfor %}
+                              {% endif %}
+
+                              {# Fallback 2: search modules listed in the procedure's uses for this variable #}
+                              {% if not parent_module.value and proc.uses is defined %}
+                                {% for u in proc.uses %}
+                                  {% set candidate = u[0] if (u is sequence and u|length > 0) else u %}
+                                  {% if candidate is defined and candidate is not none %}
+                                    {% if candidate.variables is defined %}
+                                      {% for cv in candidate.variables %}
+                                        {% if cv.name.lower() == var_info.base_name.lower() %}
+                                          {% set parent_module.value = candidate %}
+                                          {% set found_var.value = cv %}
+                                        {% endif %}
+                                      {% endfor %}
+                                    {% endif %}
+                                    {% if not parent_module.value and candidate.all_vars is defined %}
+                                      {% if var_info.base_name.lower() in candidate.all_vars %}
+                                        {% set parent_module.value = candidate %}
+                                        {% set found_var.value = candidate.all_vars[var_info.base_name.lower()] %}
+                                      {% endif %}
+                                    {% endif %}
+                                  {% endif %}
+                                  {% if parent_module.value %}{% endif %}
+                                {% endfor %}
+                              {% endif %}
                             {% endif %}
                             
                             {# Column 1: Module #}
                             <td>
-                              {% if parent_module.value and parent_module.value.name %}
-                                {{ parent_module.value.name }}
+                              {% if parent_module.value %}
+                                {{ parent_module.value | relurl(page_url) }}
                               {% else %}
                                 -
                               {% endif %}
@@ -726,35 +838,18 @@
                               {% endif %}
                             </td>
                             
-                            {# Column 5: Component Name #}
+                            {# Column 4: Data Type (always show variable full_type) #}
                             <td>
-                              {% if var_info.component_name %}
-                                {{ var_info.component_name }}
+                              {% if found_var.value %}
+                                {{ found_var.value.full_type }}
                               {% else %}
-                                -
+                                unknown
                               {% endif %}
                             </td>
-                            
-                            {# Column 6: Default Value / Initial #}
+
+                            {# Column 5: Default Value / Initial #}
                             <td>
-                              {% if var_info.component_name and found_var.value %}
-                                {% set component_var = namespace(value=none) %}
-                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                                  {% set type_obj = found_var.value.proto[0] %}
-                                  {% if type_obj is not string and type_obj.variables is defined %}
-                                    {% for comp in type_obj.variables %}
-                                      {% if comp.name.lower() == var_info.component_name.lower() %}
-                                        {% set component_var.value = comp %}
-                                      {% endif %}
-                                    {% endfor %}
-                                  {% endif %}
-                                {% endif %}
-                                {% if component_var.value and component_var.value.initial %}
-                                  {{ component_var.value.initial }}
-                                {% else %}
-                                  -
-                                {% endif %}
-                              {% elif found_var.value and found_var.value.initial %}
+                              {% if found_var.value and found_var.value.initial %}
                                 {{ found_var.value.initial }}
                               {% else %}
                                 -

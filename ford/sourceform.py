@@ -2068,6 +2068,20 @@ class FortranContainer(FortranBase):
             self.io_tracker.record(unit, "open", raw, line_no=line_no)
             return
 
+        if low.startswith("inquire"):
+            # Extract full filename expression for inquire
+            fname = self.extract_filename_expr(raw)
+            # Extract unit number if present (inquire may not use a unit)
+            unit_m = self.IO_UNIT_RE.search(raw)
+            unit = unit_m.group("unit") if unit_m else ""
+
+            # Create a short-lived session so the file is tracked
+            self.io_tracker.start(unit, fname, line_no=line_no)
+            self.io_tracker.record(unit, "inquire", raw, line_no=line_no)
+            # Close immediately since inquire doesn't open a persistent session
+            self.io_tracker.close(unit)
+            return
+
         if low.startswith("read"):
             m = self.IO_UNIT_RE.search(raw)
             unit = m.group("unit") if m else None

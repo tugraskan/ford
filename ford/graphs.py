@@ -1736,15 +1736,29 @@ def add_collapse_functionality_to_svg(svg_str: str, cfg, procedure_name: str) ->
     str
         Enhanced SVG with collapse functionality
     """
-    try:
-        from bs4 import BeautifulSoup
-        from ford.control_flow import BlockType
+    from bs4 import BeautifulSoup
+    from ford.control_flow import BlockType
 
-        # Try to use XML parser, fall back to HTML parser if not available
+    # Prefer an XML parser to avoid XMLParsedAsHTMLWarning. Try lxml-xml, then
+    # the builtin 'xml' parser, and only fall back to the HTML parser as a last
+    # resort. If we must fall back, emit a ford warning so the user can take
+    # corrective action (install 'lxml') rather than letting a raw bs4 warning
+    # bubble up and be treated as an error by some shells.
+    try:
+        soup = BeautifulSoup(svg_str, "lxml-xml")
+    except Exception:
         try:
             soup = BeautifulSoup(svg_str, "xml")
-        except:
-            soup = BeautifulSoup(svg_str, "html.parser")
+        except Exception:
+            import warnings
+            from bs4 import XMLParsedAsHTMLWarning
+
+            warn(
+                "SVG parsing fell back to HTML parser; install 'lxml' for more robust SVG/XML parsing."
+            )
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
+                soup = BeautifulSoup(svg_str, "html.parser")
 
         # Find all node groups in the SVG
         # Graphviz creates nodes with a <title> element containing the block ID
