@@ -37,7 +37,6 @@ from typing import List, Optional, Dict, Set, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 
-
 # Regular expression for RETURN statement (shared by parser and extractor)
 RETURN_RE = re.compile(r"^\s*return\s*$", re.IGNORECASE)
 
