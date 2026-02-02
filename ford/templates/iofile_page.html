@@ -46,9 +46,9 @@
                aria-controls="{{ proc_id }}" 
                class="text-decoration-none">
               <h3 class="card-header bg-light text-dark">
-                <i class="fa fa-caret-down me-2"></i>{{ proc.name }}
+                <i class="fa fa-caret-down me-2"></i>{{ proc.name if proc.name is defined else proc }}
                 <small class="text-muted">
-                  (from {{ proc.parent.name if proc.parent else 'unknown' }})
+                  (from {% if proc.parent %}{{ proc.parent | relurl(page_url) }}{% else %}unknown{% endif %})
                 </small>
               </h3>
             </a>
@@ -154,7 +154,7 @@
                     {# Collect write variables for this procedure - deduplicated for summary #}
                     {% if ops.timeline %}
                       {% for op in ops.timeline %}
-                        {% if op.kind == 'write' and op.parameters %}
+                        {% if op.kind == 'read' and op.parameters and not op.is_probe_read %}
                           {% for param in op.parameters %}
                             {# Extract base variable name #}
                             {% set base_name = none %}
@@ -162,7 +162,8 @@
                             {% if '%' in param %}
                               {% set parts = param.split('%') %}
                               {% set base_name = parts[0].split('(')[0] %}
-                              {% set component_name = parts[-1].split('(')[0] %}
+                              'position': loop.index,
+                              'file_line': op.file_line
                             {% else %}
                               {% set base_name = param.split('(')[0] %}
                               {% set component_name = none %}
@@ -178,7 +179,8 @@
                                 'full_name': param, 
                                 'procedure': proc,
                                 'base_name': base_name,
-                                'component_name': component_name
+                                'component_name': component_name,
+                                'line': op.line
                               }) %}
                               {% set _ = proc_write_vars.append(param_info) %}
                               {% set _ = seen_write_vars.update({var_key: true}) %}
@@ -378,6 +380,8 @@
                     {% set expanded_write_vars = [] %}
                     {% set file_line_counter = namespace(value=1) %}
                     {% set seen_source_lines = {} %}
+                    {% set seen_file_entries = {} %}
+                    {% set positions_by_line = {} %}
                     
                     {% for var_info in proc_write_vars %}
                       {# Determine the file line for this variable based on its source code line #}
@@ -418,19 +422,60 @@
                               'full_name': var_info.base_name ~ '%' ~ comp.name,
                               'procedure': var_info.procedure,
                               'file_line': current_file_line,
-                              'type_name': type_obj.name if type_obj.name else 'unknown'
+                              'type_name': type_obj.name if type_obj.name else 'unknown',
+                              'position': var_info.position if var_info.position is defined else none
                             }) %}
-                            {% set _ = expanded_write_vars.append(comp_info) %}
+                            {# Assign a sequential position within the current file line for components #}
+                            {% set line_key = current_file_line|string %}
+                            {% if line_key not in positions_by_line %}
+                              {% set _ = positions_by_line.update({line_key: 1}) %}
+                            {% endif %}
+                            {% set pos = positions_by_line[line_key] %}
+                            {% set _ = comp_info.update({'position': pos}) %}
+                            {% set _ = positions_by_line.update({line_key: pos + 1}) %}
+                            {# Avoid duplicate entries for same file_line+fullname #}
+                            {% set entry_key = line_key ~ '|' ~ comp_info.full_name.lower() %}
+                            {% if entry_key not in seen_file_entries %}
+                              {% set _ = expanded_write_vars.append(comp_info) %}
+                              {% set _ = seen_file_entries.update({entry_key: True}) %}
+                            {% endif %}
                           {% endfor %}
                         {% else %}
                           {# Not a derived type or string type - add as is #}
-                          {% set _ = var_info.update({'file_line': current_file_line}) %}
-                          {% set _ = expanded_write_vars.append(var_info) %}
+                          {% set _ = var_info.update({'file_line': current_file_line, 'position': (positions_by_line[current_file_line|string] if (current_file_line|string) in positions_by_line else 1)}) %}
+                          {% set entry_key = current_file_line|string ~ '|' ~ var_info.full_name.lower() %}
+                          {% if entry_key not in seen_file_entries %}
+                            {% set _ = expanded_write_vars.append(var_info) %}
+                            {% set _ = seen_file_entries.update({entry_key: True}) %}
+                            {% set _ = positions_by_line.update({current_file_line|string: (positions_by_line[current_file_line|string] if (current_file_line|string) in positions_by_line else 1) + 1}) %}
+                          {% endif %}
                         {% endif %}
                       {% else %}
                         {# Already has a component or not a derived type - add as is #}
                         {% set _ = var_info.update({'file_line': current_file_line}) %}
-                        {% set _ = expanded_write_vars.append(var_info) %}
+                        {# Heuristic: filter out likely loop-counter locals (single-letter integer locals without docs) #}
+                        {% set skip_entry = false %}
+                        {% if var_info.base_name and var_info.base_name|length == 1 %}
+                          {% set maybe_local = false %}
+                          {% if var_info.procedure.variables is defined %}
+                            {% for v in var_info.procedure.variables %}
+                              {% if v.name.lower() == var_info.base_name.lower() %}
+                                {% set maybe_local = true %}
+                                {% set vinfo = v %}
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+                          {% if maybe_local and vinfo.full_type and 'integer' in vinfo.full_type.lower() and (not vinfo.doc) %}
+                            {% set skip_entry = true %}
+                          {% endif %}
+                        {% endif %}
+                        {% if not skip_entry %}
+                          {% set entry_key = current_file_line|string ~ '|' ~ var_info.full_name.lower() %}
+                          {% if entry_key not in seen_file_entries %}
+                            {% set _ = expanded_write_vars.append(var_info) %}
+                            {% set _ = seen_file_entries.update({entry_key: True}) %}
+                          {% endif %}
+                        {% endif %}
                       {% endif %}
                     {% endfor %}
                     
@@ -457,7 +502,7 @@
                             <td>{{ var_info.file_line }}</td>
                             
                             {# Column 2: Position in File - position within that line #}
-                            <td>{{ '-' if var_info.component_name else (var_info.position if var_info.position is defined else '-') }}</td>
+                            <td>{{ var_info.position if var_info.position is defined else '-' }}</td>
                             
                             {# Find variable info for remaining columns #}
                             {% set found_var = namespace(value=none) %}
@@ -472,9 +517,23 @@
                               {% endfor %}
                             {% endif %}
                             
+                            {% if not is_local.value and var_info.procedure.args is defined %}
+                              {% for a in var_info.procedure.args %}
+                                {% if a.name is defined and a.name.lower() == var_info.base_name.lower() %}
+                                  {% set is_local.value = true %}
+                                {% endif %}
+                              {% endfor %}
+                            {% endif %}
+                            
                             {% if not found_var.value and var_info.procedure.all_vars is defined %}
                               {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
                                 {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
+                              {% endif %}
+                            {% endif %}
+                            
+                            {% if not is_local.value and found_var.value and found_var.value.parent is defined %}
+                              {% if found_var.value.parent == var_info.procedure %}
+                                {% set is_local.value = true %}
                               {% endif %}
                             {% endif %}
                             
@@ -668,7 +727,7 @@
                   {# Collect read variables for this procedure with position tracking #}
                   {% if ops.timeline %}
                     {% for op in ops.timeline %}
-                      {% if op.kind == 'read' and op.parameters %}
+                      {% if op.kind == 'read' and op.parameters and not op.is_probe_read %}
                         {% for param in op.parameters %}
                           {# Parse the parameter to extract its components #}
                           {% set param_info = {} %}
@@ -676,7 +735,8 @@
                             'full_name': param, 
                             'procedure': proc, 
                             'line': op.line,
-                            'position': loop.index
+                            'position': loop.index,
+                            'file_line': op.file_line
                           }) %}
                           
                           {# Extract base variable name #}
@@ -868,63 +928,68 @@
                   {% if proc_read_vars %}
                     <p class="text-muted">This section shows the line-by-line schema of the input file, listing each variable/component being read.</p>
                     
-                    {# Expand derived types in proc_read_vars #}
+                    {# Expand derived types in proc_read_vars using file_line info #}
                     {% set expanded_read_vars = [] %}
-                    {% set file_line_counter = namespace(value=1) %}
-                    {% set seen_source_lines = {} %}
                     
                     {% for var_info in proc_read_vars %}
-                      {# Determine the file line for this variable based on its source code line #}
-                      {% set source_line = var_info.line if var_info.line else 'unknown' %}
-                      {% if source_line not in seen_source_lines %}
-                        {% set _ = seen_source_lines.update({source_line: file_line_counter.value}) %}
-                        {% set current_file_line = file_line_counter.value %}
-                        {% set file_line_counter.value = file_line_counter.value + 1 %}
-                      {% else %}
-                        {% set current_file_line = seen_source_lines[source_line] %}
-                      {% endif %}
-                      
-                      {# Look up the variable definition #}
-                      {% set found_var = namespace(value=none) %}
-                      {% if var_info.procedure.variables is defined %}
-                        {% for v in var_info.procedure.variables %}
-                          {% if v.name.lower() == var_info.base_name.lower() %}
-                            {% set found_var.value = v %}
-                          {% endif %}
-                        {% endfor %}
-                      {% endif %}
-                      {% if not found_var.value and var_info.procedure.all_vars is defined %}
-                        {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
-                          {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
-                        {% endif %}
-                      {% endif %}
-                      
-                      {# Check if it's a derived type without a component specified #}
-                      {% if not var_info.component_name and found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
-                        {% set type_obj = found_var.value.proto[0] %}
-                        {% if type_obj is not string and type_obj.variables is defined %}
-                          {# It's a derived type - expand all components #}
-                          {% for comp in type_obj.variables %}
-                            {% set comp_info = {} %}
-                            {% set _ = comp_info.update({
-                              'base_name': var_info.base_name,
-                              'component_name': comp.name,
-                              'full_name': var_info.base_name ~ '%' ~ comp.name,
-                              'procedure': var_info.procedure,
-                              'file_line': current_file_line,
-                              'type_name': type_obj.name if type_obj.name else 'unknown'
-                            }) %}
-                            {% set _ = expanded_read_vars.append(comp_info) %}
+                      {% if var_info.file_line is defined and var_info.file_line %}
+                        {% set current_file_line = var_info.file_line %}
+                        
+                        {# Look up the variable definition #}
+                        {% set found_var = namespace(value=none) %}
+                        {% if var_info.procedure.variables is defined %}
+                          {% for v in var_info.procedure.variables %}
+                            {% if v.name.lower() == var_info.base_name.lower() %}
+                              {% set found_var.value = v %}
+                            {% endif %}
                           {% endfor %}
+                        {% endif %}
+                        {% if not found_var.value and var_info.procedure.all_vars is defined %}
+                          {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
+                            {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
+                          {% endif %}
+                        {% endif %}
+                        
+                        {# Check if it's a derived type without a component specified #}
+                        {% if not var_info.component_name and found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
+                          {% set type_obj = found_var.value.proto[0] %}
+                          {% if type_obj is not string and type_obj.variables is defined %}
+                            {# It's a derived type - expand all components #}
+                            {% for comp in type_obj.variables %}
+                              {% set comp_info = {} %}
+                              {% set _ = comp_info.update({
+                                'base_name': var_info.base_name,
+                                'component_name': comp.name,
+                                'full_name': var_info.base_name ~ '%' ~ comp.name,
+                                'procedure': var_info.procedure,
+                                'file_line': current_file_line,
+                                'type_name': type_obj.name if type_obj.name else 'unknown',
+                                'position': var_info.position if var_info.position is defined else none
+                              }) %}
+                              {% set _ = expanded_read_vars.append(comp_info) %}
+                            {% endfor %}
+                          {% else %}
+                            {# Not a derived type or string type - add as is #}
+                            {% set _ = var_info.update({'file_line': current_file_line}) %}
+                            {% set _ = expanded_read_vars.append(var_info) %}
+                          {% endif %}
                         {% else %}
-                          {# Not a derived type or string type - add as is #}
+                          {# Already has a component or not a derived type - add as is #}
                           {% set _ = var_info.update({'file_line': current_file_line}) %}
                           {% set _ = expanded_read_vars.append(var_info) %}
                         {% endif %}
-                      {% else %}
-                        {# Already has a component or not a derived type - add as is #}
-                        {% set _ = var_info.update({'file_line': current_file_line}) %}
-                        {% set _ = expanded_read_vars.append(var_info) %}
+                      {% endif %}
+                    {% endfor %}
+
+                    {# Deduplicate by file line + full variable name #}
+                    {% set deduped_read_vars = [] %}
+                    {% set seen_read_vars = {} %}
+                    {% for var_info in expanded_read_vars %}
+                      {% set full_name = var_info.full_name if var_info.full_name is defined else (var_info.base_name ~ (('%' ~ var_info.component_name) if var_info.component_name else '')) %}
+                      {% set key = var_info.file_line ~ '|' ~ full_name %}
+                      {% if key not in seen_read_vars %}
+                        {% set _ = deduped_read_vars.append(var_info) %}
+                        {% set _ = seen_read_vars.update({key: true}) %}
                       {% endif %}
                     {% endfor %}
                     
@@ -945,25 +1010,41 @@
                         </tr>
                       </thead>
                       <tbody>
-                        {% for var_info in expanded_read_vars %}
+                        {% for var_info in deduped_read_vars %}
                           <tr>
                             {# Column 1: Line in File - the input file line #}
                             <td>{{ var_info.file_line }}</td>
                             
                             {# Column 2: Position in File - position within that line #}
-                            <td>{{ '-' if var_info.component_name else (var_info.position if var_info.position is defined else '-') }}</td>
+                            <td>{{ var_info.position if var_info.position is defined else '-' }}</td>
                             
                             {# Find variable info for remaining columns #}
                             {% set found_var = namespace(value=none) %}
                             {% set is_local = namespace(value=false) %}
                             
+                            {# Build local variable name list (including extracted locals) #}
+                            {% set local_names = [] %}
+                            {% if var_info.procedure.local_variables is defined %}
+                              {% for lv in var_info.procedure.local_variables %}
+                                {% if lv.name is defined %}
+                                  {% set _ = local_names.append(lv.name.lower()) %}
+                                {% endif %}
+                              {% endfor %}
+                            {% endif %}
+                            
                             {% if var_info.procedure.variables is defined %}
                               {% for v in var_info.procedure.variables %}
                                 {% if v.name.lower() == var_info.base_name.lower() %}
                                   {% set found_var.value = v %}
-                                  {% set is_local.value = true %}
+                                  {% if v.name.lower() in local_names or v.parent == var_info.procedure %}
+                                    {% set is_local.value = true %}
+                                  {% endif %}
                                 {% endif %}
                               {% endfor %}
+                            {% endif %}
+                            
+                            {% if not is_local.value and var_info.base_name and (var_info.base_name.lower() in local_names) %}
+                              {% set is_local.value = true %}
                             {% endif %}
                             
                             {% if not found_var.value and var_info.procedure.all_vars is defined %}
@@ -1146,9 +1227,9 @@
                     <p class="text-muted">The following shows the line-by-line format of how this file is read in this procedure:</p>
                     <div class="card">
                       <div class="card-body">
-                        <pre><code>{%- if expanded_read_vars is defined -%}
+                        <pre><code>{%- if deduped_read_vars is defined -%}
 {%- set lines_dict = {} -%}
-{%- for var_info in expanded_read_vars -%}
+{%- for var_info in deduped_read_vars -%}
   {%- set var_name = var_info.base_name -%}
   {%- if var_info.component_name -%}
     {%- set var_name = var_name ~ '%' ~ var_info.component_name -%}
@@ -1157,7 +1238,9 @@
   {%- if line_num not in lines_dict -%}
     {%- set _ = lines_dict.update({line_num: []}) -%}
   {%- endif -%}
-  {%- set _ = lines_dict[line_num].append(var_name) -%}
+  {%- if var_name not in lines_dict[line_num] -%}
+    {%- set _ = lines_dict[line_num].append(var_name) -%}
+  {%- endif -%}
 {%- endfor -%}
 {%- for line_num in lines_dict.keys() | sort %}
 Line {{ line_num }}: {{ lines_dict[line_num] | join(', ') }}

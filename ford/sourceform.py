@@ -471,6 +471,64 @@ class IoTracker(ConditionTracker):
 
                 enhanced_timeline.append(enhanced_op)
 
+            # Annotate operations with file-line positions (accounting for rewind/backspace)
+            file_line = 0
+            for op in enhanced_timeline:
+                kind = op.get("kind", "").lower()
+                if kind == "open":
+                    file_line = 0
+                    op["file_line"] = None
+                elif kind == "rewind":
+                    file_line = 0
+                    op["file_line"] = None
+                elif kind == "backspace":
+                    file_line = max(file_line - 1, 0)
+                    op["file_line"] = None
+                elif kind in ("read", "write"):
+                    file_line += 1
+                    op["file_line"] = file_line
+                else:
+                    op["file_line"] = None
+
+            # Mark probe reads (single variable read followed by rewind/backspace)
+            for idx, op in enumerate(enhanced_timeline):
+                if op.get("kind", "").lower() != "read":
+                    op["is_probe_read"] = False
+                    continue
+
+                params = op.get("parameters") or []
+                if len(params) != 1:
+                    op["is_probe_read"] = False
+                    continue
+
+                param = params[0].strip()
+                if "%" in param or "(" in param or ")" in param:
+                    op["is_probe_read"] = False
+                    continue
+
+                next_kind = ""
+                for j in range(idx + 1, len(enhanced_timeline)):
+                    if enhanced_timeline[j].get("kind") == "meta":
+                        continue
+                    next_kind = enhanced_timeline[j].get("kind", "").lower()
+                    break
+
+                op["is_probe_read"] = next_kind in ("rewind", "backspace")
+
+            # If multiple reads target the same file line (due to backspace),
+            # keep only the last read for schema/sample formatting.
+            last_read_by_line: dict[int, int] = {}
+            for idx, op in enumerate(enhanced_timeline):
+                if op.get("kind", "").lower() != "read":
+                    continue
+                line_no = op.get("file_line")
+                if not line_no:
+                    continue
+                if line_no in last_read_by_line:
+                    prev_idx = last_read_by_line[line_no]
+                    enhanced_timeline[prev_idx]["is_probe_read"] = True
+                last_read_by_line[line_no] = idx
+
             # Resolve unit and filename from variable defaults
             unit = file_record.get("unit", "")
             original_filename = file_record.get("original_filename", file_key)
@@ -4309,10 +4367,17 @@ class FortranIOFile(FortranBase):
 
     def get_url(self):
         """Generate URL for this I/O file's documentation page."""
-        return f"iofile/{self.ident}.html"
+        return f"{self.get_dir()}/{self.ident}.html"
 
     def get_dir(self):
         """Get directory for this I/O file's documentation page."""
+        io_type = self.io_type
+        if io_type == "Input":
+            return "iofile/input"
+        if io_type == "Output":
+            return "iofile/output"
+        if io_type == "Input/Output":
+            return "iofile/input_output"
         return "iofile"
 
     @property

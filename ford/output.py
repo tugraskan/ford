@@ -549,6 +549,9 @@ class Documentation:
             "blockdata",
             "namelist",
             "iofile",
+            "iofile/input",
+            "iofile/output",
+            "iofile/input_output",
         ]:
             subdir = out_dir / directory
             subdir.mkdir(parents=True, exist_ok=True)
