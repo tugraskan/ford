@@ -11,6 +11,8 @@ Classifications:
 """
 
 import re
+import csv
+import json
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 from dataclasses import dataclass
@@ -38,6 +40,10 @@ class FileClassifier:
     - Data patterns (references, connections, single values)
     - Content organization (sections, tables, key-value pairs)
     """
+    
+    # Configuration constants
+    MAX_LINES_TO_ANALYZE = 100  # Maximum lines to analyze for column patterns
+    REFERENCE_CHECK_LINES = 20  # Lines to check for component references
     
     # Patterns that suggest different classifications
     CONNECTION_KEYWORDS = [
@@ -89,8 +95,13 @@ class FileClassifier:
         if not path.exists():
             raise FileNotFoundError(f"File not found: {filepath}")
         
-        with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-            lines = f.readlines()
+        try:
+            with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+                lines = f.readlines()
+        except UnicodeDecodeError:
+            # If UTF-8 fails, try with latin-1 which accepts all byte values
+            with open(filepath, 'r', encoding='latin-1') as f:
+                lines = f.readlines()
         
         # Filter out empty lines and comments
         content_lines = [
@@ -103,7 +114,8 @@ class FileClassifier:
         
         # Analyze column structure
         columns_per_line = []
-        for line in content_lines[:min(100, len(content_lines))]:
+        lines_to_check = min(self.MAX_LINES_TO_ANALYZE, len(content_lines))
+        for line in content_lines[:lines_to_check]:
             # Count whitespace-separated tokens
             tokens = line.split()
             if tokens:
@@ -168,7 +180,8 @@ class FileClassifier:
             r'_id\b', r'_name\b', r'_num\b'
         ]
         
-        content = ' '.join(lines[:20])  # Check first 20 lines
+        # Check first N lines
+        content = ' '.join(lines[:self.REFERENCE_CHECK_LINES])
         for pattern in reference_patterns:
             if re.search(pattern, content, re.IGNORECASE):
                 return True

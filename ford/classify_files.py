@@ -6,6 +6,8 @@ This script allows users to classify input files from the command line.
 """
 
 import argparse
+import csv
+import json
 import sys
 from pathlib import Path
 from typing import List
@@ -154,9 +156,6 @@ def output_table(results: List[dict], verbose: bool):
 
 def output_csv(results: List[dict], verbose: bool):
     """Output results as CSV."""
-    import csv
-    import sys
-    
     if not results:
         return
     
@@ -167,7 +166,6 @@ def output_csv(results: List[dict], verbose: bool):
 
 def output_json(results: List[dict]):
     """Output results as JSON."""
-    import json
     print(json.dumps(results, indent=2))
 
 

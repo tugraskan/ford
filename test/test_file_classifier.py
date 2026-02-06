@@ -159,8 +159,8 @@ chan_id surf_id
         """Test classification of empty files."""
         filepath = self.create_test_file(temp_dir, 'empty.txt', '')
         result = classifier.classify(filepath)
-        # Empty files should return Unknown
-        assert result in ['Unknown', 'Simple', 'Unique'], f"Got unexpected '{result}'"
+        # Empty files should return Unknown as they have no structure
+        assert result == 'Unknown', f"Expected 'Unknown' for empty file, got '{result}'"
     
     def test_analyze_structure_tabular(self, classifier, temp_dir):
         """Test structure analysis for tabular data."""
