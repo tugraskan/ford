@@ -4432,75 +4432,102 @@ class FortranIOFile(FortranBase):
         
         Returns one of: Simple, Unique, Connect, Unknown
         
-        Classification logic:
-        - Connect: Files with connection-related keywords in filename (.con, .lin extensions)
-        - Unique: Files with complex I/O patterns (rewind/backspace usage, master config patterns)
-        - Simple: Files with straightforward sequential I/O (pure read or write patterns)
-        - Unknown: Files that don't match any pattern
+        Classification logic (based on actual I/O behavior, not filenames):
+        - Connect: Looped reads with repeating patterns (same columns repeated in loop)
+        - Simple: Sequential reads with consistent structure (flat tabular data)
+        - Unique: Variable structure, probe reads, or complex positioning
+        - Unknown: Insufficient data to classify
         """
-        filename_lower = self.io_filename.lower()
-        
-        # Check for Connect patterns - files that link components
-        # These typically have .con or .lin extensions or connection keywords
-        if any(ext in filename_lower for ext in ['.con', '.lin', 'connect', 'link']):
-            return "Connect"
-        
-        if any(keyword in filename_lower for keyword in [
-            'hru.con', 'channel.con', 'reservoir.con', 'aquifer.con',
-            'rout_unit.con', 'recall.con', 'exco.con', 'outlet.con'
-        ]):
-            return "Connect"
+        if not self.operations:
+            return "Unknown"
         
         # Analyze I/O operation patterns
+        read_ops = [op for op in self.operations if op.get("kind") == "read"]
+        write_ops = [op for op in self.operations if op.get("kind") == "write"]
+        
         has_rewind = any(op.get("kind") == "rewind" for op in self.operations)
         has_backspace = any(op.get("kind") == "backspace" for op in self.operations)
         has_complex_positioning = has_rewind or has_backspace
         
-        read_count = sum(1 for op in self.operations if op.get("kind") == "read")
-        write_count = sum(1 for op in self.operations if op.get("kind") == "write")
+        # Check for probe reads (test reads followed by rewind/backspace)
+        probe_read_count = sum(1 for op in self.operations if op.get("is_probe_read", False))
         
-        # Check for master/configuration file patterns
-        is_master_config = any(ext in filename_lower for ext in [
-            '.cio', '.def', '.sch', '.dtl', '.ini'
-        ])
+        # Analyze loop patterns for Connect classification
+        # Connect files: Reads inside loops with repeating structure
+        looped_reads = [op for op in read_ops if op.get("condition") or op.get("condition_stack")]
         
-        is_config_keyword = any(kw in filename_lower for kw in [
-            'file.cio', 'config', 'master', 'settings', 'control',
-            'management.sch', 'allocation'
-        ])
+        # Check if reads have consistent parameters (same structure)
+        read_params = [op.get("parameters", []) for op in read_ops if op.get("parameters")]
+        
+        # Classify as Connect if:
+        # - Majority of reads are in loops (repeating pattern)
+        # - Consistent parameter structure (same columns repeated)
+        if read_ops:
+            loop_ratio = len(looped_reads) / len(read_ops)
+            
+            # Connect files have high loop ratio (rows repeat in loops)
+            if loop_ratio > 0.6 and len(read_ops) >= 3:
+                # Check for consistent structure (same columns per read)
+                if self._has_consistent_structure(read_params):
+                    return "Connect"
         
         # Classify as Unique if:
-        # - Master configuration file
-        # - Complex I/O positioning (rewind/backspace)
-        # - Very few operations (likely single-instance control file)
-        if is_master_config or is_config_keyword:
+        # - Has probe reads (testing file structure)
+        # - Complex positioning (rewind/backspace for non-sequential access)
+        # - Variable parameter structure (different columns per row)
+        if probe_read_count > 0:
             return "Unique"
         
-        if has_complex_positioning and (read_count + write_count) < 10:
+        if has_complex_positioning:
+            # Complex positioning with few operations suggests config file
+            if len(read_ops) + len(write_ops) < 10:
+                return "Unique"
+            # Otherwise might still be Unique if structure varies
+            if not self._has_consistent_structure(read_params):
+                return "Unique"
+        
+        # Check for variable structure (different columns per row)
+        if read_params and not self._has_consistent_structure(read_params):
             return "Unique"
         
-        # Check for Simple patterns - straightforward data files
-        is_data_extension = any(ext in filename_lower for ext in [
-            '.cli', '.bsn', '.hru', '.cha', '.res', '.wet', '.ele',
-            '.rtu', '.dr', '.exc', '.del', '.aqu', '.hyd', '.fld',
-            '.str', '.plt', '.frt', '.til', '.pes', '.pth', '.urb',
-            '.sep', '.sno', '.ops', '.lum', '.cal', '.sft', '.sol',
-            '.reg', '.key', '.sim', '.cnt', '.rec', '.dat', '.prt'
-        ]):
-        
-        # Simple sequential read/write pattern
+        # Classify as Simple if:
+        # - Sequential access (no complex positioning)
+        # - Consistent structure
+        # - Mostly non-looped reads (or simple sequential loops)
         is_sequential = not has_complex_positioning
-        has_io_operations = read_count > 0 or write_count > 0
+        has_io_operations = len(read_ops) > 0 or len(write_ops) > 0
         
-        if is_data_extension and is_sequential and has_io_operations:
-            return "Simple"
-        
-        # Default for straightforward sequential I/O
-        if is_sequential and has_io_operations and (read_count + write_count) >= 3:
-            return "Simple"
+        if is_sequential and has_io_operations:
+            # Simple files have consistent parameter structure
+            if self._has_consistent_structure(read_params):
+                # Low loop ratio or simple pattern suggests flat tabular data
+                if not read_ops or len(looped_reads) / len(read_ops) < 0.6:
+                    return "Simple"
         
         # If we can't determine, return Unknown
         return "Unknown"
+    
+    def _has_consistent_structure(self, param_lists):
+        """
+        Check if parameter lists have consistent structure.
+        
+        Args:
+            param_lists: List of parameter lists from READ operations
+            
+        Returns:
+            True if all parameter lists have the same length (consistent columns)
+        """
+        if not param_lists:
+            return True
+        
+        # Filter out empty lists
+        non_empty = [p for p in param_lists if p]
+        if not non_empty:
+            return True
+        
+        # Check if all have the same length
+        first_len = len(non_empty[0])
+        return all(len(p) == first_len for p in non_empty)
 
 
 class FortranType(FortranContainer):
