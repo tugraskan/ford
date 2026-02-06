@@ -41,17 +41,13 @@
           {% set proc_id = 'proc-' ~ loop.index %}
           
           <div class="card mb-3">
-            <a data-bs-toggle="collapse" href="#{{ proc_id }}" 
-               aria-expanded="false" 
-               aria-controls="{{ proc_id }}" 
-               class="text-decoration-none">
-              <h3 class="card-header bg-light text-dark">
-                <i class="fa fa-caret-down me-2"></i>{{ proc.name if proc.name is defined else proc }}
-                <small class="text-muted">
-                  (from {% if proc.parent %}{{ proc.parent | relurl(page_url) }}{% else %}unknown{% endif %})
-                </small>
-              </h3>
-            </a>
+            <h3 class="card-header bg-light text-dark" data-bs-toggle="collapse" data-bs-target="#{{ proc_id }}"
+                aria-expanded="false" aria-controls="{{ proc_id }}" role="button">
+              <i class="fa fa-caret-down me-2"></i>{{ proc.name if proc.name is defined else proc }}
+              <small class="text-muted">
+                (from {% if proc.parent %}{{ proc.parent | relurl(page_url) }}{% else %}unknown{% endif %})
+              </small>
+            </h3>
             <div id="{{ proc_id }}" class="collapse">
               <div class="card-body">
                 {# Subsection 1: Filename (moved up) #}
@@ -86,6 +82,17 @@
                           {% set is_cio = 'N' %}
                           {% if ops.resolution_chain.type_object and ops.resolution_chain.type_object.meta and ops.resolution_chain.type_object.meta.parent %}
                             {% if ops.resolution_chain.type_object.meta.parent.name == 'input_file_module' %}
+                              {% set is_cio = 'Y' %}
+                            {% endif %}
+                          {% endif %}
+                          {% if is_cio == 'N' and ops.resolution_chain.variable_object and ops.resolution_chain.variable_object.meta and ops.resolution_chain.variable_object.meta.parent %}
+                            {% if ops.resolution_chain.variable_object.meta.parent.name == 'input_file_module' %}
+                              {% set is_cio = 'Y' %}
+                            {% endif %}
+                          {% endif %}
+                          {% if is_cio == 'N' and ops.resolution_chain.variable_type is defined %}
+                            {% set var_type_lower = ops.resolution_chain.variable_type|lower %}
+                            {% if var_type_lower[:6] == 'input_' %}
                               {% set is_cio = 'Y' %}
                             {% endif %}
                           {% endif %}
@@ -485,13 +492,13 @@
                           <th>Line in File</th>
                           <th>Position in File</th>
                           <th>Local (Y/N)</th>
-                          <th>Derived Type Name</th>
+                          <th>TYPE</th>
                           <th>Component</th>
                           <th>Type</th>
+                          <th>Dimensions</th>
                           <th>Default</th>
                           <th>Units</th>
                           <th>Description</th>
-                          <th>Source Line</th>
                           <th>Swat_codetype</th>
                         </tr>
                       </thead>
@@ -540,30 +547,31 @@
                             {# Column 3: Local (Y/N) #}
                             <td>{{ 'Y' if is_local.value else 'N' }}</td>
                             
-                            {# Column 4: Derived Type Name #}
+                            {# Column 4: TYPE - only show for derived type components (has % in name) #}
                             <td>
-                              {% if var_info.type_name is defined %}
+                              {% if var_info.type_name is defined and var_info.type_name %}
                                 {{ var_info.type_name }}
-                              {% elif found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
-                                {% set type_obj = found_var.value.proto[0] %}
-                                {% if type_obj is string %}
-                                  {{ type_obj }}
+                              {% elif var_info.component_name or (var_info.full_name is defined and '%' in var_info.full_name) %}
+                                {# This is a derived type component - show the type name #}
+                                {% if found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
+                                  {% set type_obj = found_var.value.proto[0] %}
+                                  {% if type_obj is string %}
+                                    {{ type_obj }}
+                                  {% else %}
+                                    {{ type_obj.name if type_obj.name else '-' }}
+                                  {% endif %}
                                 {% else %}
-                                  {{ type_obj.name if type_obj.name else 'N/A' }}
+                                  -
                                 {% endif %}
                               {% else %}
-                                N/A
+                                {# Local or non-derived-type variable - show dash #}
+                                -
                               {% endif %}
                             </td>
                             
                             {# Column 5: Component #}
-                            <td>
-                              {% if var_info.component_name %}
-                                {{ var_info.component_name }}
-                              {% else %}
-                                {{ var_info.base_name }}
-                              {% endif %}
-                            </td>
+                            {% set display_component = (var_info.component_name if var_info.component_name else (var_info.full_name if var_info.full_name is defined and '%' not in var_info.full_name else var_info.base_name)) %}
+                            <td>{{ display_component }}</td>
                             
                             {# Column 6: Type (component data type) #}
                             <td>
@@ -591,7 +599,47 @@
                               {% endif %}
                             </td>
                             
-                            {# Column 7: Default #}
+                            {# Column 7: Dimensions (array dimension and allocatable info) #}
+                            <td>
+                              {% set dim_info = namespace(dimension='', attribs=[]) %}
+                              {% if var_info.component_name and found_var.value %}
+                                {% set component_var = namespace(value=none) %}
+                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                                  {% set type_obj = found_var.value.proto[0] %}
+                                  {% if type_obj is not string and type_obj.variables is defined %}
+                                    {% for comp in type_obj.variables %}
+                                      {% if comp.name.lower() == var_info.component_name.lower() %}
+                                        {% set component_var.value = comp %}
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                {% endif %}
+                                {% if component_var.value %}
+                                  {% set dim_info.dimension = component_var.value.dimension if component_var.value.dimension is defined else '' %}
+                                  {% set dim_info.attribs = component_var.value.attribs if component_var.value.attribs is defined else [] %}
+                                {% endif %}
+                              {% elif found_var.value %}
+                                {% set dim_info.dimension = found_var.value.dimension if found_var.value.dimension is defined else '' %}
+                                {% set dim_info.attribs = found_var.value.attribs if found_var.value.attribs is defined else [] %}
+                              {% endif %}
+                              {% set dim_parts = [] %}
+                              {% if dim_info.dimension %}
+                                {% set _ = dim_parts.append('dimension ' ~ dim_info.dimension) %}
+                              {% endif %}
+                              {% if 'allocatable' in dim_info.attribs %}
+                                {% set _ = dim_parts.append('allocatable') %}
+                              {% endif %}
+                              {% if 'pointer' in dim_info.attribs %}
+                                {% set _ = dim_parts.append('pointer') %}
+                              {% endif %}
+                              {% if dim_parts|length > 0 %}
+                                {{ dim_parts|join(', ') }}
+                              {% else %}
+                                -
+                              {% endif %}
+                            </td>
+                            
+                            {# Column 8: Default #}
                             <td>
                               {% if var_info.component_name and found_var.value %}
                                 {% set component_var = namespace(value=none) %}
@@ -669,33 +717,7 @@
                               {% endif %}
                             </td>
                             
-                            {# Column 10: Source Line #}
-                            <td>
-                              {% if var_info.component_name and found_var.value %}
-                                {% set component_var = namespace(value=none) %}
-                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                                  {% set type_obj = found_var.value.proto[0] %}
-                                  {% if type_obj is not string and type_obj.variables is defined %}
-                                    {% for comp in type_obj.variables %}
-                                      {% if comp.name.lower() == var_info.component_name.lower() %}
-                                        {% set component_var.value = comp %}
-                                      {% endif %}
-                                    {% endfor %}
-                                  {% endif %}
-                                {% endif %}
-                                {% if component_var.value and component_var.value.meta and component_var.value.meta.file %}
-                                  {{ component_var.value.meta.file }}:{{ component_var.value.meta.line if component_var.value.meta.line else '?' }}
-                                {% else %}
-                                  -
-                                {% endif %}
-                              {% elif found_var.value and found_var.value.meta and found_var.value.meta.file %}
-                                {{ found_var.value.meta.file }}:{{ found_var.value.meta.line if found_var.value.meta.line else '?' }}
-                              {% else %}
-                                -
-                              {% endif %}
-                            </td>
-                            
-                            {# Column 11: Swat_codetype #}
+                            {# Column 10: Swat_codetype #}
                             <td>{{ var_info.base_name if var_info.base_name else '-' }}</td>
                           </tr>
                         {% endfor %}
@@ -726,7 +748,17 @@
                   
                   {# Collect read variables for this procedure with position tracking #}
                   {% if ops.timeline %}
+                    {# Fallback: compute file-line numbers if not provided #}
+                    {% set calc_line = namespace(value=0) %}
                     {% for op in ops.timeline %}
+                      {% set kind = op.kind|lower %}
+                      {% if kind == 'open' or kind == 'rewind' %}
+                        {% set calc_line.value = 0 %}
+                      {% elif kind == 'backspace' %}
+                        {% set calc_line.value = (calc_line.value - 1 if calc_line.value > 0 else 0) %}
+                      {% elif kind == 'read' or kind == 'write' %}
+                        {% set calc_line.value = calc_line.value + 1 %}
+                      {% endif %}
                       {% if op.kind == 'read' and op.parameters and not op.is_probe_read %}
                         {% for param in op.parameters %}
                           {# Parse the parameter to extract its components #}
@@ -736,21 +768,50 @@
                             'procedure': proc, 
                             'line': op.line,
                             'position': loop.index,
-                            'file_line': op.file_line
+                            'file_line': (op.file_line if op.file_line is defined and op.file_line else calc_line.value),
+                            'condition': op.condition if op.condition is defined else none,
+                            'condition_stack': op.condition_stack if op.condition_stack is defined else none
                           }) %}
                           
-                          {# Extract base variable name #}
+                          {# Extract base variable name - handle implied do-loops #}
                           {% set base_name = none %}
                           {% set component_name = none %}
-                          {% if '%' in param %}
-                            {% set parts = param.split('%') %}
+                          {% set is_implied_do = false %}
+                          {% set actual_var = param %}
+                          
+                          {# Check if this is an implied do-loop: e.g. "cs_db%pests(i), i = 1, cs_db%num_pests" #}
+                          {# The pattern is: varname(index), index = start, end #}
+                          {# We need to extract just the variable part before the ", i =" or similar #}
+                          {% if '=' in param %}
+                            {# Find first comma that's not inside parentheses - that's where the loop control starts #}
+                            {% set paren_depth = namespace(value=0) %}
+                            {% set first_comma_pos = namespace(value=-1) %}
+                            {% for i in range(param|length) %}
+                              {% set ch = param[i] %}
+                              {% if ch == '(' %}
+                                {% set paren_depth.value = paren_depth.value + 1 %}
+                              {% elif ch == ')' %}
+                                {% set paren_depth.value = paren_depth.value - 1 %}
+                              {% elif ch == ',' and paren_depth.value == 0 and first_comma_pos.value == -1 %}
+                                {% set first_comma_pos.value = i %}
+                              {% endif %}
+                            {% endfor %}
+                            {% if first_comma_pos.value > 0 %}
+                              {% set actual_var = param[:first_comma_pos.value] %}
+                              {% set is_implied_do = true %}
+                            {% endif %}
+                          {% endif %}
+                          
+                          {# Now extract base_name and component_name from actual_var #}
+                          {% if '%' in actual_var %}
+                            {% set parts = actual_var.split('%') %}
                             {% set base_name = parts[0].split('(')[0] %}
                             {% set component_name = parts[-1].split('(')[0] %}
                           {% else %}
-                            {% set base_name = param.split('(')[0] %}
+                            {% set base_name = actual_var.split('(')[0] %}
                             {% set component_name = none %}
                           {% endif %}
-                          {% set _ = param_info.update({'base_name': base_name, 'component_name': component_name}) %}
+                          {% set _ = param_info.update({'base_name': base_name, 'component_name': component_name, 'is_implied_do': is_implied_do}) %}
                           
                           {# Always add to list to preserve order and position #}
                           {% set _ = proc_read_vars.append(param_info) %}
@@ -931,9 +992,24 @@
                     {# Expand derived types in proc_read_vars using file_line info #}
                     {% set expanded_read_vars = [] %}
                     
+                    {% set fallback_line_counter = namespace(value=0) %}
+                    {# Track running position per file_line for correct positioning when multiple derived types on same line #}
+                    {% set line_position_counter = namespace(current_line=0, position=0) %}
                     {% for var_info in proc_read_vars %}
-                      {% if var_info.file_line is defined and var_info.file_line %}
-                        {% set current_file_line = var_info.file_line %}
+                        {% if var_info.file_line is defined and var_info.file_line %}
+                          {% set current_file_line = var_info.file_line %}
+                        {% else %}
+                          {% if var_info.position == 1 %}
+                            {% set fallback_line_counter.value = fallback_line_counter.value + 1 %}
+                          {% endif %}
+                          {% set current_file_line = fallback_line_counter.value %}
+                        {% endif %}
+                        
+                        {# Reset position counter when file line changes #}
+                        {% if current_file_line != line_position_counter.current_line %}
+                          {% set line_position_counter.current_line = current_file_line %}
+                          {% set line_position_counter.position = 0 %}
+                        {% endif %}
                         
                         {# Look up the variable definition #}
                         {% set found_var = namespace(value=none) %}
@@ -954,8 +1030,9 @@
                         {% if not var_info.component_name and found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
                           {% set type_obj = found_var.value.proto[0] %}
                           {% if type_obj is not string and type_obj.variables is defined %}
-                            {# It's a derived type - expand all components #}
+                            {# It's a derived type - expand all components using running position counter #}
                             {% for comp in type_obj.variables %}
+                              {% set line_position_counter.position = line_position_counter.position + 1 %}
                               {% set comp_info = {} %}
                               {% set _ = comp_info.update({
                                 'base_name': var_info.base_name,
@@ -964,56 +1041,262 @@
                                 'procedure': var_info.procedure,
                                 'file_line': current_file_line,
                                 'type_name': type_obj.name if type_obj.name else 'unknown',
-                                'position': var_info.position if var_info.position is defined else none
+                                'position': line_position_counter.position,
+                                'condition': var_info.condition if var_info.condition is defined else none,
+                                'condition_stack': var_info.condition_stack if var_info.condition_stack is defined else none
                               }) %}
                               {% set _ = expanded_read_vars.append(comp_info) %}
                             {% endfor %}
                           {% else %}
-                            {# Not a derived type or string type - add as is #}
-                            {% set _ = var_info.update({'file_line': current_file_line}) %}
+                            {# Not a derived type or string type - add as is with running position #}
+                            {% set line_position_counter.position = line_position_counter.position + 1 %}
+                            {% set _ = var_info.update({'file_line': current_file_line, 'position': line_position_counter.position}) %}
                             {% set _ = expanded_read_vars.append(var_info) %}
                           {% endif %}
                         {% else %}
-                          {# Already has a component or not a derived type - add as is #}
-                          {% set _ = var_info.update({'file_line': current_file_line}) %}
+                          {# Already has a component or not a derived type - add as is with running position #}
+                          {% set line_position_counter.position = line_position_counter.position + 1 %}
+                          {% set _ = var_info.update({'file_line': current_file_line, 'position': line_position_counter.position}) %}
                           {% set _ = expanded_read_vars.append(var_info) %}
                         {% endif %}
-                      {% endif %}
                     {% endfor %}
 
-                    {# Deduplicate by file line + full variable name #}
+                    {# Normalize looped reads to a single record line #}
+                    {% set do_first_line = {} %}
+                    {% for var_info in expanded_read_vars | sort(attribute='file_line') %}
+                      {% set do_text = none %}
+                      {% if var_info.condition_stack is defined and var_info.condition_stack %}
+                        {% for c in var_info.condition_stack | reverse %}
+                          {% if do_text is none and c.type == 'do' %}
+                            {% set do_text = c.text %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                      {% if do_text and do_text not in do_first_line %}
+                        {% set _ = do_first_line.update({do_text: var_info.file_line}) %}
+                      {% endif %}
+                      {% set display_line = (do_first_line[do_text] if do_text else var_info.file_line) %}
+                      {% set _ = var_info.update({'display_line': display_line}) %}
+                    {% endfor %}
+
+                    {# Deduplicate by display line + full variable name + condition #}
                     {% set deduped_read_vars = [] %}
                     {% set seen_read_vars = {} %}
                     {% for var_info in expanded_read_vars %}
                       {% set full_name = var_info.full_name if var_info.full_name is defined else (var_info.base_name ~ (('%' ~ var_info.component_name) if var_info.component_name else '')) %}
-                      {% set key = var_info.file_line ~ '|' ~ full_name %}
+                      {% set cond_label = namespace(value='') %}
+                      {% if var_info.condition_stack is defined and var_info.condition_stack %}
+                        {% for c in var_info.condition_stack | reverse %}
+                          {% if cond_label.value == '' and c.type in ['if','else','case','select'] %}
+                            {% set cond_label.value = c.text %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                      {% if cond_label.value == '' and var_info.condition and var_info.condition.text is defined %}
+                        {% set cond_label.value = var_info.condition.text %}
+                      {% endif %}
+                      {% set line_key = var_info.display_line if var_info.display_line is defined else var_info.file_line %}
+                      {% set key = line_key ~ '|' ~ full_name ~ '|' ~ cond_label.value %}
                       {% if key not in seen_read_vars %}
                         {% set _ = deduped_read_vars.append(var_info) %}
                         {% set _ = seen_read_vars.update({key: true}) %}
                       {% endif %}
                     {% endfor %}
+
+                    {# Fallback: if no data-read columns are present in schema, use summary data_reads #}
+                    {% if ops.summary is defined and ops.summary.data_reads is defined and ops.summary.data_reads|length > 0 %}
+                      {% set data_cols = [] %}
+                      {% for read_group in ops.summary.data_reads %}
+                        {% set columns = (read_group.columns if read_group.columns is defined else read_group['columns']) %}
+                        {% if columns %}
+                          {% for col in columns %}
+                            {% set base = (col.split('%')[0].split('(')[0] if '%' in col else col.split('(')[0]) %}
+                            {% if base %}
+                              {% set _ = data_cols.append(base|lower) %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      {% endfor %}
+                      {% set has_data_match = namespace(value=false) %}
+                      {% for v in deduped_read_vars %}
+                        {% if v.base_name and v.base_name|lower in data_cols %}
+                          {% set has_data_match.value = true %}
+                        {% endif %}
+                      {% endfor %}
+                      {% if not has_data_match.value %}
+                        {% set max_line = namespace(value=0) %}
+                        {% for v in deduped_read_vars %}
+                          {% set line_val = (v.display_line if v.display_line is defined else v.file_line) %}
+                          {% if line_val and line_val > max_line.value %}
+                            {% set max_line.value = line_val %}
+                          {% endif %}
+                        {% endfor %}
+                        {% set fallback_line = max_line.value + 1 %}
+                        {% for read_group in ops.summary.data_reads %}
+                          {% set columns = (read_group.columns if read_group.columns is defined else read_group['columns']) %}
+                          {% if columns %}
+                            {% for col in columns %}
+                              {% set base_name = none %}
+                              {% set component_name = none %}
+                              {% if '%' in col %}
+                                {% set parts = col.split('%') %}
+                                {% set base_name = parts[0].split('(')[0] %}
+                                {% set component_name = parts[-1].split('(')[0] %}
+                              {% else %}
+                                {% set base_name = col.split('(')[0] %}
+                              {% endif %}
+                              {% set fallback_info = {
+                                'full_name': col,
+                                'base_name': base_name,
+                                'component_name': component_name,
+                                'procedure': proc,
+                                'file_line': fallback_line,
+                                'display_line': fallback_line,
+                                'position': loop.index
+                              } %}
+                              {% set _ = deduped_read_vars.append(fallback_info) %}
+                            {% endfor %}
+                            {% set fallback_line = fallback_line + 1 %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    {% endif %}
+
+                    {# Fallback: use last multi-column read op when summary data_reads are empty #}
+                    {% if ops.summary is defined and (ops.summary.data_reads is not defined or ops.summary.data_reads|length == 0) %}
+                      {% set data_ops = [] %}
+                      {% for op in ops.timeline %}
+                        {% if op.kind == 'read' and op.parameters and op.parameters|length > 1 and not op.is_probe_read %}
+                          {% set _ = data_ops.append(op) %}
+                        {% endif %}
+                      {% endfor %}
+                      {% if data_ops|length > 0 %}
+                        {% set max_line = namespace(value=0) %}
+                        {% for v in deduped_read_vars %}
+                          {% set line_val = (v.display_line if v.display_line is defined else v.file_line) %}
+                          {% if line_val and line_val > max_line.value %}
+                            {% set max_line.value = line_val %}
+                          {% endif %}
+                        {% endfor %}
+                        {% set fallback_line = max_line.value + 1 %}
+                        {% set columns = (data_ops | last).parameters %}
+                        {% if columns %}
+                          {% for col in columns %}
+                            {% set base_name = none %}
+                            {% set component_name = none %}
+                            {% if '%' in col %}
+                              {% set parts = col.split('%') %}
+                              {% set base_name = parts[0].split('(')[0] %}
+                              {% set component_name = parts[-1].split('(')[0] %}
+                            {% else %}
+                              {% set base_name = col.split('(')[0] %}
+                            {% endif %}
+                            {% set fallback_info = {
+                              'full_name': col,
+                              'base_name': base_name,
+                              'component_name': component_name,
+                              'procedure': proc,
+                              'file_line': fallback_line,
+                              'display_line': fallback_line,
+                              'position': loop.index
+                            } %}
+                            {% set _ = deduped_read_vars.append(fallback_info) %}
+                          {% endfor %}
+                        {% endif %}
+                      {% endif %}
+                    {% endif %}
                     
-                    <table class="table table-sm table-striped table-bordered">
-                      <thead>
-                        <tr>
-                          <th>Line in File</th>
-                          <th>Position in File</th>
-                          <th>Local (Y/N)</th>
-                          <th>Derived Type Name</th>
-                          <th>Component</th>
-                          <th>Type</th>
-                          <th>Default</th>
-                          <th>Units</th>
-                          <th>Description</th>
-                          <th>Source Line</th>
-                          <th>Swat_codetype</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for var_info in deduped_read_vars %}
+                    {# Group by condition to show non-flat/conditional layouts #}
+                    {% set condition_groups = {} %}
+                    {% set condition_order = [] %}
+                    {% for var_info in deduped_read_vars %}
+                      {% set cond_label = namespace(value='Unconditional') %}
+                      {% if var_info.condition_stack is defined and var_info.condition_stack %}
+                        {% for c in var_info.condition_stack | reverse %}
+                          {% if cond_label.value == 'Unconditional' and c.type in ['if','else','case','select'] %}
+                            {% set cond_label.value = c.text %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                      {% if cond_label.value == 'Unconditional' and var_info.condition and var_info.condition.text is defined %}
+                        {% set cond_label.value = var_info.condition.text %}
+                      {% endif %}
+                      {% if cond_label.value != 'Unconditional' %}
+                        {% set cond_lower = cond_label.value|lower %}
+                        {% if 'exist' in cond_lower or 'null' in cond_lower %}
+                          {% set cond_label.value = 'Unconditional' %}
+                        {% endif %}
+                      {% endif %}
+                      {% set cond = cond_label.value %}
+                      {% if cond not in condition_groups %}
+                        {% set _ = condition_groups.update({cond: []}) %}
+                        {% set _ = condition_order.append(cond) %}
+                      {% endif %}
+                      {% set _ = condition_groups[cond].append(var_info) %}
+                    {% endfor %}
+
+                    {# If all condition groups share the same layout, collapse to a single group #}
+                    {% if condition_order|length > 1 %}
+                      {# First check if all groups have the same size - if not, don't collapse #}
+                      {% set group_sizes = [] %}
+                      {% for cond in condition_order %}
+                        {% set _ = group_sizes.append(condition_groups[cond]|length) %}
+                      {% endfor %}
+                      {% set all_same_size = (group_sizes | unique | list | length) == 1 %}
+                      
+                      {% if all_same_size %}
+                        {% set group_signatures = [] %}
+                        {% for cond in condition_order %}
+                          {% set sig_items = [] %}
+                          {% for var_info in condition_groups[cond] %}
+                            {% set line_num = var_info.display_line if var_info.display_line is defined else var_info.file_line %}
+                            {% set comp = var_info.component_name %}
+                            {% if 'timestep' in (cond|lower) and comp %}
+                              {% if comp.endswith('mo') or comp.endswith('yr') %}
+                                {% set comp = comp[:-2] %}
+                              {% endif %}
+                            {% endif %}
+                            {% set sig_items = sig_items + [line_num ~ '|' ~ (var_info.base_name if var_info.base_name else '') ~ '|' ~ (comp if comp else '')] %}
+                          {% endfor %}
+                          {% set sig = sig_items | sort | join(';') %}
+                          {% set _ = group_signatures.append(sig) %}
+                        {% endfor %}
+                        {% if (group_signatures | unique | list | length) == 1 %}
+                          {% set condition_groups = {'Unconditional': condition_groups[condition_order[0]]} %}
+                          {% set condition_order = ['Unconditional'] %}
+                        {% endif %}
+                      {% endif %}
+                    {% endif %}
+
+                    {% if condition_order|length > 1 %}
+                      <p class="text-muted">Conditional layout detected. This file is non-flat; schema is shown per branch.</p>
+                    {% endif %}
+
+                    {% for cond in condition_order %}
+                      {% if cond != 'Unconditional' %}
+                        <h5 class="mt-3">When {{ cond }}</h5>
+                      {% endif %}
+                      <table class="table table-sm table-striped table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Line in File</th>
+                            <th>Position in File</th>
+                            <th>Local (Y/N)</th>
+                            <th>TYPE</th>
+                            <th>Component</th>
+                            <th>Type</th>
+                            <th>Dimensions</th>
+                            <th>Default</th>
+                            <th>Units</th>
+                            <th>Description</th>
+                            <th>Swat_codetype</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for var_info in condition_groups[cond] %}
                           <tr>
                             {# Column 1: Line in File - the input file line #}
-                            <td>{{ var_info.file_line }}</td>
+                            <td>{{ var_info.display_line if var_info.display_line is defined else var_info.file_line }}</td>
                             
                             {# Column 2: Position in File - position within that line #}
                             <td>{{ var_info.position if var_info.position is defined else '-' }}</td>
@@ -1052,34 +1335,50 @@
                                 {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
                               {% endif %}
                             {% endif %}
+
+                            {% if is_local.value %}
+                              {% set codetype = '-' %}
+                            {% else %}
+                              {% set codetype = (ops.resolution_chain.variable_name if ops.resolution_chain and ops.resolution_chain.variable_name is defined else (ops.resolution_chain.component_name if ops.resolution_chain and ops.resolution_chain.component_name is defined else (var_info.base_name if var_info.base_name else '-'))) %}
+                            {% endif %}
                             
                             {# Column 3: Local (Y/N) #}
                             <td>{{ 'Y' if is_local.value else 'N' }}</td>
                             
-                            {# Column 4: Derived Type Name #}
+                            {# Column 4: Derived Type Name - only show for derived type components (has % in name) #}
                             <td>
-                              {% if var_info.type_name is defined %}
+                              {% if var_info.type_name is defined and var_info.type_name %}
                                 {{ var_info.type_name }}
-                              {% elif found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
-                                {% set type_obj = found_var.value.proto[0] %}
-                                {% if type_obj is string %}
-                                  {{ type_obj }}
+                              {% elif var_info.component_name or (var_info.full_name is defined and '%' in var_info.full_name) %}
+                                {# This is a derived type component - show the type name #}
+                                {% if ops.resolution_chain is defined and ops.resolution_chain.type_object is defined and ops.resolution_chain.type_object.name is defined %}
+                                  {{ ops.resolution_chain.type_object.name }}
+                                {% elif ops.resolution_chain is defined and ops.resolution_chain.variable_type is defined %}
+                                  {{ ops.resolution_chain.variable_type }}
+                                {% elif found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
+                                  {% set type_obj = found_var.value.proto[0] %}
+                                  {% if type_obj is string %}
+                                    {{ type_obj }}
+                                  {% else %}
+                                    {{ type_obj.name if type_obj.name else '-' }}
+                                  {% endif %}
                                 {% else %}
-                                  {{ type_obj.name if type_obj.name else 'N/A' }}
+                                  -
                                 {% endif %}
                               {% else %}
-                                N/A
+                                {# Local or non-derived-type variable - show dash #}
+                                -
                               {% endif %}
                             </td>
                             
                             {# Column 5: Component #}
-                            <td>
-                              {% if var_info.component_name %}
-                                {{ var_info.component_name }}
-                              {% else %}
-                                {{ var_info.base_name }}
+                            {% set display_component = (var_info.component_name if var_info.component_name else (var_info.full_name if var_info.full_name is defined and '%' not in var_info.full_name else var_info.base_name)) %}
+                            {% if 'timestep' in (cond|lower) and var_info.component_name %}
+                              {% if display_component.endswith('mo') or display_component.endswith('yr') %}
+                                {% set display_component = display_component[:-2] %}
                               {% endif %}
-                            </td>
+                            {% endif %}
+                            <td>{{ display_component }}</td>
                             
                             {# Column 6: Type (component data type) #}
                             <td>
@@ -1107,7 +1406,47 @@
                               {% endif %}
                             </td>
                             
-                            {# Column 7: Default #}
+                            {# Column 7: Dimensions (array dimension and allocatable info) #}
+                            <td>
+                              {% set dim_info = namespace(dimension='', attribs=[]) %}
+                              {% if var_info.component_name and found_var.value %}
+                                {% set component_var = namespace(value=none) %}
+                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
+                                  {% set type_obj = found_var.value.proto[0] %}
+                                  {% if type_obj is not string and type_obj.variables is defined %}
+                                    {% for comp in type_obj.variables %}
+                                      {% if comp.name.lower() == var_info.component_name.lower() %}
+                                        {% set component_var.value = comp %}
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                {% endif %}
+                                {% if component_var.value %}
+                                  {% set dim_info.dimension = component_var.value.dimension if component_var.value.dimension is defined else '' %}
+                                  {% set dim_info.attribs = component_var.value.attribs if component_var.value.attribs is defined else [] %}
+                                {% endif %}
+                              {% elif found_var.value %}
+                                {% set dim_info.dimension = found_var.value.dimension if found_var.value.dimension is defined else '' %}
+                                {% set dim_info.attribs = found_var.value.attribs if found_var.value.attribs is defined else [] %}
+                              {% endif %}
+                              {% set dim_parts = [] %}
+                              {% if dim_info.dimension %}
+                                {% set _ = dim_parts.append('dimension ' ~ dim_info.dimension) %}
+                              {% endif %}
+                              {% if 'allocatable' in dim_info.attribs %}
+                                {% set _ = dim_parts.append('allocatable') %}
+                              {% endif %}
+                              {% if 'pointer' in dim_info.attribs %}
+                                {% set _ = dim_parts.append('pointer') %}
+                              {% endif %}
+                              {% if dim_parts|length > 0 %}
+                                {{ dim_parts|join(', ') }}
+                              {% else %}
+                                -
+                              {% endif %}
+                            </td>
+                            
+                            {# Column 8: Default #}
                             <td>
                               {% if var_info.component_name and found_var.value %}
                                 {% set component_var = namespace(value=none) %}
@@ -1185,38 +1524,13 @@
                               {% endif %}
                             </td>
                             
-                            {# Column 10: Source Line #}
-                            <td>
-                              {% if var_info.component_name and found_var.value %}
-                                {% set component_var = namespace(value=none) %}
-                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                                  {% set type_obj = found_var.value.proto[0] %}
-                                  {% if type_obj is not string and type_obj.variables is defined %}
-                                    {% for comp in type_obj.variables %}
-                                      {% if comp.name.lower() == var_info.component_name.lower() %}
-                                        {% set component_var.value = comp %}
-                                      {% endif %}
-                                    {% endfor %}
-                                  {% endif %}
-                                {% endif %}
-                                {% if component_var.value and component_var.value.meta and component_var.value.meta.file %}
-                                  {{ component_var.value.meta.file }}:{{ component_var.value.meta.line if component_var.value.meta.line else '?' }}
-                                {% else %}
-                                  -
-                                {% endif %}
-                              {% elif found_var.value and found_var.value.meta and found_var.value.meta.file %}
-                                {{ found_var.value.meta.file }}:{{ found_var.value.meta.line if found_var.value.meta.line else '?' }}
-                              {% else %}
-                                -
-                              {% endif %}
-                            </td>
-                            
-                            {# Column 11: Swat_codetype #}
-                            <td>{{ var_info.base_name if var_info.base_name else '-' }}</td>
+                            {# Column 10: Swat_codetype #}
+                            <td>{{ codetype }}</td>
                           </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    {% endfor %}
                   {% else %}
                     <p><em>No file schema information available.</em></p>
                   {% endif %}
@@ -1228,13 +1542,89 @@
                     <div class="card">
                       <div class="card-body">
                         <pre><code>{%- if deduped_read_vars is defined -%}
-{%- set lines_dict = {} -%}
+{%- set condition_groups = {} -%}
+{%- set condition_order = [] -%}
 {%- for var_info in deduped_read_vars -%}
+  {%- set cond_label = namespace(value='Unconditional') -%}
+  {%- if var_info.condition_stack is defined and var_info.condition_stack -%}
+    {%- for c in var_info.condition_stack | reverse -%}
+      {%- if cond_label.value == 'Unconditional' and c.type in ['if','else','case','select'] -%}
+        {%- set cond_label.value = c.text -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+  {%- if cond_label.value == 'Unconditional' and var_info.condition and var_info.condition.text is defined -%}
+    {%- set cond_label.value = var_info.condition.text -%}
+  {%- endif -%}
+  {%- if cond_label.value != 'Unconditional' -%}
+    {%- set cond_lower = cond_label.value|lower -%}
+    {%- if 'exist' in cond_lower or 'null' in cond_lower -%}
+      {%- set cond_label.value = 'Unconditional' -%}
+    {%- endif -%}
+  {%- endif -%}
+  {%- set cond = cond_label.value -%}
+  {%- if cond not in condition_groups -%}
+    {%- set _ = condition_groups.update({cond: []}) -%}
+    {%- set _ = condition_order.append(cond) -%}
+  {%- endif -%}
+  {%- set _ = condition_groups[cond].append(var_info) -%}
+{%- endfor -%}
+{%- if condition_order|length > 1 -%}
+  {%- set group_signatures = [] -%}
+  {%- for cond in condition_order -%}
+    {%- set sig_items = [] -%}
+    {%- for var_info in condition_groups[cond] -%}
+      {%- set line_num = (var_info.display_line if var_info.display_line is defined else var_info.file_line) -%}
+      {%- set comp = var_info.component_name -%}
+      {%- if 'timestep' in (cond|lower) and comp -%}
+        {%- if comp.endswith('mo') or comp.endswith('yr') -%}
+          {%- set comp = comp[:-2] -%}
+        {%- endif -%}
+      {%- endif -%}
+      {%- set sig_items = sig_items + [line_num ~ '|' ~ (var_info.base_name if var_info.base_name else '') ~ '|' ~ (comp if comp else '')] -%}
+    {%- endfor -%}
+    {%- set sig = sig_items | sort | join(';') -%}
+    {%- set _ = group_signatures.append(sig) -%}
+  {%- endfor -%}
+  {%- if (group_signatures | unique | list | length) == 1 -%}
+    {%- set condition_groups = {'Unconditional': condition_groups[condition_order[0]]} -%}
+    {%- set condition_order = ['Unconditional'] -%}
+  {%- endif -%}
+{%- endif -%}
+{%- for cond in condition_order -%}
+{%- set min_line = namespace(value=none) -%}
+{%- for var_info in condition_groups[cond] -%}
+  {%- set line_num = (var_info.display_line if var_info.display_line is defined else var_info.file_line) -%}
+  {%- if min_line.value is none or line_num < min_line.value -%}
+    {%- set min_line.value = line_num -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if cond != 'Unconditional' and min_line.value is not none and min_line.value > 1 -%}
+When {{ cond }}
+{%- endif -%}
+{%- set lines_dict = {} -%}
+{%- set do_first_line = {} -%}
+{%- for var_info in condition_groups[cond] | sort(attribute='file_line') -%}
   {%- set var_name = var_info.base_name -%}
   {%- if var_info.component_name -%}
-    {%- set var_name = var_name ~ '%' ~ var_info.component_name -%}
+    {%- set comp = var_info.component_name -%}
+    {%- if 'timestep' in (cond|lower) and (comp.endswith('mo') or comp.endswith('yr')) -%}
+      {%- set comp = comp[:-2] -%}
+    {%- endif -%}
+    {%- set var_name = var_name ~ '%' ~ comp -%}
   {%- endif -%}
-  {%- set line_num = var_info.file_line -%}
+  {%- set do_text = none -%}
+  {%- if var_info.condition_stack is defined and var_info.condition_stack -%}
+    {%- for c in var_info.condition_stack | reverse -%}
+      {%- if do_text is none and c.type == 'do' -%}
+        {%- set do_text = c.text -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+  {%- if do_text and do_text not in do_first_line -%}
+    {%- set _ = do_first_line.update({do_text: var_info.file_line}) -%}
+  {%- endif -%}
+  {%- set line_num = (do_first_line[do_text] if do_text else var_info.file_line) -%}
   {%- if line_num not in lines_dict -%}
     {%- set _ = lines_dict.update({line_num: []}) -%}
   {%- endif -%}
@@ -1242,9 +1632,13 @@
     {%- set _ = lines_dict[line_num].append(var_name) -%}
   {%- endif -%}
 {%- endfor -%}
-{%- for line_num in lines_dict.keys() | sort %}
+{% for line_num in lines_dict.keys() | sort %}
 Line {{ line_num }}: {{ lines_dict[line_num] | join(', ') }}
-{% endfor -%}
+{% endfor %}
+{%- if not loop.last -%}
+
+{%- endif -%}
+{%- endfor -%}
 {%- else -%}
 {%- set lines_dict = {} -%}
 {%- set line_num = namespace(value=1) -%}
@@ -1259,9 +1653,9 @@ Line {{ line_num }}: {{ lines_dict[line_num] | join(', ') }}
   {%- set _ = lines_dict[line_num.value].append(var_name) -%}
   {%- set line_num.value = line_num.value + 1 -%}
 {%- endfor -%}
-{%- for line_n in lines_dict.keys() | sort %}
+{% for line_n in lines_dict.keys() | sort %}
 Line {{ line_n }}: {{ lines_dict[line_n] | join(', ') }}
-{% endfor -%}
+{% endfor %}
 {%- endif -%}
 </code></pre>
                       </div>

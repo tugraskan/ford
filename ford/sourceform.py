@@ -141,10 +141,16 @@ class IoSession:
         self.loop_context = loop_context  # e.g., loop variable/name
         self.line_no = line_no  # record line number for context
 
-    def add(self, kind, raw, line_no=None, condition=None):
+    def add(self, kind, raw, line_no=None, condition=None, condition_stack=None):
         """Record an I/O operation with optional line number and condition."""
         self.operations.append(
-            {"kind": kind, "raw": raw.strip(), "line": line_no, "condition": condition}
+            {
+                "kind": kind,
+                "raw": raw.strip(),
+                "line": line_no,
+                "condition": condition,
+                "condition_stack": condition_stack,
+            }
         )
 
     def close(self) -> None:
@@ -263,7 +269,13 @@ class IoTracker(ConditionTracker):
         """Record a raw I/O operation under the open session for `unit`."""
         sess = self._open_sessions.get(unit)
         if sess:
-            sess.add(kind, raw, line_no, condition=self.current_condition)
+            sess.add(
+                kind,
+                raw,
+                line_no,
+                condition=self.current_condition,
+                condition_stack=[dict(c) for c in self.condition_stack],
+            )
 
     def record_or_create(self, unit, kind, raw, line_no=None):
         """
@@ -281,7 +293,13 @@ class IoTracker(ConditionTracker):
         else:
             sess = self._open_sessions[unit]
 
-        sess.add(kind, raw, line_no, condition=self.current_condition)
+        sess.add(
+            kind,
+            raw,
+            line_no,
+            condition=self.current_condition,
+            condition_stack=[dict(c) for c in self.condition_stack],
+        )
 
     def close(self, unit, line_no=None):
         """Close and archive the I/O session for `unit`."""
@@ -2129,15 +2147,20 @@ class FortranContainer(FortranBase):
         if low.startswith("inquire"):
             # Extract full filename expression for inquire
             fname = self.extract_filename_expr(raw)
-            # Extract unit number if present (inquire may not use a unit)
-            unit_m = self.IO_UNIT_RE.search(raw)
-            unit = unit_m.group("unit") if unit_m else ""
-
-            # Create a short-lived session so the file is tracked
-            self.io_tracker.start(unit, fname, line_no=line_no)
-            self.io_tracker.record(unit, "inquire", raw, line_no=line_no)
-            # Close immediately since inquire doesn't open a persistent session
-            self.io_tracker.close(unit)
+            
+            # For inquire, check if there's a unit= parameter explicitly
+            # (inquire can use either file= or unit=, but file= is more common)
+            unit_match = re.search(r"unit\s*=\s*(\d+)", raw, re.IGNORECASE)
+            if unit_match:
+                unit = unit_match.group(1)
+            else:
+                # No unit - use filename as identifier but don't create synthetic close
+                # Inquire just queries, it doesn't open the file
+                unit = f"inquire_{fname}" if fname else "inquire_unknown"
+            
+            # Record the inquire operation but don't create open/close sessions
+            # since inquire doesn't actually open the file
+            self.io_tracker.record_or_create(unit, "inquire", raw, line_no=line_no)
             return
 
         if low.startswith("read"):
