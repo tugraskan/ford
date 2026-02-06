@@ -2,47 +2,67 @@
 
 ## The Problem
 
-You have lots of input files with different purposes. Instead of writing code for each filename (hardcoding), we want the computer to figure out what type of file it is by **looking inside**.
+You have lots of input files with different purposes. Instead of writing code for each filename (hardcoding), we want the computer to figure out what type of file it is by **looking at how it's actually used**.
 
-## The Solution
+## The Solution - Two Ways!
 
-The classifier reads your file and checks:
+### 1. **Standalone Classifier** (For any files)
+Reads a file and checks its structure:
+- Rows and columns? → **Simple**
+- Links components? → **Connect**  
+- Master config? → **Unique**
 
-### 1. **Is it a table?** (Simple)
-- Does it have rows and columns?
-- Are the columns consistent?
-- **Example**: Weather data, parameter tables
-- **Result**: → **Simple**
+### 2. **FORD HTML Integration** (For Fortran I/O files) ⭐ NEW!
+Analyzes how your Fortran code accesses the file:
+- Sequential READ/WRITE? → **Simple**
+- Connects things (`.con` file)? → **Connect**
+- Uses REWIND/BACKSPACE? → **Unique**
 
-### 2. **Does it connect things?** (Connect)  
-- Does it link components together (like HRU→Channel)?
-- Filename ends in `.con` or `.lin`?
-- **Example**: `hru.con` linking HRUs to channels
-- **Result**: → **Connect**
+## What You See in FORD's HTML
 
-### 3. **Is it a master config?** (Unique)
-- Is it a control/settings file?
-- Mixed structure or special extensions (`.cio`, `.sch`)?
-- **Example**: `file.cio` master configuration
-- **Result**: → **Unique**
+When FORD generates documentation, each I/O file gets a **colored badge**:
 
-## Quick Example
+```
+I/O Files List
+─────────────────────────────────────────────
+Filename         Classification    
+─────────────────────────────────────────────
+weather.cli      [Simple] 🟢       Tabular data
+hru.con          [Connect] 🔵      Links components  
+file.cio         [Unique] 🟡       Master config
+─────────────────────────────────────────────
+```
 
-```bash
-# You run this:
-python -m ford.classify_files my_files/*
+## How Classification Works
 
-# It outputs:
-File              Type
-----------------  --------
-weather.cli       Simple      # Saw: table with rows/columns
-hru.con           Connect     # Saw: links between objects
-settings.cio      Unique      # Saw: master config file
+### For Standalone Files:
+Looks at the file content structure (columns, patterns)
+
+### For FORD I/O Files:
+Looks at **actual Fortran I/O operations**:
+
+```fortran
+! Example: Simple file
+OPEN(10, FILE='weather.cli')
+READ(10,*) date, temp, rain  ! Sequential reads → Simple
+CLOSE(10)
+
+! Example: Unique file  
+OPEN(20, FILE='config.cio')
+READ(20,*) settings
+REWIND(20)  ! ← Complex positioning → Unique
 ```
 
 ## Why It's Better
 
 ❌ **Old way**: `if filename == "hru.con": type = "Connect"` (hundreds of rules)  
-✅ **New way**: Reads the file, sees it connects things → automatically classifies it
+✅ **New way**: Analyzes actual I/O patterns → automatically classifies
 
 **No hardcoding needed!** 🎉
+
+---
+
+**See also:**
+- [SIMPLE_GUIDE.md](SIMPLE_GUIDE.md) - Basic usage guide
+- [HTML_CLASSIFICATION.md](HTML_CLASSIFICATION.md) - How it appears in FORD HTML
+- [FILE_CLASSIFICATION.md](FILE_CLASSIFICATION.md) - Full technical details
