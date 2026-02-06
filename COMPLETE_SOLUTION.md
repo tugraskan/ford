@@ -52,66 +52,43 @@ file.cio      Unique         (master config)
 ## Method 2: FORD HTML Integration ⭐
 
 ### What It Does
-When FORD analyzes Fortran code, it tracks I/O operations and classifies files based on **how they're actually accessed**.
+When FORD analyzes Fortran code, it tracks I/O operations and classifies files based on **actual I/O patterns** - NOT filenames!
 
-### What You See
-
-#### On File List Page:
-```
-Input Files (3)
-─────────────────────────────────────────────────────────
-Filename       Unit    Classification       Used By
-─────────────────────────────────────────────────────────
-weather.cli    10      [Simple] 🟢         3 procedures
-hru.con        20      [Connect] 🔵        2 procedures  
-file.cio       30      [Unique] 🟡         1 procedure
-─────────────────────────────────────────────────────────
-```
-
-#### On Individual File Page:
-```
-┌────────────────────────────────────┐
-│  weather.cli - I/O File            │
-├────────────────────────────────────┤
-│  Unit Number: 10                   │
-│  I/O Type: Input                   │
-│  Classification: [Simple] 🟢       │
-│                  Tabular data file │
-│  Total Operations: 45              │
-└────────────────────────────────────┘
-```
-
-### Classification Logic (I/O Based)
+### Classification Logic (Pure I/O Pattern Analysis)
 
 #### Simple Files
 ```fortran
-! Sequential READ operations
-OPEN(10, FILE='weather.cli')
+! Sequential reads with consistent structure
+OPEN(10, FILE='weather.dat')
 DO i = 1, ndays
-  READ(10,*) date, temp, precip  ! ← Sequential
+  READ(10,*) date, temp, precip  ! Same 3 columns
 END DO
 ```
-**Pattern**: Pure sequential I/O → **Simple**
+**Pattern**: Sequential access + consistent parameters + low loop ratio
+**Detection**: No REWIND/BACKSPACE, same column count per read
 
 #### Connect Files
 ```fortran
-! Links components together
-OPEN(20, FILE='hru.con')
-DO i = 1, nhru
-  READ(20,*) hru_id, channel_id  ! ← Linkage data
+! Looped reads with repeating pattern
+OPEN(20, FILE='links.dat')
+DO i = 1, nlinks
+  READ(20,*) from_id, to_id, weight  ! Pattern repeats
 END DO
 ```
-**Pattern**: .con filename + linkage → **Connect**
+**Pattern**: >60% reads in loops + consistent structure
+**Detection**: High loop ratio, same columns repeated
 
 #### Unique Files
 ```fortran
-! Complex positioning
-OPEN(30, FILE='file.cio')
-READ(30,*) version
-REWIND(30)  ! ← Complex I/O positioning
+! Variable structure or complex positioning
+OPEN(30, FILE='config.dat')
+READ(30,*) version              ! 1 column
+READ(30,*) name, year, author   ! 3 columns
+REWIND(30)                      ! Complex positioning
 READ(30,*) settings
 ```
-**Pattern**: REWIND/BACKSPACE usage → **Unique**
+**Pattern**: Variable columns OR REWIND/BACKSPACE OR probe reads
+**Detection**: Inconsistent structure, complex positioning
 
 ---
 
@@ -121,9 +98,10 @@ READ(30,*) settings
 |--------|---------------------|---------------------|
 | **Input** | Any file | Fortran code analysis |
 | **Analysis** | File structure | I/O operations |
-| **Detects** | Columns, patterns | REWIND, BACKSPACE |
+| **Detects** | Columns, patterns | Loop context, parameters, REWIND/BACKSPACE |
 | **Output** | CLI/CSV/JSON | HTML badges |
 | **Use Case** | Quick file sorting | Code documentation |
+| **Filename** | Not used for classification | Not used for classification ⭐ |
 
 ---
 
