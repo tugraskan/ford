@@ -2147,7 +2147,7 @@ class FortranContainer(FortranBase):
         if low.startswith("inquire"):
             # Extract full filename expression for inquire
             fname = self.extract_filename_expr(raw)
-            
+
             # For inquire, check if there's a unit= parameter explicitly
             # (inquire can use either file= or unit=, but file= is more common)
             unit_match = re.search(r"unit\s*=\s*(\d+)", raw, re.IGNORECASE)
@@ -2157,7 +2157,7 @@ class FortranContainer(FortranBase):
                 # No unit - use filename as identifier but don't create synthetic close
                 # Inquire just queries, it doesn't open the file
                 unit = f"inquire_{fname}" if fname else "inquire_unknown"
-            
+
             # Record the inquire operation but don't create open/close sessions
             # since inquire doesn't actually open the file
             self.io_tracker.record_or_create(unit, "inquire", raw, line_no=line_no)
