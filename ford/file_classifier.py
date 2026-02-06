@@ -306,10 +306,13 @@ class FileClassifier:
         
         # Characteristics of unique files
         # - Mixed structure or very low line count with high keyword density
+        # But exclude files that look like simple tables with headers
         if structure.has_mixed_structure and structure.num_lines < 20:
             return True
         
-        if structure.num_lines < 5 and structure.keyword_density > 0.7:
+        # Only mark as unique if VERY small (< 3 lines) with high keyword density
+        # OR if it has specific configuration-style patterns
+        if structure.num_lines < 3 and structure.keyword_density > 0.7:
             return True
         
         # Initialization files that are per-type singletons - but only small ones
@@ -342,13 +345,21 @@ class FileClassifier:
                     # Has multiple columns
                     return True
         
+        # Even if no clear table detected, check if it looks tabular
+        # (consistent columns, even with few lines)
+        if structure.num_lines >= 2 and structure.num_columns_avg >= 2:
+            # Check if not mixed structure (could be small simple table)
+            if not structure.has_mixed_structure:
+                return True
+        
         # Files with simple extensions typically containing tabular data
         filename = Path(filepath).name.lower()
         simple_extensions = [
             '.bsn', '.cli', '.cha', '.res', '.wet', '.ele', '.rtu', '.dr',
             '.hru', '.exc', '.del', '.aqu', '.hyd', '.fld', '.str', '.plt',
             '.frt', '.til', '.pes', '.pth', '.urb', '.sep', '.sno', '.ops',
-            '.lum', '.cal', '.sft', '.sol', '.reg', '.key'
+            '.lum', '.cal', '.sft', '.sol', '.reg', '.key', '.sim', '.cnt',
+            '.rec'
         ]
         
         if any(filename.endswith(ext) for ext in simple_extensions):
