@@ -39,12 +39,24 @@ All I/O Files &ndash; {{ project }}
           </h2>
           <div id="input-files-section" class="collapse show">
             <table class="table table-striped">
-              <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
+              <thead><tr><th>Filename</th><th>Unit</th><th>Classification</th><th>Used By</th></tr></thead>
               <tbody>
                 {% for iofile in input_files %}
                   <tr>
                     <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
                     <td><code>{{ iofile.unit }}</code></td>
+                    <td>
+                      {% set classification = iofile.file_classification %}
+                      {% if classification == 'Simple' %}
+                        <span class="badge bg-success">{{ classification }}</span>
+                      {% elif classification == 'Connect' %}
+                        <span class="badge bg-primary">{{ classification }}</span>
+                      {% elif classification == 'Unique' %}
+                        <span class="badge bg-warning text-dark">{{ classification }}</span>
+                      {% else %}
+                        <span class="badge bg-secondary">{{ classification }}</span>
+                      {% endif %}
+                    </td>
                     <td>{{ iofile.procedures|length }} procedure(s)</td>
                   </tr>
                 {% endfor %}
@@ -64,12 +76,24 @@ All I/O Files &ndash; {{ project }}
           </h2>
           <div id="output-files-section" class="collapse show">
             <table class="table table-striped">
-              <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
+              <thead><tr><th>Filename</th><th>Unit</th><th>Classification</th><th>Used By</th></tr></thead>
               <tbody>
                 {% for iofile in output_files %}
                   <tr>
                     <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
                     <td><code>{{ iofile.unit }}</code></td>
+                    <td>
+                      {% set classification = iofile.file_classification %}
+                      {% if classification == 'Simple' %}
+                        <span class="badge bg-success">{{ classification }}</span>
+                      {% elif classification == 'Connect' %}
+                        <span class="badge bg-primary">{{ classification }}</span>
+                      {% elif classification == 'Unique' %}
+                        <span class="badge bg-warning text-dark">{{ classification }}</span>
+                      {% else %}
+                        <span class="badge bg-secondary">{{ classification }}</span>
+                      {% endif %}
+                    </td>
                     <td>{{ iofile.procedures|length }} procedure(s)</td>
                   </tr>
                 {% endfor %}
@@ -89,12 +113,24 @@ All I/O Files &ndash; {{ project }}
           </h2>
           <div id="input-output-files-section" class="collapse show">
             <table class="table table-striped">
-              <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
+              <thead><tr><th>Filename</th><th>Unit</th><th>Classification</th><th>Used By</th></tr></thead>
               <tbody>
                 {% for iofile in input_output_files %}
                   <tr>
                     <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
                     <td><code>{{ iofile.unit }}</code></td>
+                    <td>
+                      {% set classification = iofile.file_classification %}
+                      {% if classification == 'Simple' %}
+                        <span class="badge bg-success">{{ classification }}</span>
+                      {% elif classification == 'Connect' %}
+                        <span class="badge bg-primary">{{ classification }}</span>
+                      {% elif classification == 'Unique' %}
+                        <span class="badge bg-warning text-dark">{{ classification }}</span>
+                      {% else %}
+                        <span class="badge bg-secondary">{{ classification }}</span>
+                      {% endif %}
+                    </td>
                     <td>{{ iofile.procedures|length }} procedure(s)</td>
                   </tr>
                 {% endfor %}
@@ -114,12 +150,24 @@ All I/O Files &ndash; {{ project }}
           </h2>
           <div id="unknown-files-section" class="collapse show">
             <table class="table table-striped">
-              <thead><tr><th>Filename</th><th>Unit</th><th>Used By</th></tr></thead>
+              <thead><tr><th>Filename</th><th>Unit</th><th>Classification</th><th>Used By</th></tr></thead>
               <tbody>
                 {% for iofile in unknown_files %}
                   <tr>
                     <td><a href="{{ project_url }}/{{ iofile.get_url() }}">{{ iofile.io_filename }}</a></td>
                     <td><code>{{ iofile.unit }}</code></td>
+                    <td>
+                      {% set classification = iofile.file_classification %}
+                      {% if classification == 'Simple' %}
+                        <span class="badge bg-success">{{ classification }}</span>
+                      {% elif classification == 'Connect' %}
+                        <span class="badge bg-primary">{{ classification }}</span>
+                      {% elif classification == 'Unique' %}
+                        <span class="badge bg-warning text-dark">{{ classification }}</span>
+                      {% else %}
+                        <span class="badge bg-secondary">{{ classification }}</span>
+                      {% endif %}
+                    </td>
                     <td>{{ iofile.procedures|length }} procedure(s)</td>
                   </tr>
                 {% endfor %}

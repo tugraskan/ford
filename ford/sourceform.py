@@ -4425,6 +4425,83 @@ class FortranIOFile(FortranBase):
         else:
             return "Unknown"
 
+    @property
+    def file_classification(self):
+        """
+        Classify this I/O file based on its access patterns and structure.
+        
+        Returns one of: Simple, Unique, Connect, Unknown
+        
+        Classification logic:
+        - Connect: Files with connection-related keywords in filename (.con, .lin extensions)
+        - Unique: Files with complex I/O patterns (rewind/backspace usage, master config patterns)
+        - Simple: Files with straightforward sequential I/O (pure read or write patterns)
+        - Unknown: Files that don't match any pattern
+        """
+        filename_lower = self.io_filename.lower()
+        
+        # Check for Connect patterns - files that link components
+        # These typically have .con or .lin extensions or connection keywords
+        if any(ext in filename_lower for ext in ['.con', '.lin', 'connect', 'link']):
+            return "Connect"
+        
+        if any(keyword in filename_lower for keyword in [
+            'hru.con', 'channel.con', 'reservoir.con', 'aquifer.con',
+            'rout_unit.con', 'recall.con', 'exco.con', 'outlet.con'
+        ]):
+            return "Connect"
+        
+        # Analyze I/O operation patterns
+        has_rewind = any(op.get("kind") == "rewind" for op in self.operations)
+        has_backspace = any(op.get("kind") == "backspace" for op in self.operations)
+        has_complex_positioning = has_rewind or has_backspace
+        
+        read_count = sum(1 for op in self.operations if op.get("kind") == "read")
+        write_count = sum(1 for op in self.operations if op.get("kind") == "write")
+        
+        # Check for master/configuration file patterns
+        is_master_config = any(ext in filename_lower for ext in [
+            '.cio', '.def', '.sch', '.dtl', '.ini'
+        ])
+        
+        is_config_keyword = any(kw in filename_lower for kw in [
+            'file.cio', 'config', 'master', 'settings', 'control',
+            'management.sch', 'allocation'
+        ])
+        
+        # Classify as Unique if:
+        # - Master configuration file
+        # - Complex I/O positioning (rewind/backspace)
+        # - Very few operations (likely single-instance control file)
+        if is_master_config or is_config_keyword:
+            return "Unique"
+        
+        if has_complex_positioning and (read_count + write_count) < 10:
+            return "Unique"
+        
+        # Check for Simple patterns - straightforward data files
+        is_data_extension = any(ext in filename_lower for ext in [
+            '.cli', '.bsn', '.hru', '.cha', '.res', '.wet', '.ele',
+            '.rtu', '.dr', '.exc', '.del', '.aqu', '.hyd', '.fld',
+            '.str', '.plt', '.frt', '.til', '.pes', '.pth', '.urb',
+            '.sep', '.sno', '.ops', '.lum', '.cal', '.sft', '.sol',
+            '.reg', '.key', '.sim', '.cnt', '.rec', '.dat', '.prt'
+        ]):
+        
+        # Simple sequential read/write pattern
+        is_sequential = not has_complex_positioning
+        has_io_operations = read_count > 0 or write_count > 0
+        
+        if is_data_extension and is_sequential and has_io_operations:
+            return "Simple"
+        
+        # Default for straightforward sequential I/O
+        if is_sequential and has_io_operations and (read_count + write_count) >= 3:
+            return "Simple"
+        
+        # If we can't determine, return Unknown
+        return "Unknown"
+
 
 class FortranType(FortranContainer):
     """

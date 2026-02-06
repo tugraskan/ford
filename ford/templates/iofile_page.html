@@ -18,6 +18,22 @@
             <dd>
               {{ macros.io_type_badge(iofile.io_type) }}
             </dd>
+            <dt>Classification</dt>
+            <dd>
+              {% set classification = iofile.file_classification %}
+              {% if classification == 'Simple' %}
+                <span class="badge bg-success">{{ classification }}</span>
+                <small class="text-muted">Tabular data file</small>
+              {% elif classification == 'Connect' %}
+                <span class="badge bg-primary">{{ classification }}</span>
+                <small class="text-muted">Component linkage</small>
+              {% elif classification == 'Unique' %}
+                <span class="badge bg-warning text-dark">{{ classification }}</span>
+                <small class="text-muted">Configuration/Master</small>
+              {% else %}
+                <span class="badge bg-secondary">{{ classification }}</span>
+              {% endif %}
+            </dd>
             <dt>Total Operations</dt>
             <dd>{{ iofile.operations|length }}</dd>
           </dl>
