@@ -76,6 +76,13 @@ following command:
 
     spack install py-ford
 
+## Tools
+
+The `tools/` directory contains utility scripts:
+- `compare_inputs.py`: Compare input file schemas between different Ford documentation outputs
+- `view_schema_diff.py`: Display side-by-side diffs of schema comparison results
+  - See [tools/README_view_schema_diff.md](tools/README_view_schema_diff.md) for usage details
+
 ## Documentation
 More complete documentation can be found in the [docs](https://forddocs.readthedocs.io).
 
