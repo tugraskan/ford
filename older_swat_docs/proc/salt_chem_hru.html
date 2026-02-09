@@ -1,0 +1,3682 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for older SWAT+ 61.0 source code">
+    <meta name="author" content="Documentation Builder" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>salt_chem_hru &ndash; Fortran Source Documentation</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">Fortran Source Documentation </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/iofiles.html">I/O</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>salt_chem_hru
+      <small>Subroutine</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 0.4% of total for proc.">217 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/salt_chem_hru.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/salt_chem_hru.f90.html'>salt_chem_hru.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">salt_chem_hru</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 d-none d-md-block">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+    <em>None</em>
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <h2> subroutine salt_chem_hru()  
+</h2>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#purpose-section" 
+         aria-expanded="false" 
+         aria-controls="purpose-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Purpose
+        </h3>
+      </a>
+      <div id="purpose-section" class="collapse">
+        <div class="card-body">
+          <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#stack-flow-section" 
+         aria-expanded="true" 
+         aria-controls="stack-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Stack Flow
+        </h3>
+      </a>
+      <div id="stack-flow-section" class="collapse show">
+        <div class="card-body">
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#called-from-subsection" 
+               aria-expanded="false" 
+               aria-controls="called-from-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Called From
+              </h4>
+            </a>
+            <div id="called-from-subsection" class="collapse">
+              <div class="card-body">
+                  <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item">
+                      <ul class="list-inline">
+                          <li class="list-inline-item"><a href='hru_control.html'>hru_control</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                  
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#calls-subsection" 
+               aria-expanded="false" 
+               aria-controls="calls-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Calls
+              </h4>
+            </a>
+            <div id="calls-subsection" class="collapse">
+              <div class="card-body">
+                  <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item">
+                      <ul class="list-inline">
+                          <li class="list-inline-item"><a href='ionic_strength.html'>Ionic_Strength</a></li>
+                          <li class="list-inline-item"><a href='activity_coefficient.html'>activity_coefficient</a></li>
+                          <li class="list-inline-item"><a href='caco3.html'>CaCO3</a></li>
+                          <li class="list-inline-item"><a href='mgco3.html'>MgCO3</a></li>
+                          <li class="list-inline-item"><a href='caso4.html'>CaSO4</a></li>
+                          <li class="list-inline-item"><a href='mgso4.html'>MgSO4</a></li>
+                          <li class="list-inline-item"><a href='nacl.html'>NaCl</a></li>
+                          <li class="list-inline-item"><a href='cationexchange.html'>cationexchange</a></li>
+                          <li class="list-inline-item">50</li>
+                      </ul>
+                    </li>
+                  </ul>
+                  
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#arguments-subsection" 
+               aria-expanded="false" 
+               aria-controls="arguments-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Arguments
+              </h4>
+            </a>
+            <div id="arguments-subsection" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#uses-section" 
+         aria-expanded="false" 
+         aria-controls="uses-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Uses
+        </h3>
+      </a>
+      <div id="uses-section" class="collapse">
+        <div class="card-body">
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">
+                  <ul class="list-inline">
+                      <li class="list-inline-item"><a href='../module/salt_module.html'>salt_module</a></li>
+                      <li class="list-inline-item"><a href='../module/salt_data_module.html'>salt_data_module</a></li>
+                      <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                      <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                      <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                      <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                      <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
+                  </ul>
+                </li>
+            </ul>
+
+          <h4 class="mt-4 mb-3">Outside Variables and Types</h4>
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_salt_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_salt_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_salt_module">
+                <a href='../module/salt_module.html'>salt_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_salt_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_salt_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_salt_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingsalt_module_type_object_salt_balance_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsesalt_module_type_object_salt_balance_" aria-expanded="false" 
+                              aria-controls="collapsesalt_module_type_object_salt_balance_">
+                        type(<a href='../type/object_salt_balance~2.html'>object_salt_balance</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsesalt_module_type_object_salt_balance_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingsalt_module_type_object_salt_balance_" data-bs-parent="#typesAccordionmodule_salt_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>hsaltb_d</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/salt_balance~2.html'>salt_balance</a>),
+public,dimension (:), allocatable                                                  :: <strong>salt</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>diss</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">340</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_salt_data_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_salt_data_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_salt_data_module">
+                <a href='../module/salt_data_module.html'>salt_data_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_salt_data_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_salt_data_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_salt_data_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingsalt_data_module_double_precision">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsesalt_data_module_double_precision" aria-expanded="false" 
+                              aria-controls="collapsesalt_data_module_double_precision">
+                        double precision
+                        <small class="text-muted ms-2">(32 variables)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsesalt_data_module_double_precision" class="accordion-collapse collapse" 
+                         aria-labelledby="headingsalt_data_module_double_precision" data-bs-parent="#typesAccordionmodule_salt_data_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Sul_Conc</strong>(2000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Cal_Conc</strong>(2000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Mg_Conc</strong>(2000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Sod_Conc</strong>(2000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Pot_Conc</strong>(2000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Cl_Conc</strong>(2000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Car_Conc</strong>(2000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>BiCar_Conc</strong>(2000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>salt_K1</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>salt_K2</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>salt_K3</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>salt_K4</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>salt_K5</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Ksp11</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Ksp21</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Ksp31</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Ksp41</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Ksp51</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>upion1</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>upion2</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>upion3</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>upion4</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>upion5</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>upion6</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>upion7</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>upion8</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Sol_CaCO3</strong>(1000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Sol_MgCO3</strong>(1000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Sol_CaSO4</strong>(1000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Sol_MgSO4</strong>(1000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>Sol_NaCl</strong>(1000)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>LAMDA</strong>(7)
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingsalt_data_module_integer">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsesalt_data_module_integer" aria-expanded="false" 
+                              aria-controls="collapsesalt_data_module_integer">
+                        integer
+                        <small class="text-muted ms-2">(5 variables)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsesalt_data_module_integer" class="accordion-collapse collapse" 
+                         aria-labelledby="headingsalt_data_module_integer" data-bs-parent="#typesAccordionmodule_salt_data_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>c11</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>c22</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>salt_c3</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>salt_c4</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>c5</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_constituent_mass_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_constituent_mass_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_constituent_mass_module">
+                <a href='../module/constituent_mass_module.html'>constituent_mass_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_constituent_mass_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_constituent_mass_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_constituent_mass_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingconstituent_mass_module_type_constituents_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapseconstituent_mass_module_type_constituents_" aria-expanded="false" 
+                              aria-controls="collapseconstituent_mass_module_type_constituents_">
+                        type(<a href='../type/constituents.html'>constituents</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapseconstituent_mass_module_type_constituents_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingconstituent_mass_module_type_constituents_" data-bs-parent="#typesAccordionmodule_constituent_mass_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>cs_db</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>num_salts</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">104, 286, 293</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">104, 286, 293</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingconstituent_mass_module_type_soil_constituent_mass_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapseconstituent_mass_module_type_soil_constituent_mass_" aria-expanded="false" 
+                              aria-controls="collapseconstituent_mass_module_type_soil_constituent_mass_">
+                        type(<a href='../type/soil_constituent_mass.html'>soil_constituent_mass</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapseconstituent_mass_module_type_soil_constituent_mass_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingconstituent_mass_module_type_soil_constituent_mass_" data-bs-parent="#typesAccordionmodule_constituent_mass_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>cs_soil</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/constituent_mass.html'>constituent_mass</a>),
+public,dimension (:), allocatable                                                  :: <strong>ly</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>salt_min</strong>
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">74, 75, 76, 77, 78, 85, 315, 316, 317, 318, 319, 322, 329</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>salt</strong>
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">106, 111, 287, 294</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>saltc</strong>
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">109, 114, 117, 128, 129, 130, 131, 132, 133, 134, 135, 274, 275, 276, 277, 278, 279, 280, 281, 288</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_hru_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_hru_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_hru_module">
+                <a href='../module/hru_module.html'>hru_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_hru_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_hru_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_hru_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghru_module_type_hydrologic_response_unit_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehru_module_type_hydrologic_response_unit_" aria-expanded="false" 
+                              aria-controls="collapsehru_module_type_hydrologic_response_unit_">
+                        type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehru_module_type_hydrologic_response_unit_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghru_module_type_hydrologic_response_unit_" data-bs-parent="#typesAccordionmodule_hru_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>hru</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>area_ha</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">53, 111, 284, 289, 294, 338, 339</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">53, 111, 284, 289, 294, 338, 339</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghru_module_integer">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehru_module_integer" aria-expanded="false" 
+                              aria-controls="collapsehru_module_integer">
+                        integer
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehru_module_integer" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghru_module_integer" data-bs-parent="#typesAccordionmodule_hru_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>ihru</strong>
+                                  
+                                  
+                                </td>
+                                <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~29" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_soil_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_soil_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_soil_module">
+                <a href='../module/soil_module.html'>soil_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_soil_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_soil_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_soil_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingsoil_module_type_soil_profile_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsesoil_module_type_soil_profile_" aria-expanded="false" 
+                              aria-controls="collapsesoil_module_type_soil_profile_">
+                        type(<a href='../type/soil_profile.html'>soil_profile</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsesoil_module_type_soil_profile_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingsoil_module_type_soil_profile_" data-bs-parent="#typesAccordionmodule_soil_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>soil</strong>
+                                  
+                                    <small class="text-muted"> (2 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>nly</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">66</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/soil_physical_properties.html'>soil_physical_properties</a>),
+public,dimension (:), allocatable                                                  :: <strong>phys</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>st</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">69, 103, 285</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>thick</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">70</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>bd</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">82, 89, 302</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">66</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
+         aria-expanded="false" 
+         aria-controls="local-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Local Variables
+        </h3>
+      </a>
+      <div id="local-variables-section" class="collapse">
+        <div class="card-body">
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="var-charbal"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>CharBal</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ii"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ii</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-a"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>A</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-b"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>B</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <div class="mb-4">
+            <div class="mb-2">
+              <strong>Complexity Indicators:</strong>
+              <span class="badge bg-warning text-dark me-1">
+                Moderate
+              </span>
+              <span class="badge bg-info text-dark me-1" title="Maximum nesting depth">
+                Depth: 3
+              </span>
+              <span class="badge bg-secondary me-1" title="Number of RETURN statements">
+                Early Exits: 9
+              </span>
+            </div>
+            
+            <div class="mb-2">
+              <strong>Features:</strong>
+              <span class="badge bg-primary me-1">DO</span>
+              <span class="badge bg-primary me-1">IF</span>
+            </div>
+          </div>
+          
+
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ PURPOSE ~ ~ ~</em>
+                            <span class="text-muted small">(line 3)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>this subroutine calculates salt ion concentrations based on equilibrium chemical reactions, for an HRU</em>
+                            <span class="text-muted small">(line 4)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>(precipitation-dissolution, complexation, cation exchange)</em>
+                            <span class="text-muted small">(line 5)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ INCOMING VARIABLES ~ ~ ~</em>
+                            <span class="text-muted small">(line 7)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>name          |units         |definition</em>
+                            <span class="text-muted small">(line 8)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 9)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>ihru          |none          |HRU number</em>
+                            <span class="text-muted small">(line 10)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>sol_csalt     |mg Salt/L     |concentration of salt ions in solution in each soil layer</em>
+                            <span class="text-muted small">(line 11)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>saltgw_conc   !mg Salt/L     |concentration of salt ions in groundwater</em>
+                            <span class="text-muted small">(line 12)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 13)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ OUTGOING VARIABLES ~ ~ ~</em>
+                            <span class="text-muted small">(line 15)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>name          |units         |definition</em>
+                            <span class="text-muted small">(line 16)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 17)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>sol_csalt     |mg Salt/L     |concentration of salt ions in solution in each soil layer</em>
+                            <span class="text-muted small">(line 18)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>saltgw_conc   !mg Salt/L     |concentration of salt ions in groundwater</em>
+                            <span class="text-muted small">(line 19)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</em>
+                            <span class="text-muted small">(line 20)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  35</span> hru_area_m2,water_volume
+
+<span class="text-muted">  37</span> Sol_CaCO3_p(1000),Sol_MgCO3_p(1000),Sol_CaSO4_p(1000),&
+
+<span class="text-muted">  38</span> Sol_MgSO4_p(1000),Sol_NaCl_p(1000)
+
+<span class="text-muted">  41</span> salt_mass_kg,soil_mass,sol_bd,&
+
+<span class="text-muted">  42</span> mass_before_dis,mass_before_sol,total_before,&
+
+<span class="text-muted">  43</span> mass_after_dis,mass_after_sol,total_after
+
+<span class="text-muted">  45</span> K_ADJ1,K_ADJ2,K_ADJ3,K_ADJ4,K_ADJ5,&
+
+<span class="text-muted">  46</span> error1ST,error2ND,error3RD,errorTotal
+
+<span class="text-muted">  50</span> j = ihru
+
+<span class="text-muted">  53</span> hru_area_m2 = hru(j)%area_ha * 10000.
+
+<span class="text-muted">  56</span> mass_before = 0.
+
+<span class="text-muted">  57</span> mass_after = 0.
+
+<span class="text-muted">  59</span> mass_before_dis = 0.
+
+<span class="text-muted">  60</span> mass_before_sol = 0.
+
+<span class="text-muted">  61</span> mass_after_dis = 0.
+
+<span class="text-muted">  62</span> mass_after_sol = 0.
+
+<span class="text-muted">  63</span> total_before = 0.
+
+<span class="text-muted">  64</span> total_after = 0.
+
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>jj = 1,soil(j)%nly</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 66-335</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  69</span> sol_water = soil(j)%phys(jj)%st
+
+<span class="text-muted">  70</span> sol_thick = soil(j)%phys(jj)%thick
+
+<span class="text-muted">  71</span> waterC = sol_water / sol_thick
+
+<span class="text-muted">  74</span> Sol_CaCO3_p(1) = cs_soil(j)%ly(jj)%salt_min(1)
+
+<span class="text-muted">  75</span> Sol_MgCO3_p(1) = cs_soil(j)%ly(jj)%salt_min(2)
+
+<span class="text-muted">  76</span> Sol_CaSO4_p(1) = cs_soil(j)%ly(jj)%salt_min(3)
+
+<span class="text-muted">  77</span> Sol_MgSO4_p(1) = cs_soil(j)%ly(jj)%salt_min(4)
+
+<span class="text-muted">  78</span> Sol_NaCl_p(1)  = cs_soil(j)%ly(jj)%salt_min(5)
+
+<span class="text-muted">  81</span> soil_volume = hru_area_m2 * (sol_thick/1000.)
+
+<span class="text-muted">  82</span> soil_mass = soil_volume * (soil(j)%phys(jj)%bd*1000.)
+
+<span class="text-muted">  89</span> sol_bd = soil(j)%phys(jj)%bd
+
+<span class="text-muted">  90</span> if(waterC.eq.0.) waterC = 0.05
+
+<span class="text-muted">  91</span> Sol_CaCO3(1) = (Sol_CaCO3_p(1)/100) *&
+
+<span class="text-muted">  92</span> (sol_bd/(waterC*100.0))*1000.0
+
+<span class="text-muted">  93</span> Sol_MgCO3(1) = (Sol_MgCO3_p(1)/100) *&
+
+<span class="text-muted">  94</span> (sol_bd/(waterC*84.31))*1000.0
+
+<span class="text-muted">  95</span> Sol_CaSO4(1) = (Sol_CaSO4_p(1)/100) *&
+
+<span class="text-muted">  96</span> (sol_bd/(waterC*136.14))*1000.0
+
+<span class="text-muted">  97</span> Sol_MgSO4(1) = (Sol_MgSO4_p(1)/100) *&
+
+<span class="text-muted">  98</span> (sol_bd/(waterC*120.36))*1000.0
+
+<span class="text-muted">  99</span> Sol_NaCl(1)  = (Sol_NaCl_p(1)/100) *&
+
+<span class="text-muted"> 100</span> (sol_bd/(waterC*58.44))*1000.0
+
+<span class="text-muted"> 103</span> water_volume = (soil(j)%phys(jj)%st/1000.) * hru_area_m2
+
+<span class="text-muted"> 122</span> mass_before_dis = mass_before_dis + mass_before
+
+<span class="text-muted"> 125</span> total_before = total_before + (mass_before_dis+mass_before_sol)
+
+<span class="text-muted"> 128</span> ion1 = cs_soil(j)%ly(jj)%saltc(1)
+
+<span class="text-muted"> 129</span> ion2 = cs_soil(j)%ly(jj)%saltc(2)
+
+<span class="text-muted"> 130</span> ion3 = cs_soil(j)%ly(jj)%saltc(3)
+
+<span class="text-muted"> 131</span> ion4 = cs_soil(j)%ly(jj)%saltc(4)
+
+<span class="text-muted"> 132</span> ion5 = cs_soil(j)%ly(jj)%saltc(5)
+
+<span class="text-muted"> 133</span> ion6 = cs_soil(j)%ly(jj)%saltc(6)
+
+<span class="text-muted"> 134</span> ion7 = cs_soil(j)%ly(jj)%saltc(7)
+
+<span class="text-muted"> 135</span> ion8 = cs_soil(j)%ly(jj)%saltc(8)
+
+<span class="text-muted"> 137</span> Sul_Conc(1) = ion1*((1.0/1000)*(1.0/96.06))
+
+<span class="text-muted"> 138</span> Cal_Conc(1) = ion2*((1.0/1000)*(1.0/40.078))
+
+<span class="text-muted"> 139</span> Mg_Conc(1) = ion3*((1.0/1000)*(1.0/24.305))
+
+<span class="text-muted"> 140</span> Sod_Conc(1) = ion4*((1.0/1000)*(1.0/23.0))
+
+<span class="text-muted"> 141</span> Pot_Conc(1) = ion5*((1.0/1000)*(1.0/39.0))
+
+<span class="text-muted"> 142</span> Cl_Conc(1) = ion6*((1.0/1000)*(1.0/35.45))
+
+<span class="text-muted"> 143</span> Car_Conc(1) = ion7*((1.0/1000)*(1.0/60.01))
+
+<span class="text-muted"> 144</span> BiCar_Conc(1) = ion8*((1.0/1000)*(1.0/61.01))
+
+<span class="badge text-white me-1" style="background-color: #BB8FCE;">CALL</span> <span class="text-muted"> 147</span> call Ionic_strength(IS_temp,Cal_Conc(1),Sul_Conc(1),Car_Conc(1),&
+
+<span class="text-muted"> 148</span> BiCar_Conc(1),Mg_Conc(1),Sod_Conc(1),&
+
+<span class="text-muted"> 149</span> Pot_Conc(1))
+
+<span class="text-muted"> 150</span> IonStr = IS_temp
+
+<span class="text-muted"> 151</span> I_Prep_in = IonStr
+
+<span class="text-muted"> 152</span> I_diff = 1
+
+<span class="text-muted"> 155</span> c11 = 1
+
+<span class="text-muted"> 156</span> c22 = 1
+
+<span class="text-muted"> 157</span> salt_c3 = 1
+
+<span class="text-muted"> 158</span> salt_c4 = 1
+
+<span class="text-muted"> 159</span> c5 = 1
+
+<span class="badge text-white me-1" style="background-color: #BB8FCE;">CALL</span> <span class="text-muted"> 164</span> call activity_coefficient(I_Prep_in)
+
+<span class="text-muted"> 167</span> K_ADJ1 = LAMDA(1)*LAMDA(3)
+
+<span class="text-muted"> 168</span> K_ADJ2 = LAMDA(5)*LAMDA(3)
+
+<span class="text-muted"> 169</span> K_ADJ3 = LAMDA(1)*LAMDA(2)
+
+<span class="text-muted"> 170</span> K_ADJ4 = LAMDA(5)*LAMDA(2)
+
+<span class="text-muted"> 171</span> K_ADJ5 = LAMDA(6)*LAMDA(6)
+
+<span class="text-muted"> 199</span> errorTotal = 1
+
+<span class="text-muted"> 202</span> iter_count = 1
+
+<span class="text-muted"> 234</span> 10        upion1 = Sul_Conc(salt_c4)
+
+<span class="text-muted"> 235</span> upion2 = Cal_Conc(c11)
+
+<span class="text-muted"> 236</span> upion3 = Mg_Conc(salt_c3)
+
+<span class="text-muted"> 237</span> upion4 = Sod_Conc(c5)
+
+<span class="text-muted"> 238</span> upion5 = Pot_Conc(1)
+
+<span class="text-muted"> 239</span> upion6 = Cl_Conc(c5)
+
+<span class="text-muted"> 240</span> upion7 = Car_Conc(c22)
+
+<span class="text-muted"> 241</span> upion8 = BiCar_Conc(1)
+
+<span class="text-muted"> 246</span> upion1 = Sul_Conc(salt_c4)*(96.06*1000.0)
+
+<span class="text-muted"> 247</span> upion2 = Cal_Conc(c11)*(40.078*1000.0)
+
+<span class="text-muted"> 248</span> upion3 = Mg_Conc(salt_c3)*(24.305*1000.0)
+
+<span class="text-muted"> 249</span> upion4 = Sod_Conc(c5)*(23.0*1000.0)
+
+<span class="text-muted"> 250</span> upion5 = Pot_Conc(1)*(39.0*1000.0)
+
+<span class="text-muted"> 251</span> upion6 = Cl_Conc(c5)*(35.45*1000.0)
+
+<span class="text-muted"> 252</span> upion7 = Car_Conc(c22)*(60.01*1000.0)
+
+<span class="text-muted"> 253</span> upion8= BiCar_Conc(1)*(61.01*1000.0)
+
+<span class="badge text-white me-1" style="background-color: #BB8FCE;">CALL</span> <span class="text-muted"> 256</span> call cationexchange
+
+<span class="text-muted"> 259</span> if (upion2.le.0 .or. upion3.le.0 .or. upion4.le.0 .or. &
+
+<span class="text-muted"> 260</span> upion5.le.0) then
+
+<span class="text-muted"> 261</span> upion2 = Cal_Conc(c11)*(40.078*1000.0)
+
+<span class="text-muted"> 262</span> upion3 = Mg_Conc(salt_c3)*(24.305*1000.0)
+
+<span class="text-muted"> 263</span> upion4 = Sod_Conc(c5)*(23.0*1000.0)
+
+<span class="text-muted"> 264</span> upion5 = Pot_Conc(1)*(39.0*1000.0)
+
+<span class="text-muted"> 265</span> SkipedIEX = SkipedIEX + 1
+
+<span class="text-muted"> 267</span> upion2 = upion2
+
+<span class="text-muted"> 268</span> upion3 = upion3
+
+<span class="text-muted"> 269</span> upion4 = upion4
+
+<span class="text-muted"> 270</span> upion5 = upion5
+
+<span class="text-muted"> 274</span> cs_soil(j)%ly(jj)%saltc(1) = upion1
+
+<span class="text-muted"> 275</span> cs_soil(j)%ly(jj)%saltc(2) = upion2
+
+<span class="text-muted"> 276</span> cs_soil(j)%ly(jj)%saltc(3) = upion3
+
+<span class="text-muted"> 277</span> cs_soil(j)%ly(jj)%saltc(4) = upion4
+
+<span class="text-muted"> 278</span> cs_soil(j)%ly(jj)%saltc(5) = upion5
+
+<span class="text-muted"> 279</span> cs_soil(j)%ly(jj)%saltc(6) = upion6
+
+<span class="text-muted"> 280</span> cs_soil(j)%ly(jj)%saltc(7) = upion7
+
+<span class="text-muted"> 281</span> cs_soil(j)%ly(jj)%saltc(8) = upion8
+
+<span class="text-muted"> 284</span> hru_area_m2 = hru(j)%area_ha * 10000.
+
+<span class="text-muted"> 285</span> water_volume = (soil(j)%phys(jj)%st/1000.) * hru_area_m2
+
+<span class="text-muted"> 299</span> mass_after_dis = mass_after_dis + mass_after
+
+<span class="text-muted"> 302</span> sol_bd = soil(j)%phys(jj)%bd
+
+<span class="text-muted"> 303</span> Sol_CaCO3_p(c5) = (Sol_CaCO3(c5)*100.0)&
+
+<span class="text-muted"> 304</span> /((sol_bd/(waterC*100.0))*1000.0)
+
+<span class="text-muted"> 305</span> Sol_MgCO3_p(c5) = (Sol_MgCO3(c5)*100.0)&
+
+<span class="text-muted"> 306</span> /((sol_bd/(waterC*84.31))*1000.0)
+
+<span class="text-muted"> 307</span> Sol_CaSO4_p(c5) = (Sol_CaSO4(c5)*100.0)&
+
+<span class="text-muted"> 308</span> /((sol_bd/(waterC*136.14))*1000.0)
+
+<span class="text-muted"> 309</span> Sol_MgSO4_p(c5) = (Sol_MgSO4(c5)*100.0)&
+
+<span class="text-muted"> 310</span> /((sol_bd/(waterC*120.36))*1000.0)
+
+<span class="text-muted"> 311</span> Sol_NaCl_p(c5)  = (Sol_NaCl(c5)*100.0)&
+
+<span class="text-muted"> 312</span> /((sol_bd/(waterC*58.44))*1000.0)
+
+<span class="text-muted"> 315</span> cs_soil(j)%ly(jj)%salt_min(1) = Sol_CaCO3_p(c5)
+
+<span class="text-muted"> 316</span> cs_soil(j)%ly(jj)%salt_min(2) = Sol_MgCO3_p(c5)
+
+<span class="text-muted"> 317</span> cs_soil(j)%ly(jj)%salt_min(3) = Sol_CaSO4_p(c5)
+
+<span class="text-muted"> 318</span> cs_soil(j)%ly(jj)%salt_min(4) = Sol_MgSO4_p(c5)
+
+<span class="text-muted"> 319</span> cs_soil(j)%ly(jj)%salt_min(5) = Sol_NaCl_p(c5)
+
+<span class="text-muted"> 333</span> total_after = total_after + (mass_after_dis + mass_after_sol)
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>m=1,5</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 83-86</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  84</span> mass_before_sol = mass_before_sol + &
+
+<span class="text-muted">  85</span> (soil_mass*(cs_soil(j)%ly(jj)%salt_min(m)/100.))
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 86</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>m=1,cs_db%num_salts</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 104-119</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 111</span> salt_mass_kg = cs_soil(j)%ly(jj)%salt(m) * hru(j)%area_ha
+
+<span class="text-muted"> 112</span> mass_before = mass_before + salt_mass_kg
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>cs_soil(j)%ly(jj)%salt(m).lt.0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 105-107</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 106</span> cs_soil(j)%ly(jj)%salt(m) = 0.
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 107</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>cs_soil(j)%ly(jj)%saltc(m).lt.0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 108-110</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 109</span> cs_soil(j)%ly(jj)%saltc(m) = 0.
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 110</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>water_volume.gt.0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 113-115</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 114</span> cs_soil(j)%ly(jj)%saltc(m) = (salt_mass_kg * 1000.) / &
+
+<span class="text-muted"> 115</span> water_volume
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 115</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 116-118</span>
+                  </div>
+                </a>
+                <div id="block-2-block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 117</span> cs_soil(j)%ly(jj)%saltc(m) = 0.
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 118</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 119</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>K_ADJ1.gt.0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 173-174</span>
+                  </div>
+                </a>
+                <div id="block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 174</span> salt_K1 = Ksp11/K_ADJ1
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 174</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 175-177</span>
+                  </div>
+                </a>
+                <div id="block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 176</span> salt_K1 = 0.
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 177</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>K_ADJ2.gt.0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 178-179</span>
+                  </div>
+                </a>
+                <div id="block-2-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 179</span> salt_K2 = Ksp21/K_ADJ2
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 179</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 180-182</span>
+                  </div>
+                </a>
+                <div id="block-2-block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 181</span> salt_K2 = 0.
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 182</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>K_ADJ3.gt.0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 183-184</span>
+                  </div>
+                </a>
+                <div id="block-2-block-7" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 184</span> salt_K3 = Ksp31/K_ADJ3
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 184</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 185-187</span>
+                  </div>
+                </a>
+                <div id="block-2-block-8" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 186</span> salt_K3 = 0.
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 187</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-9" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>K_ADJ4.gt.0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 188-189</span>
+                  </div>
+                </a>
+                <div id="block-2-block-9" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 189</span> salt_K4 = Ksp41/K_ADJ4
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 189</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-10" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 190-192</span>
+                  </div>
+                </a>
+                <div id="block-2-block-10" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 191</span> salt_K4 = 0.
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 192</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-11" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>K_ADJ5.gt.0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 193-194</span>
+                  </div>
+                </a>
+                <div id="block-2-block-11" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 194</span> salt_K5 = Ksp51/K_ADJ5
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 194</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-12" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 195-197</span>
+                  </div>
+                </a>
+                <div id="block-2-block-12" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 196</span> salt_K5 = 0.
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 197</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-13" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>while (errorTotal.GE.1e-3)</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 203-230</span>
+                  </div>
+                </a>
+                <div id="block-2-block-13" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #BB8FCE;">CALL</span> <span class="text-muted"> 204</span> call CaCO3
+
+<span class="badge text-white me-1" style="background-color: #BB8FCE;">CALL</span> <span class="text-muted"> 205</span> call MgCO3
+
+<span class="badge text-white me-1" style="background-color: #BB8FCE;">CALL</span> <span class="text-muted"> 206</span> call CaSO4
+
+<span class="badge text-white me-1" style="background-color: #BB8FCE;">CALL</span> <span class="text-muted"> 207</span> call MgSO4
+
+<span class="badge text-white me-1" style="background-color: #BB8FCE;">CALL</span> <span class="text-muted"> 208</span> call NaCl
+
+<span class="text-muted"> 211</span> error1ST = Car_Conc(c22+1)-Car_Conc(c22+2)
+
+<span class="text-muted"> 212</span> error2ND = Cal_Conc(c11+1)-Cal_Conc(c11+2)
+
+<span class="text-muted"> 213</span> error3RD = Sul_Conc(salt_c4+1)-Sul_Conc(salt_c4+2)
+
+<span class="text-muted"> 215</span> errorTotal = max(abs(error1ST),abs(error2ND),abs(error3RD))
+
+<span class="text-muted"> 218</span> c11 = c11 + 2
+
+<span class="text-muted"> 219</span> c22 = c22 + 2
+
+<span class="text-muted"> 220</span> salt_c3 = salt_c3 + 2
+
+<span class="text-muted"> 221</span> salt_c4 = salt_c4 + 2
+
+<span class="text-muted"> 222</span> c5 = c5 + 1
+
+<span class="text-muted"> 225</span> iter_count = iter_count + 1
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-13-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>iter_count.gt.500</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 226-228</span>
+                  </div>
+                </a>
+                <div id="block-2-block-13-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 227</span> goto 10
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 228</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 230</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-14" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>m=1,cs_db%num_salts</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 286-290</span>
+                  </div>
+                </a>
+                <div id="block-2-block-14" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 287</span> cs_soil(j)%ly(jj)%salt(m) = &
+
+<span class="text-muted"> 288</span> (cs_soil(j)%ly(jj)%saltc(m)/1000.) * water_volume&
+
+<span class="text-muted"> 289</span> / hru(j)%area_ha
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 290</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-15" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>m=1,cs_db%num_salts</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 293-296</span>
+                  </div>
+                </a>
+                <div id="block-2-block-15" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 294</span> salt_mass_kg = cs_soil(j)%ly(jj)%salt(m) * hru(j)%area_ha
+
+<span class="text-muted"> 295</span> mass_after = mass_after + salt_mass_kg
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 296</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-16" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>m=1,5</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 320-324</span>
+                  </div>
+                </a>
+                <div id="block-2-block-16" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-16-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>cs_soil(j)%ly(jj)%salt_min(m) > 100.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 321-323</span>
+                  </div>
+                </a>
+                <div id="block-2-block-16-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 322</span> cs_soil(j)%ly(jj)%salt_min(m) = 100.
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 323</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 324</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-17" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>m=1,5</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 327-330</span>
+                  </div>
+                </a>
+                <div id="block-2-block-17" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 328</span> mass_after_sol = mass_after_sol + &
+
+<span class="text-muted"> 329</span> (soil_mass*(cs_soil(j)%ly(jj)%salt_min(m)/100.))
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 330</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 335</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 338</span> mass_before = mass_before / hru(j)%area_ha
+
+<span class="text-muted"> 339</span> mass_after = mass_after / hru(j)%area_ha
+
+<span class="text-muted"> 340</span> hsaltb_d(j)%salt(1)%diss = mass_after - mass_before
+
+<span class="text-muted"> 342</span> 101   format(i8,i8,i8,i8,50(e13.4))
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 344</span> return
+
+<span class="text-muted"> 345</span> end
+
+<span class="text-muted"> 351</span> subroutine Ionic_Strength(IS_temp,A,B,C,D,E,F,G)
+
+<span class="text-muted"> 360</span> DATA CharBal/2.0, -2.0, -2.0, -1.0, 2.0, 1.0, 1.0/
+
+<span class="text-muted"> 362</span> IS_temp = 0.5*(CharBal(1)**2*A&
+
+<span class="text-muted"> 363</span> +CharBal(2)**2*B&
+
+<span class="text-muted"> 364</span> +CharBal(3)**2*C&
+
+<span class="text-muted"> 365</span> +CharBal(4)**2*D&
+
+<span class="text-muted"> 366</span> +CharBal(5)**2*E&
+
+<span class="text-muted"> 367</span> +CharBal(6)**2*F&
+
+<span class="text-muted"> 368</span> +CharBal(7)**2*G)
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 370</span> return
+
+<span class="text-muted"> 371</span> end
+
+<span class="text-muted"> 378</span> subroutine activity_coefficient(I_Prep_in)
+
+<span class="text-muted"> 384</span> DATA CharBal/2.0, -2.0, -2.0, -1.0, 2.0, 1.0, 1.0/
+
+<span class="text-muted"> 385</span> DATA a_size/6.0, 4.0, 4.5, 4.0, 8.0, 4.5, 3.0/
+
+<span class="text-muted"> 388</span> A = 0.5
+
+<span class="text-muted"> 389</span> B = 0.33
+
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>I_Prep_in.LE.1e-1</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 391-395</span>
+                  </div>
+                </a>
+                <div id="block-4" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ii = 1,7</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 392-395</span>
+                  </div>
+                </a>
+                <div id="block-4-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 393</span> LAMDA(ii)= 10.0**(-A*CharBal(ii)**2.0  &
+
+<span class="text-muted"> 394</span> *(I_Prep_in**0.5/(1+B*a_size(ii)*I_Prep_in**0.5)))
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 395</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 395</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">ELSE IF</span> (<code>I_Prep_in.GE.5</code>) <strong>THEN</strong>
+                    <span class="badge bg-light text-dark ms-2">Lines 396-401</span>
+                  </div>
+                </a>
+                <div id="block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 397</span> I_Prep_in = 0.5
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-5-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ii = 1,7</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 398-401</span>
+                  </div>
+                </a>
+                <div id="block-5-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 399</span> LAMDA(ii)= 10.0**(-A*CharBal(ii)**2.0  &
+
+<span class="text-muted"> 400</span> *(I_Prep_in**0.5/(1+I_Prep_in**0.5)-0.3*I_Prep_in))
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 401</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 401</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 402-407</span>
+                  </div>
+                </a>
+                <div id="block-6" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-6-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ii = 1,7</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 403-406</span>
+                  </div>
+                </a>
+                <div id="block-6-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 404</span> LAMDA(ii)= 10.0**(-A*CharBal(ii)**2.0  &
+
+<span class="text-muted"> 405</span> *(I_Prep_in**0.5/(1+I_Prep_in**0.5)-0.3*I_Prep_in))
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 406</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 407</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 409</span> return
+
+<span class="text-muted"> 410</span> end
+
+<span class="text-muted"> 421</span> subroutine CaSO4
+
+<span class="text-muted"> 429</span> PosSolv,CalSul_Prep,Solid_CaSO4,Dissolved_Solid,&
+
+<span class="text-muted"> 430</span> Calcium_Conc,Sulfate_Conc
+
+<span class="text-muted"> 432</span> M1 = Sol_CaSO4(c5)
+
+<span class="text-muted"> 433</span> M2 = Cal_Conc(c11+1)
+
+<span class="text-muted"> 434</span> M3 = Sul_Conc(salt_c4)
+
+<span class="text-muted"> 435</span> Ksp = salt_K3
+
+<span class="text-muted"> 437</span> Solv = 0.5*(-(M2+M3)+sqrt((M2+M3)**2-4*(M2*M3-Ksp)))
+
+<span class="text-muted"> 438</span> Trial_Ksp = M2 * M3
+
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>Trial_Ksp.gt.Ksp</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 440-449</span>
+                  </div>
+                </a>
+                <div id="block-8" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 443</span> PosSolv = abs(Solv)
+
+<span class="text-muted"> 444</span> CalSul_Prep = PosSolv
+
+<span class="text-muted"> 445</span> Solid_CaSO4 = M1+CalSul_Prep
+
+<span class="text-muted"> 446</span> Dissolved_Solid = 0
+
+<span class="text-muted"> 447</span> Calcium_Conc = M2-CalSul_Prep
+
+<span class="text-muted"> 448</span> Sulfate_Conc = M3-CalSul_Prep
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 449</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-9" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">ELSE IF</span> (<code>M1.gt.Solv</code>) <strong>THEN</strong>
+                    <span class="badge bg-light text-dark ms-2">Lines 450-462</span>
+                  </div>
+                </a>
+                <div id="block-9" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 453</span> PosSolv = Solv
+
+<span class="text-muted"> 458</span> Calcium_Conc = (M2+PosSolv)
+
+<span class="text-muted"> 459</span> Sulfate_Conc = (M3+PosSolv)
+
+<span class="text-muted"> 460</span> Dissolved_Solid = PosSolv
+
+<span class="text-muted"> 461</span> Solid_CaSO4 = (M1-PosSolv)
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 462</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-10" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 463-471</span>
+                  </div>
+                </a>
+                <div id="block-10" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 467</span> Calcium_Conc = (M1+M2)
+
+<span class="text-muted"> 468</span> Sulfate_Conc = (M1+M3)
+
+<span class="text-muted"> 469</span> Dissolved_Solid = M1
+
+<span class="text-muted"> 470</span> Solid_CaSO4 = 0
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 471</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 473</span> Sol_CaSO4(c5+1) = Solid_CaSO4
+
+<span class="text-muted"> 474</span> Cal_Conc(c11+2) = Calcium_Conc
+
+<span class="text-muted"> 475</span> Sul_Conc(salt_c4+1) = Sulfate_Conc
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 477</span> return
+
+<span class="text-muted"> 478</span> end
+
+<span class="text-muted"> 489</span> subroutine MgCO3
+
+<span class="text-muted"> 497</span> PosSolv,MgCar_Prep,Solid_MgCO3,Dissolved_Solid,&
+
+<span class="text-muted"> 498</span> Mag_Conc,Carbonate_Conc
+
+<span class="text-muted"> 500</span> M1 = Sol_MgCO3(c5)
+
+<span class="text-muted"> 501</span> M2 = Mg_Conc(salt_c3)
+
+<span class="text-muted"> 502</span> M3 = Car_Conc(c22+1)
+
+<span class="text-muted"> 503</span> Ksp = salt_K2
+
+<span class="text-muted"> 504</span> Solv = 0.5*(-(M2+M3)+sqrt((M2+M3)**2-4*(M2*M3-Ksp)))
+
+<span class="text-muted"> 505</span> Trial_Ksp=M2*M3
+
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-12" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>Trial_Ksp.GT.Ksp</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 507-516</span>
+                  </div>
+                </a>
+                <div id="block-12" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 510</span> PosSolv = abs(Solv)
+
+<span class="text-muted"> 511</span> MgCar_Prep = PosSolv
+
+<span class="text-muted"> 512</span> Solid_MgCO3 = M1+MgCar_Prep
+
+<span class="text-muted"> 513</span> Dissolved_Solid = 0
+
+<span class="text-muted"> 514</span> Mag_Conc = M2-MgCar_Prep
+
+<span class="text-muted"> 515</span> Carbonate_Conc = M3-MgCar_Prep
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 516</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-13" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">ELSE IF</span> (<code>M1.GT.Solv</code>) <strong>THEN</strong>
+                    <span class="badge bg-light text-dark ms-2">Lines 517-529</span>
+                  </div>
+                </a>
+                <div id="block-13" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 520</span> PosSolv = Solv
+
+<span class="text-muted"> 525</span> Mag_Conc = (M2+PosSolv)
+
+<span class="text-muted"> 526</span> Carbonate_Conc = (M3+PosSolv)
+
+<span class="text-muted"> 527</span> Dissolved_Solid = PosSolv
+
+<span class="text-muted"> 528</span> Solid_MgCO3 = (M1-PosSolv)
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 529</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-14" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 530-539</span>
+                  </div>
+                </a>
+                <div id="block-14" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 534</span> Mag_Conc = (M1+M2)
+
+<span class="text-muted"> 535</span> Carbonate_Conc = (M1+M3)
+
+<span class="text-muted"> 536</span> Dissolved_Solid = M1
+
+<span class="text-muted"> 537</span> Solid_MgCO3= 0
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 539</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 541</span> Sol_MgCO3(c5+1) = Solid_MgCO3
+
+<span class="text-muted"> 542</span> Mg_Conc(salt_c3+1) =   Mag_Conc
+
+<span class="text-muted"> 543</span> Car_Conc(c22+2) =  Carbonate_Conc
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 545</span> return
+
+<span class="text-muted"> 546</span> end
+
+<span class="text-muted"> 557</span> subroutine NaCl
+
+<span class="text-muted"> 565</span> PosSolv,SodiumChloride_Prep,Solid_NaCl,Dissolved_Solid,&
+
+<span class="text-muted"> 566</span> Sodium_Conc,Chloride_Conc
+
+<span class="text-muted"> 568</span> M1 = Sol_NaCl(c5)
+
+<span class="text-muted"> 569</span> M2 = Sod_Conc(c5)
+
+<span class="text-muted"> 570</span> M3 = Cl_Conc(c5)
+
+<span class="text-muted"> 571</span> Ksp = salt_K5
+
+<span class="text-muted"> 573</span> Solv = 0.5*(-(M2+M3)+sqrt((M2+M3)**2-4*(M2*M3-Ksp)))
+
+<span class="text-muted"> 574</span> Trial_Ksp=M2*M3
+
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-16" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>Trial_Ksp.GT.Ksp</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 576-585</span>
+                  </div>
+                </a>
+                <div id="block-16" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 579</span> PosSolv = abs(Solv)
+
+<span class="text-muted"> 580</span> SodiumChloride_Prep = PosSolv
+
+<span class="text-muted"> 581</span> Solid_NaCl = M1+SodiumChloride_Prep
+
+<span class="text-muted"> 582</span> Dissolved_Solid = 0
+
+<span class="text-muted"> 583</span> Sodium_Conc = M2-SodiumChloride_Prep
+
+<span class="text-muted"> 584</span> Chloride_Conc  = M3-SodiumChloride_Prep
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 585</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-17" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">ELSE IF</span> (<code>M1.GT.Solv</code>) <strong>THEN</strong>
+                    <span class="badge bg-light text-dark ms-2">Lines 586-598</span>
+                  </div>
+                </a>
+                <div id="block-17" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 589</span> PosSolv = Solv
+
+<span class="text-muted"> 594</span> Sodium_Conc = (M2+PoSSolv)
+
+<span class="text-muted"> 595</span> Chloride_Conc  = (M3+PosSolv)
+
+<span class="text-muted"> 596</span> Dissolved_Solid = PosSolv
+
+<span class="text-muted"> 597</span> Solid_NaCl = (M1-PosSolv)
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 598</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-18" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 599-608</span>
+                  </div>
+                </a>
+                <div id="block-18" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 603</span> Sodium_Conc = (M1+M2)
+
+<span class="text-muted"> 604</span> Chloride_Conc  = (M1+M3)
+
+<span class="text-muted"> 605</span> Dissolved_Solid = M1
+
+<span class="text-muted"> 606</span> Solid_NaCl= 0
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 608</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 610</span> Sol_NaCl(c5+1) = Solid_NaCl
+
+<span class="text-muted"> 611</span> Sod_Conc(c5+1) = Sodium_Conc
+
+<span class="text-muted"> 612</span> Cl_Conc(c5+1) = Chloride_Conc
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 614</span> return
+
+<span class="text-muted"> 615</span> end
+
+<span class="text-muted"> 626</span> subroutine MgSO4
+
+<span class="text-muted"> 634</span> PosSolv,MgSul_Prep,Solid_MgSO4,Dissolved_Solid,&
+
+<span class="text-muted"> 635</span> Mag_Conc,Sulfate_Conc
+
+<span class="text-muted"> 637</span> M1 = Sol_MgSO4(c5)
+
+<span class="text-muted"> 638</span> M2 = Mg_Conc(salt_c3+1)
+
+<span class="text-muted"> 639</span> M3 = Sul_Conc(salt_c4+1)
+
+<span class="text-muted"> 640</span> Ksp = salt_K4
+
+<span class="text-muted"> 642</span> Solv = 0.5*(-(M2+M3)+sqrt((M2+M3)**2-4*(M2*M3-Ksp)))
+
+<span class="text-muted"> 643</span> Trial_Ksp=M2*M3
+
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-20" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>Trial_Ksp.GT.Ksp</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 645-654</span>
+                  </div>
+                </a>
+                <div id="block-20" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 648</span> PosSolv = abs(Solv)
+
+<span class="text-muted"> 649</span> MgSul_Prep = PosSolv
+
+<span class="text-muted"> 650</span> Solid_MgSO4 = M1+MgSul_Prep
+
+<span class="text-muted"> 651</span> Dissolved_Solid = 0
+
+<span class="text-muted"> 652</span> Mag_Conc = M2-MgSul_Prep
+
+<span class="text-muted"> 653</span> Sulfate_Conc = M3-MgSul_Prep
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 654</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-21" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">ELSE IF</span> (<code>M1.GT.Solv</code>) <strong>THEN</strong>
+                    <span class="badge bg-light text-dark ms-2">Lines 655-667</span>
+                  </div>
+                </a>
+                <div id="block-21" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 658</span> PosSolv = Solv
+
+<span class="text-muted"> 663</span> Mag_Conc = (M2+PosSolv)
+
+<span class="text-muted"> 664</span> Sulfate_Conc = (M3+PosSolv)
+
+<span class="text-muted"> 665</span> Dissolved_Solid = PosSolv
+
+<span class="text-muted"> 666</span> Solid_MgSO4 = (M1-PosSolv)
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 667</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-22" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 668-677</span>
+                  </div>
+                </a>
+                <div id="block-22" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 672</span> Mag_Conc = (M1+M2)
+
+<span class="text-muted"> 673</span> Sulfate_Conc = (M1+M3)
+
+<span class="text-muted"> 674</span> Dissolved_Solid = M1
+
+<span class="text-muted"> 675</span> Solid_MgSO4= 0
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 677</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 679</span> Sol_MgSO4(c5+1) = Solid_MgSO4
+
+<span class="text-muted"> 680</span> Mg_Conc(salt_c3+2) = Mag_Conc
+
+<span class="text-muted"> 681</span> Sul_Conc(salt_c4+2) = Sulfate_Conc
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 683</span> return
+
+<span class="text-muted"> 684</span> end
+
+<span class="text-muted"> 695</span> subroutine CaCO3
+
+<span class="text-muted"> 701</span> PosSolv,CalCar_Prep,Solid_CaCO3,Dissolved_Solid,&
+
+<span class="text-muted"> 702</span> Calcium_Conc,Carbonate_Conc
+
+<span class="text-muted"> 704</span> M1 = Sol_CaCO3(c5)
+
+<span class="text-muted"> 705</span> M2 = Cal_Conc(c11)
+
+<span class="text-muted"> 706</span> M3 = Car_Conc(c22)
+
+<span class="text-muted"> 707</span> Ksp = salt_K1
+
+<span class="text-muted"> 708</span> Solv = 0.5*(-(M2+M3)+sqrt((M2+M3)**2-4*(M2*M3-Ksp)))
+
+<span class="text-muted"> 709</span> Trial_Ksp=M2*M3
+
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-24" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>Trial_Ksp.GT.Ksp</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 711-720</span>
+                  </div>
+                </a>
+                <div id="block-24" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 714</span> PosSolv = abs(Solv)
+
+<span class="text-muted"> 715</span> CalCar_Prep = PosSolv
+
+<span class="text-muted"> 716</span> Solid_CaCO3 = M1+CalCar_Prep
+
+<span class="text-muted"> 717</span> Dissolved_Solid = 0
+
+<span class="text-muted"> 718</span> Calcium_Conc = M2-CalCar_Prep
+
+<span class="text-muted"> 719</span> Carbonate_Conc = M3-CalCar_Prep
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 720</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-25" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">ELSE IF</span> (<code>M1.GT.Solv</code>) <strong>THEN</strong>
+                    <span class="badge bg-light text-dark ms-2">Lines 721-733</span>
+                  </div>
+                </a>
+                <div id="block-25" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 724</span> PosSolv = Solv
+
+<span class="text-muted"> 729</span> Calcium_Conc = (M2+Solv)
+
+<span class="text-muted"> 730</span> Carbonate_Conc = (M3+Solv)
+
+<span class="text-muted"> 731</span> Dissolved_Solid = Solv
+
+<span class="text-muted"> 732</span> Solid_CaCO3 = (M1-Solv)
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 733</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-26" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 734-743</span>
+                  </div>
+                </a>
+                <div id="block-26" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 738</span> Calcium_Conc = (M1+M2)
+
+<span class="text-muted"> 739</span> Carbonate_Conc = (M1+M3)
+
+<span class="text-muted"> 740</span> Dissolved_Solid = M1
+
+<span class="text-muted"> 741</span> Solid_CaCO3= 0
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 743</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 745</span> Sol_CaCO3(c5+1) = Solid_CaCO3
+
+<span class="text-muted"> 746</span> Cal_Conc(c11+1) =  Calcium_Conc
+
+<span class="text-muted"> 747</span> Car_Conc(c22+1) = Carbonate_Conc
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 749</span> return
+
+<span class="text-muted"> 750</span> end
+
+<span class="text-muted"> 765</span> subroutine cationexchange
+
+<span class="text-muted"> 772</span> XCAINI,XMGINI,XNAINI,XKINI,&
+
+<span class="text-muted"> 773</span> DeltaX_Ca,DeltaX_Mg,DeltaX_Na,DeltaX_K,&
+
+<span class="text-muted"> 774</span> Con_Ca,Con_Mg,Con_Na,Con_K,&
+
+<span class="text-muted"> 775</span> X_Ca,X_Mg,X_Na,X_K
+
+<span class="text-muted"> 778</span> CEC = 15
+
+<span class="text-muted"> 781</span> Con_Ca = upion2/40
+
+<span class="text-muted"> 782</span> Con_Mg = upion3/24
+
+<span class="text-muted"> 783</span> Con_Na = upion4/23
+
+<span class="text-muted"> 784</span> Con_K  = upion5/39
+
+<span class="text-muted"> 786</span> if(Con_Ca.gt.0 .and. Con_Mg.gt.0 .and. &
+
+<span class="text-muted"> 787</span> Con_Na.gt.0 .and. Con_K.gt.0) then
+
+<span class="text-muted"> 790</span> Sel_K1 = 0.7
+
+<span class="text-muted"> 791</span> Sel_K2 = 6
+
+<span class="text-muted"> 792</span> Sel_K3 = 0.4
+
+<span class="text-muted"> 793</span> Sel_K4 = 0.2
+
+<span class="text-muted"> 794</span> Sel_K5 = 4
+
+<span class="text-muted"> 795</span> Sel_K6 = 16
+
+<span class="text-muted"> 798</span> XCAINI = 13.6
+
+<span class="text-muted"> 799</span> XMGINI = 0.17
+
+<span class="text-muted"> 800</span> XNAINI = 0.25
+
+<span class="text-muted"> 801</span> XKINI = 0.18
+
+<span class="text-muted"> 802</span> X_Ca = CEC/(1+((Sel_K1*(Con_Mg)**0.5)/((Con_Ca)**0.5))+&
+
+<span class="text-muted"> 803</span> ((Con_Na)/(Sel_K2*(Con_Ca)**0.5))+&
+
+<span class="text-muted"> 804</span> ((Con_K)/(Sel_K3*(Con_Ca)**0.5)))
+
+<span class="text-muted"> 805</span> X_Mg = CEC/(((Con_Ca)**0.5/(Sel_K1*(Con_Mg)**0.5))+1+&
+
+<span class="text-muted"> 806</span> ((Con_Na)/(Sel_K4*(Con_Mg)**0.5))+&
+
+<span class="text-muted"> 807</span> ((Con_K)/(Sel_K5*(Con_Mg)**0.5)))
+
+<span class="text-muted"> 808</span> X_Na = CEC/(((Sel_K2*(Con_Ca)**0.5)/(Con_Na))+&
+
+<span class="text-muted"> 809</span> ((Sel_K5*(Con_Mg)**0.5)/(Con_Na))+1+((Sel_K6*Con_K)/(Con_Na)))
+
+<span class="text-muted"> 810</span> X_K = CEC/(((Sel_K3*(Con_Ca)**0.5)/(Con_K))+&
+
+<span class="text-muted"> 811</span> ((Sel_K4*(Con_Mg)**0.5)/(Con_K))+(Con_Na/(Sel_K6*Con_K))+1)
+
+<span class="text-muted"> 830</span> DeltaX_Ca = X_Ca - XCAINI
+
+<span class="text-muted"> 831</span> DeltaX_Mg = X_Mg - XMGINI
+
+<span class="text-muted"> 832</span> DeltaX_Na = X_Na - XNAINI
+
+<span class="text-muted"> 833</span> DeltaX_K = X_K - XKINI
+
+<span class="text-muted"> 835</span> upion2 = Con_Ca*40 - DeltaX_Ca*200*1.65/0.3
+
+<span class="text-muted"> 836</span> upion3 = Con_Mg*24 - DeltaX_Mg*120*1.65/0.3
+
+<span class="text-muted"> 837</span> upion4 = Con_Na*23 - DeltaX_Na*230*1.65/0.3
+
+<span class="text-muted"> 838</span> upion5 = Con_K*39 - DeltaX_K*390*1.65/0.3
+
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-28" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>Con_Ca.LE.0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 840-842</span>
+                  </div>
+                </a>
+                <div id="block-28" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 841</span> upion2 = -10
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 842</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-29" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>Con_Mg.LE.0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 843-845</span>
+                  </div>
+                </a>
+                <div id="block-29" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 844</span> upion3 = -10
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 845</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-30" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>Con_Na.LE.0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 846-848</span>
+                  </div>
+                </a>
+                <div id="block-30" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 847</span> upion4 = -10
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 848</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-31" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>Con_K.LE.0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 849-851</span>
+                  </div>
+                </a>
+                <div id="block-31" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 850</span> upion5 = -10
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 851</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 855</span> return
+
+<span class="text-muted"> 856</span> end
+
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+    
+    
+
+    
+    
+
+
+
+    
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Fortran Source Documentation
+ was developed by Documentation Builder<br>              &copy; 2026 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

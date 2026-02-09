@@ -91,6 +91,40 @@ def _split_top_level_commas(text: str) -> list[str]:
     return parts
 
 
+IMPLIED_DO_CONTROL_RE = re.compile(r"^[a-zA-Z_]\w*\s*=")
+
+
+def _expand_implied_do_items(items: list[str]) -> list[str]:
+    """
+    Expand implied-DO lists into their component items.
+
+    Example:
+    (a, b, i = 1, n) -> ['a', 'b']
+    """
+    expanded: list[str] = []
+    for item in items:
+        stripped = item.strip()
+        if stripped.startswith("(") and stripped.endswith(")"):
+            inner = stripped[1:-1].strip()
+            inner_items = _split_top_level_commas(inner)
+
+            loop_start_idx = None
+            for idx in range(len(inner_items) - 1, -1, -1):
+                if IMPLIED_DO_CONTROL_RE.match(inner_items[idx].strip()):
+                    loop_start_idx = idx
+                    break
+
+            if loop_start_idx is not None and loop_start_idx > 0:
+                for inner_item in inner_items[:loop_start_idx]:
+                    if inner_item.strip():
+                        expanded.append(inner_item.strip())
+                continue
+
+        expanded.append(stripped)
+
+    return expanded
+
+
 class ConditionTracker:
     """Tracks nested conditions for operations."""
 
@@ -405,6 +439,7 @@ class IoTracker(ConditionTracker):
 
                     # --- Split on top-level commas (ignoring nested parentheses)
                     cols = _split_top_level_commas(cols_part)
+                    cols = _expand_implied_do_items(cols)
 
                     # --- Strip one layer of parens from each col
                     clean_cols = []
@@ -674,6 +709,7 @@ class IoTracker(ConditionTracker):
 
         # Split on top-level commas (ignoring nested parentheses)
         extracted_variables = _split_top_level_commas(vars_part)
+        extracted_variables = _expand_implied_do_items(extracted_variables)
 
         # Clean up the variables - remove one layer of parens if entire thing is wrapped
         cleaned_variables = []
@@ -4351,6 +4387,7 @@ class FortranIOFile(FortranBase):
         self.name = io_filename  # For compatibility with other FortranBase objects
         self.procedures = []  # List of procedures that use this file
         self.operations = []  # List of all operations on this file
+        self.unique_schema = None  # Optional block-structured schema override
         self.visible = True
         self.obj = "iofile"
 

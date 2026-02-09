@@ -1,0 +1,3022 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for older SWAT+ 61.0 source code">
+    <meta name="author" content="Documentation Builder" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>landuse_read &ndash; Fortran Source Documentation</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">Fortran Source Documentation </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/iofiles.html">I/O</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>landuse_read
+      <small>Subroutine</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 0.3% of total for proc.">157 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/landuse_read.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/landuse_read.f90.html'>landuse_read.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">landuse_read</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 d-none d-md-block">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+    <em>None</em>
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <h2> subroutine landuse_read()  
+</h2>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#purpose-section" 
+         aria-expanded="false" 
+         aria-controls="purpose-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Purpose
+        </h3>
+      </a>
+      <div id="purpose-section" class="collapse">
+        <div class="card-body">
+          <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#stack-flow-section" 
+         aria-expanded="true" 
+         aria-controls="stack-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Stack Flow
+        </h3>
+      </a>
+      <div id="stack-flow-section" class="collapse show">
+        <div class="card-body">
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#called-from-subsection" 
+               aria-expanded="false" 
+               aria-controls="called-from-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Called From
+              </h4>
+            </a>
+            <div id="called-from-subsection" class="collapse">
+              <div class="card-body">
+                  <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item">
+                      <ul class="list-inline">
+                          <li class="list-inline-item"><a href='proc_db.html'>proc_db</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                  
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#calls-subsection" 
+               aria-expanded="false" 
+               aria-controls="calls-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Calls
+              </h4>
+            </a>
+            <div id="calls-subsection" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#arguments-subsection" 
+               aria-expanded="false" 
+               aria-controls="arguments-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Arguments
+              </h4>
+            </a>
+            <div id="arguments-subsection" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#uses-section" 
+         aria-expanded="false" 
+         aria-controls="uses-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Uses
+        </h3>
+      </a>
+      <div id="uses-section" class="collapse">
+        <div class="card-body">
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">
+                  <ul class="list-inline">
+                      <li class="list-inline-item"><a href='../module/input_file_module.html'>input_file_module</a></li>
+                      <li class="list-inline-item"><a href='../module/mgt_operations_module.html'>mgt_operations_module</a></li>
+                      <li class="list-inline-item"><a href='../module/septic_data_module.html'>septic_data_module</a></li>
+                      <li class="list-inline-item"><a href='../module/maximum_data_module.html'>maximum_data_module</a></li>
+                      <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
+                      <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                      <li class="list-inline-item"><a href='../module/landuse_data_module.html'>landuse_data_module</a></li>
+                  </ul>
+                </li>
+            </ul>
+
+          <h4 class="mt-4 mb-3">Outside Variables and Types</h4>
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_input_file_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_input_file_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_input_file_module">
+                <a href='../module/input_file_module.html'>input_file_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_input_file_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_input_file_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_input_file_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinginput_file_module_type_input_lum_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapseinput_file_module_type_input_lum_" aria-expanded="false" 
+                              aria-controls="collapseinput_file_module_type_input_lum_">
+                        type(<a href='../type/input_lum.html'>input_lum</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapseinput_file_module_type_input_lum_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinginput_file_module_type_input_lum_" data-bs-parent="#typesAccordionmodule_input_file_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>in_lum</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=25),
+public                                                  :: <strong>landuse_lum</strong>
+                                                    = "landuse.lum"
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">29, 30, 35</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">29, 30, 35</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_mgt_operations_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_mgt_operations_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_mgt_operations_module">
+                <a href='../module/mgt_operations_module.html'>mgt_operations_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_mgt_operations_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_mgt_operations_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_mgt_operations_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingmgt_operations_module_type_filtstrip_operation_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsemgt_operations_module_type_filtstrip_operation_" aria-expanded="false" 
+                              aria-controls="collapsemgt_operations_module_type_filtstrip_operation_">
+                        type(<a href='../type/filtstrip_operation.html'>filtstrip_operation</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsemgt_operations_module_type_filtstrip_operation_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingmgt_operations_module_type_filtstrip_operation_" data-bs-parent="#typesAccordionmodule_mgt_operations_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>filtstrip_db</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>name</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">117</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">117</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingmgt_operations_module_type_grwaterway_operation_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsemgt_operations_module_type_grwaterway_operation_" aria-expanded="false" 
+                              aria-controls="collapsemgt_operations_module_type_grwaterway_operation_">
+                        type(<a href='../type/grwaterway_operation.html'>grwaterway_operation</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsemgt_operations_module_type_grwaterway_operation_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingmgt_operations_module_type_grwaterway_operation_" data-bs-parent="#typesAccordionmodule_mgt_operations_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>grwaterway_db</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>name</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">126</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">126</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingmgt_operations_module_type_bmpuser_operation_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsemgt_operations_module_type_bmpuser_operation_" aria-expanded="false" 
+                              aria-controls="collapsemgt_operations_module_type_bmpuser_operation_">
+                        type(<a href='../type/bmpuser_operation.html'>bmpuser_operation</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsemgt_operations_module_type_bmpuser_operation_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingmgt_operations_module_type_bmpuser_operation_" data-bs-parent="#typesAccordionmodule_mgt_operations_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>bmpuser_db</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>name</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">135</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">135</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingmgt_operations_module_type_management_schedule_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsemgt_operations_module_type_management_schedule_" aria-expanded="false" 
+                              aria-controls="collapsemgt_operations_module_type_management_schedule_">
+                        type(<a href='../type/management_schedule.html'>management_schedule</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsemgt_operations_module_type_management_schedule_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingmgt_operations_module_type_management_schedule_" data-bs-parent="#typesAccordionmodule_mgt_operations_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>sched</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>name</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">72</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">72</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_septic_data_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_septic_data_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_septic_data_module">
+                <a href='../module/septic_data_module.html'>septic_data_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_septic_data_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_septic_data_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_septic_data_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingseptic_data_module_type_septic_system_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapseseptic_data_module_type_septic_system_" aria-expanded="false" 
+                              aria-controls="collapseseptic_data_module_type_septic_system_">
+                        type(<a href='../type/septic_system.html'>septic_system</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapseseptic_data_module_type_septic_system_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingseptic_data_module_type_septic_system_" data-bs-parent="#typesAccordionmodule_septic_data_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>sep</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=13),
+public                                                  :: <strong>name</strong>
+                                                    = "default"
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">108</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">108</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_maximum_data_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_maximum_data_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_maximum_data_module">
+                <a href='../module/maximum_data_module.html'>maximum_data_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_maximum_data_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_maximum_data_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_maximum_data_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingmaximum_data_module_type_data_files_max_elements_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsemaximum_data_module_type_data_files_max_elements_" aria-expanded="false" 
+                              aria-controls="collapsemaximum_data_module_type_data_files_max_elements_">
+                        type(<a href='../type/data_files_max_elements.html'>data_files_max_elements</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsemaximum_data_module_type_data_files_max_elements_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingmaximum_data_module_type_data_files_max_elements_" data-bs-parent="#typesAccordionmodule_maximum_data_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>db_mx</strong>
+                                  
+                                    <small class="text-muted"> (10 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>plantcom</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">62</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>mgt_ops</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">71</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>cn_lu</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">80</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>cons_prac</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">89</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>sdr</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">98</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>septic</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">107</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>filtop_db</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">116</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>grassop_db</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">125</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>bmpuserop_db</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">134</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>landuse</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">177</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">62</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_plant_data_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_plant_data_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_plant_data_module">
+                <a href='../module/plant_data_module.html'>plant_data_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_plant_data_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_plant_data_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_plant_data_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingplant_data_module_type_plant_community_db_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapseplant_data_module_type_plant_community_db_" aria-expanded="false" 
+                              aria-controls="collapseplant_data_module_type_plant_community_db_">
+                        type(<a href='../type/plant_community_db.html'>plant_community_db</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapseplant_data_module_type_plant_community_db_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingplant_data_module_type_plant_community_db_" data-bs-parent="#typesAccordionmodule_plant_data_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>pcomdb</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>name</strong>
+                                                    = "frsd_frsd"
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">63</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">63</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_hru_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_hru_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_hru_module">
+                <a href='../module/hru_module.html'>hru_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_hru_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_hru_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_hru_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghru_module_integer">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehru_module_integer" aria-expanded="false" 
+                              aria-controls="collapsehru_module_integer">
+                        integer
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehru_module_integer" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghru_module_integer" data-bs-parent="#typesAccordionmodule_hru_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>ilu</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghru_module_type_subsurface_drainage_parameters_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehru_module_type_subsurface_drainage_parameters_" aria-expanded="false" 
+                              aria-controls="collapsehru_module_type_subsurface_drainage_parameters_">
+                        type(<a href='../type/subsurface_drainage_parameters.html'>subsurface_drainage_parameters</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehru_module_type_subsurface_drainage_parameters_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghru_module_type_subsurface_drainage_parameters_" data-bs-parent="#typesAccordionmodule_hru_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>sdr</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>name</strong>
+                                                    = "null"
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">99</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">99</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghru_module_type_landuse_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehru_module_type_landuse_" aria-expanded="false" 
+                              aria-controls="collapsehru_module_type_landuse_">
+                        type(landuse)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehru_module_type_landuse_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghru_module_type_landuse_" data-bs-parent="#typesAccordionmodule_hru_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>landuse</strong>
+                                  
+                                  
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_landuse_data_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_landuse_data_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_landuse_data_module">
+                <a href='../module/landuse_data_module.html'>landuse_data_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_landuse_data_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_landuse_data_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_landuse_data_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinglanduse_data_module_type_land_use_management_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapselanduse_data_module_type_land_use_management_" aria-expanded="false" 
+                              aria-controls="collapselanduse_data_module_type_land_use_management_">
+                        type(<a href='../type/land_use_management.html'>land_use_management</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapselanduse_data_module_type_land_use_management_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinglanduse_data_module_type_land_use_management_" data-bs-parent="#typesAccordionmodule_landuse_data_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>lum</strong>
+                                  
+                                    <small class="text-muted"> (10 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>plant_cov</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">61, 63, 143, 144</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>mgt_ops</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">70, 72, 146, 147</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>cn_lu</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">79, 81, 149, 150</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>cons_prac</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">88, 90, 152, 153</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>tiledrain</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">97, 99, 155, 156</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>septic</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">106, 108, 158, 159</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>fstrip</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">115, 117, 161, 162</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>grassww</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">124, 126, 164, 165</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>bmpuser</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">133, 135, 167, 168</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>name</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">144, 147, 150, 153, 156, 159, 162, 165, 168</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">61, 63, 143, 144</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinglanduse_data_module_type_land_use_structures_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapselanduse_data_module_type_land_use_structures_" aria-expanded="false" 
+                              aria-controls="collapselanduse_data_module_type_land_use_structures_">
+                        type(<a href='../type/land_use_structures.html'>land_use_structures</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapselanduse_data_module_type_land_use_structures_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinglanduse_data_module_type_land_use_structures_" data-bs-parent="#typesAccordionmodule_landuse_data_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>lum_str</strong>
+                                  
+                                    <small class="text-muted"> (9 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>plant_cov</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">64, 143</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>mgt_ops</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">73, 146</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>cn_lu</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">82, 149</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>cons_prac</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">91, 152</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>tiledrain</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">100, 155</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>septic</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">109, 158</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>fstrip</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">118, 161</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>grassww</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">127, 164</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>bmpuser</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">136, 167</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">64, 143</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinglanduse_data_module_type_curvenumber_table_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapselanduse_data_module_type_curvenumber_table_" aria-expanded="false" 
+                              aria-controls="collapselanduse_data_module_type_curvenumber_table_">
+                        type(<a href='../type/curvenumber_table.html'>curvenumber_table</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapselanduse_data_module_type_curvenumber_table_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinglanduse_data_module_type_curvenumber_table_" data-bs-parent="#typesAccordionmodule_landuse_data_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>cn</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>name</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">81</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">81</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinglanduse_data_module_type_conservation_practice_table_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapselanduse_data_module_type_conservation_practice_table_" aria-expanded="false" 
+                              aria-controls="collapselanduse_data_module_type_conservation_practice_table_">
+                        type(<a href='../type/conservation_practice_table.html'>conservation_practice_table</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapselanduse_data_module_type_conservation_practice_table_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinglanduse_data_module_type_conservation_practice_table_" data-bs-parent="#typesAccordionmodule_landuse_data_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>cons_prac</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=40),
+public                                                  :: <strong>name</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">90</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">90</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
+         aria-expanded="false" 
+         aria-controls="local-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Local Variables
+        </h3>
+      </a>
+      <div id="local-variables-section" class="collapse">
+        <div class="card-body">
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="var-titldum"></span>
+              character,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>titldum</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-header"></span>
+              character,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>header</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-eof"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>eof</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-imax"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>imax</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-i_exist"></span>
+              logical,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>i_exist</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-mlu"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>mlu</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ilu"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ilu</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ipcom"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ipcom</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-isched"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>isched</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ipr"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ipr</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            I/O files used in this subroutine.
+          </p>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Type</th>
+                <th>Filename</th>
+                <th>Operations</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                    <code>107</code>
+                </td>
+                <td>
+                        <span class="badge bg-success">Input</span>
+
+                </td>
+                <td>
+                    <code>in_lum%landuse_lum</code>
+                      <br><small class="text-muted">→ "landuse.lum"</small>
+                </td>
+                <td>
+                    10 operation(s)
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <code>inquire_in_lum%landuse_lum</code>
+                </td>
+                <td>
+                        <span class="badge bg-secondary">Unknown</span>
+
+                </td>
+                <td>
+                    <a href="../iofile/unit_inquire_in_lum_landuse_lum.html">
+                      <code>unit_inquire_in_lum%landuse_lum</code>
+                    </a>
+                </td>
+                <td>
+                    1 operation(s)
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <code>9001</code>
+                </td>
+                <td>
+                        <span class="badge bg-primary">Output</span>
+
+                </td>
+                <td>
+                    <code>unit_9001</code>
+                      <br><small class="text-muted">→ "diagnostics.out"</small>
+                </td>
+                <td>
+                    9 operation(s)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <div class="mb-4">
+            <div class="mb-2">
+              <strong>Complexity Indicators:</strong>
+              <span class="badge bg-danger me-1">
+                Complex
+              </span>
+              <span class="badge bg-info text-dark me-1" title="Maximum nesting depth">
+                Depth: 5
+              </span>
+              <span class="badge bg-secondary me-1" title="Number of RETURN statements">
+                Early Exits: 1
+              </span>
+            </div>
+            
+            <div class="mb-2">
+              <strong>Features:</strong>
+              <span class="badge bg-primary me-1">ALLOC</span>
+              <span class="badge bg-primary me-1">DO</span>
+              <span class="badge bg-primary me-1">ERROR</span>
+              <span class="badge bg-primary me-1">FILE</span>
+              <span class="badge bg-primary me-1">I/O</span>
+              <span class="badge bg-primary me-1">IF</span>
+            </div>
+          </div>
+          
+
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>read all landuse data from landuse.dat</em>
+                            <span class="text-muted small">(line 28)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  24</span> mlu = 0
+
+<span class="text-muted">  25</span> eof = 0
+
+<span class="text-muted">  26</span> imax = 0
+
+<span class="badge text-white me-1" style="background-color: #20B2AA;">INQUIRE</span> <span class="text-muted">  29</span> inquire (file=in_lum%landuse_lum, exist=i_exist)
+
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>.not. i_exist .or. in_lum%landuse_lum == "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 30-32</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #52BE80;">ALLOCATE</span> <span class="text-muted">  31</span> allocate (lum(0:0))
+
+<span class="badge text-white me-1" style="background-color: #52BE80;">ALLOCATE</span> <span class="text-muted">  32</span> allocate (lum_str(0:0))
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 32</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 33-173</span>
+                  </div>
+                </a>
+                <div id="block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  34</span> do
+
+<span class="badge text-white me-1" style="background-color: #4A90E2;">OPEN</span> <span class="text-muted">  35</span> open (107,file=in_lum%landuse_lum)
+
+<span class="badge text-white me-1" style="background-color: #50C878;">READ</span> <span class="text-muted">  36</span> read (107,*,iostat=eof) titldum
+
+<span class="text-muted">  37</span> if (eof < 0) exit
+
+<span class="badge text-white me-1" style="background-color: #50C878;">READ</span> <span class="text-muted">  38</span> read (107,*,iostat=eof) header
+
+<span class="text-muted">  39</span> if (eof < 0) exit
+
+<span class="badge text-white me-1" style="background-color: #52BE80;">ALLOCATE</span> <span class="text-muted">  46</span> allocate (lum(0:imax))
+
+<span class="badge text-white me-1" style="background-color: #52BE80;">ALLOCATE</span> <span class="text-muted">  47</span> allocate (lum_str(0:imax))
+
+<span class="badge me-1" style="background-color: #FFD700; color: #000;">REWIND</span> <span class="text-muted">  49</span> rewind (107)
+
+<span class="badge text-white me-1" style="background-color: #50C878;">READ</span> <span class="text-muted">  50</span> read (107,*,iostat=eof) titldum
+
+<span class="text-muted">  51</span> if (eof < 0) exit
+
+<span class="badge text-white me-1" style="background-color: #50C878;">READ</span> <span class="text-muted">  52</span> read (107,*,iostat=eof) header
+
+<span class="text-muted">  53</span> if (eof < 0) exit
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">EXIT</span> <span class="text-muted"> 171</span> exit
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>while (eof == 0)</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 40-44</span>
+                  </div>
+                </a>
+                <div id="block-3-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #50C878;">READ</span> <span class="text-muted">  41</span> read (107,*,iostat=eof) titldum
+
+<span class="text-muted">  42</span> if (eof < 0) exit
+
+<span class="text-muted">  43</span> imax = imax + 1
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 44</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ilu = 1, imax</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 55-58</span>
+                  </div>
+                </a>
+                <div id="block-3-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #50C878;">READ</span> <span class="text-muted">  56</span> read (107,*,iostat=eof) lum(ilu)
+
+<span class="text-muted">  57</span> if (eof < 0) exit
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 58</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-3-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ilu = 1, imax</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 60-170</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%plant_cov /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 61-68</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ipcom = 1, db_mx%plantcom</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 62-67</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-1-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%plant_cov == pcomdb(ipcom)%name</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 63-66</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-1-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  64</span> lum_str(ilu)%plant_cov = ipcom
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">EXIT</span> <span class="text-muted">  65</span> exit
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 66</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 67</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 68</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%mgt_ops /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 70-77</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>isched = 1, db_mx%mgt_ops</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 71-76</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%mgt_ops == sched(isched)%name</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 72-75</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  73</span> lum_str(ilu)%mgt_ops = isched
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">EXIT</span> <span class="text-muted">  74</span> exit
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 75</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 76</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 77</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%cn_lu /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 79-86</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ipr = 1, db_mx%cn_lu</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 80-85</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-3-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%cn_lu == cn(ipr)%name</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 81-84</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-3-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  82</span> lum_str(ilu)%cn_lu = ipr
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">EXIT</span> <span class="text-muted">  83</span> exit
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 84</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 85</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 86</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%cons_prac /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 88-95</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-4" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-4-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ipr = 1, db_mx%cons_prac</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 89-94</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-4-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-4-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%cons_prac == cons_prac(ipr)%name</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 90-93</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-4-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  91</span> lum_str(ilu)%cons_prac = ipr
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">EXIT</span> <span class="text-muted">  92</span> exit
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 93</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 94</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 95</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%tiledrain /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 97-104</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-5" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-5-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ipr = 1, db_mx%sdr</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 98-103</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-5-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-5-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%tiledrain == sdr(ipr)%name</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 99-102</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-5-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 100</span> lum_str(ilu)%tiledrain = ipr
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">EXIT</span> <span class="text-muted"> 101</span> exit
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 102</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 103</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 104</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%septic /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 106-113</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-6" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-6-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ipr = 1, db_mx%septic</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 107-112</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-6-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-6-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%septic == sep(ipr)%name</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 108-111</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-6-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 109</span> lum_str(ilu)%septic = ipr
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">EXIT</span> <span class="text-muted"> 110</span> exit
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 111</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 112</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 113</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%fstrip /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 115-122</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-7" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-7-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ipr = 1, db_mx%filtop_db</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 116-121</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-7-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-7-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%fstrip == filtstrip_db(ipr)%name</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 117-120</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-7-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 118</span> lum_str(ilu)%fstrip = ipr
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">EXIT</span> <span class="text-muted"> 119</span> exit
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 120</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 121</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 122</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%grassww /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 124-131</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-8" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-8-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ipr = 1, db_mx%grassop_db</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 125-130</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-8-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-8-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%grassww == grwaterway_db(ipr)%name</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 126-129</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-8-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 127</span> lum_str(ilu)%grassww = ipr
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">EXIT</span> <span class="text-muted"> 128</span> exit
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 129</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 130</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 131</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-9" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%bmpuser /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 133-141</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-9" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-9-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ipr = 1, db_mx%bmpuserop_db</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 134-139</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-9-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-9-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum(ilu)%bmpuser == bmpuser_db(ipr)%name</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 135-138</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-9-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 136</span> lum_str(ilu)%bmpuser = ipr
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">EXIT</span> <span class="text-muted"> 137</span> exit
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 138</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 139</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 141</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-10" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum_str(ilu)%plant_cov == 0 .and. lum(ilu)%plant_cov /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 143-145</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-10" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #FF6B6B;">WRITE</span> <span class="text-muted"> 144</span> write (9001,*) lum(ilu)%name, lum(ilu)%plant_cov, " not found in plant.ini"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 145</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-11" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum_str(ilu)%mgt_ops == 0 .and. lum(ilu)%mgt_ops /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 146-148</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-11" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #FF6B6B;">WRITE</span> <span class="text-muted"> 147</span> write (9001,*) lum(ilu)%name, lum(ilu)%mgt_ops, " not found in management.sch"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 148</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-12" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum_str(ilu)%cn_lu == 0 .and. lum(ilu)%cn_lu /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 149-151</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-12" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #FF6B6B;">WRITE</span> <span class="text-muted"> 150</span> write (9001,*) lum(ilu)%name, lum(ilu)%cn_lu, " not found in cntable.lum"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 151</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-13" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum_str(ilu)%cons_prac == 0 .and. lum(ilu)%cons_prac /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 152-154</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-13" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #FF6B6B;">WRITE</span> <span class="text-muted"> 153</span> write (9001,*) lum(ilu)%name, lum(ilu)%cons_prac, " not found (landuse-consprac)"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 154</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-14" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum_str(ilu)%tiledrain == 0 .and. lum(ilu)%tiledrain /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 155-157</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-14" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #FF6B6B;">WRITE</span> <span class="text-muted"> 156</span> write (9001,*) lum(ilu)%name, lum(ilu)%tiledrain, " not found (landuse-tiledr)"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 157</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-15" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum_str(ilu)%septic == 0 .and. lum(ilu)%septic /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 158-160</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-15" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #FF6B6B;">WRITE</span> <span class="text-muted"> 159</span> write (9001,*) lum(ilu)%name, lum(ilu)%septic, " not found (landuse-septic)"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 160</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-16" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum_str(ilu)%fstrip == 0 .and. lum(ilu)%fstrip /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 161-163</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-16" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #FF6B6B;">WRITE</span> <span class="text-muted"> 162</span> write (9001,*) lum(ilu)%name, lum(ilu)%fstrip, " not found (landuse-fstrip)"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 163</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-17" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum_str(ilu)%grassww == 0 .and. lum(ilu)%grassww /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 164-166</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-17" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #FF6B6B;">WRITE</span> <span class="text-muted"> 165</span> write (9001,*) lum(ilu)%name, lum(ilu)%grassww, " not found (landuse-grassww)"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 166</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-3-block-3-block-18" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>lum_str(ilu)%bmpuser == 0 .and. lum(ilu)%bmpuser /= "null"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 167-169</span>
+                  </div>
+                </a>
+                <div id="block-3-block-3-block-18" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #FF6B6B;">WRITE</span> <span class="text-muted"> 168</span> write (9001,*) lum(ilu)%name, lum(ilu)%bmpuser, " not found (landuse-bmpuser)"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 169</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 170</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 173</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #9370DB;">CLOSE</span> <span class="text-muted"> 175</span> close(107)
+
+<span class="text-muted"> 177</span> db_mx%landuse = imax
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 179</span> return
+
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                <p class="text-muted mb-3">
+                  Memory allocations and deallocations grouped by variable.
+                </p>
+                <table class="table table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Allocations</th>
+                      <th>Deallocations</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>lum</code></td>
+                      <td>
+                            <span class="badge bg-success">line 31</span>,                             <span class="badge bg-success">line 46</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>lum_str</code></td>
+                      <td>
+                            <span class="badge bg-success">line 32</span>,                             <span class="badge bg-success">line 47</span>                      </td>
+                      <td>
+                          <em>none</em>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+    
+    
+
+    
+    
+
+
+
+    
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Fortran Source Documentation
+ was developed by Documentation Builder<br>              &copy; 2026 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>
