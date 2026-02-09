@@ -2024,9 +2024,13 @@ class Project:
                                 # Use the first encountered unit as the default
                                 # (The template will show individual units for each procedure)
                                 io_file = FortranIOFile(display_filename, unit)
-                                schema_key = self._normalize_io_filename(display_filename)
+                                schema_key = self._normalize_io_filename(
+                                    display_filename
+                                )
                                 if schema_key in unique_schema_map:
-                                    io_file.unique_schema = unique_schema_map[schema_key]
+                                    io_file.unique_schema = unique_schema_map[
+                                        schema_key
+                                    ]
                                 # Set base_url for link generation (as string, not Path)
                                 io_file.base_url = str(self.settings.project_url)
                                 io_files_dict[io_key] = io_file
@@ -2093,15 +2097,11 @@ class Project:
                         "rows": [
                             {
                                 "line": "1",
-                                "fields": [
-                                    {"name": "titldum", "pos": 1}
-                                ],
+                                "fields": [{"name": "titldum", "pos": 1}],
                             },
                             {
                                 "line": "2",
-                                "fields": [
-                                    {"name": "header", "pos": 1}
-                                ],
+                                "fields": [{"name": "header", "pos": 1}],
                             },
                         ],
                     },
@@ -2142,15 +2142,11 @@ class Project:
                         "rows": [
                             {
                                 "line": "1",
-                                "fields": [
-                                    {"name": "titldum", "pos": 1}
-                                ],
+                                "fields": [{"name": "titldum", "pos": 1}],
                             },
                             {
                                 "line": "2",
-                                "fields": [
-                                    {"name": "header", "pos": 1}
-                                ],
+                                "fields": [{"name": "header", "pos": 1}],
                             },
                         ],
                     },
@@ -2201,15 +2197,11 @@ class Project:
                         "rows": [
                             {
                                 "line": "1",
-                                "fields": [
-                                    {"name": "titldum", "pos": 1}
-                                ],
+                                "fields": [{"name": "titldum", "pos": 1}],
                             },
                             {
                                 "line": "2",
-                                "fields": [
-                                    {"name": "header", "pos": 1}
-                                ],
+                                "fields": [{"name": "header", "pos": 1}],
                             },
                         ],
                     },
