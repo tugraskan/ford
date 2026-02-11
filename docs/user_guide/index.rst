@@ -14,3 +14,4 @@
    writing_pages
    project_file_options
    command_line_options
+   swatplus_documentation_guide
