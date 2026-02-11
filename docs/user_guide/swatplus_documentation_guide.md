@@ -107,7 +107,7 @@ end subroutine
 ```
 
 **What Needs to Change**:
-FORD requires special comment markers (default: `!` for docmark)
+FORD requires special comment markers (default: `!!` for docmark)
 
 **Corrected Code**:
 ```fortran
@@ -120,11 +120,7 @@ subroutine read_hru_data()
 end subroutine
 ```
 
-Or configure FORD to use existing comment style:
-```yaml
-docmark: !
-predocmark: !
-```
+The key is using `!!` for documentation comments and `!` for regular code comments.
 
 ### Issue 5: Large Projects with Many Files
 
