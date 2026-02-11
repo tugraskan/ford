@@ -2785,7 +2785,7 @@ class FortranCodeUnit(FortranContainer):
                     # "dimension(12)" or "allocatable(12)" or "pointer(:)"
                     i = attr.index("(")
                     attr_name = attr[0:i]
-                    if attr_name in ["dimension"]:
+                    if attr_name == "dimension":
                         # For plain dimension attributes, only set var.dimension
                         var.dimension = attr[i:]
                     elif attr_name in ["pointer", "allocatable"]:
@@ -4892,9 +4892,11 @@ class FortranVariable(FortranBase):
 
         # Extract dimension from attribs if present
         # This handles cases like "real, dimension(12) :: erod"
+        # Note: This is needed for type member variables which don't go through process_attribs
         dimension_attrib = None
         for i, attr in enumerate(self.attribs):
-            if attr.lower().startswith("dimension(") or attr.lower().startswith("dimension ("):
+            attr_lower = attr.lower()
+            if attr_lower.startswith("dimension(") or attr_lower.startswith("dimension ("):
                 # Extract the dimension specification
                 paren_idx = attr.index("(")
                 self.dimension = attr[paren_idx:]
