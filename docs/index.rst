@@ -129,6 +129,7 @@ If you are using FORD in one of your projects, feel free to add it here.
    :caption: Contents:
 
    user_guide/index
+   troubleshooting_input_files
    developers_guide/index
    api/modules
 
