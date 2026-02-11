@@ -51,8 +51,8 @@ exclude_dir: ./TxtInOut
 extensions: f90
             f
             F90
-docmark: !
-predocmark: >
+docmark: "!"
+predocmark: ">"
 display: public
          protected
 source: true
@@ -181,8 +181,8 @@ src_dir: ./src
 output_dir: ./ford_docs
 extensions: f90 F90 f
 exclude_dir: ./TxtInOut ./build
-docmark: !!
-predocmark: >
+docmark: "!!"
+predocmark: ">"
 display: public protected
 source: true
 graph: true

@@ -10,8 +10,8 @@ extensions: f90
 exclude_dir: ./TxtInOut
              ./data
              ./build
-docmark: !!
-predocmark: >
+docmark: "!!"
+predocmark: ">"
 display: public
          protected
 source: true

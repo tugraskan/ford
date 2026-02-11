@@ -83,7 +83,7 @@ extensions: f90 f F90
 exclude_dir: ./TxtInOut
              ./data
              ./build
-docmark: !!
+docmark: "!!"
 source: true
 ---
 
@@ -168,8 +168,8 @@ src_dir: ./src
 output_dir: ./docs
 extensions: f90 F90 f
 exclude_dir: ./TxtInOut
-docmark: !!
-predocmark: >
+docmark: "!!"
+predocmark: ">"
 display: public protected
 source: true
 graph: true
