@@ -79,11 +79,13 @@ author: Your Name
 summary: Brief description of what your code does
 src_dir: ./src
 output_dir: ./documentation
-extensions: f90 f F90
+extensions: f90
+            f
+            F90
 exclude_dir: ./TxtInOut
              ./data
              ./build
-docmark: "!!"
+docmark: "!"
 source: true
 ---
 
@@ -166,11 +168,14 @@ author: Development Team
 summary: Hydrological modeling software
 src_dir: ./src
 output_dir: ./docs
-extensions: f90 F90 f
+extensions: f90
+            F90
+            f
 exclude_dir: ./TxtInOut
-docmark: "!!"
+docmark: "!"
 predocmark: ">"
-display: public protected
+display: public
+         protected
 source: true
 graph: true
 page_dir: ./pages

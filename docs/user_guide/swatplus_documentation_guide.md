@@ -65,6 +65,9 @@ page_dir: ./pages
 This documentation covers the SWAT+ hydrological model Fortran source code.
 ```
 
+**Note**: With `docmark: "!"` (the default), you write `!!` in your Fortran source code.
+The first `!` marks a comment, and the second `!` is recognized as the documentation marker.
+
 ### Issue 3: Mixed File Types
 
 **Problem**: SWAT+ projects often contain:
@@ -107,7 +110,8 @@ end subroutine
 ```
 
 **What Needs to Change**:
-FORD requires special comment markers (default: `!!` for docmark)
+FORD uses special comment markers for documentation. With the default setting `docmark: "!"`, 
+you write `!!` in your Fortran source to mark documentation comments.
 
 **Corrected Code**:
 ```fortran
@@ -120,7 +124,10 @@ subroutine read_hru_data()
 end subroutine
 ```
 
-The key is using `!!` for documentation comments and `!` for regular code comments.
+**How it works**:
+- `!!` = Documentation comment (first `!` marks a Fortran comment, second `!` is the doc marker)
+- `!` = Regular code comment (not included in documentation)
+- You can customize this by changing `docmark` in your project file
 
 ### Issue 5: Large Projects with Many Files
 
@@ -179,11 +186,15 @@ author: SWAT+ Development Team
 summary: Soil and Water Assessment Tool Plus
 src_dir: ./src
 output_dir: ./ford_docs
-extensions: f90 F90 f
-exclude_dir: ./TxtInOut ./build
-docmark: "!!"
+extensions: f90
+            F90
+            f
+exclude_dir: ./TxtInOut
+             ./build
+docmark: "!"
 predocmark: ">"
-display: public protected
+display: public
+         protected
 source: true
 graph: true
 ---
