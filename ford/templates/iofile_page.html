@@ -856,11 +856,17 @@
                             {% set parts = actual_var.split('%') %}
                             {% set base_name = parts[0].split('(')[0] %}
                             {% set component_name = parts[-1].split('(')[0] %}
+                            {# Store the full component path for multi-level nesting support #}
+                            {% set component_path = [] %}
+                            {% for i in range(1, parts|length) %}
+                              {% set _ = component_path.append(parts[i].split('(')[0]) %}
+                            {% endfor %}
                           {% else %}
                             {% set base_name = actual_var.split('(')[0] %}
                             {% set component_name = none %}
+                            {% set component_path = [] %}
                           {% endif %}
-                          {% set _ = param_info.update({'base_name': base_name, 'component_name': component_name, 'is_implied_do': is_implied_do}) %}
+                          {% set _ = param_info.update({'base_name': base_name, 'component_name': component_name, 'component_path': component_path, 'is_implied_do': is_implied_do}) %}
                           
                           {# Always add to list to preserve order and position #}
                           {% set _ = proc_read_vars.append(param_info) %}
@@ -1212,24 +1218,49 @@
                             {% set _ = expanded_read_vars.append(var_info) %}
                           {% endif %}
                         {% else %}
-                          {# Check if this component is itself a derived type that needs expansion #}
-                          {% set expansion_check = namespace(should_expand=false, type_obj=none) %}
+                          {# Check if this component (or nested component path) is a derived type that needs expansion #}
+                          {% set expansion_check = namespace(should_expand=false, type_obj=none, final_component_name='') %}
                           {% if var_info.component_name and found_var.value %}
-                            {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                              {% set type_obj = found_var.value.proto[0] %}
-                              {% if type_obj is not string and type_obj.variables is defined %}
-                                {% for comp in type_obj.variables %}
-                                  {% if comp.name.lower() == var_info.component_name.lower() %}
-                                    {# Check if this component is a derived type #}
-                                    {% if comp.proto and comp.proto|length > 0 %}
-                                      {% set comp_type = comp.proto[0] %}
-                                      {% if comp_type is not string and comp_type.variables is defined %}
-                                        {% set expansion_check.should_expand = true %}
-                                        {% set expansion_check.type_obj = comp_type %}
+                            {# Walk through the component path to find the final type #}
+                            {% set navigation = namespace(current_var=found_var.value, path_valid=true) %}
+                            {% set component_path = var_info.component_path if (var_info.component_path is defined and var_info.component_path|length > 0) else [var_info.component_name] %}
+                            
+                            {# Navigate through each level of the component path #}
+                            {% for path_component in component_path %}
+                              {% if navigation.path_valid %}
+                                {# Get the type of current variable #}
+                                {% if navigation.current_var.proto and navigation.current_var.proto|length > 0 %}
+                                  {% set var_type_obj = navigation.current_var.proto[0] %}
+                                  {% if var_type_obj is not string and var_type_obj.variables is defined %}
+                                    {# Find the component at this level #}
+                                    {% set found_at_level = namespace(component=none) %}
+                                    {% for comp in var_type_obj.variables %}
+                                      {% if comp.name.lower() == path_component.lower() %}
+                                        {% set found_at_level.component = comp %}
+                                        {% set expansion_check.final_component_name = path_component %}
                                       {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if found_at_level.component %}
+                                      {% set navigation.current_var = found_at_level.component %}
+                                    {% else %}
+                                      {% set navigation.path_valid = false %}
                                     {% endif %}
+                                  {% else %}
+                                    {% set navigation.path_valid = false %}
                                   {% endif %}
-                                {% endfor %}
+                                {% else %}
+                                  {% set navigation.path_valid = false %}
+                                {% endif %}
+                              {% endif %}
+                            {% endfor %}
+                            
+                            {# Check if the final component in the path is a derived type that should be expanded #}
+                            {% if navigation.path_valid and navigation.current_var.proto and navigation.current_var.proto|length > 0 %}
+                              {% set final_type_obj = navigation.current_var.proto[0] %}
+                              {% if final_type_obj is not string and final_type_obj.variables is defined %}
+                                {% set expansion_check.should_expand = true %}
+                                {% set expansion_check.type_obj = final_type_obj %}
                               {% endif %}
                             {% endif %}
                           {% endif %}
@@ -1239,11 +1270,12 @@
                             {% for subcomp in expansion_check.type_obj.variables %}
                               {% set line_position_counter.position = line_position_counter.position + 1 %}
                               {% set comp_info = {} %}
-                              {# Construct full_name: if already exists, append; otherwise build from base_name + component_name #}
+                              {# Construct full_name: if already exists, append; otherwise build from base_name + component_path #}
                               {% if var_info.full_name is defined %}
                                 {% set full_var_name = var_info.full_name ~ '%' ~ subcomp.name %}
                               {% else %}
-                                {% set full_var_name = var_info.base_name ~ '%' ~ var_info.component_name ~ '%' ~ subcomp.name %}
+                                {% set path_str = var_info.component_path|join('%') if (var_info.component_path is defined and var_info.component_path|length > 0) else var_info.component_name %}
+                                {% set full_var_name = var_info.base_name ~ '%' ~ path_str ~ '%' ~ subcomp.name %}
                               {% endif %}
                               {# Preserve condition information from parent if it exists #}
                               {% set var_condition = var_info.condition if (var_info.condition is defined) else none %}
@@ -1254,9 +1286,9 @@
                                 'full_name': full_var_name,
                                 'procedure': var_info.procedure,
                                 'file_line': current_file_line,
-                                'type_name': var_info.component_name,
+                                'type_name': expansion_check.final_component_name,
                                 'position': line_position_counter.position,
-                                'parent_component': var_info.component_name,
+                                'parent_component': expansion_check.final_component_name,
                                 'condition': var_condition,
                                 'condition_stack': var_condition_stack
                               }) %}
