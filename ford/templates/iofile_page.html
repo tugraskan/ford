@@ -1274,8 +1274,18 @@
                               {% if var_info.full_name is defined %}
                                 {% set full_var_name = var_info.full_name ~ '%' ~ subcomp.name %}
                               {% else %}
-                                {% set path_str = var_info.component_path|join('%') if (var_info.component_path is defined and var_info.component_path|length > 0) else var_info.component_name %}
-                                {% set full_var_name = var_info.base_name ~ '%' ~ path_str ~ '%' ~ subcomp.name %}
+                                {% if var_info.component_path is defined and var_info.component_path|length > 0 %}
+                                  {% set path_str = var_info.component_path|join('%') %}
+                                {% elif var_info.component_name %}
+                                  {% set path_str = var_info.component_name %}
+                                {% else %}
+                                  {% set path_str = '' %}
+                                {% endif %}
+                                {% if path_str %}
+                                  {% set full_var_name = var_info.base_name ~ '%' ~ path_str ~ '%' ~ subcomp.name %}
+                                {% else %}
+                                  {% set full_var_name = var_info.base_name ~ '%' ~ subcomp.name %}
+                                {% endif %}
                               {% endif %}
                               {# Preserve condition information from parent if it exists #}
                               {% set var_condition = var_info.condition if (var_info.condition is defined) else none %}
