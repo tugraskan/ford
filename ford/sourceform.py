@@ -2781,7 +2781,7 @@ class FortranCodeUnit(FortranContainer):
                 elif attr[0:6] == "intent":
                     var.intent = attr[7:-1]
                 elif DIM_RE.match(attr):
-                    # Extract dimension specification from attributes like 
+                    # Extract dimension specification from attributes like
                     # "dimension(12)" or "allocatable(12)" or "pointer(:)"
                     i = attr.index("(")
                     attr_name = attr[0:i]
@@ -4896,7 +4896,9 @@ class FortranVariable(FortranBase):
         dimension_attrib = None
         for i, attr in enumerate(self.attribs):
             attr_lower = attr.lower()
-            if attr_lower.startswith("dimension(") or attr_lower.startswith("dimension ("):
+            if attr_lower.startswith("dimension(") or attr_lower.startswith(
+                "dimension ("
+            ):
                 # Extract the dimension specification
                 paren_idx = attr.index("(")
                 self.dimension = attr[paren_idx:]
@@ -4976,7 +4978,7 @@ class FortranVariable(FortranBase):
             # This ensures proper ordering in the declaration
             insert_pos = len(attribute_parts)
             for i, attr in enumerate(attribute_parts):
-                if attr.lower() in ['allocatable', 'pointer']:
+                if attr.lower() in ["allocatable", "pointer"]:
                     insert_pos = i
                     break
             attribute_parts.insert(insert_pos, f"dimension{self.dimension}")
