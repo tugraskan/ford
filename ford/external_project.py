@@ -117,7 +117,7 @@ def dict2obj(project, extDict, url, parent=None, remote: bool = False) -> Fortra
     project_list = getattr(project, extObj._project_list)
     project_list.append(extObj)
 
-    if obj_type == "interface":
+    if type(extObj) is ExternalInterface:
         extObj.proctype = extDict["proctype"]
 
     for key in ATTRIBUTES:
@@ -175,7 +175,7 @@ def load_external_modules(project):
                     url = project.settings.directory.joinpath(url).resolve()
                 extModules = modules_from_local(url)
         except (URLError, json.JSONDecodeError) as error:
-            extModules = []
+            extModules = {}
             print(f"Could not open external URL '{url}', reason: {error}")
 
         if METADATA_NAME in extModules:
@@ -184,4 +184,4 @@ def load_external_modules(project):
 
         # convert modules defined in the JSON database to module objects
         for extModule in extModules:
-            dict2obj(project, extModule, url, remote=remote)
+            dict2obj(project, extModule, url, remote=bool(remote))

@@ -30,7 +30,7 @@ from typing import List, Optional, Sequence
 from textwrap import dedent
 from ford.console import warn
 from ford.utils import meta_preprocessor, ProgressBar
-from ford.settings import EntitySettings
+from ford.settings import EntitySettings, ProjectSettings
 from ford._markdown import MetaMarkdown
 
 
@@ -44,13 +44,13 @@ class PageNode:
         md: MetaMarkdown,
         path: Path,
         output_dir: Path,
-        proj_copy_subdir: Sequence[os.PathLike],
+        proj_copy_subdir: Sequence[Path],
         parent: Optional[PageNode],
         encoding: str = "utf-8",
     ):
-        meta, text = meta_preprocessor(dedent(Path(path).read_text(encoding)))
+        meta, text = meta_preprocessor(dedent(path.read_text(encoding)))
         self.meta = EntitySettings.from_markdown_metadata(meta, path.stem)
-        self.base_url = Path(md.base_url)
+        self.base_url = md.base_url
 
         if self.meta.title is None:
             raise ValueError(f"Page '{path}' has no title metadata")
@@ -72,7 +72,7 @@ class PageNode:
         self.copy_subdir = self.meta.copy_subdir or proj_copy_subdir
         self.parent = parent
         self.subpages: List[PageNode] = []
-        self.files: List[os.PathLike] = []
+        self.files: List[Path] = []
         self.filename = Path(path.stem)
         if self.parent:
             self.hierarchy: List[PageNode] = self.parent.hierarchy + [self.parent]
@@ -106,11 +106,25 @@ class PageNode:
         return iter(retlist)
 
 
+def is_excluded_dir(path: Path, settings: ProjectSettings) -> bool:
+    """Should `path` be excluded from the pagetree?"""
+    paths_to_exclude: set[Path] = {
+        dir
+        for dir in [settings.graph_dir, settings.media_dir, settings.output_dir]
+        if dir is not None
+    }
+    paths_to_exclude.update(settings.html_template_dir)
+    paths_to_exclude.update(settings.src_dir)
+
+    return path in paths_to_exclude
+
+
 def get_page_tree(
-    topdir: os.PathLike,
-    proj_copy_subdir: Sequence[os.PathLike],
+    topdir: Path,
+    proj_copy_subdir: Sequence[Path],
     output_dir: Path,
     md: MetaMarkdown,
+    settings: ProjectSettings,
     progress: Optional[ProgressBar] = None,
     parent=None,
     encoding: str = "utf-8",
@@ -120,13 +134,15 @@ def get_page_tree(
     # I will use this later to remove duplicates from a list in a short way.
     from collections import OrderedDict
 
-    topdir = Path(topdir)
-
     # look for files within topdir
     index_file = topdir / "index.md"
 
     if not index_file.exists():
-        warn(f"'{index_file}' does not exist")
+        # Don't warn if this is a Ford input directory (media_dir, graph_dir, etc)
+        if not is_excluded_dir(topdir, settings):
+            warn(
+                f"Skipping creating page for '{topdir}' becase it does not contain 'index.md'"
+            )
         return None
 
     if progress is not None:
@@ -166,7 +182,14 @@ def get_page_tree(
                 continue
 
             if subnode := get_page_tree(
-                filename, proj_copy_subdir, output_dir, md, progress, node, encoding
+                filename,
+                proj_copy_subdir,
+                output_dir,
+                md,
+                settings,
+                progress,
+                node,
+                encoding,
             ):
                 node.subpages.append(subnode)
         elif filename.suffix == ".md":
@@ -179,6 +202,6 @@ def get_page_tree(
                 warn(f"Error parsing '{filename}'.\n\t{e.args[0]}")
                 continue
         else:
-            node.files.append(name)
+            node.files.append(Path(name))
 
     return node

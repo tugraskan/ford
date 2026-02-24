@@ -14,7 +14,7 @@ from typing import (
     get_origin,
     get_type_hints,
 )
-from markdown_include.include import (  # type: ignore[import]
+from markdown_include.include import (
     INC_SYNTAX as MD_INCLUDE_RE,
     MarkdownInclude,
     IncludePreprocessor,
@@ -25,7 +25,7 @@ from ford.console import warn
 from ford.utils import meta_preprocessor, normalise_path, str_to_bool
 
 try:
-    import tomllib
+    import tomllib  # type: ignore[import]
 except ModuleNotFoundError:
     import tomli as tomllib  # type: ignore[no-redef]
 
@@ -142,7 +142,7 @@ class ProjectSettings:
         default_factory=lambda: ["f90", "f95", "f03", "f08", "f15"]
     )
     external: Dict[str, str] = field(default_factory=dict)
-    externalize: bool = False
+    externalize: bool = True
     extra_filetypes: Dict[str, ExtraFileType] = field(default_factory=dict)
     extra_mods: Dict[str, str] = field(default_factory=dict)
     extra_vartypes: list = field(default_factory=list)
