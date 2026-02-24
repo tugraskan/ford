@@ -2780,12 +2780,22 @@ class FortranCodeUnit(FortranContainer):
                     var.permission = attr
                 elif attr[0:6] == "intent":
                     var.intent = attr[7:-1]
-                elif DIM_RE.match(attr) and (
-                    "pointer" in attr or "allocatable" in attr
-                ):
+                elif DIM_RE.match(attr):
+                    # Extract dimension specification from attributes like 
+                    # "dimension(12)" or "allocatable(12)" or "pointer(:)"
                     i = attr.index("(")
-                    var.attribs.append(attr[0:i])
-                    var.dimension = attr[i:]
+                    attr_name = attr[0:i]
+                    if attr_name == "dimension":
+                        # For plain dimension attributes, only set var.dimension
+                        var.dimension = attr[i:]
+                    elif attr_name in ["pointer", "allocatable"]:
+                        # For pointer/allocatable with dimensions, add the attribute
+                        # and set var.dimension
+                        var.attribs.append(attr_name)
+                        var.dimension = attr[i:]
+                    else:
+                        # Unknown attribute with dimensions, keep as-is
+                        var.attribs.append(attr)
                 elif attr == "parameter":
                     var.attribs.append(attr)
                     var.initial = self.param_dict[var.name.lower()]
@@ -4880,6 +4890,22 @@ class FortranVariable(FortranBase):
         self.ug = False
         self.ug2 = False
 
+        # Extract dimension from attribs if present
+        # This handles cases like "real, dimension(12) :: erod"
+        # Note: This is needed for type member variables which don't go through process_attribs
+        dimension_attrib = None
+        for i, attr in enumerate(self.attribs):
+            attr_lower = attr.lower()
+            if attr_lower.startswith("dimension(") or attr_lower.startswith("dimension ("):
+                # Extract the dimension specification
+                paren_idx = attr.index("(")
+                self.dimension = attr[paren_idx:]
+                dimension_attrib = i
+                break
+        if dimension_attrib is not None:
+            # Remove the dimension attribute from attribs since it's now in self.dimension
+            self.attribs.pop(dimension_attrib)
+
         indexlist = []
         indexparen = self.name.find("(")
         if indexparen > 0:
@@ -4946,7 +4972,14 @@ class FortranVariable(FortranBase):
         # Add all the other attributes to a single list
         attribute_parts = copy.copy(self.attribs)
         if self.dimension:
-            attribute_parts.append(self.dimension)
+            # Insert dimension before allocatable/pointer if they exist
+            # This ensures proper ordering in the declaration
+            insert_pos = len(attribute_parts)
+            for i, attr in enumerate(attribute_parts):
+                if attr.lower() in ['allocatable', 'pointer']:
+                    insert_pos = i
+                    break
+            attribute_parts.insert(insert_pos, f"dimension{self.dimension}")
         if self.parameter:
             attribute_parts.append("parameter")
 
