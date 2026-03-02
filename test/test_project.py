@@ -1382,3 +1382,77 @@ def test_hide_undoc(copy_fortran_file):
     project = create_project(settings)
 
     assert len(project.modules[0].subroutines) == 1
+
+
+def test_iofile_resolution_via_type_variable(tmp_path):
+    """Test that IO files are resolved correctly when the filename comes from a
+    derived-type variable (e.g. in_regs%def_aqu -> aqu_catunit.def).
+
+    Regression test for build_variable_type_mapping not recognising plain-string
+    proto values, which caused aqu_catunit.def (and similar files) to never
+    appear in project.iofiles.
+    """
+    import ford.sourceform
+
+    setattr(ford.sourceform, "namelist", NameSelector())
+
+    src_dir = tmp_path / "src"
+    src_dir.mkdir()
+
+    (src_dir / "input_file_module.f90").write_text(
+        """\
+module input_file_module
+  implicit none
+  type input_regions
+    character(len=25) :: def_aqu = "aqu_catunit.def"
+    character(len=25) :: ele_aqu = "aqu_catunit.ele"
+  end type input_regions
+  type (input_regions) :: in_regs
+end module input_file_module
+"""
+    )
+
+    (src_dir / "aqu_read_elements.f90").write_text(
+        """\
+subroutine aqu_read_elements
+  use input_file_module
+  implicit none
+  logical :: i_exist
+  character(len=80) :: titldum = ""
+  integer :: eof = 0, mreg = 0
+
+  inquire (file=in_regs%def_aqu, exist=i_exist)
+  if (i_exist) then
+    do
+      open (107,file=in_regs%def_aqu)
+      read (107,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (107,*,iostat=eof) mreg
+      exit
+    end do
+  end if
+
+  inquire (file=in_regs%ele_aqu, exist=i_exist)
+  if (i_exist) then
+    do
+      open (107,file=in_regs%ele_aqu)
+      read (107,*,iostat=eof) titldum
+      exit
+    end do
+  end if
+
+  close (107)
+end subroutine aqu_read_elements
+"""
+    )
+
+    settings = ProjectSettings(src_dir=src_dir)
+    project = create_project(settings)
+
+    io_filenames = [f.io_filename for f in project.iofiles]
+    assert "aqu_catunit.def" in io_filenames, (
+        f"Expected 'aqu_catunit.def' in iofiles, got: {io_filenames}"
+    )
+    assert "aqu_catunit.ele" in io_filenames, (
+        f"Expected 'aqu_catunit.ele' in iofiles, got: {io_filenames}"
+    )

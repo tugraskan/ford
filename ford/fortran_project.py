@@ -1625,7 +1625,7 @@ class Project:
                             # It's a FortranType object
                             type_str = proto.name
                         elif isinstance(proto, str):
-                            # It's a string like "type(input_exco)"
+                            # It's a string like "type(input_exco)" or just "input_exco"
                             proto_str = proto.strip()
                             # Extract type name from declarations like "type(input_exco)"
                             import re
@@ -1635,6 +1635,9 @@ class Project:
                             )
                             if m:
                                 type_str = m.group(1)
+                            elif re.match(r"^\w+$", proto_str):
+                                # Plain type name without type() wrapper
+                                type_str = proto_str
 
                     if type_str:
                         type_name = type_str.lower()
