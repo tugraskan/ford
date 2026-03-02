@@ -1399,8 +1399,7 @@ def test_iofile_resolution_via_type_variable(tmp_path):
     src_dir = tmp_path / "src"
     src_dir.mkdir()
 
-    (src_dir / "input_file_module.f90").write_text(
-        """\
+    (src_dir / "input_file_module.f90").write_text("""\
 module input_file_module
   implicit none
   type input_regions
@@ -1409,11 +1408,9 @@ module input_file_module
   end type input_regions
   type (input_regions) :: in_regs
 end module input_file_module
-"""
-    )
+""")
 
-    (src_dir / "aqu_read_elements.f90").write_text(
-        """\
+    (src_dir / "aqu_read_elements.f90").write_text("""\
 subroutine aqu_read_elements
   use input_file_module
   implicit none
@@ -1443,16 +1440,15 @@ subroutine aqu_read_elements
 
   close (107)
 end subroutine aqu_read_elements
-"""
-    )
+""")
 
     settings = ProjectSettings(src_dir=src_dir)
     project = create_project(settings)
 
     io_filenames = [f.io_filename for f in project.iofiles]
-    assert "aqu_catunit.def" in io_filenames, (
-        f"Expected 'aqu_catunit.def' in iofiles, got: {io_filenames}"
-    )
-    assert "aqu_catunit.ele" in io_filenames, (
-        f"Expected 'aqu_catunit.ele' in iofiles, got: {io_filenames}"
-    )
+    assert (
+        "aqu_catunit.def" in io_filenames
+    ), f"Expected 'aqu_catunit.def' in iofiles, got: {io_filenames}"
+    assert (
+        "aqu_catunit.ele" in io_filenames
+    ), f"Expected 'aqu_catunit.ele' in iofiles, got: {io_filenames}"
