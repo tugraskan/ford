@@ -1,0 +1,2690 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for older SWAT+ 61.0 source code">
+    <meta name="author" content="Documentation Builder" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>hydro_init &ndash; Fortran Source Documentation</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">Fortran Source Documentation </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/iofiles.html">I/O</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>hydro_init
+      <small>Subroutine</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 0.2% of total for proc.">98 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/hydro_init.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/hydro_init.f90.html'>hydro_init.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">hydro_init</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 d-none d-md-block">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+    <em>None</em>
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <h2> subroutine hydro_init()  
+</h2>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#purpose-section" 
+         aria-expanded="false" 
+         aria-controls="purpose-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Purpose
+        </h3>
+      </a>
+      <div id="purpose-section" class="collapse">
+        <div class="card-body">
+          <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#stack-flow-section" 
+         aria-expanded="true" 
+         aria-controls="stack-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Stack Flow
+        </h3>
+      </a>
+      <div id="stack-flow-section" class="collapse show">
+        <div class="card-body">
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#called-from-subsection" 
+               aria-expanded="false" 
+               aria-controls="called-from-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Called From
+              </h4>
+            </a>
+            <div id="called-from-subsection" class="collapse">
+              <div class="card-body">
+                  <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item">
+                      <ul class="list-inline">
+                          <li class="list-inline-item"><a href='proc_hru.html'>proc_hru</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                  
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#calls-subsection" 
+               aria-expanded="false" 
+               aria-controls="calls-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Calls
+              </h4>
+            </a>
+            <div id="calls-subsection" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#arguments-subsection" 
+               aria-expanded="false" 
+               aria-controls="arguments-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Arguments
+              </h4>
+            </a>
+            <div id="arguments-subsection" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#uses-section" 
+         aria-expanded="false" 
+         aria-controls="uses-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Uses
+        </h3>
+      </a>
+      <div id="uses-section" class="collapse">
+        <div class="card-body">
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">
+                  <ul class="list-inline">
+                      <li class="list-inline-item"><a href='../module/output_landscape_module.html'>output_landscape_module</a></li>
+                      <li class="list-inline-item"><a href='../module/pesticide_data_module.html'>pesticide_data_module</a></li>
+                      <li class="list-inline-item"><a href='../module/constituent_mass_module.html'>constituent_mass_module</a></li>
+                      <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                      <li class="list-inline-item"><a href='../module/basin_module.html'>basin_module</a></li>
+                      <li class="list-inline-item"><a href='../module/plant_data_module.html'>plant_data_module</a></li>
+                      <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                      <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
+                      <li class="list-inline-item"><a href='../module/plant_module.html'>plant_module</a></li>
+                      <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
+                      <li class="list-inline-item"><a href='../module/channel_module.html'>channel_module</a></li>
+                      <li class="list-inline-item"><a href='../module/organic_mineral_mass_module.html'>organic_mineral_mass_module</a></li>
+                      <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  </ul>
+                </li>
+            </ul>
+
+          <h4 class="mt-4 mb-3">Outside Variables and Types</h4>
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_time_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_time_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_time_module">
+                <a href='../module/time_module.html'>time_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_time_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_time_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_time_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingtime_module_type_time_current_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsetime_module_type_time_current_" aria-expanded="false" 
+                              aria-controls="collapsetime_module_type_time_current_">
+                        type(<a href='../type/time_current.html'>time_current</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsetime_module_type_time_current_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingtime_module_type_time_current_" data-bs-parent="#typesAccordionmodule_time_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>time</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>day</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">108, 109</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">108, 109</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_basin_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_basin_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_basin_module">
+                <a href='../module/basin_module.html'>basin_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_basin_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_basin_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_basin_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingbasin_module_type_basin_parms_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsebasin_module_type_basin_parms_" aria-expanded="false" 
+                              aria-controls="collapsebasin_module_type_basin_parms_">
+                        type(<a href='../type/basin_parms.html'>basin_parms</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsebasin_module_type_basin_parms_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingbasin_module_type_basin_parms_" data-bs-parent="#typesAccordionmodule_basin_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>bsn_prm</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>ffcb</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">88, 93</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">88, 93</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_hru_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_hru_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_hru_module">
+                <a href='../module/hru_module.html'>hru_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_hru_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_hru_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_hru_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghru_module_type_subsurface_drainage_parameters_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehru_module_type_subsurface_drainage_parameters_" aria-expanded="false" 
+                              aria-controls="collapsehru_module_type_subsurface_drainage_parameters_">
+                        type(<a href='../type/subsurface_drainage_parameters.html'>subsurface_drainage_parameters</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehru_module_type_subsurface_drainage_parameters_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghru_module_type_subsurface_drainage_parameters_" data-bs-parent="#typesAccordionmodule_hru_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>sdr</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>lag</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">149</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">149</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghru_module_type_hydrologic_response_unit_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehru_module_type_hydrologic_response_unit_" aria-expanded="false" 
+                              aria-controls="collapsehru_module_type_hydrologic_response_unit_">
+                        type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehru_module_type_hydrologic_response_unit_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghru_module_type_hydrologic_response_unit_" data-bs-parent="#typesAccordionmodule_hru_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>hru</strong>
+                                  
+                                    <small class="text-muted"> (5 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>obj_no</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">73</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/land_use_mgt_variables.html'>land_use_mgt_variables</a>),
+public                                                  :: <strong>lumv</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>usle_mult</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">79</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>usle_p</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">80</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>usle_ls</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">80</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    integer :: 
+                  <strong>ldrain</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">149</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>tile_ttime</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">150, 152</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/hydrology.html'>hydrology</a>),
+public                                                  :: <strong>hyd</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>lat_ttime</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">131, 143, 145</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/topography.html'>topography</a>),
+public                                                  :: <strong>topo</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>lat_len</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">141</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>tiledrain</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">148</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">73</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghru_module_integer">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehru_module_integer" aria-expanded="false" 
+                              aria-controls="collapsehru_module_integer">
+                        integer
+                        <small class="text-muted ms-2">(2 variables)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehru_module_integer" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghru_module_integer" data-bs-parent="#typesAccordionmodule_hru_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>ipl</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>ihru</strong>
+                                  
+                                  
+                                </td>
+                                <td><p>none |HRU number</p><a href="../module/hru_module.html#variable-ihru~29" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghru_module_real">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehru_module_real" aria-expanded="false" 
+                              aria-controls="collapsehru_module_real">
+                        real
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehru_module_real" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghru_module_real" data-bs-parent="#typesAccordionmodule_hru_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,dimension (:), allocatable,                                   :: <strong>dormhr</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_climate_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_climate_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_climate_module">
+                <a href='../module/climate_module.html'>climate_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_climate_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_climate_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_climate_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingclimate_module_type_weather_generator_db_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapseclimate_module_type_weather_generator_db_" aria-expanded="false" 
+                              aria-controls="collapseclimate_module_type_weather_generator_db_">
+                        type(<a href='../type/weather_generator_db.html'>weather_generator_db</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapseclimate_module_type_weather_generator_db_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingclimate_module_type_weather_generator_db_" data-bs-parent="#typesAccordionmodule_climate_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>wgn</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public,dimension (12)                                                  :: <strong>tmpmx</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">84</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">84</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingclimate_module_type_wgn_parms_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapseclimate_module_type_wgn_parms_" aria-expanded="false" 
+                              aria-controls="collapseclimate_module_type_wgn_parms_">
+                        type(<a href='../type/wgn_parms.html'>wgn_parms</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapseclimate_module_type_wgn_parms_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingclimate_module_type_wgn_parms_" data-bs-parent="#typesAccordionmodule_climate_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>wgn_pms</strong>
+                                  
+                                    <small class="text-muted"> (5 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>pcp_an</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">89, 90</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>daylth</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">107</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>latsin</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">110</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>latcos</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">110</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>daylmn</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">120</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">89, 90</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingclimate_module_type_weather_station_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapseclimate_module_type_weather_station_" aria-expanded="false" 
+                              aria-controls="collapseclimate_module_type_weather_station_">
+                        type(<a href='../type/weather_station.html'>weather_station</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapseclimate_module_type_weather_station_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingclimate_module_type_weather_station_" data-bs-parent="#typesAccordionmodule_climate_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>wst</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/weather_codes_station.html'>weather_codes_station</a>),
+public                                                  :: <strong>wco</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    integer :: 
+                  <strong>wgn</strong>
+                    = 1
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">75</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_plant_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_plant_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_plant_module">
+                <a href='../module/plant_module.html'>plant_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_plant_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_plant_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_plant_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingplant_module_type_plant_community_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapseplant_module_type_plant_community_" aria-expanded="false" 
+                              aria-controls="collapseplant_module_type_plant_community_">
+                        type(<a href='../type/plant_community.html'>plant_community</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapseplant_module_type_plant_community_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingplant_module_type_plant_community_" data-bs-parent="#typesAccordionmodule_plant_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>pcom</strong>
+                                  
+                                    <small class="text-muted"> (2 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>npl</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">119</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/plant_status.html'>plant_status</a>),
+public,dimension(:), allocatable                                                  :: <strong>plcur</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    character :: 
+                  <strong>gro</strong>
+                    = "y"
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">120</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    character :: 
+                  <strong>idorm</strong>
+                    = "n"
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">121, 123</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">119</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_soil_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_soil_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_soil_module">
+                <a href='../module/soil_module.html'>soil_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_soil_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_soil_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_soil_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingsoil_module_type_soil_profile_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsesoil_module_type_soil_profile_" aria-expanded="false" 
+                              aria-controls="collapsesoil_module_type_soil_profile_">
+                        type(<a href='../type/soil_profile.html'>soil_profile</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsesoil_module_type_soil_profile_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingsoil_module_type_soil_profile_" data-bs-parent="#typesAccordionmodule_soil_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>soil</strong>
+                                  
+                                    <small class="text-muted"> (6 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/soilayer.html'>soilayer</a>),
+public,dimension (:), allocatable                                                  :: <strong>ly</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>usle_k</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">79</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>nly</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">97, 133</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>sw</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">98, 103</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>ffc</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">99</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/soil_physical_properties.html'>soil_physical_properties</a>),
+public,dimension (:), allocatable                                                  :: <strong>phys</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>tmp</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">101</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>st</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">102, 103</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>fc</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">102</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>d</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">128</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>k</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">134, 135</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>zmx</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">128</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_hydrograph_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_hydrograph_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_hydrograph_module">
+                <a href='../module/hydrograph_module.html'>hydrograph_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_hydrograph_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_hydrograph_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_hydrograph_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghydrograph_module_integer">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehydrograph_module_integer" aria-expanded="false" 
+                              aria-controls="collapsehydrograph_module_integer">
+                        integer
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehydrograph_module_integer" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghydrograph_module_integer" data-bs-parent="#typesAccordionmodule_hydrograph_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,                                   :: <strong>iwst</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghydrograph_module_type_object_connectivity_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehydrograph_module_type_object_connectivity_" aria-expanded="false" 
+                              aria-controls="collapsehydrograph_module_type_object_connectivity_">
+                        type(<a href='../type/object_connectivity.html'>object_connectivity</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehydrograph_module_type_object_connectivity_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghydrograph_module_type_object_connectivity_" data-bs-parent="#typesAccordionmodule_hydrograph_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>ob</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>wst</strong>
+                                                    = 1
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">74</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">74</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghydrograph_module_type_spatial_objects_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehydrograph_module_type_spatial_objects_" aria-expanded="false" 
+                              aria-controls="collapsehydrograph_module_type_spatial_objects_">
+                        type(<a href='../type/spatial_objects.html'>spatial_objects</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehydrograph_module_type_spatial_objects_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghydrograph_module_type_spatial_objects_" data-bs-parent="#typesAccordionmodule_hydrograph_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>sp_ob</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>hru</strong>
+                                                    = 0
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">71</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">71</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
+         aria-expanded="false" 
+         aria-controls="local-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Local Variables
+        </h3>
+      </a>
+      <div id="local-variables-section" class="collapse">
+        <div class="card-body">
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="var-j"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>j</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-l"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>l</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-scmx"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>scmx</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-xx"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>xx</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-tsoil"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tsoil</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-iob"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iob</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-iwst"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iwst</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-iwgn"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iwgn</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-sffc"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sffc</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-nly"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nly</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-k"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>k</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ipl"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ipl</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-isdr"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>isdr</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-sd"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sd</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-dd"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dd</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-sdlat"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sdlat</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-hlat"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>hlat</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-daylength"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>daylength</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-rock"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rock</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <div class="mb-4">
+            <div class="mb-2">
+              <strong>Complexity Indicators:</strong>
+              <span class="badge bg-warning text-dark me-1">
+                Moderate
+              </span>
+              <span class="badge bg-info text-dark me-1" title="Maximum nesting depth">
+                Depth: 4
+              </span>
+              <span class="badge bg-secondary me-1" title="Number of RETURN statements">
+                Early Exits: 1
+              </span>
+            </div>
+            
+            <div class="mb-2">
+              <strong>Features:</strong>
+              <span class="badge bg-primary me-1">DO</span>
+              <span class="badge bg-primary me-1">IF</span>
+            </div>
+          </div>
+          
+
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+          
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>j = 1, sp_ob%hru</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 71-154</span>
+                  </div>
+                </a>
+                <div id="block-1" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>calculate composite usle value</em>
+                                                <span class="text-muted small">(line 77)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>should be beginning month of simulation and not 12 (December)</em>
+                                                <span class="text-muted small">(line 85)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>set fraction of field capacity in soil</em>
+                                                <span class="text-muted small">(line 87)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>should be beginning month of simulation and not 12 (December)</em>
+                                                <span class="text-muted small">(line 85)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>set fraction of field capacity in soil</em>
+                                                <span class="text-muted small">(line 87)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>set initial soil water and temperature for each layer</em>
+                                                <span class="text-muted small">(line 96)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>set day length threshold for dormancy and initial dormancy</em>
+                                                <span class="text-muted small">(line 106)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>set maximum depth in soil to maximum rooting depth of plant</em>
+                                                <span class="text-muted small">(line 127)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>compute lateral flow travel time</em>
+                                                <span class="text-muted small">(line 130)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>compute lateral flow travel time</em>
+                                                <span class="text-muted small">(line 130)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted">  72</span> ihru = j
+
+<span class="text-muted">  73</span> iob = hru(j)%obj_no
+
+<span class="text-muted">  74</span> iwst = ob(iob)%wst
+
+<span class="text-muted">  75</span> iwgn = wst(iwst)%wco%wgn
+
+<span class="text-muted">  78</span> rock = Exp(-.053 * soil(j)%phys(1)%rock)
+
+<span class="text-muted">  79</span> hru(j)%lumv%usle_mult = rock * soil(j)%ly(1)%usle_k *       &
+
+<span class="text-muted">  80</span> hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
+
+<span class="text-muted">  84</span> tsoil = (wgn(iwgn)%tmpmx(12) + wgn(iwgn)%tmpmx(12)) / 2.
+
+<span class="text-muted">  97</span> nly = soil(j)%nly
+
+<span class="text-muted">  98</span> soil(j)%sw = 0.
+
+<span class="text-muted">  99</span> soil(j)%ffc = sffc
+
+<span class="text-muted"> 107</span> dormhr(j) = wgn_pms(iwgn)%daylth
+
+<span class="text-muted"> 108</span> sd = Asin(.4 * Sin((Real(time%day) - 82.) / 58.09))
+
+<span class="text-muted"> 109</span> dd = 1.0 + 0.033 * Cos(Real(time%day) / 58.09)
+
+<span class="text-muted"> 110</span> sdlat = -wgn_pms(iwgn)%latsin * Tan(sd) / wgn_pms(iwgn)%latcos
+
+<span class="text-muted"> 118</span> daylength = 7.6394 * hlat
+
+<span class="text-muted"> 128</span> soil(j)%zmx = soil(j)%phys(nly)%d
+
+<span class="text-muted"> 148</span> isdr = hru(j)%tiledrain
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>bsn_prm%ffcb <= 0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 88-91</span>
+                  </div>
+                </a>
+                <div id="block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  89</span> sffc = wgn_pms(iwgn)%pcp_an / (wgn_pms(iwgn)%pcp_an + Exp(9.043 -   &
+
+<span class="text-muted">  90</span> .002135 * wgn_pms(iwgn)%pcp_an))
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 91</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 92-94</span>
+                  </div>
+                </a>
+                <div id="block-1-block-2" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>S-curve equation Jeff made up.</em>
+                                                <span class="text-muted small">(line 91)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted">  93</span> sffc = bsn_prm%ffcb
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 94</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>k = 1, nly</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 100-104</span>
+                  </div>
+                </a>
+                <div id="block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 101</span> soil(j)%phys(k)%tmp = tsoil
+
+<span class="text-muted"> 102</span> soil(j)%phys(k)%st = sffc * soil(j)%phys(k)%fc
+
+<span class="text-muted"> 103</span> soil(j)%sw = soil(j)%sw + soil(j)%phys(k)%st
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 104</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>sdlat > 1.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 111-112</span>
+                  </div>
+                </a>
+                <div id="block-1-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 112</span> hlat = 0.
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 112</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">ELSE IF</span> (<code>sdlat >= -1.</code>) <strong>THEN</strong>
+                    <span class="badge bg-light text-dark ms-2">Lines 113-114</span>
+                  </div>
+                </a>
+                <div id="block-1-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 114</span> hlat = Acos(sdlat)
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 114</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 115-117</span>
+                  </div>
+                </a>
+                <div id="block-1-block-6" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 116</span> hlat = 3.1416
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 117</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ipl = 1, pcom(j)%npl</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 119-125</span>
+                  </div>
+                </a>
+                <div id="block-1-block-7" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-7-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>pcom(j)%plcur(ipl)%gro == "y" .and. daylength - dormhr(j) < wgn_pms(iwgn)%daylmn</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 120-121</span>
+                  </div>
+                </a>
+                <div id="block-1-block-7-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 121</span> pcom(j)%plcur(ipl)%idorm = "y"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 121</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-7-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 122-124</span>
+                  </div>
+                </a>
+                <div id="block-1-block-7-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 123</span> pcom(j)%plcur(ipl)%idorm = "n"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 124</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 125</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>hru(j)%hyd%lat_ttime <= 0.</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 131-143</span>
+                  </div>
+                </a>
+                <div id="block-1-block-8" class="collapse">
+                  <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>unit conversion:</em>
+                            <span class="text-muted small">(line 138)</span>
+                        </div>
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>xx = m/(mm/h) * 1000.(mm/m)/24.(h/d) / 4.</em>
+                            <span class="text-muted small">(line 139)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted"> 132</span> scmx = 0.
+
+<span class="text-muted"> 140</span> xx = 0.
+
+<span class="text-muted"> 141</span> xx = 10.4 * hru(j)%topo%lat_len / scmx
+
+<span class="text-muted"> 142</span> if (xx < 1.) xx = 1.
+
+<span class="text-muted"> 143</span> hru(j)%hyd%lat_ttime = 1. - Exp(-1./xx)
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-1-block-8-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>l = 1, soil(j)%nly</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 133-137</span>
+                  </div>
+                </a>
+                <div id="block-1-block-8-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-1-block-8-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>soil(j)%phys(l)%k > scmx</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 134-136</span>
+                  </div>
+                </a>
+                <div id="block-1-block-8-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 135</span> scmx = soil(j)%phys(l)%k
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 136</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 137</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 143</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-9" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 144-146</span>
+                  </div>
+                </a>
+                <div id="block-1-block-9" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 145</span> hru(j)%hyd%lat_ttime = 1. - Exp(-1. / hru(j)%hyd%lat_ttime)
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 146</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-10" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>hru(j)%lumv%ldrain > 0 .and. sdr(isdr)%lag > 0.01</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 149-150</span>
+                  </div>
+                </a>
+                <div id="block-1-block-10" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 150</span> hru(j)%lumv%tile_ttime = 1. - Exp(-24. / sdr(isdr)%lag)
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 150</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-1-block-11" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 151-153</span>
+                  </div>
+                </a>
+                <div id="block-1-block-11" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 152</span> hru(j)%lumv%tile_ttime = 0.
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 153</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 154</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 156</span> return
+
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+    
+    
+
+    
+    
+
+
+
+    
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Fortran Source Documentation
+ was developed by Documentation Builder<br>              &copy; 2026 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

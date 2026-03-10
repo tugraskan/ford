@@ -35,6 +35,7 @@ from ford.external_project import load_external_modules
 from ford.utils import ProgressBar
 from ford.sourceform import (
     _find_in_list,
+    _expand_implied_do_items,
     FortranBase,
     FortranBlockData,
     FortranCodeUnit,
@@ -1032,7 +1033,7 @@ class Project:
         if current_var.strip():
             write_variables.append(current_var.strip())
 
-        return write_variables
+        return _expand_implied_do_items(write_variables)
 
     def _analyze_input_patterns(
         self, proc: FortranProcedure, tracker, io_summary: Dict
@@ -1208,7 +1209,7 @@ class Project:
         if current_var.strip():
             variables.append(current_var.strip())
 
-        return variables
+        return _expand_implied_do_items(variables)
 
     def _get_variable_type_info(self, proc: FortranProcedure, var_name: str) -> Dict:
         """Get type information for a variable from the procedure's fvar."""
@@ -1624,7 +1625,7 @@ class Project:
                             # It's a FortranType object
                             type_str = proto.name
                         elif isinstance(proto, str):
-                            # It's a string like "type(input_exco)"
+                            # It's a string like "type(input_exco)" or just "input_exco"
                             proto_str = proto.strip()
                             # Extract type name from declarations like "type(input_exco)"
                             import re
@@ -1634,6 +1635,9 @@ class Project:
                             )
                             if m:
                                 type_str = m.group(1)
+                            elif re.match(r"^\w+$", proto_str):
+                                # Plain type name without type() wrapper
+                                type_str = proto_str
 
                     if type_str:
                         type_name = type_str.lower()
@@ -1977,6 +1981,7 @@ class Project:
         IoTracker._var_to_type_map = var_to_type_map
 
         io_files_dict: Dict[str, FortranIOFile] = {}
+        unique_schema_map = self._build_unique_io_schema_map()
 
         # Iterate through all procedures that have I/O operations
         for proc in self.procedures:
@@ -2022,6 +2027,13 @@ class Project:
                                 # Use the first encountered unit as the default
                                 # (The template will show individual units for each procedure)
                                 io_file = FortranIOFile(display_filename, unit)
+                                schema_key = self._normalize_io_filename(
+                                    display_filename
+                                )
+                                if schema_key in unique_schema_map:
+                                    io_file.unique_schema = unique_schema_map[
+                                        schema_key
+                                    ]
                                 # Set base_url for link generation (as string, not Path)
                                 io_file.base_url = str(self.settings.project_url)
                                 io_files_dict[io_key] = io_file
@@ -2069,6 +2081,173 @@ class Project:
             self.iofile_map[io_key] = io_file
             # Also store by the actual io_filename in case they differ
             self.iofile_map[io_file.io_filename] = io_file
+
+    @staticmethod
+    def _normalize_io_filename(filename: Optional[str]) -> str:
+        if not filename:
+            return ""
+        base = os.path.basename(filename.strip().strip('"').strip("'"))
+        return base.lower()
+
+    @staticmethod
+    def _build_unique_io_schema_map() -> Dict[str, Dict[str, object]]:
+        return {
+            "plant.ini": {
+                "title": "plant.ini (plant community initialization)",
+                "sections": [
+                    {
+                        "title": "Header",
+                        "rows": [
+                            {
+                                "line": "1",
+                                "fields": [{"name": "titldum", "pos": 1}],
+                            },
+                            {
+                                "line": "2",
+                                "fields": [{"name": "header", "pos": 1}],
+                            },
+                        ],
+                    },
+                    {
+                        "title": "Repeat Plant Community Block",
+                        "notes": "Repeat until EOF. plants_com controls row count.",
+                        "rows": [
+                            {
+                                "line": "*",
+                                "fields": [
+                                    {"name": "name", "pos": 1},
+                                    {"name": "plants_com", "pos": 2},
+                                    {"name": "rot_yr_ini", "pos": 3},
+                                ],
+                            },
+                            {
+                                "line": "*",
+                                "fields": [
+                                    {"name": "cpnm", "pos": 1},
+                                    {"name": "igro", "pos": 2},
+                                    {"name": "lai", "pos": 3},
+                                    {"name": "bioms", "pos": 4},
+                                    {"name": "phuacc", "pos": 5},
+                                    {"name": "pop", "pos": 6},
+                                    {"name": "fr_yrmat", "pos": 7},
+                                    {"name": "rsdin", "pos": 8},
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+            "soils.sol": {
+                "title": "soils.sol (soil database)",
+                "sections": [
+                    {
+                        "title": "Header",
+                        "rows": [
+                            {
+                                "line": "1",
+                                "fields": [{"name": "titldum", "pos": 1}],
+                            },
+                            {
+                                "line": "2",
+                                "fields": [{"name": "header", "pos": 1}],
+                            },
+                        ],
+                    },
+                    {
+                        "title": "Repeat Soil Block",
+                        "notes": "Repeat until EOF; nly controls layer count.",
+                        "rows": [
+                            {
+                                "line": "*",
+                                "fields": [
+                                    {"name": "snam", "pos": 1},
+                                    {"name": "nly", "pos": 2},
+                                    {"name": "hydgrp", "pos": 3},
+                                    {"name": "zmx", "pos": 4},
+                                    {"name": "anion_excl", "pos": 5},
+                                    {"name": "crk", "pos": 6},
+                                    {"name": "texture", "pos": 7},
+                                ],
+                            },
+                            {
+                                "line": "*",
+                                "fields": [
+                                    {"name": "z", "pos": 1},
+                                    {"name": "bd", "pos": 2},
+                                    {"name": "awc", "pos": 3},
+                                    {"name": "k", "pos": 4},
+                                    {"name": "cbn", "pos": 5},
+                                    {"name": "clay", "pos": 6},
+                                    {"name": "silt", "pos": 7},
+                                    {"name": "sand", "pos": 8},
+                                    {"name": "rock", "pos": 9},
+                                    {"name": "alb", "pos": 10},
+                                    {"name": "usle_k", "pos": 11},
+                                    {"name": "ec", "pos": 12},
+                                    {"name": "cal", "pos": 13},
+                                    {"name": "ph", "pos": 14},
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+            "management.sch": {
+                "title": "management.sch (management operations)",
+                "sections": [
+                    {
+                        "title": "Header",
+                        "rows": [
+                            {
+                                "line": "1",
+                                "fields": [{"name": "titldum", "pos": 1}],
+                            },
+                            {
+                                "line": "2",
+                                "fields": [{"name": "header", "pos": 1}],
+                            },
+                        ],
+                    },
+                    {
+                        "title": "Repeat Schedule Block",
+                        "notes": "Repeat until EOF; num_autos and num_ops control subrecords.",
+                        "rows": [
+                            {
+                                "line": "*",
+                                "fields": [
+                                    {"name": "name", "pos": 1},
+                                    {"name": "num_ops", "pos": 2},
+                                    {"name": "num_autos", "pos": 3},
+                                ],
+                            },
+                            {
+                                "line": "*",
+                                "fields": [
+                                    {"name": "auto_name", "pos": 1},
+                                    {
+                                        "name": "auto_crop",
+                                        "pos": 2,
+                                        "note": "optional; may repeat",
+                                    },
+                                ],
+                            },
+                            {
+                                "line": "*",
+                                "fields": [
+                                    {"name": "op", "pos": 1},
+                                    {"name": "mon", "pos": 2},
+                                    {"name": "day", "pos": 3},
+                                    {"name": "husc", "pos": 4},
+                                    {"name": "op_char", "pos": 5},
+                                    {"name": "op_plant", "pos": 6},
+                                    {"name": "op3", "pos": 7},
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+        }
 
     def markdown(self, md):
         """

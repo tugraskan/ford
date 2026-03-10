@@ -1,0 +1,2904 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for older SWAT+ 61.0 source code">
+    <meta name="author" content="Documentation Builder" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>res_hydro &ndash; Fortran Source Documentation</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+    <script src="../js/code-folding.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">Fortran Source Documentation </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/iofiles.html">I/O</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>res_hydro
+      <small>Subroutine</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 0.2% of total for proc.">145 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/res_hydro.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/res_hydro.f90.html'>res_hydro.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">res_hydro</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 d-none d-md-block">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <h2> subroutine res_hydro(jres, id, pvol_m3, evol_m3)  
+</h2>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#purpose-section" 
+         aria-expanded="false" 
+         aria-controls="purpose-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Purpose
+        </h3>
+      </a>
+      <div id="purpose-section" class="collapse">
+        <div class="card-body">
+          <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#stack-flow-section" 
+         aria-expanded="true" 
+         aria-controls="stack-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Stack Flow
+        </h3>
+      </a>
+      <div id="stack-flow-section" class="collapse show">
+        <div class="card-body">
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#called-from-subsection" 
+               aria-expanded="false" 
+               aria-controls="called-from-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Called From
+              </h4>
+            </a>
+            <div id="called-from-subsection" class="collapse">
+              <div class="card-body">
+                  <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item">
+                      <ul class="list-inline">
+                          <li class="list-inline-item"><a href='res_control.html'>res_control</a></li>
+                          <li class="list-inline-item"><a href='wetland_control.html'>wetland_control</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                  
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#calls-subsection" 
+               aria-expanded="false" 
+               aria-controls="calls-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Calls
+              </h4>
+            </a>
+            <div id="calls-subsection" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <a data-bs-toggle="collapse" href="#arguments-subsection" 
+               aria-expanded="false" 
+               aria-controls="arguments-subsection" 
+               class="text-decoration-none">
+              <h4 class="card-header bg-light text-dark">
+                <i class="fa fa-caret-down me-2"></i>Arguments
+              </h4>
+            </a>
+            <div id="arguments-subsection" class="collapse">
+              <div class="card-body">
+                    <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-jres"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>jres</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-id~41"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>id</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pvol_m3~2"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pvol_m3</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-evol_m3~2"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>evol_m3</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#uses-section" 
+         aria-expanded="false" 
+         aria-controls="uses-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Uses
+        </h3>
+      </a>
+      <div id="uses-section" class="collapse">
+        <div class="card-body">
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">
+                  <ul class="list-inline">
+                      <li class="list-inline-item"><a href='../module/water_body_module.html'>water_body_module</a></li>
+                      <li class="list-inline-item"><a href='../module/reservoir_module.html'>reservoir_module</a></li>
+                      <li class="list-inline-item"><a href='../module/time_module.html'>time_module</a></li>
+                      <li class="list-inline-item"><a href='../module/water_allocation_module.html'>water_allocation_module</a></li>
+                      <li class="list-inline-item"><a href='../module/reservoir_data_module.html'>reservoir_data_module</a></li>
+                      <li class="list-inline-item"><a href='../module/conditional_module.html'>conditional_module</a></li>
+                      <li class="list-inline-item"><a href='../module/hru_module.html'>hru_module</a></li>
+                      <li class="list-inline-item"><a href='../module/climate_module.html'>climate_module</a></li>
+                      <li class="list-inline-item"><a href='../module/soil_module.html'>soil_module</a></li>
+                      <li class="list-inline-item"><a href='../module/hydrograph_module.html'>hydrograph_module</a></li>
+                  </ul>
+                </li>
+            </ul>
+
+          <h4 class="mt-4 mb-3">Outside Variables and Types</h4>
+                
+    <div class="accordion" id="outsideVarsAccordion">
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_water_body_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_water_body_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_water_body_module">
+                <a href='../module/water_body_module.html'>water_body_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_water_body_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_water_body_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_water_body_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingwater_body_module_type_water_body_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsewater_body_module_type_water_body_" aria-expanded="false" 
+                              aria-controls="collapsewater_body_module_type_water_body_">
+                        type(<a href='../type/water_body.html'>water_body</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsewater_body_module_type_water_body_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingwater_body_module_type_water_body_" data-bs-parent="#typesAccordionmodule_water_body_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>wbody_wb</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>area_ha</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">40, 160</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">40, 160</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_water_allocation_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_water_allocation_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_water_allocation_module">
+                <a href='../module/water_allocation_module.html'>water_allocation_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_water_allocation_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_water_allocation_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_water_allocation_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingwater_allocation_module_type_water_allocation_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsewater_allocation_module_type_water_allocation_" aria-expanded="false" 
+                              aria-controls="collapsewater_allocation_module_type_water_allocation_">
+                        type(<a href='../type/water_allocation.html'>water_allocation</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsewater_allocation_module_type_water_allocation_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingwater_allocation_module_type_water_allocation_" data-bs-parent="#typesAccordionmodule_water_allocation_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>wallo</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/source_output.html'>source_output</a>),
+public                                                  :: <strong>tot</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>demand</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">150</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_reservoir_data_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_reservoir_data_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_reservoir_data_module">
+                <a href='../module/reservoir_data_module.html'>reservoir_data_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_reservoir_data_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_reservoir_data_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_reservoir_data_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingreservoir_data_module_type_reservoir_weir_outflow_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsereservoir_data_module_type_reservoir_weir_outflow_" aria-expanded="false" 
+                              aria-controls="collapsereservoir_data_module_type_reservoir_weir_outflow_">
+                        type(<a href='../type/reservoir_weir_outflow.html'>reservoir_weir_outflow</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsereservoir_data_module_type_reservoir_weir_outflow_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingreservoir_data_module_type_reservoir_weir_outflow_" data-bs-parent="#typesAccordionmodule_reservoir_data_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>res_weir</strong>
+                                  
+                                    <small class="text-muted"> (3 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>c</strong>
+                                                    = 1.84
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">163</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>w</strong>
+                                                    = 2.5
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">163</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>k</strong>
+                                                    = 2.6
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">163</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">163</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_conditional_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_conditional_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_conditional_module">
+                <a href='../module/conditional_module.html'>conditional_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_conditional_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_conditional_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_conditional_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingconditional_module_type_decision_table_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapseconditional_module_type_decision_table_" aria-expanded="false" 
+                              aria-controls="collapseconditional_module_type_decision_table_">
+                        type(<a href='../type/decision_table.html'>decision_table</a>)
+                        <small class="text-muted ms-2">(2 variables)</small>
+                      </button>
+                    </h4>
+                    <div id="collapseconditional_module_type_decision_table_" class="accordion-collapse collapse" 
+                         aria-labelledby="headingconditional_module_type_decision_table_" data-bs-parent="#typesAccordionmodule_conditional_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>dtbl_res</strong>
+                                  
+                                    <small class="text-muted"> (2 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>alts</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">50</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/actions_var.html'>actions_var</a>),
+public,dimension(:), allocatable                                                  :: <strong>act</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>const2</strong>
+                    = 1
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">71</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>const</strong>
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">71, 75</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    character :: 
+                  <strong>file_pointer</strong>
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">83, 96</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">50</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>d_tbl</strong>
+                                  
+                                    <small class="text-muted"> (7 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>acts</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">45</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>alts</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">47</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=1),
+public,dimension(:), allocatable                                                  :: <strong>act_hit</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">51</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  character(len=1),
+public,dimension(:,:), allocatable                                                  :: <strong>act_outcomes</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">51</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/actions_var.html'>actions_var</a>),
+public,dimension(:), allocatable                                                  :: <strong>act</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    character :: 
+                  <strong>option</strong>
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">60</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>const</strong>
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">63, 67, 91, 105, 133, 139, 155</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>const2</strong>
+                    = 1
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">87, 89, 106, 134</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    character :: 
+                  <strong>file_pointer</strong>
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">111, 148</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/conditions_var.html'>conditions_var</a>),
+public,dimension(:), allocatable                                                  :: <strong>cond</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    character :: 
+                  <strong>lim_op</strong>
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">120</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>lim_const</strong>
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">122, 124, 126, 128, 130, 140</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public,dimension(:), allocatable                                                  :: <strong>act_typ</strong>
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">162, 168</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">45</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_hru_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_hru_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_hru_module">
+                <a href='../module/hru_module.html'>hru_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_hru_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_hru_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_hru_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghru_module_type_hydrologic_response_unit_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehru_module_type_hydrologic_response_unit_" aria-expanded="false" 
+                              aria-controls="collapsehru_module_type_hydrologic_response_unit_">
+                        type(<a href='../type/hydrologic_response_unit.html'>hydrologic_response_unit</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehru_module_type_hydrologic_response_unit_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghru_module_type_hydrologic_response_unit_" data-bs-parent="#typesAccordionmodule_hru_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+public,dimension(:), allocatable, target,                                   :: <strong>hru</strong>
+                                  
+                                  
+                                </td>
+                                <td></td>
+                                <td>
+                                    <small class="text-muted">-</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item mb-3">
+          <h3 class="accordion-header" id="headingmodule_hydrograph_module">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapsemodule_hydrograph_module" aria-expanded="false" 
+                    aria-controls="collapsemodule_hydrograph_module">
+                <a href='../module/hydrograph_module.html'>hydrograph_module</a>
+            </button>
+          </h3>
+          <div id="collapsemodule_hydrograph_module" class="accordion-collapse collapse" 
+               aria-labelledby="headingmodule_hydrograph_module" data-bs-parent="#outsideVarsAccordion">
+            <div class="accordion-body">
+              <div class="accordion" id="typesAccordionmodule_hydrograph_module">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghydrograph_module_type_hyd_output_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehydrograph_module_type_hyd_output_" aria-expanded="false" 
+                              aria-controls="collapsehydrograph_module_type_hyd_output_">
+                        type(<a href='../type/hyd_output.html'>hyd_output</a>)
+                        <small class="text-muted ms-2">(3 variables)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehydrograph_module_type_hyd_output_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghydrograph_module_type_hyd_output_" data-bs-parent="#typesAccordionmodule_hydrograph_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>ht1</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>flo</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">71, 75, 142</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">71, 75, 142</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>ht2</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>flo</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">63, 67, 71, 75, 79, 91, 92, 105, 107, 133, 135, 142, 143, 155, 156, 163, 164, 171, 173, 175, 177</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">63, 67, 71, 75, 79, 91, 92, 105, 107, 133, 135, 142, 143, 155, 156, 163, 164, 171, 173, 175, 177</small>
+                                </td>
+                              </tr>
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>wbody</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>flo</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">38, 79, 91, 105, 133, 142</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">38, 79, 91, 105, 133, 142</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghydrograph_module_type_irrigation_water_transfer_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehydrograph_module_type_irrigation_water_transfer_" aria-expanded="false" 
+                              aria-controls="collapsehydrograph_module_type_irrigation_water_transfer_">
+                        type(<a href='../type/irrigation_water_transfer.html'>irrigation_water_transfer</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehydrograph_module_type_irrigation_water_transfer_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghydrograph_module_type_irrigation_water_transfer_" data-bs-parent="#typesAccordionmodule_hydrograph_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>irrig</strong>
+                                  
+                                    <small class="text-muted"> (1 component)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  real,
+public                                                  :: <strong>demand</strong>
+                                                    = 0.
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">152</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">152</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header" id="headinghydrograph_module_type_recall_hydrograph_inputs_">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                              data-bs-target="#collapsehydrograph_module_type_recall_hydrograph_inputs_" aria-expanded="false" 
+                              aria-controls="collapsehydrograph_module_type_recall_hydrograph_inputs_">
+                        type(<a href='../type/recall_hydrograph_inputs.html'>recall_hydrograph_inputs</a>)
+                        <small class="text-muted ms-2">(1 variable)</small>
+                      </button>
+                    </h4>
+                    <div id="collapsehydrograph_module_type_recall_hydrograph_inputs_" class="accordion-collapse collapse" 
+                         aria-labelledby="headinghydrograph_module_type_recall_hydrograph_inputs_" data-bs-parent="#typesAccordionmodule_hydrograph_module">
+                      <div class="accordion-body">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th scope="col">Variable Declaration</th>
+                              <th scope="col">Description</th>
+                              <th scope="col">Line Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                              
+                              
+                              
+                              
+                              
+                              <tr>
+                                <td>
+                                  :: <strong>recall</strong>
+                                  
+                                    <small class="text-muted"> (2 components)</small>
+                                  
+                                    <div class="mt-2 ps-4">
+                                      <table class="table table-sm table-borderless">
+                                        <thead>
+                                          <tr>
+                                            <th style="border-top: none;">Component</th>
+                                            <th style="border-top: none;">Line Numbers</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  integer,
+public                                                  :: <strong>typ</strong>
+                                                    = -1
+                                                
+                                                
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">169</small>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td class="ps-3" style="border-top: none;">
+                                                  type(<a href='../type/hyd_output.html'>hyd_output</a>),
+public,dimension (:,:), allocatable                                                  :: <strong>hd</strong>
+                                                
+                                                    <div class="mt-2 ms-4">
+      <small class="text-muted">Nested components:</small>
+      <table class="table table-sm table-borderless">
+        <thead>
+          <tr>
+            <th style="border-top: none;">Component</th>
+            <th style="border-top: none;">Line Numbers</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td class="ps-2" style="border-top: none;">
+                    real :: 
+                  <strong>flo</strong>
+                    = 0.
+                
+                
+              </td>
+              <td style="border-top: none;">
+                  <small class="text-muted">171, 173, 175</small>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+                                              </td>
+                                              <td style="border-top: none;">
+                                                  <small class="text-muted">-</small>
+                                              </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                </td>
+                                <td>None</td>
+                                <td>
+                                    <small class="text-muted">169</small>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#local-variables-section" 
+         aria-expanded="false" 
+         aria-controls="local-variables-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Local Variables
+        </h3>
+      </a>
+      <div id="local-variables-section" class="collapse">
+        <div class="card-body">
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="var-iweir"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iweir</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-nstep"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nstep</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-tstep"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tstep</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-iac"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iac</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ic"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ic</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-ial"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ial</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-irel"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>irel</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-iob"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iob</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-vol"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>vol</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-b_lo"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b_lo</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-res_h"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>res_h</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-demand"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>demand</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-wsa1"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wsa1</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-hgt_above"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>hgt_above</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="var-alpha_e"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>alpha_e</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#inputs-outputs-section" 
+         aria-expanded="false" 
+         aria-controls="inputs-outputs-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>I/O
+        </h3>
+      </a>
+      <div id="inputs-outputs-section" class="collapse">
+        <div class="card-body">
+            <em>n/a</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <a data-bs-toggle="collapse" href="#control-flow-section" 
+         aria-expanded="false" 
+         aria-controls="control-flow-section" 
+         class="text-decoration-none">
+        <h3 class="card-header bg-light text-dark">
+          <i class="fa fa-caret-down me-2"></i>Control Flow
+        </h3>
+      </a>
+      <div id="control-flow-section" class="collapse">
+        <div class="card-body">
+          <div class="mb-4">
+            <div class="mb-2">
+              <strong>Complexity Indicators:</strong>
+              <span class="badge bg-danger me-1">
+                Complex
+              </span>
+              <span class="badge bg-info text-dark me-1" title="Maximum nesting depth">
+                Depth: 5
+              </span>
+              <span class="badge bg-secondary me-1" title="Number of RETURN statements">
+                Early Exits: 1
+              </span>
+            </div>
+            
+            <div class="mb-2">
+              <strong>Features:</strong>
+              <span class="badge bg-primary me-1">DO</span>
+              <span class="badge bg-primary me-1">IF</span>
+              <span class="badge bg-primary me-1">SELECT</span>
+            </div>
+          </div>
+          
+
+          <h4>Logic Blocks</h4>
+          <p class="text-muted mb-3">
+            Control flow structures organized as they appear in the source code. 
+            Each block is collapsible to help navigate complex procedures.
+          </p>
+          
+          
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                        <div class="text-muted mb-1">
+                          <i class="fa fa-comment me-1"></i><em>store initial values</em>
+                            <span class="text-muted small">(line 37)</span>
+                        </div>
+                      <pre class="mb-0"><code><span class="text-muted">  38</span> vol = wbody%flo
+
+<span class="text-muted">  39</span> nstep = 1
+
+<span class="text-muted">  40</span> wsa1 = wbody_wb%area_ha * 10000.
+
+</code></pre>
+                  </div>
+                </div>
+
+                        
+              <div class="card mb-2 ms-0">
+                <a data-bs-toggle="collapse" href="#block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>tstep = 1, nstep</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 42-184</span>
+                  </div>
+                </a>
+                <div id="block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-3">
+                <a data-bs-toggle="collapse" href="#block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>iac = 1, d_tbl%acts</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 45-183</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  46</span> action = "n"
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>d_tbl%alts == 0</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 47-48</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  48</span> action = "y"
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 48</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>ELSE</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 49-56</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-warning bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #DDA0DD;">DO</span> <code>ial = 1, dtbl_res(id)%alts</code>
+                      <span class="badge bg-light text-dark ms-2">Lines 50-55</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-2-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>d_tbl%act_hit(ial) == "y" .and. d_tbl%act_outcomes(iac,ial) == "y"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 51-54</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-2-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  52</span> action = "y"
+
+<span class="badge text-white me-1" style="background-color: #EC7063;">EXIT</span> <span class="text-muted">  53</span> exit
+
+</code></pre>
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 54</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 55</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong>
+<span class="badge bg-light text-dark ms-2">Line 56</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-6">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-info bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <span class="badge text-white me-1" style="background-color: #87CEEB;">IF</span> (<code>action == "y"</code>) <strong>THEN</strong>
+                      <span class="badge bg-light text-dark ms-2">Lines 59-181</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-9">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>d_tbl%act(iac)%option</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 60-179</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"rate"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 61-64</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>release at constant rate</em>
+                                                <span class="text-muted small">(line 62)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted">  63</span> ht2%flo = ht2%flo + d_tbl%act(iac)%const * 86400.
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"rate_pct"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 65-68</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>release at percentage of principal volume</em>
+                                                <span class="text-muted small">(line 66)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted">  67</span> ht2%flo = ht2%flo + d_tbl%act(iac)%const * pvol_m3 / 100.
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"inflo_rate"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 69-72</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>JK: added functionality to use const2 to reduce/increase inflow variable - const is max release</em>
+                                                <span class="text-muted small">(line 70)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted">  71</span> ht2%flo = ht2%flo + max (ht1%flo + dtbl_res(id)%act(iac)%const2 * 86400., dtbl_res(id)%act(iac)%const * 86400.)
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"inflo_frac"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 73-76</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-4" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>release at fraction of inflow</em>
+                                                <span class="text-muted small">(line 74)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted">  75</span> ht2%flo = ht2%flo + ht1%flo * dtbl_res(id)%act(iac)%const
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"ab_emer"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 77-80</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-5" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>release all volume above emergency</em>
+                                                <span class="text-muted small">(line 78)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted">  79</span> if (wbody%flo > evol_m3) ht2%flo = ht2%flo + (wbody%flo - evol_m3)
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-6" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"days"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 81-93</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-6" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>release based on drawdown days</em>
+                                                <span class="text-muted small">(line 82)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted">  91</span> ht2%flo = ht2%flo + (wbody%flo - b_lo) / d_tbl%act(iac)%const / nstep
+
+<span class="text-muted">  92</span> ht2%flo = max(0.,ht2%flo)
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-6-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>dtbl_res(id)%act(iac)%file_pointer</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 83-90</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-6-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-6-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"null"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 84-85</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-6-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  85</span> b_lo = 0.
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-6-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"pvol"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 86-87</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-6-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  87</span> b_lo = pvol_m3 * d_tbl%act(iac)%const2
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-6-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"evol"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 88-89</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-6-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  89</span> b_lo = evol_m3 * d_tbl%act(iac)%const2
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 90</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-7" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"dyrt"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 94-108</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-7" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>release based on drawdown days + percentage of principal volume</em>
+                                                <span class="text-muted small">(line 95)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted"> 104</span> b_lo = max (0., b_lo)
+
+<span class="text-muted"> 105</span> ht2%flo = ht2%flo + (wbody%flo - b_lo) / d_tbl%act(iac)%const +           &
+
+<span class="text-muted"> 106</span> d_tbl%act(iac)%const2 * pvol_m3 / 100. / nstep
+
+<span class="text-muted"> 107</span> ht2%flo = max(0.,ht2%flo)
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-7-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>dtbl_res(id)%act(iac)%file_pointer</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 96-103</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-7-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-7-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"null"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 97-98</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-7-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted">  98</span> b_lo = 0.
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-7-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"pvol"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 99-100</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-7-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 100</span> b_lo = pvol_m3
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-7-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"evol"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 101-102</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-7-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 102</span> b_lo = evol_m3
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 103</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-8" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"dyrt1"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 109-136</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-8" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 132</span> b_lo = max (0., b_lo)
+
+<span class="text-muted"> 133</span> ht2%flo = ht2%flo + (wbody%flo - b_lo) / d_tbl%act(iac)%const +           &
+
+<span class="text-muted"> 134</span> d_tbl%act(iac)%const2 * pvol_m3 / 100. / nstep
+
+<span class="text-muted"> 135</span> ht2%flo = max(0.,ht2%flo)
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-8-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>d_tbl%act(iac)%file_pointer</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 111-118</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-8-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-8-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"con1"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 112-113</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-8-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 113</span> ic = 5
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-8-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"con2"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 114-115</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-8-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 115</span> ic = 4
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-8-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"con3"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 116-117</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-8-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 117</span> ic = 3
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 118</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-8-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>(d_tbl%cond(ic)%lim_op)</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 120-131</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-8-block-2" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-8-block-2-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>'='</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 121-122</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-8-block-2-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 122</span> b_lo = pvol_m3 + (evol_m3 - pvol_m3) * d_tbl%cond(ic)%lim_const
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-8-block-2-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"*"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 123-124</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-8-block-2-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 124</span> b_lo = (evol_m3 - pvol_m3) * d_tbl%cond(ic)%lim_const
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-8-block-2-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"+"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 125-126</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-8-block-2-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 126</span> b_lo = (evol_m3 - pvol_m3) + d_tbl%cond(ic)%lim_const
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-8-block-2-block-4" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"-"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 127-128</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-8-block-2-block-4" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 128</span> b_lo = (evol_m3 - pvol_m3) - d_tbl%cond(ic)%lim_const
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-8-block-2-block-5" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"/"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 129-130</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-8-block-2-block-5" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 130</span> b_lo = (evol_m3 - pvol_m3) / d_tbl%cond(ic)%lim_const
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 131</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-9" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"inflo_targ"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 137-144</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-9" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>release inflow + all volume over target (pvol_m3), use condition associated with action</em>
+                                                <span class="text-muted small">(line 138)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted"> 139</span> ic = int (d_tbl%act(iac)%const)
+
+<span class="text-muted"> 140</span> b_lo = pvol_m3 * d_tbl%cond(ic)%lim_const
+
+<span class="text-muted"> 142</span> ht2%flo = ht2%flo + ht1%flo + (wbody%flo - b_lo)
+
+<span class="text-muted"> 143</span> ht2%flo = max(0.,ht2%flo)
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-10" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"irrig_dmd"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 145-157</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-10" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>release based on irrigation demand of hru or water rights object</em>
+                                                <span class="text-muted small">(line 146)</span>
+                                            </div>
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>const allows a fraction (usually > 1.0) of the demand (m3) released</em>
+                                                <span class="text-muted small">(line 154)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted"> 147</span> iob = Int(d_tbl%act(iac)%const2)
+
+<span class="text-muted"> 155</span> ht2%flo = ht2%flo + demand * d_tbl%act(iac)%const / nstep
+
+<span class="text-muted"> 156</span> ht2%flo = max(0.,ht2%flo)
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-10-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>d_tbl%act(iac)%file_pointer</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 148-153</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-10-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-10-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"wro"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 149-150</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-10-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 150</span> demand = wallo(iob)%tot%demand
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-10-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"hru"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 151-152</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-10-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 152</span> demand = irrig(iob)%demand
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 153</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-11" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"weir"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 158-165</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-11" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>release based on weir equation</em>
+                                                <span class="text-muted small">(line 159)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted"> 160</span> res_h = vol / (wbody_wb%area_ha * 10000.)
+
+<span class="text-muted"> 161</span> hgt_above = max(0., res_h - wet_ob(jres)%weir_hgt)
+
+<span class="text-muted"> 162</span> iweir = d_tbl%act_typ(iac)
+
+<span class="text-muted"> 163</span> ht2%flo = ht2%flo + res_weir(iweir)%c * res_weir(iweir)%w * hgt_above ** res_weir(iweir)%k / nstep
+
+<span class="text-muted"> 164</span> ht2%flo = ht2%flo + max(0.,ht2%flo)
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-12">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-12" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>"meas"</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 166-178</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-12" class="collapse">
+                  <div class="card-body">
+                                            <div class="text-muted mb-1">
+                                              <i class="fa fa-comment me-1"></i><em>measured outflow or release</em>
+                                                <span class="text-muted small">(line 167)</span>
+                                            </div>
+                      <pre class="mb-0"><code><span class="text-muted"> 168</span> irel = int(d_tbl%act_typ(iac))
+
+<span class="text-muted"> 177</span> ht2%flo = max(0.,ht2%flo)
+
+</code></pre>
+                                  
+              <div class="card mb-2 ms-15">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-12-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>SELECT CASE</strong> (<code>recall(irel)%typ</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 169-176</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-12-block-1" class="collapse">
+                  <div class="card-body">
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-12-block-1-block-1" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>1</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 170-171</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-12-block-1-block-1" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 171</span> ht2%flo = ht2%flo + recall(irel)%hd(time%day,time%yrs)%flo / nstep
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-12-block-1-block-2" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>2</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 172-173</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-12-block-1-block-2" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 173</span> ht2%flo = ht2%flo + recall(irel)%hd(time%mo,time%yrs)%flo / nstep
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                                  
+              <div class="card mb-2 ms-18">
+                <a data-bs-toggle="collapse" href="#block-2-block-1-block-3-block-1-block-12-block-1-block-3" 
+                   aria-expanded="false" 
+                   class="text-decoration-none">
+                  <div class="card-header bg-success bg-opacity-10">
+                    <i class="fa fa-caret-right me-2"></i>
+                    <strong>CASE</strong> (<code>3</code>)
+                      <span class="badge bg-light text-dark ms-2">Lines 174-175</span>
+                  </div>
+                </a>
+                <div id="block-2-block-1-block-3-block-1-block-12-block-1-block-3" class="collapse">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="text-muted"> 175</span> ht2%flo = ht2%flo + recall(irel)%hd(1,time%yrs)%flo / nstep
+
+</code></pre>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 176</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-success mt-2 pt-2">
+                      <strong>END SELECT</strong><span class="badge bg-light text-dark ms-2">Line 179</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-info mt-2 pt-2">
+                      <strong>END IF</strong><span class="badge bg-light text-dark ms-2">Line 181</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 183</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div class="logic-block-endcap border-top border-2 border-warning mt-2 pt-2">
+                      <strong>END DO</strong><span class="badge bg-light text-dark ms-2">Line 184</span>                    </div>
+                  </div>
+                </div>
+              </div>
+
+                        
+                <div class="card mb-2 ms-0">
+                  <div class="card-body">
+                      <pre class="mb-0"><code><span class="badge text-white me-1" style="background-color: #EC7063;">RETURN</span> <span class="text-muted"> 186</span> return
+
+</code></pre>
+                  </div>
+                </div>
+
+          
+          <div class="card mt-4 mb-2">
+            <a data-bs-toggle="collapse" href="#allocations-summary-section" 
+               aria-expanded="false" 
+               aria-controls="allocations-summary-section" 
+               class="text-decoration-none">
+              <div class="card-header bg-secondary bg-opacity-10">
+                <i class="fa fa-caret-down me-2"></i>
+                <strong>Allocations</strong>
+              </div>
+            </a>
+            <div id="allocations-summary-section" class="collapse">
+              <div class="card-body">
+                  <em>n/a</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+    <section>    
+      <h2>Variables</h2>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-jres"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>jres</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-id~41"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>id</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pvol_m3~2"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pvol_m3</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-evol_m3~2"></span>
+              real,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>evol_m3</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    </section>
+    <br>
+    
+    
+
+    
+    
+
+
+
+    
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Fortran Source Documentation
+ was developed by Documentation Builder<br>              &copy; 2026 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

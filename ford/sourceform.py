@@ -91,6 +91,40 @@ def _split_top_level_commas(text: str) -> list[str]:
     return parts
 
 
+IMPLIED_DO_CONTROL_RE = re.compile(r"^[a-zA-Z_]\w*\s*=")
+
+
+def _expand_implied_do_items(items: list[str]) -> list[str]:
+    """
+    Expand implied-DO lists into their component items.
+
+    Example:
+    (a, b, i = 1, n) -> ['a', 'b']
+    """
+    expanded: list[str] = []
+    for item in items:
+        stripped = item.strip()
+        if stripped.startswith("(") and stripped.endswith(")"):
+            inner = stripped[1:-1].strip()
+            inner_items = _split_top_level_commas(inner)
+
+            loop_start_idx = None
+            for idx in range(len(inner_items) - 1, -1, -1):
+                if IMPLIED_DO_CONTROL_RE.match(inner_items[idx].strip()):
+                    loop_start_idx = idx
+                    break
+
+            if loop_start_idx is not None and loop_start_idx > 0:
+                for inner_item in inner_items[:loop_start_idx]:
+                    if inner_item.strip():
+                        expanded.append(inner_item.strip())
+                continue
+
+        expanded.append(stripped)
+
+    return expanded
+
+
 class ConditionTracker:
     """Tracks nested conditions for operations."""
 
@@ -405,6 +439,7 @@ class IoTracker(ConditionTracker):
 
                     # --- Split on top-level commas (ignoring nested parentheses)
                     cols = _split_top_level_commas(cols_part)
+                    cols = _expand_implied_do_items(cols)
 
                     # --- Strip one layer of parens from each col
                     clean_cols = []
@@ -674,6 +709,7 @@ class IoTracker(ConditionTracker):
 
         # Split on top-level commas (ignoring nested parentheses)
         extracted_variables = _split_top_level_commas(vars_part)
+        extracted_variables = _expand_implied_do_items(extracted_variables)
 
         # Clean up the variables - remove one layer of parens if entire thing is wrapped
         cleaned_variables = []
@@ -2744,12 +2780,22 @@ class FortranCodeUnit(FortranContainer):
                     var.permission = attr
                 elif attr[0:6] == "intent":
                     var.intent = attr[7:-1]
-                elif DIM_RE.match(attr) and (
-                    "pointer" in attr or "allocatable" in attr
-                ):
+                elif DIM_RE.match(attr):
+                    # Extract dimension specification from attributes like
+                    # "dimension(12)" or "allocatable(12)" or "pointer(:)"
                     i = attr.index("(")
-                    var.attribs.append(attr[0:i])
-                    var.dimension = attr[i:]
+                    attr_name = attr[0:i]
+                    if attr_name == "dimension":
+                        # For plain dimension attributes, only set var.dimension
+                        var.dimension = attr[i:]
+                    elif attr_name in ["pointer", "allocatable"]:
+                        # For pointer/allocatable with dimensions, add the attribute
+                        # and set var.dimension
+                        var.attribs.append(attr_name)
+                        var.dimension = attr[i:]
+                    else:
+                        # Unknown attribute with dimensions, keep as-is
+                        var.attribs.append(attr)
                 elif attr == "parameter":
                     var.attribs.append(attr)
                     var.initial = self.param_dict[var.name.lower()]
@@ -4351,6 +4397,7 @@ class FortranIOFile(FortranBase):
         self.name = io_filename  # For compatibility with other FortranBase objects
         self.procedures = []  # List of procedures that use this file
         self.operations = []  # List of all operations on this file
+        self.unique_schema = None  # Optional block-structured schema override
         self.visible = True
         self.obj = "iofile"
 
@@ -4843,6 +4890,24 @@ class FortranVariable(FortranBase):
         self.ug = False
         self.ug2 = False
 
+        # Extract dimension from attribs if present
+        # This handles cases like "real, dimension(12) :: erod"
+        # Note: This is needed for type member variables which don't go through process_attribs
+        dimension_attrib = None
+        for i, attr in enumerate(self.attribs):
+            attr_lower = attr.lower()
+            if attr_lower.startswith("dimension(") or attr_lower.startswith(
+                "dimension ("
+            ):
+                # Extract the dimension specification
+                paren_idx = attr.index("(")
+                self.dimension = attr[paren_idx:]
+                dimension_attrib = i
+                break
+        if dimension_attrib is not None:
+            # Remove the dimension attribute from attribs since it's now in self.dimension
+            self.attribs.pop(dimension_attrib)
+
         indexlist = []
         indexparen = self.name.find("(")
         if indexparen > 0:
@@ -4909,7 +4974,14 @@ class FortranVariable(FortranBase):
         # Add all the other attributes to a single list
         attribute_parts = copy.copy(self.attribs)
         if self.dimension:
-            attribute_parts.append(self.dimension)
+            # Insert dimension before allocatable/pointer if they exist
+            # This ensures proper ordering in the declaration
+            insert_pos = len(attribute_parts)
+            for i, attr in enumerate(attribute_parts):
+                if attr.lower() in ["allocatable", "pointer"]:
+                    insert_pos = i
+                    break
+            attribute_parts.insert(insert_pos, f"dimension{self.dimension}")
         if self.parameter:
             attribute_parts.append("parameter")
 
