@@ -1024,16 +1024,16 @@
                             {# Column 2: Derived Type #}
                             <td>
                               {% if component_tokens|length > 0 and container_type.value %}
-                                {{ 'type(' ~ container_type.value.name ~ ')' if container_type.value.name else 'N/A' }}
+                                {% if container_type.value.name %}type({{ container_type.value | relurl(page_url) }}){% else %}N/A{% endif %}
                               {% elif found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
                                 {% set type_obj = found_var.value.proto[0] %}
                                 {% if type_obj is string %}
                                   {{ type_obj }}
                                 {% else %}
-                                  {{ 'type(' ~ type_obj.name ~ ')' if type_obj.name else 'N/A' }}
+                                  {% if type_obj.name %}type({{ type_obj | relurl(page_url) }}){% else %}N/A{% endif %}
                                 {% endif %}
                               {% elif found_var.value and found_var.value.full_type is defined and 'type(' in found_var.value.full_type|lower %}
-                                {{ found_var.value.full_type }}
+                                {{ found_var.value.full_type | relurl(page_url) }}
                               {% else %}
                                 N/A
                               {% endif %}
