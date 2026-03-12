@@ -234,6 +234,14 @@
                                 {% endfor %}
                               {% endif %}
                               
+                              {% if not found_var.value and var_info.procedure.args is defined %}
+                                {% for a in var_info.procedure.args %}
+                                  {% if a.name is defined and a.name.lower() == var_info.base_name.lower() %}
+                                    {% set found_var.value = a %}
+                                  {% endif %}
+                                {% endfor %}
+                              {% endif %}
+
                               {% if not found_var.value and var_info.procedure.all_vars is defined %}
                                 {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
                                   {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
@@ -572,14 +580,15 @@
                               {% endfor %}
                             {% endif %}
                             
-                            {% if not is_local.value and var_info.procedure.args is defined %}
+                            {% if not found_var.value and var_info.procedure.args is defined %}
                               {% for a in var_info.procedure.args %}
                                 {% if a.name is defined and a.name.lower() == var_info.base_name.lower() %}
+                                  {% set found_var.value = a %}
                                   {% set is_local.value = true %}
                                 {% endif %}
                               {% endfor %}
                             {% endif %}
-                            
+
                             {% if not found_var.value and var_info.procedure.all_vars is defined %}
                               {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
                                 {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
@@ -891,7 +900,7 @@
                         <tr>
                           <th>Module</th>
                           <th>Derived Type</th>
-                          <th>Parent Variable</th>
+                          <th>Instance</th>
                           <th>Variable Name</th>
                           <th>Data Type</th>
                           <th>Default Value / Initial</th>
@@ -912,10 +921,53 @@
                               {% endfor %}
                             {% endif %}
                             
+                            {% if not found_var.value and var_info.procedure.args is defined %}
+                              {% for a in var_info.procedure.args %}
+                                {% if a.name is defined and a.name.lower() == var_info.base_name.lower() %}
+                                  {% set found_var.value = a %}
+                                {% endif %}
+                              {% endfor %}
+                            {% endif %}
+
                             {% if not found_var.value and var_info.procedure.all_vars is defined %}
                               {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
                                 {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
                               {% endif %}
+                            {% endif %}
+
+                            {# Resolve full component path, including nested derived-type components #}
+                            {% set component_tokens = [] %}
+                            {% if var_info.component_path is defined and var_info.component_path and var_info.component_path|length > 0 %}
+                              {% for tok in var_info.component_path %}
+                                {% set _ = component_tokens.append(tok.split('(')[0]) %}
+                              {% endfor %}
+                            {% elif var_info.component_name %}
+                              {% set _ = component_tokens.append(var_info.component_name.split('(')[0]) %}
+                            {% endif %}
+
+                            {% set resolved_component = namespace(value=none) %}
+                            {% set container_type = namespace(value=none) %}
+                            {% if component_tokens|length > 0 and found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
+                              {% set current_type = namespace(value=found_var.value.proto[0]) %}
+                              {% for tok in component_tokens %}
+                                {% if current_type.value is not string and current_type.value and current_type.value.variables is defined %}
+                                  {% set container_type.value = current_type.value %}
+                                  {% set match = namespace(value=none) %}
+                                  {% for comp in current_type.value.variables %}
+                                    {% if comp.name.lower() == tok.lower() %}
+                                      {% set match.value = comp %}
+                                    {% endif %}
+                                  {% endfor %}
+                                  {% set resolved_component.value = match.value %}
+                                  {% if match.value and match.value.proto and match.value.proto|length > 0 %}
+                                    {% set current_type.value = match.value.proto[0] %}
+                                  {% else %}
+                                    {% set current_type.value = none %}
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                            {% elif found_var.value and found_var.value.component_details is defined and found_var.value.component_details %}
+                              {% set resolved_component.value = found_var.value.component_details %}
                             {% endif %}
                             
                             {# Try to find the parent module #}
@@ -971,43 +1023,29 @@
                             
                             {# Column 2: Derived Type #}
                             <td>
-                              {% if var_info.component_name and found_var.value %}
-                                {% set component_var = namespace(value=none) %}
-                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                                  {% set type_obj = found_var.value.proto[0] %}
-                                  {% if type_obj is not string and type_obj.variables is defined %}
-                                    {% for comp in type_obj.variables %}
-                                      {% if comp.name.lower() == var_info.component_name.lower() %}
-                                        {% set component_var.value = comp %}
-                                      {% endif %}
-                                    {% endfor %}
-                                  {% endif %}
-                                {% endif %}
-                                {% if component_var.value and component_var.value.proto and component_var.value.proto|length > 0 %}
-                                  {% set comp_type = component_var.value.proto[0] %}
-                                  {% if comp_type is string %}
-                                    {{ comp_type }}
-                                  {% else %}
-                                    {{ comp_type.name if comp_type.name else 'N/A' }}
-                                  {% endif %}
-                                {% else %}
-                                  N/A
-                                {% endif %}
+                              {% if component_tokens|length > 0 and container_type.value %}
+                                {{ 'type(' ~ container_type.value.name ~ ')' if container_type.value.name else 'N/A' }}
                               {% elif found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
                                 {% set type_obj = found_var.value.proto[0] %}
                                 {% if type_obj is string %}
                                   {{ type_obj }}
                                 {% else %}
-                                  {{ type_obj.name if type_obj.name else 'N/A' }}
+                                  {{ 'type(' ~ type_obj.name ~ ')' if type_obj.name else 'N/A' }}
                                 {% endif %}
+                              {% elif found_var.value and found_var.value.full_type is defined and 'type(' in found_var.value.full_type|lower %}
+                                {{ found_var.value.full_type }}
                               {% else %}
                                 N/A
                               {% endif %}
                             </td>
 
-                            {# Column 3: Parent Variable (for nested components) #}
+                            {# Column 3: Instance for this variable/component #}
                             <td>
-                              {% if var_info.component_name %}
+                              {% if component_tokens|length > 1 %}
+                                {{ component_tokens[-2] }}
+                              {% elif component_tokens|length == 1 %}
+                                {{ var_info.base_name }}
+                              {% elif var_info.base_name %}
                                 {{ var_info.base_name }}
                               {% else %}
                                 -
@@ -1016,28 +1054,19 @@
                             
                             {# Column 4: Variable Name #}
                             <td>
-                              {{ var_info.component_name if var_info.component_name else var_info.base_name }}
+                              {% if component_tokens|length > 0 %}
+                                {{ component_tokens[-1] }}
+                              {% else %}
+                                {{ var_info.base_name }}
+                              {% endif %}
                             </td>
                             
                             {# Column 5: Data Type #}
                             <td>
-                              {% if var_info.component_name and found_var.value %}
-                                {% set component_var = namespace(value=none) %}
-                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                                  {% set type_obj = found_var.value.proto[0] %}
-                                  {% if type_obj is not string and type_obj.variables is defined %}
-                                    {% for comp in type_obj.variables %}
-                                      {% if comp.name.lower() == var_info.component_name.lower() %}
-                                        {% set component_var.value = comp %}
-                                      {% endif %}
-                                    {% endfor %}
-                                  {% endif %}
-                                {% endif %}
-                                {% if component_var.value %}
-                                  {{ component_var.value.full_type }}
-                                {% else %}
-                                  unknown
-                                {% endif %}
+                              {% if resolved_component.value and resolved_component.value.full_type is defined %}
+                                {{ resolved_component.value.full_type }}
+                              {% elif found_var.value and found_var.value.component_details is defined and found_var.value.component_details and found_var.value.component_details.full_type is defined %}
+                                {{ found_var.value.component_details.full_type }}
                               {% elif found_var.value %}
                                 {{ found_var.value.full_type }}
                               {% else %}
@@ -1047,23 +1076,10 @@
                             
                             {# Column 6: Default Value / Initial #}
                             <td>
-                              {% if var_info.component_name and found_var.value %}
-                                {% set component_var = namespace(value=none) %}
-                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                                  {% set type_obj = found_var.value.proto[0] %}
-                                  {% if type_obj is not string and type_obj.variables is defined %}
-                                    {% for comp in type_obj.variables %}
-                                      {% if comp.name.lower() == var_info.component_name.lower() %}
-                                        {% set component_var.value = comp %}
-                                      {% endif %}
-                                    {% endfor %}
-                                  {% endif %}
-                                {% endif %}
-                                {% if component_var.value and component_var.value.initial %}
-                                  {{ component_var.value.initial }}
-                                {% else %}
-                                  -
-                                {% endif %}
+                              {% if resolved_component.value and resolved_component.value.initial is defined and resolved_component.value.initial %}
+                                {{ resolved_component.value.initial }}
+                              {% elif found_var.value and found_var.value.component_details is defined and found_var.value.component_details and found_var.value.component_details.initial is defined and found_var.value.component_details.initial %}
+                                {{ found_var.value.component_details.initial }}
                               {% elif found_var.value and found_var.value.initial %}
                                 {{ found_var.value.initial }}
                               {% else %}
@@ -1074,6 +1090,90 @@
                         {% endfor %}
                       </tbody>
                     </table>
+
+                    {% set nested_read_vars = [] %}
+                    {% for rv in proc_read_vars_unique %}
+                      {% if rv.component_path is defined and rv.component_path and rv.component_path|length > 1 %}
+                        {% set _ = nested_read_vars.append(rv) %}
+                      {% endif %}
+                    {% endfor %}
+
+                    {% if nested_read_vars|length > 0 %}
+                      <h4>Nested Derived Type Breakdown</h4>
+                      <table class="table table-sm table-striped">
+                        <thead>
+                          <tr>
+                            <th>Parent Type</th>
+                            <th>Child Derived Type</th>
+                            <th>Instance</th>
+                            <th>Component Variable</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for rv in nested_read_vars %}
+                            {% set tokens = [] %}
+                            {% for tok in rv.component_path %}
+                              {% set _ = tokens.append(tok.split('(')[0]) %}
+                            {% endfor %}
+
+                            {% set base_var = namespace(value=none) %}
+                            {% if rv.procedure.variables is defined %}
+                              {% for v in rv.procedure.variables %}
+                                {% if v.name.lower() == rv.base_name.lower() %}
+                                  {% set base_var.value = v %}
+                                {% endif %}
+                              {% endfor %}
+                            {% endif %}
+                            {% if not base_var.value and rv.procedure.all_vars is defined and rv.base_name.lower() in rv.procedure.all_vars %}
+                              {% set base_var.value = rv.procedure.all_vars[rv.base_name.lower()] %}
+                            {% endif %}
+
+                            {% set parent_type_name = namespace(value='-') %}
+                            {% set child_type_name = namespace(value='-') %}
+                            {% set instance_name = namespace(value=(tokens[-2] if tokens|length > 1 else rv.base_name)) %}
+
+                            {% if base_var.value and base_var.value.proto and base_var.value.proto|length > 0 and base_var.value.proto[0] is not string %}
+                              {% set current_type = namespace(value=base_var.value.proto[0]) %}
+                              {% if current_type.value and current_type.value.name %}
+                                {% set parent_type_name.value = 'type(' ~ current_type.value.name ~ ')' %}
+                              {% endif %}
+
+                              {% for tok in tokens %}
+                                {% if current_type.value and current_type.value.variables is defined %}
+                                  {% set comp_match = namespace(value=none) %}
+                                  {% for comp in current_type.value.variables %}
+                                    {% if comp.name.lower() == tok.lower() %}
+                                      {% set comp_match.value = comp %}
+                                    {% endif %}
+                                  {% endfor %}
+                                  {% if comp_match.value and comp_match.value.proto and comp_match.value.proto|length > 0 %}
+                                    {% set p = comp_match.value.proto[0] %}
+                                    {% if p is not string and p.name %}
+                                      {% set child_type_name.value = 'type(' ~ p.name ~ ')' %}
+                                    {% elif p is string %}
+                                      {% set child_type_name.value = p %}
+                                    {% endif %}
+                                  {% endif %}
+                                  {% if comp_match.value and comp_match.value.proto and comp_match.value.proto|length > 0 and comp_match.value.proto[0] is not string %}
+                                    {% set instance_name.value = tok %}
+                                    {% set current_type.value = comp_match.value.proto[0] %}
+                                  {% else %}
+                                    {% set current_type.value = none %}
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                            {% endif %}
+
+                            <tr>
+                              <td>{{ parent_type_name.value if parent_type_name.value != '-' else rv.base_name }}</td>
+                              <td>{{ child_type_name.value }}</td>
+                              <td>{{ instance_name.value }}</td>
+                              <td>{{ tokens[-1] if tokens|length > 0 else '-' }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    {% endif %}
                   {% else %}
                     <p><em>No read variables information available.</em></p>
                   {% endif %}
@@ -1161,6 +1261,13 @@
                           {% for v in var_info.procedure.variables %}
                             {% if v.name.lower() == var_info.base_name.lower() %}
                               {% set found_var.value = v %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                        {% if not found_var.value and var_info.procedure.args is defined %}
+                          {% for a in var_info.procedure.args %}
+                            {% if a.name is defined and a.name.lower() == var_info.base_name.lower() %}
+                              {% set found_var.value = a %}
                             {% endif %}
                           {% endfor %}
                         {% endif %}
@@ -1536,6 +1643,15 @@
                               {% set is_local.value = true %}
                             {% endif %}
                             
+                            {% if not found_var.value and var_info.procedure.args is defined %}
+                              {% for a in var_info.procedure.args %}
+                                {% if a.name is defined and a.name.lower() == var_info.base_name.lower() %}
+                                  {% set found_var.value = a %}
+                                  {% set is_local.value = true %}
+                                {% endif %}
+                              {% endfor %}
+                            {% endif %}
+
                             {% if not found_var.value and var_info.procedure.all_vars is defined %}
                               {% if var_info.base_name.lower() in var_info.procedure.all_vars %}
                                 {% set found_var.value = var_info.procedure.all_vars[var_info.base_name.lower()] %}
@@ -1547,6 +1663,44 @@
                             {% else %}
                               {% set codetype = (ops.resolution_chain.variable_name if ops.resolution_chain and ops.resolution_chain.variable_name is defined else (ops.resolution_chain.component_name if ops.resolution_chain and ops.resolution_chain.component_name is defined else (var_info.base_name if var_info.base_name else '-'))) %}
                             {% endif %}
+
+                            {# Resolve full component path (supports nested chains like a%b%c) #}
+                            {% set component_tokens = [] %}
+                            {% if var_info.component_path is defined and var_info.component_path and var_info.component_path|length > 0 %}
+                              {% for tok in var_info.component_path %}
+                                {% set _ = component_tokens.append(tok.split('(')[0]) %}
+                              {% endfor %}
+                            {% elif var_info.full_name is defined and '%' in var_info.full_name %}
+                              {% set full_tokens = var_info.full_name.split('%') %}
+                              {% for tok in full_tokens[1:] %}
+                                {% set _ = component_tokens.append(tok.split('(')[0]) %}
+                              {% endfor %}
+                            {% elif var_info.component_name %}
+                              {% set _ = component_tokens.append(var_info.component_name.split('(')[0]) %}
+                            {% endif %}
+
+                            {% set resolved_component = namespace(value=none) %}
+                            {% if component_tokens|length > 0 and found_var.value and found_var.value.proto and found_var.value.proto|length > 0 %}
+                              {% set current_type = namespace(value=found_var.value.proto[0]) %}
+                              {% for tok in component_tokens %}
+                                {% if current_type.value is not string and current_type.value and current_type.value.variables is defined %}
+                                  {% set match = namespace(value=none) %}
+                                  {% for comp in current_type.value.variables %}
+                                    {% if comp.name.lower() == tok.lower() %}
+                                      {% set match.value = comp %}
+                                    {% endif %}
+                                  {% endfor %}
+                                  {% set resolved_component.value = match.value %}
+                                  {% if match.value and match.value.proto and match.value.proto|length > 0 %}
+                                    {% set current_type.value = match.value.proto[0] %}
+                                  {% else %}
+                                    {% set current_type.value = none %}
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                            {% elif found_var.value and found_var.value.component_details is defined and found_var.value.component_details %}
+                              {% set resolved_component.value = found_var.value.component_details %}
+                            {% endif %}
                             
                             {# Column 4: Local (Y/N) #}
                             <td>{{ 'Y' if is_local.value else 'N' }}</td>
@@ -1555,6 +1709,8 @@
                             <td>
                               {% if var_info.parent_component is defined and var_info.parent_component %}
                                 {{ var_info.parent_component }}
+                              {% elif component_tokens|length > 1 %}
+                                {{ component_tokens[-2] }}
                               {% elif var_info.component_name or (var_info.full_name is defined and '%' in var_info.full_name) %}
                                 {% if var_info.base_name %}
                                   {{ var_info.base_name }}
@@ -1575,6 +1731,9 @@
                             
                             {# Column 6: Component #}
                             {% set display_component = (var_info.component_name if var_info.component_name else (var_info.full_name if var_info.full_name is defined and '%' not in var_info.full_name else var_info.base_name)) %}
+                            {% if component_tokens|length > 0 %}
+                              {% set display_component = component_tokens[-1] %}
+                            {% endif %}
                             {% if 'timestep' in (row_condition.value|lower) and var_info.component_name %}
                               {% if display_component.endswith('mo') or display_component.endswith('yr') %}
                                 {% set display_component = display_component[:-2] %}
@@ -1584,23 +1743,10 @@
                             
                             {# Column 7: Type (component data type) #}
                             <td>
-                              {% if var_info.component_name and found_var.value %}
-                                {% set component_var = namespace(value=none) %}
-                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                                  {% set type_obj = found_var.value.proto[0] %}
-                                  {% if type_obj is not string and type_obj.variables is defined %}
-                                    {% for comp in type_obj.variables %}
-                                      {% if comp.name.lower() == var_info.component_name.lower() %}
-                                        {% set component_var.value = comp %}
-                                      {% endif %}
-                                    {% endfor %}
-                                  {% endif %}
-                                {% endif %}
-                                {% if component_var.value %}
-                                  {{ component_var.value.full_type }}
-                                {% else %}
-                                  unknown
-                                {% endif %}
+                              {% if resolved_component.value and resolved_component.value.full_type is defined %}
+                                {{ resolved_component.value.full_type }}
+                              {% elif found_var.value and found_var.value.component_details is defined and found_var.value.component_details and found_var.value.component_details.full_type is defined %}
+                                {{ found_var.value.component_details.full_type }}
                               {% elif found_var.value %}
                                 {{ found_var.value.full_type }}
                               {% else %}
@@ -1611,22 +1757,12 @@
                             {# Column 8: Dimensions (array dimension and allocatable info) #}
                             <td>
                               {% set dim_info = namespace(dimension='', attribs=[]) %}
-                              {% if var_info.component_name and found_var.value %}
-                                {% set component_var = namespace(value=none) %}
-                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                                  {% set type_obj = found_var.value.proto[0] %}
-                                  {% if type_obj is not string and type_obj.variables is defined %}
-                                    {% for comp in type_obj.variables %}
-                                      {% if comp.name.lower() == var_info.component_name.lower() %}
-                                        {% set component_var.value = comp %}
-                                      {% endif %}
-                                    {% endfor %}
-                                  {% endif %}
-                                {% endif %}
-                                {% if component_var.value %}
-                                  {% set dim_info.dimension = component_var.value.dimension if component_var.value.dimension is defined else '' %}
-                                  {% set dim_info.attribs = component_var.value.attribs if component_var.value.attribs is defined else [] %}
-                                {% endif %}
+                              {% if resolved_component.value %}
+                                {% set dim_info.dimension = resolved_component.value.dimension if resolved_component.value.dimension is defined else '' %}
+                                {% set dim_info.attribs = resolved_component.value.attribs if resolved_component.value.attribs is defined else [] %}
+                              {% elif found_var.value and found_var.value.component_details is defined and found_var.value.component_details %}
+                                {% set dim_info.dimension = found_var.value.component_details.dimension if found_var.value.component_details.dimension is defined else '' %}
+                                {% set dim_info.attribs = found_var.value.component_details.attribs if found_var.value.component_details.attribs is defined else [] %}
                               {% elif found_var.value %}
                                 {% set dim_info.dimension = found_var.value.dimension if found_var.value.dimension is defined else '' %}
                                 {% set dim_info.attribs = found_var.value.attribs if found_var.value.attribs is defined else [] %}
@@ -1650,23 +1786,10 @@
                             
                             {# Column 9: Default #}
                             <td>
-                              {% if var_info.component_name and found_var.value %}
-                                {% set component_var = namespace(value=none) %}
-                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                                  {% set type_obj = found_var.value.proto[0] %}
-                                  {% if type_obj is not string and type_obj.variables is defined %}
-                                    {% for comp in type_obj.variables %}
-                                      {% if comp.name.lower() == var_info.component_name.lower() %}
-                                        {% set component_var.value = comp %}
-                                      {% endif %}
-                                    {% endfor %}
-                                  {% endif %}
-                                {% endif %}
-                                {% if component_var.value and component_var.value.initial %}
-                                  {{ component_var.value.initial }}
-                                {% else %}
-                                  -
-                                {% endif %}
+                              {% if resolved_component.value and resolved_component.value.initial is defined and resolved_component.value.initial %}
+                                {{ resolved_component.value.initial }}
+                              {% elif found_var.value and found_var.value.component_details is defined and found_var.value.component_details and found_var.value.component_details.initial is defined and found_var.value.component_details.initial %}
+                                {{ found_var.value.component_details.initial }}
                               {% elif found_var.value and found_var.value.initial %}
                                 {{ found_var.value.initial }}
                               {% else %}
@@ -1676,23 +1799,10 @@
                             
                             {# Column 10: Units #}
                             <td>
-                              {% if var_info.component_name and found_var.value %}
-                                {% set component_var = namespace(value=none) %}
-                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                                  {% set type_obj = found_var.value.proto[0] %}
-                                  {% if type_obj is not string and type_obj.variables is defined %}
-                                    {% for comp in type_obj.variables %}
-                                      {% if comp.name.lower() == var_info.component_name.lower() %}
-                                        {% set component_var.value = comp %}
-                                      {% endif %}
-                                    {% endfor %}
-                                  {% endif %}
-                                {% endif %}
-                                {% if component_var.value and component_var.value.units %}
-                                  {{ component_var.value.units }}
-                                {% else %}
-                                  N/A
-                                {% endif %}
+                              {% if resolved_component.value and resolved_component.value.units %}
+                                {{ resolved_component.value.units }}
+                              {% elif found_var.value and found_var.value.component_details is defined and found_var.value.component_details and found_var.value.component_details.units %}
+                                {{ found_var.value.component_details.units }}
                               {% elif found_var.value and found_var.value.units %}
                                 {{ found_var.value.units }}
                               {% else %}
@@ -1702,23 +1812,10 @@
                             
                             {# Column 11: Description #}
                             <td>
-                              {% if var_info.component_name and found_var.value %}
-                                {% set component_var = namespace(value=none) %}
-                                {% if found_var.value.proto and found_var.value.proto|length > 0 %}
-                                  {% set type_obj = found_var.value.proto[0] %}
-                                  {% if type_obj is not string and type_obj.variables is defined %}
-                                    {% for comp in type_obj.variables %}
-                                      {% if comp.name.lower() == var_info.component_name.lower() %}
-                                        {% set component_var.value = comp %}
-                                      {% endif %}
-                                    {% endfor %}
-                                  {% endif %}
-                                {% endif %}
-                                {% if component_var.value and component_var.value.doc %}
-                                  {{ component_var.value.doc|striptags|truncate(100) }}
-                                {% else %}
-                                  -
-                                {% endif %}
+                              {% if resolved_component.value and resolved_component.value.doc %}
+                                {{ resolved_component.value.doc|striptags|truncate(100) }}
+                              {% elif found_var.value and found_var.value.component_details is defined and found_var.value.component_details and found_var.value.component_details.doc %}
+                                {{ found_var.value.component_details.doc|striptags|truncate(100) }}
                               {% elif found_var.value and found_var.value.doc %}
                                 {{ found_var.value.doc|striptags|truncate(100) }}
                               {% else %}
