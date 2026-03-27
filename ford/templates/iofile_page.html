@@ -1325,98 +1325,13 @@
                             {% set _ = expanded_read_vars.append(var_info) %}
                           {% endif %}
                         {% else %}
-                          {# Check if this component (or nested component path) is a derived type that needs expansion #}
-                          {% set expansion_check = namespace(should_expand=false, type_obj=none, final_component_name='') %}
-                          {% if var_info.component_name and found_var.value %}
-                            {# Walk through the component path to find the final type #}
-                            {% set navigation = namespace(current_var=found_var.value, path_valid=true) %}
-                            {% set component_path = var_info.component_path if (var_info.component_path is defined and var_info.component_path|length > 0) else [var_info.component_name] %}
-                            
-                            {# Navigate through each level of the component path #}
-                            {% for path_component in component_path %}
-                              {% if navigation.path_valid %}
-                                {# Get the type of current variable #}
-                                {% if navigation.current_var.proto and navigation.current_var.proto|length > 0 %}
-                                  {% set var_type_obj = navigation.current_var.proto[0] %}
-                                  {% if var_type_obj is not string and var_type_obj.variables is defined %}
-                                    {# Find the component at this level #}
-                                    {% set found_at_level = namespace(component=none) %}
-                                    {% for comp in var_type_obj.variables %}
-                                      {% if comp.name.lower() == path_component.lower() %}
-                                        {% set found_at_level.component = comp %}
-                                        {% set expansion_check.final_component_name = path_component %}
-                                      {% endif %}
-                                    {% endfor %}
-                                    
-                                    {% if found_at_level.component %}
-                                      {% set navigation.current_var = found_at_level.component %}
-                                    {% else %}
-                                      {% set navigation.path_valid = false %}
-                                    {% endif %}
-                                  {% else %}
-                                    {% set navigation.path_valid = false %}
-                                  {% endif %}
-                                {% else %}
-                                  {% set navigation.path_valid = false %}
-                                {% endif %}
-                              {% endif %}
-                            {% endfor %}
-                            
-                            {# Check if the final component in the path is a derived type that should be expanded #}
-                            {% if navigation.path_valid and navigation.current_var.proto and navigation.current_var.proto|length > 0 %}
-                              {% set final_type_obj = navigation.current_var.proto[0] %}
-                              {% if final_type_obj is not string and final_type_obj.variables is defined %}
-                                {% set expansion_check.should_expand = true %}
-                                {% set expansion_check.type_obj = final_type_obj %}
-                              {% endif %}
-                            {% endif %}
-                          {% endif %}
-                          
-                          {% if expansion_check.should_expand %}
-                            {# Expand the nested derived type #}
-                            {% for subcomp in expansion_check.type_obj.variables %}
-                              {% set line_position_counter.position = line_position_counter.position + 1 %}
-                              {% set comp_info = {} %}
-                              {# Construct full_name: if already exists, append; otherwise build from base_name + component_path #}
-                              {% if var_info.full_name is defined %}
-                                {% set full_var_name = var_info.full_name ~ '%' ~ subcomp.name %}
-                              {% else %}
-                                {% if var_info.component_path is defined and var_info.component_path|length > 0 %}
-                                  {% set path_str = var_info.component_path|join('%') %}
-                                {% elif var_info.component_name %}
-                                  {% set path_str = var_info.component_name %}
-                                {% else %}
-                                  {% set path_str = '' %}
-                                {% endif %}
-                                {% if path_str %}
-                                  {% set full_var_name = var_info.base_name ~ '%' ~ path_str ~ '%' ~ subcomp.name %}
-                                {% else %}
-                                  {% set full_var_name = var_info.base_name ~ '%' ~ subcomp.name %}
-                                {% endif %}
-                              {% endif %}
-                              {# Preserve condition information from parent if it exists #}
-                              {% set var_condition = var_info.condition if (var_info.condition is defined) else none %}
-                              {% set var_condition_stack = var_info.condition_stack if (var_info.condition_stack is defined) else none %}
-                              {% set _ = comp_info.update({
-                                'base_name': var_info.base_name,
-                                'component_name': subcomp.name,
-                                'full_name': full_var_name,
-                                'procedure': var_info.procedure,
-                                'file_line': current_file_line,
-                                'type_name': expansion_check.final_component_name,
-                                'position': line_position_counter.position,
-                                'parent_component': expansion_check.final_component_name,
-                                'condition': var_condition,
-                                'condition_stack': var_condition_stack
-                              }) %}
-                              {% set _ = expanded_read_vars.append(comp_info) %}
-                            {% endfor %}
-                          {% else %}
-                            {# Already has a component or not a derived type - add as is with running position #}
-                            {% set line_position_counter.position = line_position_counter.position + 1 %}
-                            {% set _ = var_info.update({'file_line': current_file_line, 'position': line_position_counter.position}) %}
-                            {% set _ = expanded_read_vars.append(var_info) %}
-                          {% endif %}
+                          {# Already has a component specified - add as is with running position.
+                             When the read statement explicitly references a component (e.g. hru_db(i)%dbsc),
+                             the Sample Read Format should reflect exactly what is read, not expand the
+                             component further even if it is itself a derived type. #}
+                          {% set line_position_counter.position = line_position_counter.position + 1 %}
+                          {% set _ = var_info.update({'file_line': current_file_line, 'position': line_position_counter.position}) %}
+                          {% set _ = expanded_read_vars.append(var_info) %}
                         {% endif %}
                     {% endfor %}
 

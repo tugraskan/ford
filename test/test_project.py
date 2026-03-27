@@ -1452,3 +1452,92 @@ end subroutine aqu_read_elements
     assert (
         "aqu_catunit.ele" in io_filenames
     ), f"Expected 'aqu_catunit.ele' in iofiles, got: {io_filenames}"
+
+
+def test_iofile_preserves_derived_type_component_in_read(tmp_path):
+    """Test that when a read statement reads a derived-type component (e.g. hru_db(i)%dbsc),
+    the IO timeline parameter is recorded as-is and not expanded into sub-fields.
+
+    Regression test: the Sample Read Format used to incorrectly expand hru_db(i)%dbsc
+    into the individual fields of the dbsc derived type (e.g. hru_db%topo, hru_db%hyd),
+    which did not match the actual Fortran read statement.
+    """
+    import ford.sourceform
+
+    setattr(ford.sourceform, "namelist", NameSelector())
+
+    src_dir = tmp_path / "src"
+    src_dir.mkdir()
+
+    (src_dir / "hru_module.f90").write_text("""\
+module hru_module
+  implicit none
+  type hru_dbsc_type
+    character(len=255) :: topo
+    character(len=255) :: hyd
+    character(len=255) :: land_use_mgt
+  end type hru_dbsc_type
+  type hru_data_base
+    type(hru_dbsc_type) :: dbsc
+  end type hru_data_base
+  type(hru_data_base), allocatable :: hru_db(:)
+end module hru_module
+""")
+
+    (src_dir / "input_file_module.f90").write_text("""\
+module input_file_module
+  implicit none
+  type input_hru
+    character(len=25) :: hru_data = "hru-data.hru"
+  end type input_hru
+  type(input_hru) :: in_hru
+end module input_file_module
+""")
+
+    (src_dir / "hru_read.f90").write_text("""\
+subroutine hru_read
+  use hru_module, only: hru_db
+  use input_file_module
+  implicit none
+  character(len=80) :: titldum, header
+  integer :: eof, k, i
+  eof = 0
+  open (113, file=in_hru%hru_data)
+  read (113,*,iostat=eof) titldum
+  read (113,*,iostat=eof) header
+  do i = 1, 10
+    read (113,*,iostat=eof) k, hru_db(i)%dbsc
+  end do
+  close (113)
+end subroutine hru_read
+""")
+
+    settings = ProjectSettings(src_dir=src_dir)
+    project = create_project(settings)
+
+    io_filenames = [f.io_filename for f in project.iofiles]
+    assert "hru-data.hru" in io_filenames, (
+        f"Expected 'hru-data.hru' in iofiles, got: {io_filenames}"
+    )
+
+    hru_iofile = next(f for f in project.iofiles if f.io_filename == "hru-data.hru")
+    assert len(hru_iofile.procedures) == 1
+    proc_ops = hru_iofile.procedures[0]["operations"]
+
+    # Collect parameters from all non-probe read operations in the timeline
+    read_params = []
+    for op in proc_ops.get("timeline", []):
+        if op.get("kind") == "read" and not op.get("is_probe_read"):
+            read_params.extend(op.get("parameters", []))
+
+    # The read statement "read (113,*,iostat=eof) k, hru_db(i)%dbsc" should appear
+    # with its parameters preserved as-is.  In particular hru_db(i)%dbsc must NOT
+    # be expanded into sub-fields such as 'hru_db(i)%topo' or 'hru_db(i)%hyd'.
+    assert "hru_db(i)%dbsc" in read_params, (
+        f"Expected 'hru_db(i)%dbsc' in IO timeline parameters, got: {read_params}"
+    )
+    # The individual sub-fields of dbsc must not appear as top-level parameters
+    for subfield in ("hru_db(i)%topo", "hru_db(i)%hyd", "hru_db(i)%land_use_mgt"):
+        assert subfield not in read_params, (
+            f"Unexpected expansion of dbsc component '{subfield}' in parameters: {read_params}"
+        )
