@@ -1,4 +1,8 @@
      subroutine header_const !rtb cs
+
+      !!    ~ ~ ~ PURPOSE ~ ~ ~
+      !!    this subroutine opens constituent output files and writes column
+      !!    headers, units, and field definitions for enabled print intervals.
     
      use basin_module
      use reservoir_module

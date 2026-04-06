@@ -1,10 +1,15 @@
      subroutine header_hyd
+
+      !!    ~ ~ ~ PURPOSE ~ ~ ~
+      !!    this subroutine opens hydrologic input/output files and writes
+      !!    header rows for enabled reporting intervals.
     
      use basin_module   
      use hydrograph_module
      use output_path_module
      
      implicit none 
+
       !! HYDCON (no headers)    
       if (pco%hydcon == "y") then
         call open_output_file(7000, "hydcon.out")

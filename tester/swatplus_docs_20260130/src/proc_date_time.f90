@@ -1,5 +1,9 @@
       subroutine proc_date_time
      
+!!    ~ ~ ~ PURPOSE ~ ~ ~
+!!    this subroutine reports run-start clock information and loads measured
+!!    climate input time series used by daily weather processing.
+
       !use time_module, only : sim_start
        use time_module
   
@@ -7,8 +11,8 @@
       
       external :: cli_hmeas, cli_petmeas, cli_pmeas, cli_smeas, cli_tmeas, cli_wgnread, cli_wmeas, cli_lapse, jdt
      
-      integer :: date_time(8) = 0       !              |
-      character*10 b(3)                 !              |
+      integer :: date_time(8) = 0       !! [n/a] DATE_AND_TIME output values (date, time, and offsets)
+      character*10 b(3)                 !! [n/a] DATE_AND_TIME character buffers (date, time, zone)
   
       !call cpu_time(sim_start)
       call DATE_AND_TIME (b(1), b(2), b(3), date_time)

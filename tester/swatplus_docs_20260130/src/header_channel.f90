@@ -1,13 +1,16 @@
       subroutine header_channel
 
+!!    ~ ~ ~ PURPOSE ~ ~ ~
+!!    this subroutine opens channel output files and writes channel header rows
+!!    for each enabled reporting interval (daily, monthly, yearly, average annual).
+
       use channel_module
       use basin_module
       use hydrograph_module, only : sp_ob
       use output_path_module
       
       implicit none 
-            
-!!!  CHANNEL
+
       !if (sp_ob%chan > 0) then !subdaily main channel output, Jaehak 2017
       !   if (pco%chan%t == "y") then
           !open (,file="channel_subday.txt",recl = 1500)

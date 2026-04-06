@@ -2,23 +2,26 @@
       
       implicit none
       
-      !! Output path for all output files
+      !! [path] output directory prefix applied to generated output files
       character(len=256) :: out_path = ""
       
       contains
       
-      !! Initialize output path - validates and creates directory if needed
       subroutine init_output_path(path_in)
+
+!!    ~ ~ ~ PURPOSE ~ ~ ~
+!!    initialize and validate the configured output directory path, normalize
+!!    path separators by operating system, and create the directory if needed.
       
       implicit none
       
-      character(len=*), intent(in) :: path_in
-      character(len=256) :: path_work, path_mkdir
-      character(len=512) :: cmd
-      character(len=32) :: os_env
-      integer :: i, path_len, stat
-      logical :: is_windows
-      logical :: dir_exists
+      character(len=*), intent(in) :: path_in                              !! [path] raw path string from file.cio out_path setting
+      character(len=256) :: path_work, path_mkdir                          !! [path] normalized path value and mkdir-safe path
+      character(len=512) :: cmd                                            !! [n/a] shell command used for path existence checks/creation
+      character(len=32) :: os_env                                          !! [n/a] OS environment variable string used for OS detection
+      integer :: i, path_len, stat                                         !! [count] loop index, trimmed path length, and command status code
+      logical :: is_windows                                                !! [flag] true when running on Windows
+      logical :: dir_exists                                                !! [flag] true when target output directory exists
       
       !! Detect OS - Runtime check is more robust if preprocessor fails
       is_windows = .false.
@@ -124,13 +127,16 @@
       return
       end subroutine init_output_path
       
-      !! Get full output file path by prepending out_path to filename
       function get_output_filename(filename) result(full_path)
+
+!!    ~ ~ ~ PURPOSE ~ ~ ~
+!!    return the resolved output filename by prepending the configured output
+!!    path when an output directory prefix is active.
       
       implicit none
       
-      character(len=*), intent(in) :: filename
-      character(len=512) :: full_path
+      character(len=*), intent(in) :: filename                             !! [path] base output filename from caller
+      character(len=512) :: full_path                                      !! [path] resolved output path written by caller
       
       if (len_trim(out_path) > 0) then
         full_path = trim(out_path) // trim(filename)
@@ -141,16 +147,18 @@
       return
       end function get_output_filename
       
-      !! Open an output file with proper path handling
-      !! This is a convenience wrapper that prepends out_path if set
       subroutine open_output_file(iunit, filename, recl_val)
+
+!!    ~ ~ ~ PURPOSE ~ ~ ~
+!!    open an output file using the configured output directory prefix and
+!!    optional record length for formatted file writing.
       
       implicit none
       
-      integer, intent(in) :: iunit                   !! unit number
-      character(len=*), intent(in) :: filename       !! output filename
-      integer, intent(in), optional :: recl_val      !! record length (optional)
-      character(len=512) :: full_path
+      integer, intent(in) :: iunit                   !! [count] Fortran I/O unit number
+      character(len=*), intent(in) :: filename       !! [path] output filename (without optional out_path prefix)
+      integer, intent(in), optional :: recl_val      !! [count] optional record length passed to OPEN
+      character(len=512) :: full_path                !! [path] resolved filename with output path prefix
       
       !! Get full path
       full_path = get_output_filename(filename)
