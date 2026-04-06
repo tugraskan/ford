@@ -3,19 +3,19 @@
       implicit none
               
       type aqu_pesticide_processes
-        real :: tot_in = 0.             ! kg        !total pesticide into aquifer
-        real :: sol_flo = 0.            ! kg        !soluble pesticide out of aquifer
-        real :: sor_flo = 0.            ! kg        !sorbed pesticide out of aquifer
-        real :: sol_perc = 0.           ! kg        !sorbed pesticide out of aquifer
-        real :: react = 0.              ! kg        !pesticide lost through reactions
-        real :: metab = 0.              ! kg        !amount of pesticide metabolized from parent
-        real :: stor_ave = 0.           ! kg        !average end of day pesticide in aquifer during the time period 
-        real :: stor_init = 0.          ! kg        !pesticide in aquifer at the start of the day 
-        real :: stor_final = 0.         ! kg        !pesticide in aquifer at the end of the day 
+        real :: tot_in = 0.             !! [kg] total pesticide mass entering the aquifer
+        real :: sol_flo = 0.            !! [kg] soluble pesticide mass leaving the aquifer
+        real :: sor_flo = 0.            !! [kg] sorbed pesticide mass leaving the aquifer
+        real :: sol_perc = 0.           !! [kg] soluble pesticide mass percolating from the aquifer
+        real :: react = 0.              !! [kg] pesticide mass lost through reactions
+        real :: metab = 0.              !! [kg] pesticide mass metabolized from the parent compound
+        real :: stor_ave = 0.           !! [kg] average end-of-day pesticide mass in aquifer over the period
+        real :: stor_init = 0.          !! [kg] pesticide mass in aquifer at the start of the day
+        real :: stor_final = 0.         !! [kg] pesticide mass in aquifer at the end of the day
       end type aqu_pesticide_processes
       
       type aqu_pesticide_output
-        type (aqu_pesticide_processes), dimension (:), allocatable :: pest         !pesticide hydrographs
+        type (aqu_pesticide_processes), dimension (:), allocatable :: pest         !! [n/a] pesticide output records by pesticide index
       end type aqu_pesticide_output
       type (aqu_pesticide_processes) :: aqu_pestbz
            
@@ -38,15 +38,15 @@
           character (len=8) :: id =         " gis_id "
           character (len=16) :: name =      " name           "
           character (len=16) :: pest =      " pesticide      "
-          character(len=13) :: tot_in =     "  tot_in_kg "          ! (mg)
-          character(len=13) :: sol_out =    "  sol_flo_kg"          ! (mg)
-          character(len=13) :: sor_out =    "  sor_flo_kg"          ! (mg)
-          character(len=13) :: sol_perc =   "sol_perc_kg"           ! (mg)
-          character(len=13) :: react =      "react_kg"             ! (mg)
-          character(len=13) :: metab =      "metab_kg"             ! (mg)
-          character(len=13) :: stor_ave  =  "stor_ave_kg"           ! (mg)
-          character(len=13) :: stor_init =  "stor_init_kg"          ! (mg)
-          character(len=13) :: stor_final=  "stor_final_kg"         ! (mg)
+          character(len=13) :: tot_in =     "  tot_in_kg "          !! [n/a] output column label for total pesticide mass (kg)
+          character(len=13) :: sol_out =    "  sol_flo_kg"          !! [n/a] output column label for soluble pesticide outflow (kg)
+          character(len=13) :: sor_out =    "  sor_flo_kg"          !! [n/a] output column label for sorbed pesticide outflow (kg)
+          character(len=13) :: sol_perc =   "sol_perc_kg"           !! [n/a] output column label for soluble pesticide percolation (kg)
+          character(len=13) :: react =      "react_kg"              !! [n/a] output column label for reacted pesticide mass (kg)
+          character(len=13) :: metab =      "metab_kg"              !! [n/a] output column label for metabolized pesticide mass (kg)
+          character(len=13) :: stor_ave  =  "stor_ave_kg"           !! [n/a] output column label for average storage mass (kg)
+          character(len=13) :: stor_init =  "stor_init_kg"          !! [n/a] output column label for initial storage mass (kg)
+          character(len=13) :: stor_final=  "stor_final_kg"         !! [n/a] output column label for final storage mass (kg)
       end type aqu_pesticide_header
       type (aqu_pesticide_header) :: aqupest_hdr
      
@@ -70,6 +70,9 @@
 !! routines for swatdeg_hru module
 
       function aqupest_add(aqu1, aqu2) result (aqu3)
+      !!    ~ ~ ~ PURPOSE ~ ~ ~
+      !!    combine two aquifer pesticide process records by summing flow/process terms
+      !!    and carrying initial/final storage from the first record.
         type (aqu_pesticide_processes),  intent (in) :: aqu1
         type (aqu_pesticide_processes),  intent (in) :: aqu2
         type (aqu_pesticide_processes) :: aqu3
@@ -85,6 +88,9 @@
       end function aqupest_add
       
       function aqupest_add_all(aqu1, aqu2) result (aqu3)
+      !!    ~ ~ ~ PURPOSE ~ ~ ~
+      !!    combine two aquifer pesticide process records by summing all terms,
+      !!    including initial and final storage.
         type (aqu_pesticide_processes),  intent (in) :: aqu1
         type (aqu_pesticide_processes),  intent (in) :: aqu2
         type (aqu_pesticide_processes) :: aqu3
@@ -100,6 +106,9 @@
       end function aqupest_add_all
             
       function aqupest_div (aqu1, const) result (aqu2)
+      !!    ~ ~ ~ PURPOSE ~ ~ ~
+      !!    scale selected aquifer pesticide process terms by a divisor while
+      !!    preserving storage terms unchanged.
         type (aqu_pesticide_processes), intent (in) :: aqu1
         real, intent (in) :: const
         type (aqu_pesticide_processes) :: aqu2
@@ -115,6 +124,9 @@
       end function aqupest_div
       
       function aqupest_ave (aqu1, const) result (aqu2)
+      !!    ~ ~ ~ PURPOSE ~ ~ ~
+      !!    compute an average-storage variant of an aquifer pesticide process record
+      !!    by dividing only the average storage term by the provided divisor.
         type (aqu_pesticide_processes), intent (in) :: aqu1
         real, intent (in) :: const
         type (aqu_pesticide_processes) :: aqu2

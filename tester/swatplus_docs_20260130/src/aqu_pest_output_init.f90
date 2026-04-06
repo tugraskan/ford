@@ -1,4 +1,7 @@
       subroutine aqu_pest_output_init
+      !!    ~ ~ ~ PURPOSE ~ ~ ~
+      !!    initialize aquifer pesticide starting-storage output values for daily,
+      !!    monthly, yearly, and average annual reporting.
       
       use aqu_pesticide_module
       use constituent_mass_module
@@ -6,8 +9,8 @@
       
       implicit none      
 
-      integer :: ipest = 0              !none         |pesticide counter
-      integer :: iaq = 0                !none         |aquifer counter
+      integer :: ipest = 0              !! [count] pesticide counter
+      integer :: iaq = 0                !! [count] aquifer counter
       
       !! set initial aquifer pesticides at beginning of output for monthly, annual and average annual
       do iaq = 1, sp_ob%aqu
