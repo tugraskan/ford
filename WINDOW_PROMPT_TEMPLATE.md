@@ -11,11 +11,13 @@ Use this template in each new task window.
 1. Follow `DOC_STYLE.md` exactly.
 2. PURPOSE block must be immediately below routine declaration.
 3. Use declaration comments in `!! [units] description` format.
-4. Keep accurate existing descriptions when possible.
-5. Do not change runtime logic.
-6. Keep this window limited to the batch file list only.
-7. Keep batch size at 12 files max.
-8. Use module-first ordering (module anchor before dependent routines).
+4. Convert single-bang declaration comments (`!`) to `!!` in touched code.
+5. Add/update `!!` descriptions for derived types and type members in touched code.
+6. Keep accurate existing descriptions when possible.
+7. Do not change runtime logic.
+8. Keep this window limited to the batch file list only.
+9. Keep batch size at 12 files max.
+10. Use module-first ordering (module anchor before dependent routines).
 
 ## Output Requirements
 - Produce exactly one commit for this batch.

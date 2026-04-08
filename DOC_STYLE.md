@@ -31,6 +31,23 @@ Rules:
 - If unitless, use `[unitless]`.
 - If not applicable/unknown, use `[n/a]`.
 - Keep existing accurate descriptions; only rewrite if inaccurate or inconsistent.
+- When declaration comments use single-bang style (`!`), convert them to documentation style (`!!`) in touched code.
+
+## 2b) Type and derived-type member documentation
+Yes—documenting derived types and their members is standard practice for this campaign.
+
+Apply the same declaration comment format to:
+- `type :: ...` / `type, extends(...) :: ...` definitions (type-level summary),
+- member declarations inside `type` blocks.
+
+Example:
+```fortran
+type :: groundwater_state
+  !! [n/a] state variables for one groundwater cell
+  real :: head = 0.      !! [m] current groundwater head
+  real :: stor = 0.      !! [m3] available groundwater storage
+end type groundwater_state
+```
 
 ## 3) No-guessing rule
 Do not invent meaning/units.
@@ -56,6 +73,8 @@ If uncertain, use conservative wording and `[n/a]` or `[unitless]`.
 Before commit:
 - PURPOSE block exists for touched routines and is in correct location.
 - Variable comments in touched declarations follow canonical format.
+- Single-bang declaration comments (`!`) are converted to `!!` in touched code.
+- Type and derived-type members in touched code are documented using `!!` format.
 - Legacy intro/purpose variants removed in touched files.
 - No logic changes.
 
